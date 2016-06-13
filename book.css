@@ -1,0 +1,212 @@
+pre {
+    margin-bottom: 0;
+}
+
+code {
+    padding: 0;
+    color: #000;
+    background: none;
+}
+
+img {
+    max-width: 100%;
+}
+
+.green {
+  color: #228B22;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.red {
+  color: #F00;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.align-center {
+    text-align: center;
+}
+
+.align-right, .text-right {
+    text-align: right;
+}
+
+.unresolved-xref {
+    color: #f00;
+}
+
+.book-versions {
+    margin-bottom: 20px;
+}
+
+.content {
+    background: #fff;
+    padding: 50px 0;
+}
+
+.content h1 {
+    border-bottom: 1px solid #888;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+}
+
+section[data-type="sect1"] h1 {
+    border-bottom: none;
+    margin-bottom: 10px;
+}
+
+/* TOC */
+
+nav[data-type="toc"] ol {
+    list-style-type: none;
+}
+
+/* Admonition */
+
+div[data-type="note"] {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+}
+
+div[data-type="note"] p {
+    margin: 0;
+}
+
+/* Aside */
+
+div.sidebar {
+    border: 1px solid #ccc;
+    margin: 30px 0;
+    padding: 20px;
+}
+
+div.sidebar h5 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+/* Figure */
+
+div.figure {
+    margin: 30px 0;
+    display: block;
+}
+
+div.figure img {
+    display: block;
+    margin: 0 auto;
+}
+
+div.figure.has-border img {
+  border: 1px solid #ccc;
+}
+
+div.figcaption {
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* Table */
+
+table {
+    margin: 30px 0;
+    border-collapse: collapse;
+}
+
+thead+tbody {
+    border-bottom: 1px solid #000;
+}
+
+table caption {
+    text-align: left;
+    caption-side: top;
+}
+
+tr {
+    border-width: 0;
+}
+
+th {
+    font-size: 14px;
+    text-align: left;
+    margin-top: 0;
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+}
+
+th, td {
+    padding: 6px 12px;
+}
+
+tr {
+    border-bottom: 1px dotted #ccc;
+}
+
+td,
+table p {
+    font-size: 14px;
+}
+
+table p {
+    text-indent: 0;
+    margin: 0;
+}
+
+/* allow code in tables to wrap */
+td pre.programlisting,
+td pre.screen,
+td pre.literallayout,
+td code {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* Listing */
+
+div[data-type="listing"] {
+    margin: 30px 0;
+}
+
+div[data-type="listing"] h5 {
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+div[data-type="listing"] .source-file {
+    font-style: italic;
+    margin-bottom: 5px;
+    font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+.hll {
+    background-color: #ffc;
+}
+
+/* Equations */
+
+div[data-type="equation"] {
+    margin: 30px 0;
+    text-align: center;
+}
+
+/* Footnotes */
+
+.footnotes {
+    border-top: 3px double #888;
+    margin-top: 30px;
+    padding-top: 10px;
+}
+
+.footnotes li {
+    margin-bottom: 5px;
+}
+
+.footnotes li:target {
+    background-color: #ffc;
+}

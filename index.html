@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"/>
+  <title>Ruby on Rails 教程 - 目录</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="最好的 Ruby on Rails 入门教程"/>
+  <meta name="keywords" content="ruby, rails, tutorial"/>
+  <meta name="author" content="Michael Hartl"/>
+  <meta name="translator" content="安道"/>
+  <meta name="generator" content="persie 0.0.1.beta.3"/>
+  <link rel="stylesheet" type="text/css" href="http://railstutorial-china.org/assets/css/main.css"/>
+  <link rel="stylesheet" type="text/css" href="book.css"/>
+  <script type="text/javascript" src="http://railstutorial-china.org/assets/js/global.js"></script>
+</head>
+<body>
+
+<body class="book-page">
+
+  <nav class="navbar">
+    <div class="container">
+
+      <div class="clearfix">
+        <a class="navbar-brand hidden-sm-up" href="http://railstutorial-china.org/" title="Ruby on Rails 教程">Ruby on Rails 教程</a>
+        <button class="navbar-toggler hidden-sm-up pull-xs-right" type="button" data-toggle="collapse" data-target="#main-nav">&#9776;</button>
+      </div>
+
+      <a class="navbar-brand hidden-xs-down" href="http://railstutorial-china.org/" title="Ruby on Rails 教程">Ruby on Rails 教程</a>
+
+      <div class="collapse navbar-toggleable-xs pull-sm-right" id="main-nav">
+        <ul class="nav navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="http://railstutorial-china.org/" title="首页">首页</a></li>
+          <li class="nav-item"><a class="nav-link" href="http://railstutorial-china.org/blog/" title="博客">博客</a></li>
+          <li class="nav-item active"><a class="nav-link" href="http://railstutorial-china.org/book/" title="阅读">阅读</a></li>
+          <li class="nav-item"><a class="nav-link" href="http://railstutorial-china.org/#ebook" title="电子书">电子书</a></li>
+          <li class="nav-item"><a class="nav-link" href="https://selfstore.io/products/189/topics" title="讨论区">讨论区</a></li>
+        </ul>
+      </div>
+
+    </div>
+  </nav>
+
+
+  <div class="content">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-offset-2 col-lg-8">
+          <div class="book-versions">
+            选择版本：
+            <a class="btn btn-primary" href="http://railstutorial-china.org/book/" title="Ruby on Rails 教程（原书第 4 版，针对 Rails 5）">Rails 5</a>
+            <a class="btn btn-secondary" href="http://railstutorial-china.org/rails" title="Ruby on Rails 教程（原书第 3 版，针对 Rails 4.2）">Rails 4.2</a>
+            <a class="btn btn-secondary" href="http://railstutorial-china.org/rails" title="Ruby on Rails 教程（原书第 3 版，针对 Rails 4.0）">Rails 4.0</a>
+            <a class="btn btn-secondary" href="http://railstutorial-china.org/rails" title="Ruby on Rails 教程（原书第 2 版，针对 Rails 3.2）">Rails 3.2</a>
+          </div>
+
+          <div class="alert alert-warning">
+            <p>在线版的内容可能落后于电子书，如果想及时获得更新，请<a href="http://railstutorial-china.org/#ebook" title="购买电子书">购买电子书</a>。</p>
+          </div>
+
+          <article class="article">
+            <nav data-type="toc" class="toc">
+<h1>目录</h1>
+<ol>
+<li data-type="foreword">
+<a href="to-reader.html#_致中国读者">致中国读者</a>
+</li>
+<li data-type="foreword">
+<a href="foreword.html#_序">序</a>
+</li>
+<li data-type="acknowledgment">
+<a href="acknowledgments.html#_致谢">致谢</a>
+</li>
+<li data-type="author">
+<a href="author.html#_作者译者简介">作者译者简介</a>
+</li>
+<li data-type="license">
+<a href="license.html#_版权和代码授权协议">版权和代码授权协议</a>
+</li>
+<li data-type="chapter">
+<a href="chapter1.html#beginning"><span class="title-label">第 1 章</span> 从零开始，完成一次部署</a>
+<ol>
+<li data-type="sect1">
+<a href="chapter1.html#introduction"><span class="title-label">1.1</span> 简介</a>
+</li>
+<li data-type="sect1">
+<a href="chapter1.html#up-and-running"><span class="title-label">1.2</span> 搭建环境</a>
+</li>
+<li data-type="sect1">
+<a href="chapter1.html#the-hello-application"><span class="title-label">1.3</span> 第一个应用</a>
+</li>
+<li data-type="sect1">
+<a href="chapter1.html#version-control"><span class="title-label">1.4</span> 使用 Git 做版本控制</a>
+</li>
+<li data-type="sect1">
+<a href="chapter1.html#deploying"><span class="title-label">1.5</span> 部署</a>
+</li>
+<li data-type="sect1">
+<a href="chapter1.html#beginning-conclusion"><span class="title-label">1.6</span> 小结</a>
+</li>
+</ol>
+</li>
+<li data-type="chapter">
+<a href="chapter2.html#a-toy-app"><span class="title-label">第 2 章</span> 玩具应用</a>
+<ol>
+<li data-type="sect1">
+<a href="chapter2.html#planning-the-application"><span class="title-label">2.1</span> 规划应用</a>
+</li>
+<li data-type="sect1">
+<a href="chapter2.html#demo-users-resource"><span class="title-label">2.2</span> 用户资源</a>
+</li>
+<li data-type="sect1">
+<a href="chapter2.html#demo-microposts-resource"><span class="title-label">2.3</span> 微博资源</a>
+</li>
+<li data-type="sect1">
+<a href="chapter2.html#toy-app-conclusion"><span class="title-label">2.4</span> 小结</a>
+</li>
+</ol>
+</li>
+<li data-type="chapter">
+<a href="chapter3.html#mostly-static-pages"><span class="title-label">第 3 章</span> 基本静态的页面</a>
+<ol>
+<li data-type="sect1">
+<a href="chapter3.html#sample-app-setup"><span class="title-label">3.1</span> 创建演示应用</a>
+</li>
+<li data-type="sect1">
+<a href="chapter3.html#static-pages"><span class="title-label">3.2</span> 静态页面</a>
+</li>
+<li data-type="sect1">
+<a href="chapter3.html#getting-started-with-testing"><span class="title-label">3.3</span> 开始测试</a>
+</li>
+<li data-type="sect1">
+<a href="chapter3.html#slightly-dynamic-pages"><span class="title-label">3.4</span> 有点动态内容的页面</a>
+</li>
+<li data-type="sect1">
+<a href="chapter3.html#mostly-static-pages-conclusion"><span class="title-label">3.5</span> 小结</a>
+</li>
+<li data-type="sect1">
+<a href="chapter3.html#advanced-testing-setup"><span class="title-label">3.6</span> 高级测试技术</a>
+</li>
+</ol>
+</li>
+<li data-type="chapter">
+<a href="chapter4.html#rails-flavored-ruby"><span class="title-label">第 4 章</span> Rails 背后的 Ruby</a>
+<ol>
+<li data-type="sect1">
+<a href="chapter4.html#motivation"><span class="title-label">4.1</span> 导言</a>
+</li>
+<li data-type="sect1">
+<a href="chapter4.html#strings-and-methods"><span class="title-label">4.2</span> 字符串和方法</a>
+</li>
+<li data-type="sect1">
+<a href="chapter4.html#other-data-structures"><span class="title-label">4.3</span> 其他数据类型</a>
+</li>
+<li data-type="sect1">
+<a href="chapter4.html#ruby-classes"><span class="title-label">4.4</span> Ruby 类</a>
+</li>
+<li data-type="sect1">
+<a href="chapter4.html#rails-flavored-ruby-conclusion"><span class="title-label">4.5</span> 小结</a>
+</li>
+</ol>
+</li>
+<li data-type="chapter">
+<a href="chapter5.html#filling-in-the-layout"><span class="title-label">第 5 章</span> 完善布局</a>
+<ol>
+<li data-type="sect1">
+<a href="chapter5.html#structure"><span class="title-label">5.1</span> 添加一些结构</a>
+</li>
+<li data-type="sect1">
+<a href="chapter5.html#sass-and-the-asset-pipeline"><span class="title-label">5.2</span> Sass 和 Asset Pipeline</a>
+</li>
+<li data-type="sect1">
+<a href="chapter5.html#layout-links"><span class="title-label">5.3</span> 布局中的链接</a>
+</li>
+<li data-type="sect1">
+<a href="chapter5.html#user-signup"><span class="title-label">5.4</span> 用户注册：第一步</a>
+</li>
+<li data-type="sect1">
+<a href="chapter5.html#filling-in-the-layout-conclusion"><span class="title-label">5.5</span> 小结</a>
+</li>
+</ol>
+</li>
+<li data-type="chapter">
+<a href="chapter6.html#modeling-users"><span class="title-label">第 6 章</span> 建模用户</a>
+<ol>
+<li data-type="sect1">
+<a href="chapter6.html#user-model"><span class="title-label">6.1</span> <code>User</code> 模型</a>
+</li>
+<li data-type="sect1">
+<a href="chapter6.html#user-validations"><span class="title-label">6.2</span> 验证用户数据</a>
+</li>
+<li data-type="sect1">
+<a href="chapter6.html#adding-a-secure-password"><span class="title-label">6.3</span> 添加安全密码</a>
+</li>
+<li data-type="sect1">
+<a href="chapter6.html#modeling-users-conclusion"><span class="title-label">6.4</span> 小结</a>
+</li>
+</ol>
+</li>
+<li data-type="chapter">
+<a href="chapter7.html#sign-up"><span class="title-label">第 7 章</span> 注册</a>
+<ol>
+<li data-type="sect1">
+<a href="chapter7.html#showing-users"><span class="title-label">7.1</span> 显示用户的信息</a>
+</li>
+<li data-type="sect1">
+<a href="chapter7.html#signup-form"><span class="title-label">7.2</span> 注册表单</a>
+</li>
+<li data-type="sect1">
+<a href="chapter7.html#unsuccessful-signups"><span class="title-label">7.3</span> 注册失败</a>
+</li>
+<li data-type="sect1">
+<a href="chapter7.html#successful-signups"><span class="title-label">7.4</span> 注册成功</a>
+</li>
+<li data-type="sect1">
+<a href="chapter7.html#professional-grade-deployment"><span class="title-label">7.5</span> 专业部署方案</a>
+</li>
+<li data-type="sect1">
+<a href="chapter7.html#sign-up-conclusion"><span class="title-label">7.6</span> 小结</a>
+</li>
+</ol>
+</li>
+<li data-type="chapter">
+<a href="chapter8.html#basic-login"><span class="title-label">第 8 章</span> 基本登录功能</a>
+<ol>
+<li data-type="sect1">
+<a href="chapter8.html#sessions"><span class="title-label">8.1</span> 会话</a>
+</li>
+<li data-type="sect1">
+<a href="chapter8.html#logging-in"><span class="title-label">8.2</span> 登录</a>
+</li>
+<li data-type="sect1">
+<a href="chapter8.html#logging-out"><span class="title-label">8.3</span> 退出</a>
+</li>
+<li data-type="sect1">
+<a href="chapter8.html#basic-login-conclusion"><span class="title-label">8.4</span> 小结</a>
+</li>
+</ol>
+</li>
+<li data-type="chapter">
+<a href="chapter9.html#advanced-login"><span class="title-label">第 9 章</span> 高级登录功能</a>
+<ol>
+<li data-type="sect1">
+<a href="chapter9.html#remember-me"><span class="title-label">9.1</span> 记住我</a>
+</li>
+<li data-type="sect1">
+<a href="chapter9.html#remember-me-checkbox"><span class="title-label">9.2</span> “记住我”复选框</a>
+</li>
+<li data-type="sect1">
+<a href="chapter9.html#remember-tests"><span class="title-label">9.3</span> 测试“记住我”功能</a>
+</li>
+<li data-type="sect1">
+<a href="chapter9.html#advanced-login-conclusion"><span class="title-label">9.4</span> 小结</a>
+</li>
+</ol>
+</li>
+<li data-type="chapter">
+<a href="chapter10.html#updating-showing-and-deleting-users"><span class="title-label">第 10 章</span> 更新，显示和删除用户</a>
+<ol>
+<li data-type="sect1">
+<a href="chapter10.html#updating-users"><span class="title-label">10.1</span> 更新用户</a>
+</li>
+<li data-type="sect1">
+<a href="chapter10.html#authorization"><span class="title-label">10.2</span> 权限系统</a>
+</li>
+<li data-type="sect1">
+<a href="chapter10.html#showing-all-users"><span class="title-label">10.3</span> 列出所有用户</a>
+</li>
+<li data-type="sect1">
+<a href="chapter10.html#deleting-users"><span class="title-label">10.4</span> 删除用户</a>
+</li>
+<li data-type="sect1">
+<a href="chapter10.html#updating-showing-and-deleting-users-conclusion"><span class="title-label">10.5</span> 小结</a>
+</li>
+</ol>
+</li>
+<li data-type="chapter">
+<a href="chapter11.html#account-activation"><span class="title-label">第 11 章</span> 激活账户</a>
+<ol>
+<li data-type="sect1">
+<a href="chapter11.html#account-activations-resource"><span class="title-label">11.1</span> <code>AccountActivations</code> 资源</a>
+</li>
+<li data-type="sect1">
+<a href="chapter11.html#account-activation-emails"><span class="title-label">11.2</span> 账户激活邮件</a>
+</li>
+<li data-type="sect1">
+<a href="chapter11.html#activating-the-account"><span class="title-label">11.3</span> 激活账户</a>
+</li>
+<li data-type="sect1">
+<a href="chapter11.html#email-in-production"><span class="title-label">11.4</span> 在生产环境中发送邮件</a>
+</li>
+<li data-type="sect1">
+<a href="chapter11.html#account-activation-conclusion"><span class="title-label">11.5</span> 小结</a>
+</li>
+</ol>
+</li>
+<li data-type="chapter">
+<a href="chapter12.html#password-reset"><span class="title-label">第 12 章</span> 重设密码</a>
+<ol>
+<li data-type="sect1">
+<a href="chapter12.html#password-resets-resource"><span class="title-label">12.1</span> <code>PasswordResets</code> 资源</a>
+</li>
+<li data-type="sect1">
+<a href="chapter12.html#password-reset-emails"><span class="title-label">12.2</span> 密码重设邮件</a>
+</li>
+<li data-type="sect1">
+<a href="chapter12.html#resetting-the-password"><span class="title-label">12.3</span> 重设密码</a>
+</li>
+<li data-type="sect1">
+<a href="chapter12.html#email-in-production-take-two"><span class="title-label">12.4</span> 在生产环境中发送邮件（再谈）</a>
+</li>
+<li data-type="sect1">
+<a href="chapter12.html#password-reset-conclusion"><span class="title-label">12.5</span> 小结</a>
+</li>
+<li data-type="sect1">
+<a href="chapter12.html#proof-of-expiration-comparison"><span class="title-label">12.6</span> 证明超时的比较算式</a>
+</li>
+</ol>
+</li>
+<li data-type="chapter">
+<a href="chapter13.html#user-microposts"><span class="title-label">第 13 章</span> 用户的微博</a>
+<ol>
+<li data-type="sect1">
+<a href="chapter13.html#a-micropost-model"><span class="title-label">13.1</span> <code>Micropost</code> 模型</a>
+</li>
+<li data-type="sect1">
+<a href="chapter13.html#showing-microposts"><span class="title-label">13.2</span> 显示微博</a>
+</li>
+<li data-type="sect1">
+<a href="chapter13.html#manipulating-microposts"><span class="title-label">13.3</span> 微博相关的操作</a>
+</li>
+<li data-type="sect1">
+<a href="chapter13.html#micropost-images"><span class="title-label">13.4</span> 微博中的图像</a>
+</li>
+<li data-type="sect1">
+<a href="chapter13.html#user-microposts-conclusion"><span class="title-label">13.5</span> 小结</a>
+</li>
+</ol>
+</li>
+<li data-type="chapter">
+<a href="chapter14.html#following-users"><span class="title-label">第 14 章</span> 关注用户</a>
+<ol>
+<li data-type="sect1">
+<a href="chapter14.html#the-relationship-model"><span class="title-label">14.1</span> <code>Relationship</code> 模型</a>
+</li>
+<li data-type="sect1">
+<a href="chapter14.html#a-web-interface-for-following-users"><span class="title-label">14.2</span> 关注用户的网页界面</a>
+</li>
+<li data-type="sect1">
+<a href="chapter14.html#the-status-feed"><span class="title-label">14.3</span> 动态流</a>
+</li>
+<li data-type="sect1">
+<a href="chapter14.html#following-users-conclusion"><span class="title-label">14.4</span> 小结</a>
+</li>
+</ol>
+</li>
+</ol>
+</nav>
+          </article>
+
+          <nav class="pagination">
+            <ul class="pager">
+              
+
+              
+              <li class="pager-next"><a class="next" href="to-reader.html" title="致中国读者">致中国读者 &raquo;</a></li>
+              
+            </ul>
+          </nav>
+
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy;2013-2016 <a href="http://about.ac" title="安道的个人网站" target="_blank">安道</a></p>
+      <p>
+        <a href="https://twitter.com/andor_chen" title="在 Twitter 中关注 @andor_chen"  target="_blank"><i class="icon-twitter"></i></a>
+        <a href="http://weibo.com/andor27" title="在微博中关注 @andor_chen"  target="_blank"><i class="icon-weibo"></i></a>
+      </p>
+      <p>保留部分权利</p>
+    </div>
+  </footer>
+
+</body>
+</html>
