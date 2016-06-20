@@ -49,9 +49,9 @@
           <div class="book-versions">
             选择版本：
             <a class="btn btn-primary" href="http://railstutorial-china.org/book/" title="Ruby on Rails 教程（原书第 4 版，针对 Rails 5）">Rails 5</a>
-            <a class="btn btn-secondary" href="http://railstutorial-china.org/rails" title="Ruby on Rails 教程（原书第 3 版，针对 Rails 4.2）">Rails 4.2</a>
-            <a class="btn btn-secondary" href="http://railstutorial-china.org/rails" title="Ruby on Rails 教程（原书第 3 版，针对 Rails 4.0）">Rails 4.0</a>
-            <a class="btn btn-secondary" href="http://railstutorial-china.org/rails" title="Ruby on Rails 教程（原书第 2 版，针对 Rails 3.2）">Rails 3.2</a>
+            <a class="btn btn-secondary" href="http://railstutorial-china.org/rails42/" title="Ruby on Rails 教程（原书第 3 版，针对 Rails 4.2）">Rails 4.2</a>
+            <a class="btn btn-secondary" href="http://railstutorial-china.org/rails4/" title="Ruby on Rails 教程（原书第 3 版，针对 Rails 4.0）">Rails 4.0</a>
+            <a class="btn btn-secondary" href="http://railstutorial-china.org/rails3/" title="Ruby on Rails 教程（原书第 2 版，针对 Rails 3.2）">Rails 3.2</a>
           </div>
 
           <div class="alert alert-warning">
@@ -68,9 +68,9 @@
 <p>Web 应用涉及的知识特别多，因此从中更容易认清“技术是复杂的”。就使用 Rails 做 Web 开发而言，体现这一点的包括：确保使用的 Ruby gem 版本正确，执行 <code>bundle install</code> 或 <code>bundle update</code> 命令，以及遇到问题时重启本地 Web 服务器。（如果你完全不知道我在说什么，不用担心，本书会涵盖这里提到的所有话题。）</p>
 <p>在阅读本书的过程中，你可能偶尔会卡住，得不到预期的结果。书中的文字已经着重标出了易于出错的步骤，但是难免百密一疏。我建议你积极去解决这些拦路虎，借此提高自己的技能。说不定，就像极客们所说的：这不是缺陷，而是特性!</p>
 </div>
-<div id="fig-tech-support-cheat-sheet" class="figure"><img src="images/chapter1/tech_support_cheat_sheet.png" alt="tech support cheat sheet" /><div class="figcaption"><span class="title-label">图 1.1</span>：“技术支持速查表”（原图出自 <a href="https://m.xkcd.com/627/">xkcd</a>）<sup>[<a id="fn-ref-1" href="#fn-1">1</a>]</sup></div></div>
 <p>本书会向你详细介绍 Web 应用开发的方方面面，包括 Ruby、Rails、HTML 和 CSS、数据库、版本控制、测试，以及部署的基本知识。学会这些知识足够为你赢得一份 Web 开发者的工作，或者还可以让你成为一名技术创业者。如果你已经了解 Web 开发，阅读本书能快速学会 Rails 框架的基础，包括 MVC 和 REST、生成器、迁移、路由，以及嵌入式 Ruby。不管怎样，读完本书之后，以你所掌握的知识，已经能够阅读讨论更高级话题的图书和博客，或者观看视频，这些都是繁荣的编程教学生态圈的一部分。</p>
 <p>本书采用一种综合式方法讲授 Web 开发，在学习的过程中我们要开发三个演示应用：第一个最简单，叫 <code>hello_app</code>（<a href="#the-hello-application">1.3 节</a>）；第二个功能多一些，叫 <code>toy_app</code>（<a href="chapter2.html#a-toy-app">第 2 章</a>），第三个是真正的演示程序，叫 <code>sample_app</code>（<a href="chapter3.html#mostly-static-pages">第 3 章</a>到<a href="chapter14.html#following-users">第 14 章</a>）。从这三个应用的名字可以看出，书中开发的应用不限定于某种特定类型的网站。最后一个演示应用有点儿类似于 <a href="https://twitter.com">Twitter</a>（很巧，这个网站起初也是使用 Rails 开发的）。不过，本书的重点是介绍通用原则，所以不管你想开发什么样的 Web 应用，读完本书后，都能建立扎实的基础。</p>
+<div id="fig-tech-support-cheat-sheet" class="figure"><img src="images/chapter1/tech_support_cheat_sheet.png" alt="tech support cheat sheet" /><div class="figcaption"><span class="title-label">图 1.1</span>：“技术支持速查表”（原图出自 <a href="https://m.xkcd.com/627/">xkcd</a>）<sup>[<a id="fn-ref-1" href="#fn-1">1</a>]</sup></div></div>
 <p>第一章，我们将安装 Ruby on Rails 以及所需的全部软件，而且还要搭建开发环境（<a href="#up-and-running">1.2 节</a>）。然后，我们将创建第一个 Rails 应用，名为 <code>hello_app</code>。本书旨在介绍优秀的软件开发习惯，所以在创建第一个应用之后，我们会立即将它纳入版本控制系统 Git 中（<a href="#version-control">1.4 节</a>）。你可能不相信，在这一章，我们还将部署这个应用（<a href="#deploying">1.5 节</a>），把它放到网上。</p>
 <p><a href="chapter2.html#a-toy-app">第 2 章</a>会创建第二个项目，演示 Rails 应用的一些基本操作。为了提升速度，我们会使用脚手架（<a href="#aside-scaffolding">旁注 1.2</a>）创建那个应用（名为 <code>toy_app</code>）。因为脚手架生成的代码很丑也很复杂，所以<a href="chapter2.html#a-toy-app">第 2 章</a>将集中精力在浏览器中，使用 URI（经常称为 URL）<sup>[<a id="fn-ref-2" href="#fn-2">2</a>]</sup>与这个应用交互。</p>
 <p>本书剩下的章节将集中精力开发一个真实的大型演示应用（名为 <code>sample_app</code>），所有代码都从零开始编写。在开发这个应用的过程中，我们会用到模拟技术、测试驱动开发（Test-driven Development，简称 TDD）理念和集成测试（integration test）。<a href="chapter3.html#mostly-static-pages">第 3 章</a>创建静态页面，然后增加一些动态内容。<a href="chapter4.html#rails-flavored-ruby">第 4 章</a>简要介绍 Rails 使用的 Ruby 程序语言。<a href="chapter5.html#filling-in-the-layout">第 5 章</a>到<a href="chapter12.html#password-reset">第 12 章</a>逐步完善这个应用的低层结构，包括网站的布局、<code>User</code> 数据模型、完整的注册和身份验证系统（含有账户激活和密码重设功能）。最后，<a href="chapter13.html#user-microposts">第 13 章</a>和<a href="chapter14.html#following-users">第 14 章</a>添加微博和社交功能，最终开发出一个可以正常运行的演示网站。</p>
@@ -283,8 +283,8 @@ hello, world!
 <p>Cloud9 配置工作空间完成后，选择这个工作空间，然后点击“Start editing”（开始编辑）。</p>
 </li>
 </ol>
-<div id="fig-cloud9-new-workspace" class="figure"><img src="images/chapter1/cloud9_new_workspace_4th_ed.png" alt="cloud9 new workspace 4th ed" /><div class="figcaption"><span class="title-label">图 1.3</span>：在 Cloud9 中新建一个工作空间</div></div>
 <p>因为使用两个空格缩进几乎是 Ruby 圈通用的约定，所以我建议你修改编辑器的配置，把默认的四个空格改为两个。配置方法是，点击右上角的齿轮图标，然后选择“Code Editor (Ace)”（Ace 代码编辑器），编辑“Soft Tabs”（软制表符）设置，如<a href="#fig-cloud9-two-spaces">图 1.4</a> 所示。（注意，设置修改后立即生效，无需点击“Save”按钮。）</p>
+<div id="fig-cloud9-new-workspace" class="figure"><img src="images/chapter1/cloud9_new_workspace_4th_ed.png" alt="cloud9 new workspace 4th ed" /><div class="figcaption"><span class="title-label">图 1.3</span>：在 Cloud9 中新建一个工作空间</div></div>
 <div id="fig-cloud9-two-spaces" class="figure"><img src="images/chapter1/cloud9_two_spaces.png" alt="cloud9 two spaces" /><div class="figcaption"><span class="title-label">图 1.4</span>：让 Cloud9 使用两个空格缩进</div></div>
 </section>
 <section data-type="sect2" id="installing-rails">
@@ -982,12 +982,12 @@ application_controller.rb  concerns/
 </div>
 <p>推送完毕后，在 Bitbucket 中会显示 <code>hello_app</code> 仓库的页面。在这个页面中可以浏览文件、查看完整的提交历史，除此之外还有很多其他功能（<a href="#fig-bitbucket-repository-page">图 1.17</a>）。</p>
 <div id="fig-create-first-repository" class="figure"><img src="images/chapter1/create_first_repository_bitbucket_4th_ed.png" alt="create first repository bitbucket 4th ed" /><div class="figcaption"><span class="title-label">图 1.16</span>：在 Bitbucket 中创建存放这个应用的仓库</div></div>
-<div id="fig-bitbucket-repository-page" class="figure"><img src="images/chapter1/bitbucket_repository_page_4th_ed.png" alt="bitbucket repository page 4th ed" /><div class="figcaption"><span class="title-label">图 1.17</span>：一个 Bitbucket 仓库的页面</div></div>
 </section>
 <section data-type="sect2" id="git-commands">
 <h2><span class="title-label">1.4.4</span> 分支，编辑，提交，合并</h2>
 <p>如果你跟着 <a href="#bitbucket">1.4.3 节</a>中的步骤做，可能注意到了，Bitbucket 自动渲染了仓库中的 README 文件，如<a href="#fig-bitbucket-repository-page">图 1.17</a> 所示。这个 <code>README.md</code> 文件由<a href="#listing-rails-command">代码清单 1.3</a> 中的命令自动生成。从文件的扩展名可以看出，这个文件使用 Markdown 编写。Markdown 是一门人类可读的标记语言，易于转换成 HTML——Bitbucket 就这么做了。</p>
 <p>自动生成 README 文件很贴心，不过我们最好修改里面的内容，描述手上的项目。这一节，我们将修改 README 文件，添加一些针对本书的内容。在修改的过程中，我们将首次演示我推荐在 Git 中使用的工作流程，即“分支，编辑，提交，合并”。<sup>[<a id="fn-ref-11" href="#fn-11">11</a>]</sup></p>
+<div id="fig-bitbucket-repository-page" class="figure"><img src="images/chapter1/bitbucket_repository_page_4th_ed.png" alt="bitbucket repository page 4th ed" /><div class="figcaption"><span class="title-label">图 1.17</span>：一个 Bitbucket 仓库的页面</div></div>
 <div id="fig-bitbucket-default-readme" class="figure has-border"><img src="images/chapter1/bitbucket_default_readme.png" alt="bitbucket default readme" /><div class="figcaption"><span class="title-label">图 1.18</span>：Bitbucket 渲染的 Rails 默认生成的 README 文件</div></div>
 <section data-type="sect3" id="branch">
 <h3>分支</h3>
