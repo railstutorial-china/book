@@ -1,0 +1,1802 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"/>
+  <title>Ruby on Rails 教程 - 第 4 章 Rails 背后的 Ruby</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="最好的 Ruby on Rails 入门教程"/>
+  <meta name="keywords" content="ruby, rails, tutorial"/>
+  <meta name="author" content="Michael Hartl"/>
+  <meta name="translator" content="安道"/>
+  <meta name="generator" content="persie 0.0.1.beta.3"/>
+  <link rel="stylesheet" type="text/css" href="http://railstutorial-china.org/assets/css/main.css"/>
+  <link rel="stylesheet" type="text/css" href="book.css"/>
+  <script type="text/javascript" src="http://railstutorial-china.org/assets/js/global.js"></script>
+</head>
+<body>
+
+<body class="book-page">
+
+  <nav class="navbar">
+    <div class="container">
+
+      <div class="clearfix">
+        <a class="navbar-brand hidden-sm-up" href="http://railstutorial-china.org/" title="Ruby on Rails 教程">Ruby on Rails 教程</a>
+        <button class="navbar-toggler hidden-sm-up pull-xs-right" type="button" data-toggle="collapse" data-target="#main-nav">&#9776;</button>
+      </div>
+
+      <a class="navbar-brand hidden-xs-down" href="http://railstutorial-china.org/" title="Ruby on Rails 教程">Ruby on Rails 教程</a>
+
+      <div class="collapse navbar-toggleable-xs pull-sm-right" id="main-nav">
+        <ul class="nav navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="http://railstutorial-china.org/" title="首页">首页</a></li>
+          <li class="nav-item"><a class="nav-link" href="http://railstutorial-china.org/blog/" title="博客">博客</a></li>
+          <li class="nav-item active"><a class="nav-link" href="http://railstutorial-china.org/book/" title="阅读">阅读</a></li>
+          <li class="nav-item"><a class="nav-link" href="http://railstutorial-china.org/#ebook" title="电子书">电子书</a></li>
+          <li class="nav-item"><a class="nav-link" href="https://selfstore.io/products/189/topics" title="讨论区">讨论区</a></li>
+        </ul>
+      </div>
+
+    </div>
+  </nav>
+
+
+  <div class="content">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-offset-2 col-lg-8">
+          <div class="book-versions">
+            选择版本：
+            <a class="btn btn-primary" href="http://railstutorial-china.org/book/" title="Ruby on Rails 教程（原书第 4 版，针对 Rails 5）">Rails 5</a>
+            <a class="btn btn-secondary" href="http://railstutorial-china.org/rails42/" title="Ruby on Rails 教程（原书第 3 版，针对 Rails 4.2）">Rails 4.2</a>
+            <a class="btn btn-secondary" href="http://railstutorial-china.org/rails4/" title="Ruby on Rails 教程（原书第 3 版，针对 Rails 4.0）">Rails 4.0</a>
+            <a class="btn btn-secondary" href="http://railstutorial-china.org/rails3/" title="Ruby on Rails 教程（原书第 2 版，针对 Rails 3.2）">Rails 3.2</a>
+          </div>
+
+          <div class="alert alert-warning">
+            <p>在线版的内容可能落后于电子书，如果想及时获得更新，请<a href="http://railstutorial-china.org/#ebook" title="购买电子书">购买电子书</a>。</p>
+          </div>
+
+          <article class="article">
+            <section data-type="chapter" id="rails-flavored-ruby">
+<h1><span class="title-label">第 4 章</span> Rails 背后的 Ruby</h1>
+<p>有了<a href="chapter3.html#mostly-static-pages">第 3 章</a>的例子做铺垫，本章要介绍一些对 Rails 来说很重要的 Ruby 知识。Ruby 语言的知识点很多，不过对 Rails 开发者而言需要掌握的很少。我们采用的方式有别于常规的 Ruby 学习过程。本章的目标是，不管你有没有 Ruby 编程经验，都得让你掌握编写 Rails 应用所需的 Ruby 知识。这一章的内容很多，第一次阅读不能完全掌握也没关系。后续的章节会经常提到本章的内容。</p>
+<section data-type="sect1" id="motivation">
+<h1><span class="title-label">4.1</span> 导言</h1>
+<p>从前一章得知，即使完全不懂 Ruby 语言，我们也可以创建 Rails 应用的骨架，以及编写测试。我们依赖于书中提供的测试代码，得到错误信息，然后让测试组件通过。但是我们不能总是这样，所以这一章暂时不讲网站开发，而要正视我们的短肋——Ruby 语言。</p>
+<p>与 <a href="chapter3.html#static-pages">3.2 节</a>一样，我们将在单独的主题分支中修改：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-sh"><pre><span class="nv">$ </span>git checkout -b rails-flavored-ruby
+</pre></div>
+</div>
+<p>到 <a href="#rails-flavored-ruby-conclusion">4.5 节</a>，我们再合并到 <code>master</code> 分支。</p>
+<section data-type="sect2" id="built-in-helpers">
+<h2><span class="title-label">4.1.1</span> 内置的辅助方法</h2>
+<p>前一章末尾我们修改了几乎是静态内容的页面，让它们使用 Rails 布局，把视图中的重复去掉了。我们使用的布局如<a href="#listing-application-layout-redux">代码清单 4.1</a> 所示（和<a href="chapter3.html#listing-application-layout">代码清单 3.35</a> 一样）。</p>
+<div id="listing-application-layout-redux" data-type="listing">
+<h5><span class="title-label">代码清单 4.1</span>：演示应用的网站布局</h5>
+
+<div class="source-file">app/views/layouts/application.html.erb</div>
+
+<div class="highlight language-erb"><pre><span class="x">&lt;!DOCTYPE html&gt;</span>
+<span class="x">&lt;html&gt;</span>
+<span class="x">  &lt;head&gt;</span>
+<span class="x">    &lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"> | Ruby on Rails Tutorial Sample App&lt;/title&gt;</span>
+<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">csrf_meta_tags</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span>    <span class="s1">'application'</span><span class="p">,</span> <span class="ss">media</span><span class="p">:</span> <span class="s1">'all'</span><span class="p">,</span>
+                                              <span class="s1">'data-turbolinks-track'</span><span class="p">:</span> <span class="s1">'reload'</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">javascript_include_tag</span> <span class="s1">'application'</span><span class="p">,</span> <span class="s1">'data-turbolinks-track'</span><span class="p">:</span> <span class="s1">'reload'</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">  &lt;/head&gt;</span>
+
+<span class="x">  &lt;body&gt;</span>
+<span class="x">    </span><span class="cp">&lt;%=</span> <span class="k">yield</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">  &lt;/body&gt;</span>
+<span class="x">&lt;/html&gt;</span>
+</pre></div>
+</div>
+<p>我们把注意力集中在这一行：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-erb"><pre><span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span> <span class="s1">'application'</span><span class="p">,</span> <span class="ss">media</span><span class="p">:</span> <span class="s1">'all'</span><span class="p">,</span>
+                                       <span class="s1">'data-turbolinks-track'</span><span class="p">:</span> <span class="s1">'reload'</span> <span class="cp">%&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+<p>这行代码使用 Rails 内置的 <code>stylesheet_link_tag</code> 方法（详细信息参见 <a href="http://api.rubyonrails.org/classes/ActionView/Helpers/AssetTagHelper.html#method-i-stylesheet_link_tag">Rails API 文档</a>），在所有<a href="http://www.w3.org/TR/CSS2/media.html">媒介类型</a>中引入 <code>application.css</code>。对有经验的 Rails 开发者来说，这行代码看起来很简单，但是其中至少有四个 Ruby 知识点可能会让你困惑：内置的 Rails 方法，调用方法时不用括号，符号（Symbol）和哈希（Hash）。这几点本章都会介绍。</p>
+</section>
+<section data-type="sect2" id="custom-helpers">
+<h2><span class="title-label">4.1.2</span> 自定义辅助方法</h2>
+<p>Rails 除了提供很多内置的方法供我们在视图中使用之外，还允许我们自己定义。这种方法叫辅助方法（helper）。为了说明如何自己定义辅助方法，我们来看看<a href="#listing-application-layout-redux">代码清单 4.1</a> 中标题那一行：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-erb"><pre><span class="cp">&lt;%=</span> <span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"> | Ruby on Rails Tutorial Sample App</span>
+</pre></div>
+</div>
+<p>这行代码要求每个视图都要使用 <code>provide</code> 方法定义标题，例如：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s2">"Home"</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">&lt;h1&gt;Sample App&lt;/h1&gt;</span>
+<span class="x">&lt;p&gt;</span>
+<span class="x">  This is the home page for the</span>
+<span class="x">  &lt;a href="http://www.railstutorial.org/"&gt;Ruby on Rails Tutorial&lt;/a&gt;</span>
+<span class="x">  sample application.</span>
+<span class="x">&lt;/p&gt;</span>
+</pre></div>
+</div>
+<p>那么，如果我们不提供标题会怎样呢？标题一般都包含一个公共部分，为了更具体些，会再加上变动的部分。我们在布局中用了个小技巧，基本上已经实现了这样的标题。如果在视图中不调用 <code>provide</code> 方法，也就是不提供变动的部分，那么得到的标题会变成：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-text"><pre> | Ruby on Rails Tutorial Sample App
+</pre></div>
+</div>
+<p>也就是说，标题中有公共部分，但前面还显示了竖线。</p>
+<p>为了解决这个问题，我们要自定义一个辅助方法，名为 <code>full_title</code>。如果视图中没有定义页面的标题，<code>full_title</code> 返回标题的公共部分，即“Ruby on Rails Tutorial Sample App”；如果定义了，则在变动部分后面加上一个竖线，如<a href="#listing-title-helper">代码清单 4.2</a> 所示。<sup>[<a id="fn-ref-1" href="#fn-1">1</a>]</sup></p>
+<div id="listing-title-helper" data-type="listing">
+<h5><span class="title-label">代码清单 4.2</span>：定义 <code>full_title</code> 辅助方法</h5>
+
+<div class="source-file">app/helpers/application_helper.rb</div>
+
+<div class="highlight language-ruby"><pre><span class="k">module</span> <span class="nn">ApplicationHelper</span>
+
+  <span class="c1"># 根据所在的页面返回完整的标题</span>
+  <span class="k">def</span> <span class="nf">full_title</span><span class="p">(</span><span class="n">page_title</span> <span class="o">=</span> <span class="s1">''</span><span class="p">)</span>
+    <span class="n">base_title</span> <span class="o">=</span> <span class="s2">"Ruby on Rails Tutorial Sample App"</span>
+    <span class="k">if</span> <span class="n">page_title</span><span class="o">.</span><span class="n">empty?</span>
+      <span class="n">base_title</span>
+    <span class="k">else</span>
+      <span class="n">page_title</span> <span class="o">+</span> <span class="s2">" | "</span> <span class="o">+</span> <span class="n">base_title</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+<p>现在，这个辅助方法定义好了，我们可以用它来简化布局。把下面这行：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-erb"><pre><span class="x">&lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"> | Ruby on Rails Tutorial Sample App&lt;/title&gt;</span>
+</pre></div>
+</div>
+<p>改成：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-erb"><pre><span class="x">&lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="n">full_title</span><span class="p">(</span><span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">))</span> <span class="cp">%&gt;</span><span class="x">&lt;/title&gt;</span>
+</pre></div>
+</div>
+<p>如<a href="#listing-application-layout-full-title">代码清单 4.3</a> 所示。</p>
+<div id="listing-application-layout-full-title" data-type="listing">
+<h5><span class="title-label">代码清单 4.3</span>：使用 <code>full_title</code> 辅助方法的网站布局 <span class="green">GREEN</span></h5>
+
+<div class="source-file">app/views/layouts/application.html.erb</div>
+
+<div class="highlight language-erb"><pre><span class="x">&lt;!DOCTYPE html&gt;</span>
+<span class="x">&lt;html&gt;</span>
+<span class="x">  &lt;head&gt;</span>
+<span class="hll"><span class="x">    &lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="n">full_title</span><span class="p">(</span><span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">))</span> <span class="cp">%&gt;</span><span class="x">&lt;/title&gt;</span>
+</span><span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">csrf_meta_tags</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span>    <span class="s1">'application'</span><span class="p">,</span> <span class="ss">media</span><span class="p">:</span> <span class="s1">'all'</span><span class="p">,</span>
+                                              <span class="s1">'data-turbolinks-track'</span><span class="p">:</span> <span class="s1">'reload'</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">javascript_include_tag</span> <span class="s1">'application'</span><span class="p">,</span> <span class="s1">'data-turbolinks-track'</span><span class="p">:</span> <span class="s1">'reload'</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">  &lt;/head&gt;</span>
+<span class="x">  &lt;body&gt;</span>
+<span class="x">    </span><span class="cp">&lt;%=</span> <span class="k">yield</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">  &lt;/body&gt;</span>
+<span class="x">&lt;/html&gt;</span>
+</pre></div>
+</div>
+<p>为了让这个辅助方法起作用，我们要在首页的视图中把不必要的单词“Home”删掉，只保留标题的公共部分。首先，我们要修改测试代码，如<a href="#listing-home-base-title-spec">代码清单 4.4</a> 所示，确认标题中没有字符串 <code>"Home"</code>。</p>
+<div id="listing-home-base-title-spec" data-type="listing">
+<h5><span class="title-label">代码清单 4.4</span>：修改首页的标题测试 <span class="red">RED</span></h5>
+
+<div class="source-file">test/controllers/static_pages_controller_test.rb</div>
+
+<div class="highlight language-ruby"><pre><span class="nb">require</span> <span class="s1">'test_helper'</span>
+
+<span class="k">class</span> <span class="nc">StaticPagesControllerTest</span> <span class="o">&lt;</span> <span class="no">ActionDispatch</span><span class="o">::</span><span class="no">IntegrationTest</span>
+  <span class="nb">test</span> <span class="s2">"should get home"</span> <span class="k">do</span>
+    <span class="n">get</span> <span class="n">static_pages_home_url</span>
+    <span class="n">assert_response</span> <span class="ss">:success</span>
+<span class="hll">    <span class="n">assert_select</span> <span class="s2">"title"</span><span class="p">,</span> <span class="s2">"Ruby on Rails Tutorial Sample App"</span>
+</span>  <span class="k">end</span>
+
+  <span class="nb">test</span> <span class="s2">"should get help"</span> <span class="k">do</span>
+    <span class="n">get</span> <span class="n">static_pages_help_url</span>
+    <span class="n">assert_response</span> <span class="ss">:success</span>
+    <span class="n">assert_select</span> <span class="s2">"title"</span><span class="p">,</span> <span class="s2">"Help | Ruby on Rails Tutorial Sample App"</span>
+  <span class="k">end</span>
+
+  <span class="nb">test</span> <span class="s2">"should get about"</span> <span class="k">do</span>
+    <span class="n">get</span> <span class="n">static_pages_about_url</span>
+    <span class="n">assert_response</span> <span class="ss">:success</span>
+    <span class="n">assert_select</span> <span class="s2">"title"</span><span class="p">,</span> <span class="s2">"About | Ruby on Rails Tutorial Sample App"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+<p>接着，运行测试组件，确认有一个测试失败：</p>
+<div data-type="listing">
+<h5><span class="title-label">代码清单 4.5</span>：<strong class="red">RED</strong></h5>
+
+
+<div class="highlight language-sh"><pre><span class="nv">$ </span>rails <span class="nb">test</span>
+<span class="m">3</span> tests, <span class="m">6</span> assertions, <span class="m">1</span> failures, <span class="m">0</span> errors, <span class="m">0</span> skips
+</pre></div>
+</div>
+<p>为了让测试通过，我们要把首页视图中的 <code>provide</code> 那行删除，如<a href="#listing-home-page-base-title">代码清单 4.6</a> 所示。</p>
+<div id="listing-home-page-base-title" data-type="listing">
+<h5><span class="title-label">代码清单 4.6</span>：没定义页面标题的首页视图 <span class="green">GREEN</span></h5>
+
+<div class="source-file">app/views/static_pages/home.html.erb</div>
+
+<div class="highlight language-erb"><pre><span class="x">&lt;h1&gt;Sample App&lt;/h1&gt;</span>
+<span class="x">&lt;p&gt;</span>
+<span class="x">  This is the home page for the</span>
+<span class="x">  &lt;a href="http://www.railstutorial.org/"&gt;Ruby on Rails Tutorial&lt;/a&gt;</span>
+<span class="x">  sample application.</span>
+<span class="x">&lt;/p&gt;</span>
+</pre></div>
+</div>
+<p>现在测试应该能通过了：</p>
+<div data-type="listing">
+<h5><span class="title-label">代码清单 4.7</span>：<strong class="green">GREEN</strong></h5>
+
+
+<div class="highlight language-sh"><pre><span class="nv">$ </span>rails <span class="nb">test</span>
+</pre></div>
+</div>
+<p>（注意，之前运行 <code>rails test</code> 时都显示了通过和失败测试的数量，为了行文简洁，从这以后都会省略这些信息。）</p>
+<p>与 <a href="#built-in-helpers">4.1.1 节</a>引入应用的样式表那行代码一样，<a href="#listing-title-helper">代码清单 4.2</a> 的内容对有经验的 Rails 开发者来说也很简单，但其中有很多重要的 Ruby 知识：模块，方法定义，可选的方法参数，注释，局部变量赋值，布尔值，流程控制，字符串拼接和返回值。本章会一一介绍这些知识。</p>
+</section>
+</section>
+<section data-type="sect1" id="strings-and-methods">
+<h1><span class="title-label">4.2</span> 字符串和方法</h1>
+<p>我们学习 Ruby 主要使用的工具是 Rails 控制台，它是用来与 Rails 应用交互的命令行工具，在 <a href="chapter2.html#a-user-has-many-microposts">2.3.3 节</a>介绍过。控制台基于 Ruby 的交互程序（<code>irb</code>）开发，因此能使用 Ruby 语言的全部功能。（<a href="#a-controller-class">4.4.4 节</a>会介绍，控制台还可以访问 Rails 环境。）</p>
+<p>如果使用云端 IDE，我建议添加几个 irb 配置参数。使用简单的 <code>nano</code> 文本编辑器打开家目录中的 <code>.irbrc</code> 文件：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-sh"><pre><span class="nv">$ </span>nano ~/.irbrc
+</pre></div>
+</div>
+<p>然后写入<a href="#listing-irbrc">代码清单 4.8</a> 中的内容。<sup>[<a id="fn-ref-2" href="#fn-2">2</a>]</sup>这段代码的作用是简化 irb 提示符，以及禁用一些烦人的自动缩进行为。</p>
+<div id="listing-irbrc" data-type="listing">
+<h5><span class="title-label">代码清单 4.8</span>：添加几个 irb 配置</h5>
+
+<div class="source-file">~/.irbrc</div>
+
+<div class="highlight language-ruby"><pre><span class="no">IRB</span><span class="o">.</span><span class="n">conf</span><span class="o">[</span><span class="ss">:PROMPT_MODE</span><span class="o">]</span> <span class="o">=</span> <span class="ss">:SIMPLE</span>
+<span class="no">IRB</span><span class="o">.</span><span class="n">conf</span><span class="o">[</span><span class="ss">:AUTO_INDENT_MODE</span><span class="o">]</span> <span class="o">=</span> <span class="kp">false</span>
+</pre></div>
+</div>
+<p>编辑好之后，按 Ctrl-X 键退出 nano，然后输入 <code>y</code> 确认保存 <code>~/.irbrc</code> 文件。</p>
+<p>现在，执行下述命令启动控制台：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="go">$ rails console</span>
+<span class="go">Loading development environment</span>
+<span class="go">&gt;&gt;</span>
+</pre></div>
+</div>
+<p>默认情况下，控制台在开发环境中启动，这是 Rails 定义的三个独立环境之一（另外两个是测试环境和生产环境）。这三个环境的区别对本章不重要，但是对后文就重要了，因此我们会在 <a href="chapter7.html#rails-environments">7.1.1 节</a>详细介绍。</p>
+<p>控制台是学习的好工具，请尽情探索它的用法。别担心，你（几乎）不会破坏任何东西。如果在控制台中遇到问题，可以按 Ctrl-C 键结束当前执行的操作，或者按 Ctrl-D 键直接退出。与常规的 shell 终端一样，我们可以使用上箭头获取前一个命令，这能节省不少时间。</p>
+<p>在阅读本章后续内容的过程中，你会发现查阅 <a href="http://ruby-doc.org/">Ruby API</a> 很有帮助。API 中有很多信息（或许太多了），例如，如果想进一步了解 Ruby 字符串，可以查看 <code>String</code> 类的文档。</p>
+<section data-type="sect2" id="comments">
+<h2><span class="title-label">4.2.1</span> 注释</h2>
+<p>Ruby 中的注释以井号 <code>#</code>（也叫“哈希符号”，或者更诗意一点，叫“散列字元”）开头，一直到行尾结束。Ruby 会忽略注释，但是注释对人类读者（往往也包括代码的编写者）很有用。在下面的代码中</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><span class="c1"># 根据所在的页面返回完整的标题</span>
+<span class="k">def</span> <span class="nf">full_title</span><span class="p">(</span><span class="n">page_title</span> <span class="o">=</span> <span class="s1">''</span><span class="p">)</span>
+  <span class="o">.</span>
+  <span class="o">.</span>
+  <span class="o">.</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+<p>第一行就是注释，说明其后方法的作用。</p>
+<p>在控制台中一般不用写注释，不过为了说明代码的作用，我会按照下面的形式加上注释，例如：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="go">$ rails console</span>
+<span class="gp">&gt;&gt; </span><span class="mi">17</span> <span class="o">+</span> <span class="mi">42</span>   <span class="c1"># 整数加法运算</span>
+<span class="go">=&gt; 59</span>
+</pre></div>
+</div>
+<p>阅读的过程中，在控制台中输入或者复制粘贴命令时，如果愿意你可以不加注释，反正控制台会忽略注释。</p>
+</section>
+<section data-type="sect2" id="strings">
+<h2><span class="title-label">4.2.2</span> 字符串</h2>
+<p>对 Web 应用来说，字符串或许是最重要的数据结构，因为网页的内容就是从服务器发送给浏览器的字符串。我们先在控制台中体验一下字符串：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="go">$ rails console</span>
+<span class="gp">&gt;&gt; </span><span class="s2">""</span>         <span class="c1"># 空字符串</span>
+<span class="go">=&gt; ""</span>
+<span class="gp">&gt;&gt; </span><span class="s2">"foo"</span>      <span class="c1"># 非空字符串</span>
+<span class="go">=&gt; "foo"</span>
+</pre></div>
+</div>
+<p>这些是字符串字面量，使用双引号（<code>"</code>）创建。控制台回显的是每一行的计算结果。这里，字符串字面量的结果就是字符串本身。</p>
+<p>我们还可以使用 <code>+</code> 号拼接字符串：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="s2">"foo"</span> <span class="o">+</span> <span class="s2">"bar"</span>    <span class="c1"># 字符串拼接</span>
+<span class="go">=&gt; "foobar"</span>
+</pre></div>
+</div>
+<p><code>"foo"</code> 与 <code>"bar"</code> 拼接得到的结果是字符串 <code>"foobar"</code>。<sup>[<a id="fn-ref-3" href="#fn-3">3</a>]</sup></p>
+<p>另一种创建字符串的方式是使用特殊的句法 <code>#{}</code> 进行插值操作：<sup>[<a id="fn-ref-4" href="#fn-4">4</a>]</sup></p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">first_name</span> <span class="o">=</span> <span class="s2">"Michael"</span>    <span class="c1"># 变量赋值</span>
+<span class="go">=&gt; "Michael"</span>
+<span class="gp">&gt;&gt; </span><span class="s2">"</span><span class="si">#{</span><span class="n">first_name</span><span class="si">}</span><span class="s2"> Hartl"</span>     <span class="c1"># 字符串插值</span>
+<span class="go">=&gt; "Michael Hartl"</span>
+</pre></div>
+</div>
+<p>我们先把 <code>"Michael"</code> 赋值给变量 <code>first_name</code>，然后将其插入字符串 <code>"#{first_name} Hartl"</code> 中。我们也可以把两个字符串都赋值给变量：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">first_name</span> <span class="o">=</span> <span class="s2">"Michael"</span>
+<span class="go">=&gt; "Michael"</span>
+<span class="gp">&gt;&gt; </span><span class="n">last_name</span> <span class="o">=</span> <span class="s2">"Hartl"</span>
+<span class="go">=&gt; "Hartl"</span>
+<span class="gp">&gt;&gt; </span><span class="n">first_name</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">last_name</span>    <span class="c1"># 字符串拼接，中间加了空格</span>
+<span class="go">=&gt; "Michael Hartl"</span>
+<span class="gp">&gt;&gt; </span><span class="s2">"</span><span class="si">#{</span><span class="n">first_name</span><span class="si">}</span><span class="s2"> </span><span class="si">#{</span><span class="n">last_name</span><span class="si">}</span><span class="s2">"</span>    <span class="c1"># 等效的插值</span>
+<span class="go">=&gt; "Michael Hartl"</span>
+</pre></div>
+</div>
+<p>注意，最后两个表达式的作用相同，不过我倾向于使用插值的方式。在两个字符串中间加入一个空格（<code>" "</code>）显得很别扭。</p>
+<section data-type="sect3" id="printing">
+<h3>打印字符串</h3>
+<p>打印字符串最常用的 Ruby 方法是 <code>puts</code>（读作“put ess”，意思是“打印字符串”）：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="nb">puts</span> <span class="s2">"foo"</span>     <span class="c1"># 打印字符串</span>
+<span class="go">foo</span>
+<span class="go">=&gt; nil</span>
+</pre></div>
+</div>
+<p><code>puts</code> 方法还有一个副作用：<code>puts "foo"</code> 先把字符串打印到屏幕上，然后返回<a href="http://www.answers.com/nil">空值字面量</a>——<code>nil</code> 在 Ruby 中是个特殊值，表示“什么都没有”。（为了行文简洁，后续内容会省略 <code>=&gt; nil</code>。）</p>
+<p>从前面的例子可以看出，<code>puts</code> 方法会自动在输出的字符串后面换行。功能类似的 <code>print</code> 方法则不会：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="nb">print</span> <span class="s2">"foo"</span>    <span class="c1"># 打印字符串，不换行</span>
+<span class="go">foo=&gt; nil</span>
+</pre></div>
+</div>
+<p>可以看出，输出的 <code>foo</code> 后面直接跟着提示符。</p>
+<p>换行通常使用“\n”符号表示。我们可以在字符串中加上换行符，让 <code>print</code> 与 <code>puts</code> 的效果一样：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="nb">print</span> <span class="s2">"foo</span><span class="se">\n</span><span class="s2">"</span>  <span class="c1"># 作用于 `puts "foo"` 一样</span>
+<span class="go">foo</span>
+<span class="go">=&gt; nil</span>
+</pre></div>
+</div>
+</section>
+<section data-type="sect3" id="single-quoted-strings">
+<h3>单引号字符串</h3>
+<p>目前介绍的例子都使用双引号创建字符串，不过 Ruby 也支持用单引号创建字符串。大多数情况下这两种字符串的效果是一样的：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="s1">'foo'</span>          <span class="c1"># 单引号创建的字符串</span>
+<span class="go">=&gt; "foo"</span>
+<span class="gp">&gt;&gt; </span><span class="s1">'foo'</span> <span class="o">+</span> <span class="s1">'bar'</span>
+<span class="go">=&gt; "foobar"</span>
+</pre></div>
+</div>
+<p>不过，二者之间有个重要的区别：Ruby 不会对单引号字符串进行插值操作：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="s1">'#{foo} bar'</span>     <span class="c1"># 单引号字符串不能进行插值操作</span>
+<span class="go">=&gt; "\#{foo} bar"</span>
+</pre></div>
+</div>
+<p>注意，控制台返回的是双引号字符串，因此要使用反斜线转义特殊字符，例如 <code>#{</code>。</p>
+<p>如果双引号字符串可以做单引号能做的所有事，而且还能进行插值，那么单引号字符串存在的意义是什么呢？单引号字符串的用处在于它们真的就是字面值，只包含你输入的字符。例如，反斜线在很多系统中都很特殊，例如在换行符 <code>\n</code> 中。如果有一个变量需要包含一个反斜线，使用单引号就很简单：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="s1">'\n'</span>       <span class="c1"># 反斜线和 n 字面值</span>
+<span class="go">=&gt; "\\n"</span>
+</pre></div>
+</div>
+<p>与前面的 <code>#</code> 符号一样，Ruby 要使用一个额外的反斜线来转义反斜线——在双引号字符串中，要表达一个反斜线就要使用两个反斜线。对简单的例子来说，这省不了多少事，但是如果有很多需要转义的字符就显得出它的作用了：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="s1">'Newlines (\n) and tabs (\t) both use the backslash character \.'</span>
+<span class="go">=&gt; "Newlines (\\n) and tabs (\\t) both use the backslash character \\."</span>
+</pre></div>
+</div>
+<p>最后，有一点要注意，单双引号基本上可以互换使用，Rails 源码中经常混用，没有章法可循，对此我们只能默默接受——“欢迎进入 Ruby 世界”！</p>
+<h5 id="exercises-strings" class="discrete">练习</h5>
+<ol class="arabic">
+<li>
+<p>把你当前所在的省份和城市分别赋值给 <code>province</code> 和 <code>city</code> 变量。</p>
+</li>
+<li>
+<p>使用字符串插值打印一个字符串（使用 <code>puts</code> 方法），在省份和城市之间加上逗号，例如“广东省，广州市”。</p>
+</li>
+<li>
+<p>把前一题中的逗号换成制表符。</p>
+</li>
+<li>
+<p>如果把前一题中的双引号换成单引号，结果如何？</p>
+</li>
+</ol>
+</section>
+</section>
+<section data-type="sect2" id="objects-and-message-passing">
+<h2><span class="title-label">4.2.3</span> 对象和消息传送</h2>
+<p>在 Ruby 中，一切皆对象，包括字符串和 <code>nil</code> 都是。我们会在 <a href="#class-inheritance">4.4.2 节</a>介绍对象在技术层面上的意义，不过一般很难通过阅读一本书就理解对象，你要多看一些例子才能建立对对象的感性认识。</p>
+<p>对象的作用说起来很简单：响应消息。例如，字符串对象可以响应 <code>length</code> 消息，返回字符串中包含的字符数量：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="s2">"foobar"</span><span class="o">.</span><span class="n">length</span>        <span class="c1"># 把 length 消息传给字符串</span>
+<span class="go">=&gt; 6</span>
+</pre></div>
+</div>
+<p>一般来说，传给对象的消息是“方法”，即在这个对象上定义的函数。<sup>[<a id="fn-ref-5" href="#fn-5">5</a>]</sup>字符串还可以响应 <code>empty?</code> 方法：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="s2">"foobar"</span><span class="o">.</span><span class="n">empty?</span>
+<span class="go">=&gt; false</span>
+<span class="gp">&gt;&gt; </span><span class="s2">""</span><span class="o">.</span><span class="n">empty?</span>
+<span class="go">=&gt; true</span>
+</pre></div>
+</div>
+<p>注意，<code>empty?</code> 方法末尾有个问号，这是 Ruby 的约定，说明方法返回的是布尔值，即 <code>true</code> 或 <code>false</code>。布尔值在流程控制中特别有用：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="s2">"foobar"</span>
+<span class="gp">&gt;&gt; </span><span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">empty?</span>
+<span class="gp">&gt;&gt; </span>  <span class="s2">"The string is empty"</span>
+<span class="gp">&gt;&gt; </span><span class="k">else</span>
+<span class="gp">&gt;&gt; </span>  <span class="s2">"The string is nonempty"</span>
+<span class="gp">&gt;&gt; </span><span class="k">end</span>
+<span class="go">=&gt; "The string is nonempty"</span>
+</pre></div>
+</div>
+<p>如果分支很多，可以使用 <code>elsif</code>（<code>else</code> + <code>if</code>）：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">nil?</span>
+<span class="gp">&gt;&gt; </span>  <span class="s2">"The variable is nil"</span>
+<span class="gp">&gt;&gt; </span><span class="k">elsif</span> <span class="n">s</span><span class="o">.</span><span class="n">empty?</span>
+<span class="gp">&gt;&gt; </span>  <span class="s2">"The string is empty"</span>
+<span class="gp">&gt;&gt; </span><span class="k">elsif</span> <span class="n">s</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="s2">"foo"</span><span class="p">)</span>
+<span class="gp">&gt;&gt; </span>  <span class="s2">"The string includes 'foo'"</span>
+<span class="gp">&gt;&gt; </span><span class="k">end</span>
+<span class="go">=&gt; "The string includes 'foo'"</span>
+</pre></div>
+</div>
+<p>布尔值还可以使用 <code>&amp;&amp;</code>（与）、<code>||</code>（或）和 <code>!</code>（非）运算符结合在一起使用：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="s2">"foo"</span>
+<span class="go">=&gt; "foo"</span>
+<span class="gp">&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="s2">""</span>
+<span class="go">=&gt; ""</span>
+<span class="gp">&gt;&gt; </span><span class="nb">puts</span> <span class="s2">"Both strings are empty"</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">empty?</span> <span class="o">&amp;&amp;</span> <span class="n">y</span><span class="o">.</span><span class="n">empty?</span>
+<span class="go">=&gt; nil</span>
+<span class="gp">&gt;&gt; </span><span class="nb">puts</span> <span class="s2">"One of the strings is empty"</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">empty?</span> <span class="o">||</span> <span class="n">y</span><span class="o">.</span><span class="n">empty?</span>
+<span class="go">"One of the strings is empty"</span>
+<span class="go">=&gt; nil</span>
+<span class="gp">&gt;&gt; </span><span class="nb">puts</span> <span class="s2">"x is not empty"</span> <span class="k">if</span> <span class="o">!</span><span class="n">x</span><span class="o">.</span><span class="n">empty?</span>
+<span class="go">"x is not empty"</span>
+<span class="go">=&gt; nil</span>
+</pre></div>
+</div>
+<p>在 Ruby 中一切都是对象，因此 <code>nil</code> 也是对象，所以它也可以响应方法。举个例子，<code>to_s</code> 方法基本上可以把任何对象转换成字符串：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="kp">nil</span><span class="o">.</span><span class="n">to_s</span>
+<span class="go">=&gt; ""</span>
+</pre></div>
+</div>
+<p>结果显然是个空字符串，我们可以通过下面的方法串联（chain）验证这一点：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="kp">nil</span><span class="o">.</span><span class="n">empty?</span>
+<span class="go">NoMethodError: undefined method `empty?' for nil:NilClass</span>
+<span class="gp">&gt;&gt; </span><span class="kp">nil</span><span class="o">.</span><span class="n">to_s</span><span class="o">.</span><span class="n">empty?</span>      <span class="c1"># 消息串联</span>
+<span class="go">=&gt; true</span>
+</pre></div>
+</div>
+<p>我们看到，<code>nil</code> 对象本身无法响应 <code>empty?</code> 方法，但是 <code>nil.to_s</code> 可以。</p>
+<p>有一个特殊的方法可以测试对象是否为空，你或许能猜到是哪个方法：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="s2">"foo"</span><span class="o">.</span><span class="n">nil?</span>
+<span class="go">=&gt; false</span>
+<span class="gp">&gt;&gt; </span><span class="s2">""</span><span class="o">.</span><span class="n">nil?</span>
+<span class="go">=&gt; false</span>
+<span class="gp">&gt;&gt; </span><span class="kp">nil</span><span class="o">.</span><span class="n">nil?</span>
+<span class="go">=&gt; true</span>
+</pre></div>
+</div>
+<p>下面的代码</p>
+<div data-type="listing">
+
+
+<div class="highlight language-sh"><pre>puts <span class="s2">"x is not empty"</span> <span class="k">if</span> !x.empty?
+</pre></div>
+</div>
+<p>演示了 <code>if</code> 关键字的另一种用法：编写一个当且只当 <code>if</code> 后面的表达式为真值时才执行的语句。还有个对应的 <code>unless</code> 关键字也可以这么用：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">string</span> <span class="o">=</span> <span class="s2">"foobar"</span>
+<span class="gp">&gt;&gt; </span><span class="nb">puts</span> <span class="s2">"The string '</span><span class="si">#{</span><span class="n">string</span><span class="si">}</span><span class="s2">' is nonempty."</span> <span class="k">unless</span> <span class="n">string</span><span class="o">.</span><span class="n">empty?</span>
+<span class="go">The string 'foobar' is nonempty.</span>
+<span class="go">=&gt; nil</span>
+</pre></div>
+</div>
+<p>我们需要注意一下 <code>nil</code> 对象的特殊性，除了 <code>false</code> 本身之外，所有 Ruby 对象中它是唯一一个布尔值为“假”的。我们可以使用 <code>!!</code>（读作“bang bang”）对对象做两次取反操作，把对象转换成布尔值：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="o">!!</span><span class="kp">nil</span>
+<span class="go">=&gt; false</span>
+</pre></div>
+</div>
+<p>除此之外，其他所有 Ruby 对象都是“真”值，数字 0 也是：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="o">!!</span><span class="mi">0</span>
+<span class="go">=&gt; true</span>
+</pre></div>
+</div>
+<h5 id="exercises-objects-and-message-passing" class="discrete">练习</h5>
+<ol class="arabic">
+<li>
+<p>字符串“racecar”有多长？</p>
+</li>
+<li>
+<p>使用 <code>reverse</code> 方法确认前一题中的字符串经过反转之后内容仍然一样。</p>
+</li>
+<li>
+<p>把字符串“racecar”赋值给变量 <code>s</code>。使用比较运算符 <code>==</code> 确认 <code>s</code> 与 <code>s.reverse</code> 相等。</p>
+</li>
+<li>
+<p><a href="#listing-palindrome-if">代码清单 4.9</a>的运行结果是什么？如果把 <code>s</code> 变量的值改成“onomatopoeia”呢？提示：使用上箭头获取前一个命令，然后编辑。</p>
+</li>
+</ol>
+<div id="listing-palindrome-if" data-type="listing">
+<h5><span class="title-label">代码清单 4.9</span>：简单的回文测试</h5>
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="nb">puts</span> <span class="s2">"It's a palindrome!"</span> <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="n">s</span><span class="o">.</span><span class="n">reverse</span>
+</pre></div>
+</div>
+</section>
+<section data-type="sect2" id="method-definitions">
+<h2><span class="title-label">4.2.4</span> 定义方法</h2>
+<p>在控制台中，可以像定义 <code>home</code> 动作（<a href="chapter3.html#listing-static-pages-controller">代码清单 3.8</a>）和 <code>full_title</code> 辅助方法（<a href="#listing-title-helper">代码清单 4.2</a>）一样定义方法。（在控制台中定义方法有点麻烦，我们通常在文件中定义，这里只是为了演示。）例如，我们要定义一个名为 <code>string_message</code> 的方法，它有一个参数，返回值取决于参数是否为空：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="k">def</span> <span class="nf">string_message</span><span class="p">(</span><span class="n">str</span> <span class="o">=</span> <span class="s1">''</span><span class="p">)</span>
+<span class="gp">&gt;&gt; </span>  <span class="k">if</span> <span class="n">str</span><span class="o">.</span><span class="n">empty?</span>
+<span class="gp">&gt;&gt; </span>    <span class="s2">"It's an empty string!"</span>
+<span class="gp">&gt;&gt; </span>  <span class="k">else</span>
+<span class="gp">&gt;&gt; </span>    <span class="s2">"The string is nonempty."</span>
+<span class="gp">&gt;&gt; </span>  <span class="k">end</span>
+<span class="gp">&gt;&gt; </span><span class="k">end</span>
+<span class="go">=&gt; :string_message</span>
+<span class="gp">&gt;&gt; </span><span class="nb">puts</span> <span class="n">string_message</span><span class="p">(</span><span class="s2">"foobar"</span><span class="p">)</span>
+<span class="go">The string is nonempty.</span>
+<span class="gp">&gt;&gt; </span><span class="nb">puts</span> <span class="n">string_message</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
+<span class="go">It's an empty string!</span>
+<span class="gp">&gt;&gt; </span><span class="nb">puts</span> <span class="n">string_message</span>
+<span class="go">It's an empty string!</span>
+</pre></div>
+</div>
+<p>如最后一个命令所示，我们可以完全不指定参数（此时可以省略括号）。因为 <code>def string_message(str = '')</code> 中提供了参数的默认值，即空字符串。所以，<code>str</code> 参数是可选的，如果不指定，就使用默认值。</p>
+<p>注意，Ruby 方法不用显式指定返回值，方法的返回值是最后一个语句的计算结果。上面这个函数的返回值是两个字符串中的一个，具体是哪一个取决于 <code>str</code> 参数是否为空。在 Ruby 方法中也可以显式指定返回值，下面这个方法和前面的等价：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="k">def</span> <span class="nf">string_message</span><span class="p">(</span><span class="n">str</span> <span class="o">=</span> <span class="s1">''</span><span class="p">)</span>
+<span class="gp">&gt;&gt; </span>  <span class="k">return</span> <span class="s2">"It's an empty string!"</span> <span class="k">if</span> <span class="n">str</span><span class="o">.</span><span class="n">empty?</span>
+<span class="gp">&gt;&gt; </span>  <span class="k">return</span> <span class="s2">"The string is nonempty."</span>
+<span class="gp">&gt;&gt; </span><span class="k">end</span>
+</pre></div>
+</div>
+<p>（细心的读者可能会发现，其实没必要使用第二个 <code>return</code>，这一行是方法的最后一个表达式，不管有没有 <code>return</code>，字符串 <code>"The string is nonempty."</code> 都会作为返回值返回。不过两处都加上 <code>return</code> 看起来更好。）</p>
+<p>还有一点很重要，方法并不关心参数的名字是什么。在前面定义的第一个方法中，可以把 <code>str</code> 换成任意有效的变量名，例如 <code>the_function_argument</code>，但是方法的作用不变：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="k">def</span> <span class="nf">string_message</span><span class="p">(</span><span class="n">the_function_argument</span> <span class="o">=</span> <span class="s1">''</span><span class="p">)</span>
+<span class="gp">&gt;&gt; </span>  <span class="k">if</span> <span class="n">the_function_argument</span><span class="o">.</span><span class="n">empty?</span>
+<span class="gp">&gt;&gt; </span>    <span class="s2">"It's an empty string!"</span>
+<span class="gp">&gt;&gt; </span>  <span class="k">else</span>
+<span class="gp">&gt;&gt; </span>    <span class="s2">"The string is nonempty."</span>
+<span class="gp">&gt;&gt; </span>  <span class="k">end</span>
+<span class="gp">&gt;&gt; </span><span class="k">end</span>
+<span class="go">=&gt; nil</span>
+<span class="gp">&gt;&gt; </span><span class="nb">puts</span> <span class="n">string_message</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
+<span class="go">It's an empty string!</span>
+<span class="gp">&gt;&gt; </span><span class="nb">puts</span> <span class="n">string_message</span><span class="p">(</span><span class="s2">"foobar"</span><span class="p">)</span>
+<span class="go">The string is nonempty.</span>
+</pre></div>
+</div>
+<h5 id="exercises-method-definitions" class="discrete">练习</h5>
+<ol class="arabic">
+<li>
+<p>把<a href="#listing-palindrome-tester">代码清单 4.10</a> 中的 <code>FILL_IN</code> 换成正确的比较表达式，定义一个测试回文的方法。提示：使用<a href="#listing-palindrome-if">代码清单 4.9</a> 中的比较表达式。</p>
+</li>
+<li>
+<p>使用前一题定义的方法测试“racecar”和“onomatopoeia”，确认第一个词是回文，而第二个词不是。</p>
+</li>
+<li>
+<p>在 <code>palindrome_tester("racecar")</code> 上调用 <code>nil?</code> 方法，确认它的返回值是 <code>nil</code>（即在那个方法上调用 <code>nil?</code> 方法的结果是 <code>true</code>）。这是因为 <code>palindrome_tester</code> 方法是把结果打印出来的，而没有返回。</p>
+</li>
+</ol>
+<div id="listing-palindrome-tester" data-type="listing">
+<h5><span class="title-label">代码清单 4.10</span>：测试回文的方法</h5>
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="k">def</span> <span class="nf">palindrome_tester</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="gp">&gt;&gt; </span>  <span class="k">if</span> <span class="no">FILL_IN</span>
+<span class="gp">&gt;&gt; </span>    <span class="nb">puts</span> <span class="s2">"It's a palindrome!"</span>
+<span class="gp">&gt;&gt; </span>  <span class="k">else</span>
+<span class="gp">&gt;&gt; </span>    <span class="nb">puts</span> <span class="s2">"It's not a palindrome."</span>
+<span class="gp">&gt;&gt; </span>  <span class="k">end</span>
+<span class="gp">&gt;&gt; </span><span class="k">end</span>
+</pre></div>
+</div>
+</section>
+<section data-type="sect2" id="back-to-the-title-helper">
+<h2><span class="title-label">4.2.5</span> 回顾标题的辅助方法</h2>
+<p>下面我们来理解一下<a href="#listing-title-helper">代码清单 4.2</a> 中的 <code>full_title</code> 辅助方法，<sup>[<a id="fn-ref-6" href="#fn-6">6</a>]</sup>在其中加上注解之后如<a href="#listing-annotated-title-helper">代码清单 4.11</a> 所示：</p>
+<div id="listing-annotated-title-helper" data-type="listing">
+<h5><span class="title-label">代码清单 4.11</span>：注解 <code>full_title</code> 方法</h5>
+
+<div class="source-file">app/helpers/application_helper.rb</div>
+
+<div class="highlight language-ruby"><pre><span class="k">module</span> <span class="nn">ApplicationHelper</span>
+
+  <span class="c1"># 根据所在的页面返回完整的标题                          # 在文档中显示的注释</span>
+  <span class="k">def</span> <span class="nf">full_title</span><span class="p">(</span><span class="n">page_title</span> <span class="o">=</span> <span class="s1">''</span><span class="p">)</span>                     <span class="c1"># 定义方法，参数可选</span>
+    <span class="n">base_title</span> <span class="o">=</span> <span class="s2">"Ruby on Rails Tutorial Sample App"</span>  <span class="c1"># 变量赋值</span>
+    <span class="k">if</span> <span class="n">page_title</span><span class="o">.</span><span class="n">empty?</span>                              <span class="c1"># 布尔测试</span>
+      <span class="n">base_title</span>                                      <span class="c1"># 隐式返回</span>
+    <span class="k">else</span>
+      <span class="n">page_title</span> <span class="o">+</span> <span class="s2">" | "</span> <span class="o">+</span> <span class="n">base_title</span>                 <span class="c1"># 字符串拼接</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+<p>我们把方法定义、变量赋值、布尔测试、流程控制和字符串拼接<sup>[<a id="fn-ref-7" href="#fn-7">7</a>]</sup>利用起来，定义了一个可以在网站布局中使用的辅助方法。这里还有一个知识点——<code>module ApplicationHelper</code>：模块为我们提供了一种把相关方法组织在一起的方式，我们可以使用 <code>include</code> 把模块插入其他类中。编写普通的 Ruby 程序时，你要自己定义模块，然后再显式将其引入类中，但是辅助方法所在的模块会由 Rails 为我们引入，结果是，<code>full_title</code> 方法<a href="http://catb.org/jargon/html/A/automagically.html">自动</a>在所有视图中可用。</p>
+</section>
+</section>
+<section data-type="sect1" id="other-data-structures">
+<h1><span class="title-label">4.3</span> 其他数据类型</h1>
+<p>虽然 Web 应用最终都是处理字符串，但也需要其他的数据类型来生成字符串。本节介绍一些对开发 Rails 应用很重要的其他 Ruby 数据类型。</p>
+<section data-type="sect2" id="arrays-and-ranges">
+<h2><span class="title-label">4.3.1</span> 数组和值域</h2>
+<p>数组是一组具有特定顺序的元素。前面还没用过数组，不过理解数组对理解哈希有很大帮助（<a href="#hashes-and-symbols">4.3.3 节</a>），也有助于理解 Rails 中的数据模型（例如 <a href="chapter2.html#a-user-has-many-microposts">2.3.3 节</a>用到的 <code>has_many</code> 关联，<a href="chapter13.html#user-micropost-associations">13.1.3 节</a>会做详细介绍）。</p>
+<p>目前，我们已经花了很多时间理解字符串，从字符串过渡到数组可以从 <code>split</code> 方法开始：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span> <span class="s2">"foo bar     baz"</span><span class="o">.</span><span class="n">split</span>     <span class="c1"># 把字符串拆分成有三个元素的数组</span>
+<span class="go">=&gt; ["foo", "bar", "baz"]</span>
+</pre></div>
+</div>
+<p>上述操作得到的结果是一个有三个字符串的数组。默认情况下，<code>split</code> 在空格处把字符串拆分成数组，不过也可以在几乎任何地方拆分：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="s2">"fooxbarxbazx"</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'x'</span><span class="p">)</span>
+<span class="go">=&gt; ["foo", "bar", "baz"]</span>
+</pre></div>
+</div>
+<p>和大多数编程语言的习惯一样，Ruby 数组的索引也从零开始，因此数组中第一个元素的索引是 0，第二个元素的索引是 1，依此类推：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="o">[</span><span class="mi">42</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">17</span><span class="o">]</span>
+<span class="go">=&gt; [42, 8, 17]</span>
+<span class="gp">&gt;&gt; </span><span class="n">a</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>               <span class="c1"># Ruby 使用方括号获取数组元素</span>
+<span class="go">=&gt; 42</span>
+<span class="gp">&gt;&gt; </span><span class="n">a</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span>
+<span class="go">=&gt; 8</span>
+<span class="gp">&gt;&gt; </span><span class="n">a</span><span class="o">[</span><span class="mi">2</span><span class="o">]</span>
+<span class="go">=&gt; 17</span>
+<span class="gp">&gt;&gt; </span><span class="n">a</span><span class="o">[-</span><span class="mi">1</span><span class="o">]</span>              <span class="c1"># 索引还可以是负数</span>
+<span class="go">=&gt; 17</span>
+</pre></div>
+</div>
+<p>我们看到，Ruby 使用方括号获取数组中的元素。除了方括号之外，Ruby 还为一些经常需要获取的元素提供了别名方法：<sup>[<a id="fn-ref-8" href="#fn-8">8</a>]</sup></p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">a</span>                  <span class="c1"># 只是为了看一下 a 的值是什么</span>
+<span class="go">=&gt; [42, 8, 17]</span>
+<span class="gp">&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">first</span>
+<span class="go">=&gt; 42</span>
+<span class="gp">&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">second</span>
+<span class="go">=&gt; 8</span>
+<span class="gp">&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">last</span>
+<span class="go">=&gt; 17</span>
+<span class="gp">&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">last</span> <span class="o">==</span> <span class="n">a</span><span class="o">[-</span><span class="mi">1</span><span class="o">]</span>    <span class="c1"># 用 == 运算符对比</span>
+<span class="go">=&gt; true</span>
+</pre></div>
+</div>
+<p>最后一行用到了相等比较运算符 <code>==</code>，Ruby 和其他语言一样还提供了 <code>!=</code>（不等）等其他运算符：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">length</span>       <span class="c1"># 和字符串一样，数组也可以响应 length 方法</span>
+<span class="go">=&gt; 3</span>
+<span class="gp">&gt;&gt; </span><span class="n">x</span> <span class="o">==</span> <span class="mi">3</span>
+<span class="go">=&gt; true</span>
+<span class="gp">&gt;&gt; </span><span class="n">x</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="go">=&gt; false</span>
+<span class="gp">&gt;&gt; </span><span class="n">x</span> <span class="o">!=</span> <span class="mi">1</span>
+<span class="go">=&gt; true</span>
+<span class="gp">&gt;&gt; </span><span class="n">x</span> <span class="o">&gt;=</span> <span class="mi">1</span>
+<span class="go">=&gt; true</span>
+<span class="gp">&gt;&gt; </span><span class="n">x</span> <span class="o">&lt;</span> <span class="mi">1</span>
+<span class="go">=&gt; false</span>
+</pre></div>
+</div>
+<p>除了 <code>length</code>（上述代码的第一行）之外，数组还可以响应一系列其他方法：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">a</span>
+<span class="go">=&gt; [42, 8, 17]</span>
+<span class="gp">&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">empty?</span>
+<span class="go">=&gt; false</span>
+<span class="gp">&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="go">=&gt; true</span>
+<span class="gp">&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">sort</span>
+<span class="go">=&gt; [8, 17, 42]</span>
+<span class="gp">&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">reverse</span>
+<span class="go">=&gt; [17, 8, 42]</span>
+<span class="gp">&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">shuffle</span>
+<span class="go">=&gt; [17, 42, 8]</span>
+<span class="gp">&gt;&gt; </span><span class="n">a</span>
+<span class="go">=&gt; [42, 8, 17]</span>
+</pre></div>
+</div>
+<p>注意，上面的方法都没有修改 <code>a</code> 的值。如果想修改数组的值，要使用相应的“炸弹”（bang）方法（之所以这么叫是因为，这里的感叹号经常都读作“bang”）：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">a</span>
+<span class="go">=&gt; [42, 8, 17]</span>
+<span class="gp">&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">sort!</span>
+<span class="go">=&gt; [8, 17, 42]</span>
+<span class="gp">&gt;&gt; </span><span class="n">a</span>
+<span class="go">=&gt; [8, 17, 42]</span>
+</pre></div>
+</div>
+<p>还可以使用 <code>push</code> 方法向数组中添加元素，或者使用等价的 <code>&lt;&lt;</code> 运算符：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>                  <span class="c1"># 把 6 加到数组末尾</span>
+<span class="go">=&gt; [42, 8, 17, 6]</span>
+<span class="gp">&gt;&gt; </span><span class="n">a</span> <span class="o">&lt;&lt;</span> <span class="mi">7</span>                     <span class="c1"># 把 7 加到数组末尾</span>
+<span class="go">=&gt; [42, 8, 17, 6, 7]</span>
+<span class="gp">&gt;&gt; </span><span class="n">a</span> <span class="o">&lt;&lt;</span> <span class="s2">"foo"</span> <span class="o">&lt;&lt;</span> <span class="s2">"bar"</span>        <span class="c1"># 串联操作</span>
+<span class="go">=&gt; [42, 8, 17, 6, 7, "foo", "bar"]</span>
+</pre></div>
+</div>
+<p>最后一个命令说明，可以把添加操作串在一起使用；也说明，与其他语言不同，在 Ruby 中数组可以包含不同类型的数据（本例中包含整数和字符串）。</p>
+<p>前面用 <code>split</code> 把字符串拆分成数组，我们还可以使用 <code>join</code> 方法进行相反的操作：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">a</span>
+<span class="go">=&gt; [42, 8, 17, 6, 7, "foo", "bar"]</span>
+<span class="gp">&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">join</span>                       <span class="c1"># 没有连接符</span>
+<span class="go">=&gt; "4281767foobar"</span>
+<span class="gp">&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">', '</span><span class="p">)</span>                 <span class="c1"># 连接符是一个逗号和空格</span>
+<span class="go">=&gt; "42, 8, 17, 6, 7, foo, bar"</span>
+</pre></div>
+</div>
+<p>与数组有点类似的是值域（range），使用 <code>to_a</code> 方法把它转换成数组或许更好理解：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="mi">9</span>
+<span class="go">=&gt; 0..9</span>
+<span class="gp">&gt;&gt; </span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="mi">9</span><span class="o">.</span><span class="n">to_a</span>              <span class="c1"># 错了，to_a 在 9 上调用了</span>
+<span class="go">NoMethodError: undefined method `to_a' for 9:Fixnum</span>
+<span class="gp">&gt;&gt; </span><span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="mi">9</span><span class="p">)</span><span class="o">.</span><span class="n">to_a</span>            <span class="c1"># 调用 to_a 时要用括号包住值域</span>
+<span class="go">=&gt; [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]</span>
+</pre></div>
+</div>
+<p>虽然 <code>0..9</code> 是有效的值域，不过上面第二个表达式告诉我们，调用方法时要加上括号。</p>
+<p>值域经常用于获取数组中的一组元素：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="sx">%w[foo bar baz quux]</span>         <span class="c1"># %w 创建一个元素为字符串的数组</span>
+<span class="go">=&gt; ["foo", "bar", "baz", "quux"]</span>
+<span class="gp">&gt;&gt; </span><span class="n">a</span><span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="mi">2</span><span class="o">]</span>
+<span class="go">=&gt; ["foo", "bar", "baz"]</span>
+</pre></div>
+</div>
+<p>有个特别有用的技巧：值域的结束值使用 -1 时，不用知道数组的长度就能从起始值开始一直获取到最后一个元素：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="mi">9</span><span class="p">)</span><span class="o">.</span><span class="n">to_a</span>
+<span class="go">=&gt; [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]</span>
+<span class="gp">&gt;&gt; </span><span class="n">a</span><span class="o">[</span><span class="mi">2</span><span class="o">.</span><span class="n">.</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">length</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">]</span>               <span class="c1"># 显式使用数组的长度</span>
+<span class="go">=&gt; [2, 3, 4, 5, 6, 7, 8, 9]</span>
+<span class="gp">&gt;&gt; </span><span class="n">a</span><span class="o">[</span><span class="mi">2</span><span class="o">.</span><span class="n">.</span><span class="o">-</span><span class="mi">1</span><span class="o">]</span>                         <span class="c1"># 小技巧，索引使用 -1</span>
+<span class="go">=&gt; [2, 3, 4, 5, 6, 7, 8, 9]</span>
+</pre></div>
+</div>
+<p>值域也可以使用字符定义：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="p">(</span><span class="s1">'a'</span><span class="o">.</span><span class="n">.</span><span class="s1">'e'</span><span class="p">)</span><span class="o">.</span><span class="n">to_a</span>
+<span class="go">=&gt; ["a", "b", "c", "d", "e"]</span>
+</pre></div>
+</div>
+<h5 id="exercises-arrays-and-ranges" class="discrete">练习</h5>
+<ol class="arabic">
+<li>
+<p>在逗号和空格处分拆字符串“A man, a plan, a canal, Panama”，把结果赋值给变量 <code>a</code>。</p>
+</li>
+<li>
+<p>不指定连接符，把 <code>a</code> 连接起来，然后把结果赋值给变量 <code>s</code>。</p>
+</li>
+<li>
+<p>在空白处分拆 <code>s</code>，然后再连接起来。使用<a href="#listing-palindrome-tester">代码清单 4.10</a> 中的方法确认得到的结果不是回文。使用 <code>downcase</code> 方法，确认 <code>s.downcase</code> 是回文。</p>
+</li>
+<li>
+<p>创建字母 <code>a</code> 到 <code>z</code> 的值域，第 7 个元素是什么？ 把值域反过来呢？提示：两次都要把值域转换成数组。</p>
+</li>
+</ol>
+</section>
+<section data-type="sect2" id="blocks">
+<h2><span class="title-label">4.3.2</span> 块</h2>
+<p>数组和值域可以响应的方法中有很多都可以跟着一个块（block），这是 Ruby 最强大也是最难理解的功能：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span> <span class="nb">puts</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="p">}</span>
+<span class="go">2</span>
+<span class="go">4</span>
+<span class="go">6</span>
+<span class="go">8</span>
+<span class="go">10</span>
+<span class="go">=&gt; 1..5</span>
+</pre></div>
+</div>
+<p>这段代码在值域 <code>(1..5)</code> 上调用 <code>each</code> 方法，然后又把 <code>{ |i| puts 2 * i }</code> 这个块传给 <code>each</code> 方法。<code>|i|</code> 两边的竖线在 Ruby 中用来定义块变量。只有方法本身才知道如何处理后面跟着的块。这里，值域的 <code>each</code> 方法会处理后面的块，块中有一个本地变量 <code>i</code>，<code>each</code> 会把值域中的各个值传进块中，然后执行其中的代码。</p>
+<p>花括号是表示块的一种方式，除此之外还有另一种方式：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+<span class="gp">?&gt; </span>  <span class="nb">puts</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">i</span>
+<span class="gp">&gt;&gt; </span><span class="k">end</span>
+<span class="go">2</span>
+<span class="go">4</span>
+<span class="go">6</span>
+<span class="go">8</span>
+<span class="go">10</span>
+<span class="go">=&gt; 1..5</span>
+</pre></div>
+</div>
+<p>块中的内容可以多于一行，而且经常多于一行。本书遵照一个常用的约定，当块只有一行简单的代码时使用花括号形式；当块是一行很长的代码，或者有多行时使用 <code>do..end</code> 形式：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">number</span><span class="o">|</span>
+<span class="gp">?&gt; </span>  <span class="nb">puts</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">number</span>
+<span class="gp">&gt;&gt; </span>  <span class="nb">puts</span> <span class="s1">'-'</span>
+<span class="gp">&gt;&gt; </span><span class="k">end</span>
+<span class="go">2</span>
+<span class="go">-</span>
+<span class="go">4</span>
+<span class="go">-</span>
+<span class="go">6</span>
+<span class="go">-</span>
+<span class="go">8</span>
+<span class="go">-</span>
+<span class="go">10</span>
+<span class="go">-</span>
+<span class="go">=&gt; 1..5</span>
+</pre></div>
+</div>
+<p>上面的代码用 <code>number</code> 代替了 <code>i</code>，我想告诉你的是，变量名可以使用任何值。</p>
+<p>除非你已经有了一些编程知识，否则对块的理解是没有捷径的。你要做的是多看，看多了就会习惯这种用法。<sup>[<a id="fn-ref-9" href="#fn-9">9</a>]</sup>幸好人类擅长从实例中归纳出一般性。下面举几个例子，其中几个用到了 <code>map</code> 方法：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="mi">3</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"Betelgeuse!"</span> <span class="p">}</span>   <span class="c1"># 3.times 后跟的块没有变量</span>
+<span class="go">"Betelgeuse!"</span>
+<span class="go">"Betelgeuse!"</span>
+<span class="go">"Betelgeuse!"</span>
+<span class="go">=&gt; 3</span>
+<span class="gp">&gt;&gt; </span><span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span> <span class="n">i</span><span class="o">**</span><span class="mi">2</span> <span class="p">}</span>          <span class="c1"># ** 表示幂运算</span>
+<span class="go">=&gt; [1, 4, 9, 16, 25]</span>
+<span class="gp">&gt;&gt; </span><span class="sx">%w[a b c]</span>                        <span class="c1"># 再说一下，%w 用于创建元素为字符串的数组</span>
+<span class="go">=&gt; ["a", "b", "c"]</span>
+<span class="gp">&gt;&gt; </span><span class="sx">%w[a b c]</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">char</span><span class="o">|</span> <span class="n">char</span><span class="o">.</span><span class="n">upcase</span> <span class="p">}</span>
+<span class="go">=&gt; ["A", "B", "C"]</span>
+<span class="gp">&gt;&gt; </span><span class="sx">%w[A B C]</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">char</span><span class="o">|</span> <span class="n">char</span><span class="o">.</span><span class="n">downcase</span> <span class="p">}</span>
+<span class="go">=&gt; ["a", "b", "c"]</span>
+</pre></div>
+</div>
+<p>可以看出，<code>map</code> 方法返回的是在数组或值域中每个元素上执行块中代码后得到的结果。在最后两个命令中，<code>map</code> 后面的块在块变量上调用一个方法，这种操作经常使用简写形式：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="sx">%w[A B C]</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">char</span><span class="o">|</span> <span class="n">char</span><span class="o">.</span><span class="n">downcase</span> <span class="p">}</span>
+<span class="go">=&gt; ["a", "b", "c"]</span>
+<span class="gp">&gt;&gt; </span><span class="sx">%w[A B C]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:downcase</span><span class="p">)</span>
+<span class="go">=&gt; ["a", "b", "c"]</span>
+</pre></div>
+</div>
+<p>（简写形式看起来有点儿奇怪，其中用到了符号，<a href="#hashes-and-symbols">4.3.3 节</a>会介绍。）这种写法比较有趣，一开始是由 Rails 扩展实现的，但人们太喜欢了，现在已经集成到 Ruby 核心代码中。</p>
+<p>最后再看一个使用块的例子。我们看一下<a href="#listing-home-base-title-spec">代码清单 4.4</a> 中的一个测试用例：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><span class="hll"><span class="nb">test</span> <span class="s2">"should get home"</span> <span class="k">do</span>
+</span>  <span class="n">get</span> <span class="n">static_pages_home_url</span>
+  <span class="n">assert_response</span> <span class="ss">:success</span>
+  <span class="n">assert_select</span> <span class="s2">"title"</span><span class="p">,</span> <span class="s2">"Ruby on Rails Tutorial Sample App"</span>
+<span class="hll"><span class="k">end</span>
+</span></pre></div>
+</div>
+<p>现在不需要理解细节（其实我也不懂），从 <code>do</code> 关键字可以看出，测试的主体其实就是个块。<code>test</code> 方法的参数是一个字符串（测试的描述）和一个块，运行测试组件时会执行块中的内容。</p>
+<p>现在我们来分析一下我在 <a href="chapter1.html#heroku-commands">1.5.4 节</a>生成随机二级域名时使用的那行 Ruby 代码：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><span class="p">(</span><span class="s1">'a'</span><span class="o">.</span><span class="n">.</span><span class="s1">'z'</span><span class="p">)</span><span class="o">.</span><span class="n">to_a</span><span class="o">.</span><span class="n">shuffle</span><span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="mi">7</span><span class="o">].</span><span class="n">join</span>
+</pre></div>
+</div>
+<p>我们一步步分解：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="p">(</span><span class="s1">'a'</span><span class="o">.</span><span class="n">.</span><span class="s1">'z'</span><span class="p">)</span><span class="o">.</span><span class="n">to_a</span>                     <span class="c1"># 由全部英文字母组成的数组</span>
+<span class="go">=&gt; ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o",</span>
+<span class="go">"p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]</span>
+<span class="gp">&gt;&gt; </span><span class="p">(</span><span class="s1">'a'</span><span class="o">.</span><span class="n">.</span><span class="s1">'z'</span><span class="p">)</span><span class="o">.</span><span class="n">to_a</span><span class="o">.</span><span class="n">shuffle</span>             <span class="c1"># 打乱数组</span>
+<span class="go">=&gt; ["c", "g", "l", "k", "h", "z", "s", "i", "n", "d", "y", "u", "t", "j", "q",</span>
+<span class="go">"b", "r", "o", "f", "e", "w", "v", "m", "a", "x", "p"]</span>
+<span class="gp">&gt;&gt; </span><span class="p">(</span><span class="s1">'a'</span><span class="o">.</span><span class="n">.</span><span class="s1">'z'</span><span class="p">)</span><span class="o">.</span><span class="n">to_a</span><span class="o">.</span><span class="n">shuffle</span><span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="mi">7</span><span class="o">]</span>       <span class="c1"># 取出前 8 个元素</span>
+<span class="go">=&gt; ["f", "w", "i", "a", "h", "p", "c", "x"]</span>
+<span class="gp">&gt;&gt; </span><span class="p">(</span><span class="s1">'a'</span><span class="o">.</span><span class="n">.</span><span class="s1">'z'</span><span class="p">)</span><span class="o">.</span><span class="n">to_a</span><span class="o">.</span><span class="n">shuffle</span><span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="mi">7</span><span class="o">].</span><span class="n">join</span>  <span class="c1"># 把取出的元素合并成字符串</span>
+<span class="go">=&gt; "mznpybuj"</span>
+</pre></div>
+</div>
+<h5 id="exercises-blocks" class="discrete">练习</h5>
+<ol class="arabic">
+<li>
+<p>创建值域 <code>0..16</code>，把前 17 个元素的平方打印出来。</p>
+</li>
+<li>
+<p>定义一个名为 <code>yeller</code> 的方法，它的参数是一个由字符组成的数组，返回值是一个字符串，由数组中字符的大写形式组成。确认 <code>yeller([’o’, ’l’, ’d’])</code> 的返回值是 <code>OLD</code>。提示：要用到 <code>map</code>、<code>upcase</code> 和 <code>join</code> 方法。</p>
+</li>
+<li>
+<p>定义一个名为 <code>random_subdomain</code> 的方法，返回八个随机字母组成的字符串。</p>
+</li>
+<li>
+<p>把<a href="#listing-string-shuffle">代码清单 4.12</a> 中的问号换成正确的方法，结合 <code>split</code>、<code>shuffle</code> 和 <code>join</code> 方法，把指定字符串中的字符打乱。</p>
+</li>
+</ol>
+<div id="listing-string-shuffle" data-type="listing">
+<h5><span class="title-label">代码清单 4.12</span>：字符串打乱函数的骨架</h5>
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="k">def</span> <span class="nf">string_shuffle</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="gp">&gt;&gt; </span>  <span class="n">s</span><span class="o">.</span><span class="sc">?(</span><span class="s1">''</span><span class="p">)</span><span class="o">.</span><span class="sc">?.</span><span class="p">?</span>
+<span class="gp">&gt;&gt; </span><span class="k">end</span>
+<span class="gp">&gt;&gt; </span><span class="n">string_shuffle</span><span class="p">(</span><span class="s2">"foobar"</span><span class="p">)</span>
+<span class="go">=&gt; "oobfra"</span>
+</pre></div>
+</div>
+</section>
+<section data-type="sect2" id="hashes-and-symbols">
+<h2><span class="title-label">4.3.3</span> 哈希和符号</h2>
+<p>哈希（Hash）本质上就是数组，只不过它的索引不局限于只能使用数字。（实际上在一些语言中，特别是 Perl，因为这个原因而把哈希叫做“关联数组”。）哈希的索引（或者叫“键”）几乎可以使用任何对象。例如，可以使用字符串做键：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">user</span> <span class="o">=</span> <span class="p">{}</span>                          <span class="c1"># {} 是一个空哈希</span>
+<span class="go">=&gt; {}</span>
+<span class="gp">&gt;&gt; </span><span class="n">user</span><span class="o">[</span><span class="s2">"first_name"</span><span class="o">]</span> <span class="o">=</span> <span class="s2">"Michael"</span>     <span class="c1"># 键为 "first_name"，值为 "Michael"</span>
+<span class="go">=&gt; "Michael"</span>
+<span class="gp">&gt;&gt; </span><span class="n">user</span><span class="o">[</span><span class="s2">"last_name"</span><span class="o">]</span> <span class="o">=</span> <span class="s2">"Hartl"</span>        <span class="c1"># 键为 "last_name"，值为 "Hartl"</span>
+<span class="go">=&gt; "Hartl"</span>
+<span class="gp">&gt;&gt; </span><span class="n">user</span><span class="o">[</span><span class="s2">"first_name"</span><span class="o">]</span>                 <span class="c1"># 获取元素的方式与数组类似</span>
+<span class="go">=&gt; "Michael"</span>
+<span class="gp">&gt;&gt; </span><span class="n">user</span>                               <span class="c1"># 哈希的字面量形式</span>
+<span class="go">=&gt; {"last_name"=&gt;"Hartl", "first_name"=&gt;"Michael"}</span>
+</pre></div>
+</div>
+<p>哈希通过一对花括号中包含一些键值对的形式表示，如果只有一对花括号而没有键值对（<code>{}</code>）就是一个空哈希。注意，哈希中的花括号和块中的花括号不是一个概念。（是的，这可能会让你困惑。）哈希虽然与数组类似，但二者却有一个很重要的区别：哈希中的元素没有特定的顺序。<sup>[<a id="fn-ref-10" href="#fn-10">10</a>]</sup>如果看重顺序，就要使用数组。</p>
+<p>通过方括号的形式每次定义一个元素的方式不太敏捷，使用 <code>=&gt;</code> 分隔的键值对这种字面量形式定义哈希要简洁得多：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">user</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">"first_name"</span> <span class="o">=&gt;</span> <span class="s2">"Michael"</span><span class="p">,</span> <span class="s2">"last_name"</span> <span class="o">=&gt;</span> <span class="s2">"Hartl"</span> <span class="p">}</span>
+<span class="go">=&gt; {"last_name"=&gt;"Hartl", "first_name"=&gt;"Michael"}</span>
+</pre></div>
+</div>
+<p>在上面的代码中我用到了一个 Ruby 句法约定，在左花括号后面和右花括号前面加入了一个空格，不过控制台会忽略这些空格。（不要问我为什么这些空格是约定俗成的，或许是某个 Ruby 编程大牛喜欢这种形式，然后约定就产生了。）</p>
+<p>目前为止哈希的键都使用字符串，在 Rails 中用符号（Symbol）做键很常见。符号看起来有点儿像字符串，只不过没有包含在一对引号中，而是在前面加一个冒号。例如，<code>:name</code> 就是一个符号。你可以把符号看成没有约束的字符串：<sup>[<a id="fn-ref-11" href="#fn-11">11</a>]</sup></p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="s2">"name"</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">''</span><span class="p">)</span>
+<span class="go">=&gt; ["n", "a", "m", "e"]</span>
+<span class="gp">&gt;&gt; </span><span class="ss">:name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">''</span><span class="p">)</span>
+<span class="go">NoMethodError: undefined method `split' for :name:Symbol</span>
+<span class="gp">&gt;&gt; </span><span class="s2">"foobar"</span><span class="o">.</span><span class="n">reverse</span>
+<span class="go">=&gt; "raboof"</span>
+<span class="gp">&gt;&gt; </span><span class="ss">:foobar</span><span class="o">.</span><span class="n">reverse</span>
+<span class="go">NoMethodError: undefined method `reverse' for :foobar:Symbol</span>
+</pre></div>
+</div>
+<p>符号是 Ruby 特有的数据类型，在其他语言中很少见。初看起来感觉很奇怪，不过 Rails 经常用到，所以你很快就会习惯。符号和字符串不同，并不是所有字符都能在符号中使用：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="ss">:foo</span><span class="o">-</span><span class="n">bar</span>
+<span class="go">NameError: undefined local variable or method `bar' for main:Object</span>
+<span class="gp">&gt;&gt; </span><span class="p">:</span><span class="mi">2</span><span class="n">foo</span>
+<span class="go">SyntaxError</span>
+</pre></div>
+</div>
+<p>只要以字母开头，其后都使用单词中常用的字符就没事。</p>
+<p>用符号做键时，可以按照如下的方式定义 <code>user</code> 哈希：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">user</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">"Michael Hartl"</span><span class="p">,</span> <span class="ss">:email</span> <span class="o">=&gt;</span> <span class="s2">"michael@example.com"</span> <span class="p">}</span>
+<span class="go">=&gt; {:name=&gt;"Michael Hartl", :email=&gt;"michael@example.com"}</span>
+<span class="gp">&gt;&gt; </span><span class="n">user</span><span class="o">[</span><span class="ss">:name</span><span class="o">]</span>              <span class="c1"># 获取 :name 键对应的值</span>
+<span class="go">=&gt; "Michael Hartl"</span>
+<span class="gp">&gt;&gt; </span><span class="n">user</span><span class="o">[</span><span class="ss">:password</span><span class="o">]</span>          <span class="c1"># 获取未定义的键对应的值</span>
+<span class="go">=&gt; nil</span>
+</pre></div>
+</div>
+<p>从上面的例子可以看出，哈希中没有定义的键对应的值是 <code>nil</code>。</p>
+<p>因为符号做键的情况太普遍了，Ruby 1.9 干脆为这种用法定义了一种新句法：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">h1</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">"Michael Hartl"</span><span class="p">,</span> <span class="ss">:email</span> <span class="o">=&gt;</span> <span class="s2">"michael@example.com"</span> <span class="p">}</span>
+<span class="go">=&gt; {:name=&gt;"Michael Hartl", :email=&gt;"michael@example.com"}</span>
+<span class="gp">&gt;&gt; </span><span class="n">h2</span> <span class="o">=</span> <span class="p">{</span> <span class="nb">name</span><span class="p">:</span> <span class="s2">"Michael Hartl"</span><span class="p">,</span> <span class="ss">email</span><span class="p">:</span> <span class="s2">"michael@example.com"</span> <span class="p">}</span>
+<span class="go">=&gt; {:name=&gt;"Michael Hartl", :email=&gt;"michael@example.com"}</span>
+<span class="gp">&gt;&gt; </span><span class="n">h1</span> <span class="o">==</span> <span class="n">h2</span>
+<span class="go">=&gt; true</span>
+</pre></div>
+</div>
+<p>第二种句法把“符号 ⇒”变成了“键的名字:”形式：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><span class="p">{</span> <span class="nb">name</span><span class="p">:</span> <span class="s2">"Michael Hartl"</span><span class="p">,</span> <span class="ss">email</span><span class="p">:</span> <span class="s2">"michael@example.com"</span> <span class="p">}</span>
+</pre></div>
+</div>
+<p>这种形式更好地沿袭了其他语言（例如 JavaScript）中哈希的表示方式，在 Rails 社区中也越来越受欢迎。这两种方式现在都在使用，所以你要能识别它们。可是，新句法有点让人困惑，因为 <code>:name</code> 本身是一种数据类型（符号），但 <code>name:</code> 却没有意义。不过在哈希字面量中，<code>:name =&gt;</code> 和 <code>name:</code> 作用一样。因此，<code>{ :name =&gt; "Michael Hartl" }</code> 和 <code>{ name: "Michael Hartl" }</code> 是等效的。如果要表示符号，只能使用 <code>:name</code>（冒号在前面）。</p>
+<p>哈希中元素的值可以是任何对象，甚至是另一个哈希，如<a href="#listing-nested-hashes">代码清单 4.13</a> 所示。</p>
+<div id="listing-nested-hashes" data-type="listing">
+<h5><span class="title-label">代码清单 4.13</span>：嵌套哈希</h5>
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>        <span class="c1"># 定义一个名为 params（parameters 的简称）的哈希</span>
+<span class="go">=&gt; {}</span>
+<span class="gp">&gt;&gt; </span><span class="n">params</span><span class="o">[</span><span class="ss">:user</span><span class="o">]</span> <span class="o">=</span> <span class="p">{</span> <span class="nb">name</span><span class="p">:</span> <span class="s2">"Michael Hartl"</span><span class="p">,</span> <span class="ss">email</span><span class="p">:</span> <span class="s2">"mhartl@example.com"</span> <span class="p">}</span>
+<span class="go">=&gt; {:name=&gt;"Michael Hartl", :email=&gt;"mhartl@example.com"}</span>
+<span class="gp">&gt;&gt; </span><span class="n">params</span>
+<span class="go">=&gt; {:user=&gt;{:name=&gt;"Michael Hartl", :email=&gt;"mhartl@example.com"}}</span>
+<span class="gp">&gt;&gt; </span> <span class="n">params</span><span class="o">[</span><span class="ss">:user</span><span class="o">][</span><span class="ss">:email</span><span class="o">]</span>
+<span class="go">=&gt; "mhartl@example.com"</span>
+</pre></div>
+</div>
+<p>Rails 大量使用这种哈希中有哈希的形式（或称为“嵌套哈希”），我们从 <a href="chapter7.html#unsuccessful-signups">7.3 节</a>起会接触到。</p>
+<p>与数组和值域一样，哈希也能响应 <code>each</code> 方法。例如，下面是一个名为 <code>flash</code> 的哈希，它的键是两个判断条件，<code>:success</code> 和 <code>:danger</code>：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">flash</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">success</span><span class="p">:</span> <span class="s2">"It worked!"</span><span class="p">,</span> <span class="ss">danger</span><span class="p">:</span> <span class="s2">"It failed."</span> <span class="p">}</span>
+<span class="go">=&gt; {:success=&gt;"It worked!", :danger=&gt;"It failed."}</span>
+<span class="gp">&gt;&gt; </span><span class="n">flash</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="o">|</span>
+<span class="gp">?&gt; </span>  <span class="nb">puts</span> <span class="s2">"Key </span><span class="si">#{</span><span class="n">key</span><span class="o">.</span><span class="n">inspect</span><span class="si">}</span><span class="s2"> has value </span><span class="si">#{</span><span class="n">value</span><span class="o">.</span><span class="n">inspect</span><span class="si">}</span><span class="s2">"</span>
+<span class="gp">&gt;&gt; </span><span class="k">end</span>
+<span class="go">Key :success has value "It worked!"</span>
+<span class="go">Key :danger has value "It failed."</span>
+</pre></div>
+</div>
+<p>注意，数组的 <code>each</code> 方法后面的块只有一个变量，而哈希的 <code>each</code> 方法后面的块接受两个变量，分别表示键和对应的值。所以哈希的 <code>each</code> 方法每次遍历都会以一个键值对为单位进行。</p>
+<p>这段代码用到了很有用的 <code>inspect</code> 方法，它的作用是返回被调用对象的字符串字面量表示形式：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="nb">puts</span> <span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">to_a</span>            <span class="c1"># 把数组以字符串的形式打印出来</span>
+<span class="go">1</span>
+<span class="go">2</span>
+<span class="go">3</span>
+<span class="go">4</span>
+<span class="go">5</span>
+<span class="gp">&gt;&gt; </span><span class="nb">puts</span> <span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">to_a</span><span class="o">.</span><span class="n">inspect</span>    <span class="c1"># 输出数组的字面量形式</span>
+<span class="go">[1, 2, 3, 4, 5]</span>
+<span class="gp">&gt;&gt; </span><span class="nb">puts</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:name</span><span class="o">.</span><span class="n">inspect</span>
+<span class="go">name</span>
+<span class="go">:name</span>
+<span class="gp">&gt;&gt; </span><span class="nb">puts</span> <span class="s2">"It worked!"</span><span class="p">,</span> <span class="s2">"It worked!"</span><span class="o">.</span><span class="n">inspect</span>
+<span class="go">It worked!</span>
+<span class="go">"It worked!"</span>
+</pre></div>
+</div>
+<p>顺便说一下，因为使用 <code>inspect</code> 打印对象的方式经常使用，为此还有一个专门的快捷方式，<code>p</code> 方法：<sup>[<a id="fn-ref-12" href="#fn-12">12</a>]</sup></p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="nb">p</span> <span class="ss">:name</span>             <span class="c1"># 等价于 'puts :name.inspect'</span>
+<span class="go">:name</span>
+</pre></div>
+</div>
+<h5 id="exercises-hashes-and-symbols" class="discrete">练习</h5>
+<ol class="arabic">
+<li>
+<p>定义一个哈希，把键设为 <code>'one'</code>、<code>'two'</code> 和 <code>'three'</code>，对应的值分别是 <code>'uno'</code>、<code>'dos'</code> 和 <code>'tres'</code>。迭代这个哈希，把各个键值对以 <code>"'#key' in Spanish is '#value'"</code> 的形式打印出来。</p>
+</li>
+<li>
+<p>创建三个哈希，分别命名为 <code>person1</code>、<code>person2</code> 和 <code>person3</code>，把名和姓赋值给 <code>:first</code> 和 <code>:last</code> 键。然后创建一个名为 <code>params</code> 的哈希，让 <code>params[:father]</code> 对应 <code>person1</code>，<code>params[:mother]</code> 对应 <code>person2</code>，<code>params[:child]</code> 对应 <code>person3</code>。验证一下 <code>params[:father][:first]</code> 的值是否正确。</p>
+</li>
+<li>
+<p>定义一个哈希，使用符号做键，分别表示名字、电子邮件地址和密码摘要，把键对应的值分别设为你的名字、电子邮件地址和一个由 16 个随机小写字母组成的字符串。</p>
+</li>
+<li>
+<p>找一个在线 Ruby API，查阅哈希的 <code>merge</code> 方法。下述表达式的值是什么？</p>
+</li>
+</ol>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre>  <span class="p">{</span> <span class="s2">"a"</span> <span class="o">=&gt;</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">"b"</span> <span class="o">=&gt;</span> <span class="mi">200</span> <span class="p">}</span><span class="o">.</span><span class="n">merge</span><span class="p">({</span> <span class="s2">"b"</span> <span class="o">=&gt;</span> <span class="mi">300</span> <span class="p">})</span>
+</pre></div>
+</div>
+</section>
+<section data-type="sect2" id="css-revisited">
+<h2><span class="title-label">4.3.4</span> 重温引入 CSS 的代码</h2>
+<p>现在我们要重新认识一下<a href="#listing-application-layout-redux">代码清单 4.1</a> 中在布局中引入层叠样式表的代码：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-erb"><pre><span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span> <span class="s1">'application'</span><span class="p">,</span> <span class="ss">media</span><span class="p">:</span> <span class="s1">'all'</span><span class="p">,</span>
+                                       <span class="s1">'data-turbolinks-track'</span><span class="p">:</span> <span class="s1">'reload'</span> <span class="cp">%&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+<p>我们现在基本上可以理解这行代码了。<a href="#motivation">4.1 节</a>简单提到过，Rails 定义了一个特殊的函数用于引入样式表，下面的代码</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><span class="n">stylesheet_link_tag</span> <span class="s1">'application'</span><span class="p">,</span> <span class="ss">media</span><span class="p">:</span> <span class="s1">'all'</span><span class="p">,</span>
+                                   <span class="s1">'data-turbolinks-track'</span><span class="p">:</span> <span class="s1">'reload'</span>
+</pre></div>
+</div>
+<p>就是对这个函数的调用。不过还有几个奇怪的地方。第一，括号哪去了？在 Ruby 中，括号是可以省略的，所以下面两种写法是等价的：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><span class="c1"># 调用函数时可以省略括号</span>
+<span class="n">stylesheet_link_tag</span><span class="p">(</span><span class="s1">'application'</span><span class="p">,</span> <span class="ss">media</span><span class="p">:</span> <span class="s1">'all'</span><span class="p">,</span>
+                                   <span class="s1">'data-turbolinks-track'</span><span class="p">:</span> <span class="s1">'reload'</span><span class="p">)</span>
+<span class="n">stylesheet_link_tag</span> <span class="s1">'application'</span><span class="p">,</span> <span class="ss">media</span><span class="p">:</span> <span class="s1">'all'</span><span class="p">,</span>
+                                   <span class="s1">'data-turbolinks-track'</span><span class="p">:</span> <span class="s1">'reload'</span>
+</pre></div>
+</div>
+<p>第二，<code>media</code> 部分显然是一个哈希，但是怎么没用花括号？调用函数时，如果哈希是最后一个参数，可以省略花括号。所以下面两种写法是等价的：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><span class="c1"># 如果最后一个参数是哈希，可以省略花括号</span>
+<span class="n">stylesheet_link_tag</span> <span class="s1">'application'</span><span class="p">,</span> <span class="p">{</span> <span class="ss">media</span><span class="p">:</span> <span class="s1">'all'</span><span class="p">,</span>
+                                     <span class="s1">'data-turbolinks-track'</span><span class="p">:</span> <span class="s1">'reload'</span> <span class="p">}</span>
+<span class="n">stylesheet_link_tag</span> <span class="s1">'application'</span><span class="p">,</span> <span class="ss">media</span><span class="p">:</span> <span class="s1">'all'</span><span class="p">,</span>
+                                   <span class="s1">'data-turbolinks-track'</span><span class="p">:</span> <span class="s1">'reload'</span>
+</pre></div>
+</div>
+<p>最后，为什么下述代码写成两行还能正确解析？</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><span class="n">stylesheet_link_tag</span> <span class="s1">'application'</span><span class="p">,</span> <span class="ss">media</span><span class="p">:</span> <span class="s1">'all'</span><span class="p">,</span>
+                                   <span class="s1">'data-turbolinks-track'</span><span class="p">:</span> <span class="s1">'reload'</span>
+</pre></div>
+</div>
+<p>因为在这种情况下，Ruby 不关心有没有换行。<sup>[<a id="fn-ref-13" href="#fn-13">13</a>]</sup>我之所以把代码写成两行，是要保证每行代码不超过 80 个字符。<sup>[<a id="fn-ref-14" href="#fn-14">14</a>]</sup></p>
+<p>所以，下面这段代码</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><span class="n">stylesheet_link_tag</span> <span class="s1">'application'</span><span class="p">,</span> <span class="ss">media</span><span class="p">:</span> <span class="s1">'all'</span><span class="p">,</span>
+                                   <span class="s1">'data-turbolinks-track'</span><span class="p">:</span> <span class="s1">'reload'</span>
+</pre></div>
+</div>
+<p>调用了 <code>stylesheet_link_tag</code> 函数，并且传入两个参数：一个是字符串，指明样式表的路径；另一个是哈希，包含两个元素，第一个指明媒介类型，第二个启用 Rails 4.0 增加的 <a href="https://github.com/rails/turbolinks">Turbolink</a> 功能。因为使用的是 <code>&lt;%= %&gt;</code>，函数的执行结果会通过 ERb 插入模板中。如果在浏览器中查看网页的源码，会看到引入样式表所用的 HTML，如<a href="#listing-scss-source">代码清单 4.14</a> 所示。（你可能会在 CSS 的文件名后看到额外的字符，例如 <code>?body=1</code>。这是 Rails 加入的，用以确保修改 CSS 后浏览器会重新加载。）</p>
+<div id="listing-scss-source" data-type="listing">
+<h5><span class="title-label">代码清单 4.14</span>：引入 CSS 的代码生成的 HTML</h5>
+
+
+<div class="highlight language-html"><pre><span class="nt">&lt;link</span> <span class="na">data-turbolinks-track=</span><span class="s">"true"</span> <span class="na">href=</span><span class="s">"/assets/application.css"</span> <span class="na">media=</span><span class="s">"all"</span>
+<span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="nt">/&gt;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section data-type="sect1" id="ruby-classes">
+<h1><span class="title-label">4.4</span> Ruby 类</h1>
+<p>我们之前说过，Ruby 中的一切都是对象。本节我们要自己定义一些对象。Ruby 和其他面向对象的语言一样，使用类来组织方法，然后实例化类，创建对象。如果你刚接触面向对象编程（Object-Oriented Programming，简称 OOP），这些听起来都似天书一般，那我们来看一些实例吧。</p>
+<section data-type="sect2" id="constructors">
+<h2><span class="title-label">4.4.1</span> 构造方法</h2>
+<p>我们看过很多使用类初始化对象的例子，不过还没自己动手做过。例如，我们使用双引号初始化一个字符串，双引号就是字符串的字面构造方法：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="s2">"foobar"</span>       <span class="c1"># 使用双引号字面构造方法</span>
+<span class="go">=&gt; "foobar"</span>
+<span class="gp">&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">class</span>
+<span class="go">=&gt; String</span>
+</pre></div>
+</div>
+<p>我们看到，字符串可以响应 <code>class</code> 方法，返回值是字符串所属的类。</p>
+<p>除了使用字面构造方法之外，我们还可以使用等价的具名构造方法（named constructor），即在类名上调用 <code>new</code> 方法：<sup>[<a id="fn-ref-15" href="#fn-15">15</a>]</sup></p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="nb">String</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">"foobar"</span><span class="p">)</span>   <span class="c1"># 字符串的具名构造方法</span>
+<span class="go">=&gt; "foobar"</span>
+<span class="gp">&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">class</span>
+<span class="go">=&gt; String</span>
+<span class="gp">&gt;&gt; </span><span class="n">s</span> <span class="o">==</span> <span class="s2">"foobar"</span>
+<span class="go">=&gt; true</span>
+</pre></div>
+</div>
+<p>这段代码中使用的具名构造方法和字面构造方法是等价的，只是更能表现我们的意图。</p>
+<p>数组与字符串类似：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="nb">Array</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">]</span><span class="p">)</span>
+<span class="go">=&gt; [1, 3, 2]</span>
+</pre></div>
+</div>
+<p>不过哈希就有点不同了。数组的构造方法 <code>Array.new</code> 可接受一个可选的参数指明数组的初始值，<code>Hash.new</code> 可接受一个参数指明元素的默认值，即当键不存在时返回的值：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">h</span> <span class="o">=</span> <span class="no">Hash</span><span class="o">.</span><span class="n">new</span>
+<span class="go">=&gt; {}</span>
+<span class="gp">&gt;&gt; </span><span class="n">h</span><span class="o">[</span><span class="ss">:foo</span><span class="o">]</span>            <span class="c1"># 试图获取不存在的键 :foo 对应的值</span>
+<span class="go">=&gt; nil</span>
+<span class="gp">&gt;&gt; </span><span class="n">h</span> <span class="o">=</span> <span class="no">Hash</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>    <span class="c1"># 让不存在的键返回 0 而不是 nil</span>
+<span class="go">=&gt; {}</span>
+<span class="gp">&gt;&gt; </span><span class="n">h</span><span class="o">[</span><span class="ss">:foo</span><span class="o">]</span>
+<span class="go">=&gt; 0</span>
+</pre></div>
+</div>
+<p>在类上调用的方法，如这里的 <code>new</code>，叫类方法（class method）。在类上调用 <code>new</code> 方法，得到的结果是这个类的对象，也叫做这个类的实例（instance）。在实例上调用的方法，例如 <code>length</code>，叫实例方法（instance method）。</p>
+<h5 id="exercises-constructors" class="discrete">练习</h5>
+<ol class="arabic">
+<li>
+<p>从 1 到 10 的值域，它的字面构造方法是什么？</p>
+</li>
+<li>
+<p>使用 <code>Range</code> 类和 <code>new</code> 方法怎么编写构造方法？提示：这里，要为 <code>new</code> 方法提供两个参数。</p>
+</li>
+<li>
+<p>使用 <code>==</code> 运算符确认前两题使用字面构造方法和具名构造方法创建的值域相等。</p>
+</li>
+</ol>
+</section>
+<section data-type="sect2" id="class-inheritance">
+<h2><span class="title-label">4.4.2</span> 类的继承</h2>
+<p>学习类时，理清类的继承关系会很有用。我们可以使用 <code>superclass</code> 方法找出继承关系：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="nb">String</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">"foobar"</span><span class="p">)</span>
+<span class="go">=&gt; "foobar"</span>
+<span class="gp">&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">class</span>                        <span class="c1"># 查找 s 所属的类</span>
+<span class="go">=&gt; String</span>
+<span class="gp">&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">superclass</span>             <span class="c1"># 查找 String 的父类</span>
+<span class="go">=&gt; Object</span>
+<span class="gp">&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">superclass</span><span class="o">.</span><span class="n">superclass</span>  <span class="c1"># Ruby 1.9 使用 BasicObject 作为基类</span>
+<span class="go">=&gt; BasicObject</span>
+<span class="gp">&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">superclass</span><span class="o">.</span><span class="n">superclass</span><span class="o">.</span><span class="n">superclass</span>
+<span class="go">=&gt; nil</span>
+</pre></div>
+</div>
+<p>这个继承关系如<a href="#fig-string-inheritance-ruby-1-9">图 4.1</a> 所示。可以看到，<code>String</code> 的父类是 <code>Object</code>，<code>Object</code> 的父类是 <code>BasicObject</code>，但是 <code>BasicObject</code> 就没有父类了。这样的关系对每个 Ruby 对象都适用：只要在类的继承关系上往上多走几层，就会发现 Ruby 中的每个类最终都继承自 <code>BasicObject</code>，而它本身没有父类。这就是“Ruby 中一切皆对象”在技术层面上的意义。</p>
+<div id="fig-string-inheritance-ruby-1-9" class="figure"><img src="images/chapter4/string_inheritance_ruby_1_9.png" alt="string inheritance ruby 1 9" /><div class="figcaption"><span class="title-label">图 4.1</span>：<code>String</code> 类的继承关系</div></div>
+<p>要想更深入地理解类，最好的方法是自己动手编写一个。我们来定义一个名为 <code>Word</code> 的类，其中有一个名为 <code>palindrome?</code> 的方法，如果单词顺读和反读都一样就返回 <code>true</code>：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="k">class</span> <span class="nc">Word</span>
+<span class="gp">&gt;&gt; </span>  <span class="k">def</span> <span class="nf">palindrome?</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+<span class="gp">&gt;&gt; </span>    <span class="n">string</span> <span class="o">==</span> <span class="n">string</span><span class="o">.</span><span class="n">reverse</span>
+<span class="gp">&gt;&gt; </span>  <span class="k">end</span>
+<span class="gp">&gt;&gt; </span><span class="k">end</span>
+<span class="go">=&gt; :palindrome?</span>
+</pre></div>
+</div>
+<p>我们可以按照下面的方式使用这个类：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="no">Word</span><span class="o">.</span><span class="n">new</span>              <span class="c1"># 创建一个 Word 对象</span>
+<span class="go">=&gt; #&lt;Word:0x22d0b20&gt;</span>
+<span class="gp">&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">palindrome?</span><span class="p">(</span><span class="s2">"foobar"</span><span class="p">)</span>
+<span class="go">=&gt; false</span>
+<span class="gp">&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">palindrome?</span><span class="p">(</span><span class="s2">"level"</span><span class="p">)</span>
+<span class="go">=&gt; true</span>
+</pre></div>
+</div>
+<p>如果你觉得这个例子有点大题小做，很好，我的目的达到了。定义一个新类，可是只创建一个接受一个字符串作为参数的方法，这么做很古怪。既然单词是字符串，让 <code>Word</code> 继承 <code>String</code> 不就行了，如<a href="#listing-word-class">代码清单 4.15</a> 所示。（你要退出控制台，然后在控制台中输入这写代码，这样才能把之前定义的 <code>Word</code> 类清除掉。）</p>
+<div id="listing-word-class" data-type="listing">
+<h5><span class="title-label">代码清单 4.15</span>：在控制台中定义 <code>Word</code> 类</h5>
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="k">class</span> <span class="nc">Word</span> <span class="o">&lt;</span> <span class="nb">String</span>             <span class="c1"># Word 继承自 String</span>
+<span class="gp">&gt;&gt; </span>  <span class="c1"># 如果字符串和反转后相等就返回 true</span>
+<span class="gp">&gt;&gt; </span>  <span class="k">def</span> <span class="nf">palindrome?</span>
+<span class="gp">&gt;&gt; </span>    <span class="nb">self</span> <span class="o">==</span> <span class="nb">self</span><span class="o">.</span><span class="n">reverse</span>        <span class="c1"># self 代表这个字符串本身</span>
+<span class="gp">&gt;&gt; </span>  <span class="k">end</span>
+<span class="gp">&gt;&gt; </span><span class="k">end</span>
+<span class="go">=&gt; nil</span>
+</pre></div>
+</div>
+<p>其中，<code>Word &lt; String</code> 在 Ruby 中表示继承（<a href="chapter3.html#static-pages">3.2 节</a>简介过），这样除了定义 <code>palindrome?</code> 方法之外，<code>Word</code> 还拥有所有字符串拥有的方法：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="no">Word</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">"level"</span><span class="p">)</span>    <span class="c1"># 创建一个 Word 实例，初始值为 "level"</span>
+<span class="go">=&gt; "level"</span>
+<span class="gp">&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">palindrome?</span>            <span class="c1"># Word 实例可以响应 palindrome? 方法</span>
+<span class="go">=&gt; true</span>
+<span class="gp">&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">length</span>                 <span class="c1"># Word 实例还继承了普通字符串的所有方法</span>
+<span class="go">=&gt; 5</span>
+</pre></div>
+</div>
+<p><code>Word</code> 继承自 <code>String</code>，我们可以在控制台中查看类的继承关系：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">class</span>
+<span class="go">=&gt; Word</span>
+<span class="gp">&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">superclass</span>
+<span class="go">=&gt; String</span>
+<span class="gp">&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">superclass</span><span class="o">.</span><span class="n">superclass</span>
+<span class="go">=&gt; Object</span>
+</pre></div>
+</div>
+<p>这个继承关系如<a href="#fig-word-inheritance-ruby-1-9">图 4.2</a> 所示。</p>
+<div id="fig-word-inheritance-ruby-1-9" class="figure"><img src="images/chapter4/word_inheritance_ruby_1_9.png" alt="word inheritance ruby 1 9" /><div class="figcaption"><span class="title-label">图 4.2</span>：<a href="#listing-word-class">代码清单 4.15</a> 中定义的 <code>Word</code> 类（非内置类）的继承关系</div></div>
+<p>注意，在<a href="#listing-word-class">代码清单 4.15</a> 中检查单词和单词的反转是否相同时，要在 <code>Word</code> 类中访问单词。这在 Ruby 中使用 <code>self</code> 关键字<sup>[<a id="fn-ref-16" href="#fn-16">16</a>]</sup>引用：在 <code>Word</code> 类中，<code>self</code> 代表的是对象本身。所以我们可以使用</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><span class="nb">self</span> <span class="o">==</span> <span class="nb">self</span><span class="o">.</span><span class="n">reverse</span>
+</pre></div>
+</div>
+<p>检查单词是否为回文。其实，在类中调用方法或访问属性时可以不用 <code>self.</code>（赋值例外），因此也可以写成</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><span class="nb">self</span> <span class="o">==</span> <span class="n">reverse</span>
+</pre></div>
+</div>
+<h5 id="exercises-class-inheritance" class="discrete">练习</h5>
+<ol class="arabic">
+<li>
+<p>值域的类继承关系是怎样的？哈希和符号呢？</p>
+</li>
+<li>
+<p>把<a href="#listing-word-class">代码清单 4.15</a> 中的 <code>self.reverse</code> 换成 <code>reverse</code>，确认 <code>palindrome?</code> 方法依然可用。</p>
+</li>
+</ol>
+</section>
+<section data-type="sect2" id="modifying-built-in-classes">
+<h2><span class="title-label">4.4.3</span> 修改内置的类</h2>
+<p>虽然继承是个强大的功能，不过在判断回文这个例子中，如果能把 <code>palindrome?</code> 加入 <code>String</code> 类就更好了，这样（除了其他方法外）我们可以在字符串字面量上调用 <code>palindrome?</code> 方法。现在我们还不能直接调用：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="s2">"level"</span><span class="o">.</span><span class="n">palindrome?</span>
+<span class="go">NoMethodError: undefined method `palindrome?' for "level":String</span>
+</pre></div>
+</div>
+<p>有点令人惊讶的是，Ruby 允许你这么做，Ruby 中的类可以被打开进行修改，允许像我们这样的普通人添加方法：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="k">class</span> <span class="nc">String</span>
+<span class="gp">&gt;&gt; </span>  <span class="c1"># 如果字符串和反转后相等就返回 true</span>
+<span class="gp">&gt;&gt; </span>  <span class="k">def</span> <span class="nf">palindrome?</span>
+<span class="gp">&gt;&gt; </span>    <span class="nb">self</span> <span class="o">==</span> <span class="nb">self</span><span class="o">.</span><span class="n">reverse</span>
+<span class="gp">&gt;&gt; </span>  <span class="k">end</span>
+<span class="gp">&gt;&gt; </span><span class="k">end</span>
+<span class="go">=&gt; nil</span>
+<span class="gp">&gt;&gt; </span><span class="s2">"deified"</span><span class="o">.</span><span class="n">palindrome?</span>
+<span class="go">=&gt; true</span>
+</pre></div>
+</div>
+<p>（我不知道哪一个更牛：Ruby 允许向内置的类中添加方法，或 <code>"deified"</code> 是个回文。）</p>
+<p>修改内置的类是个很强大的功能，不过功能强大意味着责任也大，如果没有很好的理由，向内置的类中添加方法是不好的习惯。Rails 自然有很好的理由。例如，在 Web 应用中我们经常要避免变量的值是空白的（blank），像用户名之类的就不应该是空格或<a href="http://en.wikipedia.org/wiki/Whitespace_(computer_science)">空白</a>，所以 Rails 为 Ruby 添加了一个 <code>blank?</code> 方法。Rails 控制台会自动加载 Rails 添加的功能，下面看几个例子（在 <code>irb</code> 中不可以）：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="s2">""</span><span class="o">.</span><span class="n">blank?</span>
+<span class="go">=&gt; true</span>
+<span class="gp">&gt;&gt; </span><span class="s2">"      "</span><span class="o">.</span><span class="n">empty?</span>
+<span class="go">=&gt; false</span>
+<span class="gp">&gt;&gt; </span><span class="s2">"      "</span><span class="o">.</span><span class="n">blank?</span>
+<span class="go">=&gt; true</span>
+<span class="gp">&gt;&gt; </span><span class="kp">nil</span><span class="o">.</span><span class="n">blank?</span>
+<span class="go">=&gt; true</span>
+</pre></div>
+</div>
+<p>可以看出，一个包含空格的字符串不是空的（empty），却是空白的（blank）。还要注意，<code>nil</code> 也是空白的。因为 <code>nil</code> 不是字符串，所以上面的代码说明了 Rails 其实是把 <code>blank?</code> 添加到 <code>String</code> 的基类 <code>Object</code> 中的。<a href="chapter9.html#remember-me">9.1 节</a>会再介绍一些 Rails 扩展 Ruby 类的例子。</p>
+<h5 id="exercises-modifying-built-in-classes" class="discrete">练习</h5>
+<ol class="arabic">
+<li>
+<p>验证“racecar”是回文，而“onomatopoeia”不是。印度南部方言“Malayalam”是回文吗？提示：先变成小写。</p>
+</li>
+<li>
+<p>以<a href="#listing-string-shuffle-two">代码清单 4.16</a> 为模板，为 <code>String</code> 类添加 <code>shuffle</code> 方法。提示：参照<a href="#listing-string-shuffle">代码清单 4.12</a>。</p>
+</li>
+<li>
+<p>删掉 <code>self.</code>，确认<a href="#listing-string-shuffle-two">代码清单 4.16</a> 依然可用。</p>
+</li>
+</ol>
+<div id="listing-string-shuffle-two" data-type="listing">
+<h5><span class="title-label">代码清单 4.16</span>：添加到 <code>String</code> 类中的 <code>shuffle</code> 方法的模板</h5>
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="k">class</span> <span class="nc">String</span>
+<span class="gp">&gt;&gt; </span>  <span class="k">def</span> <span class="nf">shuffle</span>
+<span class="gp">&gt;&gt; </span>    <span class="nb">self</span><span class="o">.</span><span class="sc">?(</span><span class="s1">''</span><span class="p">)</span><span class="o">.</span><span class="sc">?.</span><span class="p">?</span>
+<span class="gp">&gt;&gt; </span>  <span class="k">end</span>
+<span class="gp">&gt;&gt; </span><span class="k">end</span>
+<span class="gp">&gt;&gt; </span><span class="s2">"foobar"</span><span class="o">.</span><span class="n">shuffle</span>
+<span class="go">=&gt; "borafo"</span>
+</pre></div>
+</div>
+</section>
+<section data-type="sect2" id="a-controller-class">
+<h2><span class="title-label">4.4.4</span> 控制器类</h2>
+<p>讨论类和继承时你可能觉得似曾相识，不错，我们之前见过，在 <code>StaticPages</code> 控制器中（<a href="chapter3.html#listing-adding-the-about-page">代码清单 3.20</a>）：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><span class="k">class</span> <span class="nc">StaticPagesController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+
+  <span class="k">def</span> <span class="nf">home</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">help</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">about</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+<p>你现在应该可以理解，至少有点能理解这些代码的意思了：<code>StaticPagesController</code> 是一个类，继承自 <code>ApplicationController</code>，其中有三个方法，分别是 <code>home</code>、<code>help</code> 和 <code>about</code>。因为 Rails 控制台会加载本地的 Rails 环境，所以我们可以在控制台中创建控制器，查看它的继承关系：<sup>[<a id="fn-ref-17" href="#fn-17">17</a>]</sup></p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">controller</span> <span class="o">=</span> <span class="no">StaticPagesController</span><span class="o">.</span><span class="n">new</span>
+<span class="go">=&gt; #&lt;StaticPagesController:0x22855d0&gt;</span>
+<span class="gp">&gt;&gt; </span><span class="n">controller</span><span class="o">.</span><span class="n">class</span>
+<span class="go">=&gt; StaticPagesController</span>
+<span class="gp">&gt;&gt; </span><span class="n">controller</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">superclass</span>
+<span class="go">=&gt; ApplicationController</span>
+<span class="gp">&gt;&gt; </span><span class="n">controller</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">superclass</span><span class="o">.</span><span class="n">superclass</span>
+<span class="go">=&gt; ActionController::Base</span>
+<span class="gp">&gt;&gt; </span><span class="n">controller</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">superclass</span><span class="o">.</span><span class="n">superclass</span><span class="o">.</span><span class="n">superclass</span>
+<span class="go">=&gt; ActionController::Metal</span>
+<span class="gp">&gt;&gt; </span><span class="n">controller</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">superclass</span><span class="o">.</span><span class="n">superclass</span><span class="o">.</span><span class="n">superclass</span><span class="o">.</span><span class="n">superclass</span>
+<span class="go">=&gt; AbstractController::Base</span>
+<span class="gp">&gt;&gt; </span><span class="n">controller</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">superclass</span><span class="o">.</span><span class="n">superclass</span><span class="o">.</span><span class="n">superclass</span><span class="o">.</span><span class="n">superclass</span><span class="o">.</span><span class="n">superclass</span>
+<span class="go">=&gt; Object</span>
+</pre></div>
+</div>
+<p>这个继承关系如<a href="#fig-static-pages-controller-inheritance">图 4.3</a> 所示。</p>
+<p>我们还可以在控制台中调用控制器的动作，动作其实就是方法：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">controller</span><span class="o">.</span><span class="n">home</span>
+<span class="go">=&gt; nil</span>
+</pre></div>
+</div>
+<p><code>home</code> 动作的返回值为 <code>nil</code>，因为它是空的。</p>
+<p>注意，动作没有返回值，或至少没返回真正需要的值。如我们在<a href="chapter3.html#mostly-static-pages">第 3 章</a>看到的，<code>home</code> 动作的目的是渲染网页，而不是返回一个值。但是，我记得没在任何地方调用过 <code>StaticPagesController.new</code>，到底怎么回事呢？</p>
+<p>原因在于，Rails 是用 Ruby 编写的，但 Rails 不是 Ruby。有些 Rails 类就像普通的 Ruby 类一样，不过也有些则得益于 Rails 的强大功能。Rails 是单独的一门学问，应该和 Ruby 分开学习和理解。</p>
+<div id="fig-static-pages-controller-inheritance" class="figure"><img src="images/chapter4/static_pages_controller_inheritance.png" alt="static pages controller inheritance" /><div class="figcaption"><span class="title-label">图 4.3</span>：<code>StaticPagesController</code> 类的继承关系</div></div>
+<h5 id="exercises-a-controller-class" class="discrete">练习</h5>
+<ol class="arabic">
+<li>
+<p>在<a href="chapter2.html#a-toy-app">第 2 章</a>创建的玩具应用中运行 Rails 控制台，确认可以使用 <code>User.new</code> 创建用户对象。</p>
+</li>
+<li>
+<p>找出那个用户对象的类继承关系。</p>
+</li>
+</ol>
+</section>
+<section data-type="sect2" id="a-user-class">
+<h2><span class="title-label">4.4.5</span> <code>User</code> 类</h2>
+<p>我们要自己定义一个类，以此结束对 Ruby 的介绍。这个类名为 <code>User</code>，目的是实现 <a href="chapter6.html#modeling-users">第 6 章</a>用到的 <code>User</code> 模型。</p>
+<p>到目前为止，我们都在控制台中定义类，这样很快捷，但也有点不爽。现在我们要在应用的根目录中创建一个名为 <code>example_user.rb</code> 的文件，然后写入<a href="#listing-example-user">代码清单 4.17</a> 中的内容。</p>
+<div id="listing-example-user" data-type="listing">
+<h5><span class="title-label">代码清单 4.17</span>：定义 <code>User</code> 类</h5>
+
+<div class="source-file">example_user.rb</div>
+
+<div class="highlight language-ruby"><pre><span class="k">class</span> <span class="nc">User</span>
+  <span class="kp">attr_accessor</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span>
+
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">attributes</span> <span class="o">=</span> <span class="p">{})</span>
+    <span class="vi">@name</span>  <span class="o">=</span> <span class="n">attributes</span><span class="o">[</span><span class="ss">:name</span><span class="o">]</span>
+    <span class="vi">@email</span> <span class="o">=</span> <span class="n">attributes</span><span class="o">[</span><span class="ss">:email</span><span class="o">]</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">formatted_email</span>
+    <span class="s2">"</span><span class="si">#{</span><span class="vi">@name</span><span class="si">}</span><span class="s2"> &lt;</span><span class="si">#{</span><span class="vi">@email</span><span class="si">}</span><span class="s2">&gt;"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+<p>这段代码有很多地方要说明，我们一步步来。先看下面这行：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre>  <span class="kp">attr_accessor</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span>
+</pre></div>
+</div>
+<p>这行代码为用户的名字和电子邮件地址创建属性访问器存取方法（attribute accessor），也就是定义读值方法（getter）和设值方法（setter），用于读取和设置 <code>@name</code> 和 <code>@email</code> 实例变量（<a href="chapter2.html#mvc-in-action">2.2.2 节</a>和 <a href="chapter3.html#adding-page-titles">3.4.2 节</a>的<a href="chapter3.html#exercises-adding-page-titles">练习</a>简介过）。在 Rails 中，实例变量的意义在于，它们自动在视图中可用。而通常实例变量的作用是在 Ruby 类中不同的方法之间传递值。（稍后会更详细地说明这一点。）实例变量都以 <code>@</code> 符号开头，如果未定义，值为 <code>nil</code>。</p>
+<p>第一个方法，<code>initialize</code>，在 Ruby 中有特殊的意义：执行 <code>User.new</code> 时会调用这个方法。这个 <code>initialize</code> 方法接受一个参数，<code>attributes</code>：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">attributes</span> <span class="o">=</span> <span class="p">{})</span>
+    <span class="vi">@name</span>  <span class="o">=</span> <span class="n">attributes</span><span class="o">[</span><span class="ss">:name</span><span class="o">]</span>
+    <span class="vi">@email</span> <span class="o">=</span> <span class="n">attributes</span><span class="o">[</span><span class="ss">:email</span><span class="o">]</span>
+  <span class="k">end</span>
+</pre></div>
+</div>
+<p><code>attributes</code> 参数的默认值是一个空哈希，所以我们可以定义一个没有名字或没有电子邮件地址的用户。（回想一下 <a href="#hashes-and-symbols">4.3.3 节</a>的内容，如果键不存在会返回 <code>nil</code>，所以如果没定义 <code>:name</code> 键，<code>attributes[:name]</code> 会返回 <code>nil</code>，<code>attributes[:email]</code> 也是一样。）</p>
+<p>最后，类中定义了一个名为 <code>formatted_email</code> 的方法，使用被赋了值的 <code>@name</code> 和 <code>@email</code> 变量进行插值，组成一个格式良好的电子邮件地址：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre>  <span class="k">def</span> <span class="nf">formatted_email</span>
+    <span class="s2">"</span><span class="si">#{</span><span class="vi">@name</span><span class="si">}</span><span class="s2"> &lt;</span><span class="si">#{</span><span class="vi">@email</span><span class="si">}</span><span class="s2">&gt;"</span>
+  <span class="k">end</span>
+</pre></div>
+</div>
+<p><code>@name</code> 和 <code>@email</code> 都是实例变量（如 <code>@</code> 符号所示），所以在 <code>formatted_email</code> 方法中自动可用。</p>
+<p>我们打开控制台，加载（<code>require</code>）这个文件，实际使用一下这个类：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="nb">require</span> <span class="s1">'./example_user'</span>     <span class="c1"># 加载 example_user 文件中代码的方式</span>
+<span class="go">=&gt; true</span>
+<span class="gp">&gt;&gt; </span><span class="n">example</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span>
+<span class="go">=&gt; #&lt;User:0x224ceec @email=nil, @name=nil&gt;</span>
+<span class="gp">&gt;&gt; </span><span class="n">example</span><span class="o">.</span><span class="n">name</span>                 <span class="c1"># 返回 nil，因为 attributes[:name] 是 nil</span>
+<span class="go">=&gt; nil</span>
+<span class="gp">&gt;&gt; </span><span class="n">example</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">"Example User"</span>           <span class="c1"># 赋值一个非 nil 的名字</span>
+<span class="go">=&gt; "Example User"</span>
+<span class="gp">&gt;&gt; </span><span class="n">example</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="s2">"user@example.com"</span>      <span class="c1"># 赋值一个非 nil 的电子邮件地址</span>
+<span class="go">=&gt; "user@example.com"</span>
+<span class="gp">&gt;&gt; </span><span class="n">example</span><span class="o">.</span><span class="n">formatted_email</span>
+<span class="go">=&gt; "Example User &lt;user@example.com&gt;"</span>
+</pre></div>
+</div>
+<p>这段代码中的点号 <code>.</code>，在 Unix 中指“当前目录”，<code>'./example_user'</code> 告诉 Ruby 在当前目录中寻找这个文件。接下来的代码创建一个空用户，然后通过直接赋值给相应的属性来提供名字和电子邮件地址（因为有 <code>attr_accessor</code> 所以才能赋值）。我们输入 <code>example.name = "Example User"</code> 时，Ruby 会把 <code>@name</code> 变量的值设为 <code>"Example User"</code>（<code>email</code> 属性类似），然后就可以在 <code>formatted_email</code> 中使用。</p>
+<p><a href="#css-revisited">4.3.4 节</a>介绍过，如果最后一个参数是哈希，可以省略花括号。我们可以把一个预先定义好的哈希传给 <code>initialize</code> 方法，再创建一个用户：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><span class="gp">&gt;&gt; </span><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Michael Hartl"</span><span class="p">,</span> <span class="ss">email</span><span class="p">:</span> <span class="s2">"mhartl@example.com"</span><span class="p">)</span>
+<span class="go">=&gt; #&lt;User:0x225167c @email="mhartl@example.com", @name="Michael Hartl"&gt;</span>
+<span class="gp">&gt;&gt; </span><span class="n">user</span><span class="o">.</span><span class="n">formatted_email</span>
+<span class="go">=&gt; "Michael Hartl &lt;mhartl@example.com&gt;"</span>
+</pre></div>
+</div>
+<p>从<a href="chapter7.html#sign-up">第 7 章</a>开始，我们会使用哈希初始化对象，这种技术叫做批量赋值（mass assignment），在 Rails 中很常见。</p>
+<h5 id="exercises-a-user-object" class="discrete">练习</h5>
+<ol class="arabic">
+<li>
+<p>在 <code>User</code> 类中定义一个名为 <code>full_name</code> 的方法，返回用户的名字和姓，中间以空格分开。</p>
+</li>
+<li>
+<p>添加一个名为 <code>alphabetical_name</code> 的方法，返回用户的姓和名字，中间以逗号分开。</p>
+</li>
+<li>
+<p>确认 <code>full_name.split</code> 与 <code>alphabetical_name.split(', ').reverse</code> 得到的结果一样。</p>
+</li>
+</ol>
+</section>
+</section>
+<section data-type="sect1" id="rails-flavored-ruby-conclusion">
+<h1><span class="title-label">4.5</span> 小结</h1>
+<p>至此，对 Ruby 语言的介绍结束了。<a href="chapter5.html#filling-in-the-layout">第 5 章</a>会好好利用这些知识来开发演示应用。</p>
+<p>我们不会使用 <a href="#a-user-class">4.4.5 节</a>创建的 <code>example_user.rb</code> 文件，所以我建议把它删除：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-sh"><pre><span class="nv">$ </span>rm example_user.rb
+</pre></div>
+</div>
+<p>然后把其他的改动提交到源码仓库中，合并到 <code>master</code> 分支之后，再推送到 Bitbucket，然后部署到 Heroku 中：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-sh"><pre><span class="nv">$ </span>git commit -am <span class="s2">"Add a full_title helper"</span>
+<span class="nv">$ </span>git checkout master
+<span class="nv">$ </span>git merge rails-flavored-ruby
+</pre></div>
+</div>
+<p>为了确保无误，最好在推送或部署之前运行测试组件：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-sh"><pre><span class="nv">$ </span>rails <span class="nb">test</span>
+</pre></div>
+</div>
+<p>确认无误后，推送到 Bitbucket 中：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-sh"><pre><span class="nv">$ </span>git push
+</pre></div>
+</div>
+<p>最后，部署到 Heroku 中：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-sh"><pre><span class="nv">$ </span>git push heroku
+</pre></div>
+</div>
+<section data-type="sect2" id="rails-flavored-ruby-learned">
+<h2><span class="title-label">4.5.1</span> 本章所学</h2>
+<ul>
+<li>
+<p>Ruby 提供了很多处理字符串的方法；</p>
+</li>
+<li>
+<p>在 Ruby 中一切皆对象；</p>
+</li>
+<li>
+<p>在 Ruby 中定义方法使用 <code>def</code> 关键字；</p>
+</li>
+<li>
+<p>在 Ruby 中定义类使用 <code>class</code> 关键字；</p>
+</li>
+<li>
+<p>Ruby 内建支持的数据类型有数组、值域和哈希；</p>
+</li>
+<li>
+<p>Ruby 块是一种灵活的语言接口，可以遍历可枚举的数据类型；</p>
+</li>
+<li>
+<p>符号是一种标记，与字符串类似，但没有额外的束缚；</p>
+</li>
+<li>
+<p>Ruby 支持对象继承；</p>
+</li>
+<li>
+<p>可以打开并修改 Ruby 内置的类；</p>
+</li>
+<li>
+<p>单词“deified”是回文；</p>
+</li>
+</ul>
+</section>
+</section>
+</section>
+          </article>
+
+          <nav class="pagination">
+            <ul class="pager">
+              
+              <li class="pager-prev"><a class="prev" href="chapter3.html" title="第 3 章 基本静态的页面">&laquo; 第 3 章 基本静态的页面</a></li>
+              
+
+              
+              <li class="pager-next"><a class="next" href="chapter5.html" title="第 5 章 完善布局">第 5 章 完善布局 &raquo;</a></li>
+              
+            </ul>
+          </nav>
+
+          <div class="footnotes">
+<ol>
+<li id="fn-1">如果辅助方法是针对某个特定控制器的，应该把它放进该控制器对应的辅助文件中。例如，为 <code>StaticPages</code> 控制器创建的辅助方法一般放在 <code>app/helper/static_pages_helper.rb</code> 中。在这个例子中，我们想在所有页面中都使用 <code>full_title</code> 方法，所以要放在一个特殊的辅助文件中，即 <code>app/helper/application_helper.rb</code>。 <a href="#fn-ref-1" class="symbol">&#8617;</a></li>
+<li id="fn-2">nano 编辑器对新手来说更简单，不过我都使用 Vim 做这种简单的编辑。如果想简单学习 Vim，请阅读《<a href="http://learnenough.com/text-editor-tutorial">Learn Enough Text Editor to Be Dangerous</a>》。 <a href="#fn-ref-2" class="symbol">&#8617;</a></li>
+<li id="fn-3">关于“foo”和“bar”，以及不太相关的“foobar”和“FUBAR”的起源，请查看 <a href="http://www.catb.org/jargon/html/F/foo.html">Jargon File 中介绍“foo”的文章</a>。 <a href="#fn-ref-3" class="symbol">&#8617;</a></li>
+<li id="fn-4">熟悉 Perl 或 PHP 的编程人员，可以把这个功能与自动插值美元符号开头的变量相对应，例如 <code>"foo $bar"</code>。 <a href="#fn-ref-4" class="symbol">&#8617;</a></li>
+<li id="fn-5">抱歉，本章在“函数”和“方法”两个称呼之间随意变换。在 Ruby 中这二者是同一个概念：所有方法都是函数，所有函数也都是方法，因为一切皆对象。 <a href="#fn-ref-5" class="symbol">&#8617;</a></li>
+<li id="fn-6">其实还有一个地方我们不理解，那就是 Rails 是怎么把这些联系在一起的：把 URL 映射到动作上，让 <code>full_title</code> 辅助方法可以在视图中使用，等等。这是个很有意思的话题，我建议你以后好好了解一下。不过使用 Rails 并不需要完全了解 Rails 的运作机理。 <a href="#fn-ref-6" class="symbol">&#8617;</a></li>
+<li id="fn-7">这里你可能想使用字符串插值，其实本书前几版使用的都是插值，但 <code>provide</code> 方法会把字符串转换成 <code>SafeBuffer</code> 对象，而不是普通的字符串。插入视图模板的 HTML 会过度转义，把“Help’s on the way”转换成“Help&amp;#39;s on the way”。（感谢读者 Jeremy Fleischman 指出这个小问题。） <a href="#fn-ref-7" class="symbol">&#8617;</a></li>
+<li id="fn-8">这段代码中使用的 <code>second</code> 方法不是 Ruby 定义的，而是 Rails 添加的。在这里可以使用这个方法是因为，Rails 控制台会自动加载 Rails 对 Ruby 的扩展。 <a href="#fn-ref-8" class="symbol">&#8617;</a></li>
+<li id="fn-9">块是闭包（closure），知道这一点对资深编程人员可能会有些帮助。闭包是一种匿名函数，其中附带了一些数据。 <a href="#fn-ref-9" class="symbol">&#8617;</a></li>
+<li id="fn-10">在 Ruby 1.9 及以后的版本中，其实会按照元素输入时的顺序保存哈希，不过依赖特定的顺序显然是不明智的。 <a href="#fn-ref-10" class="symbol">&#8617;</a></li>
+<li id="fn-11">没有约束的好处是，符号很容易进行比较，字符串要按照字母一个一个比较，而符号只需比较一次。这就使得符号成为哈希键的最佳选择。 <a href="#fn-ref-11" class="symbol">&#8617;</a></li>
+<li id="fn-12">其实二者之间有些细微差别，<code>p</code> 返回打印的对象，而 <code>puts</code> 始终返回 <code>nil</code>。感谢读者 Katarzyna Siwek 指出这一点。 <a href="#fn-ref-12" class="symbol">&#8617;</a></li>
+<li id="fn-13">换行符在一行的结尾处，作用是开始新的一行。在代码中，换行符用 <code>\n</code> 表示。 <a href="#fn-ref-13" class="symbol">&#8617;</a></li>
+<li id="fn-14">数列数会让你发疯的，所以很多文本编辑器都提供了一个视觉标识。例如，如果再看一下<a href="chapter1.html#fig-cloud9-gemfile">图 1.6</a> 的话，你会发现右边有一条细线，它可以帮助你把一行代码控制在 80 个字符以内。云端 IDE 默认会显示这条竖线。如果使用 TextMate，可以在如下菜单中找到这个功能：View &gt; Wrap Column &gt; 78。在 Sublime Text 中则是：View &gt; Ruler &gt; 78，或：View &gt; Ruler &gt; 80。 <a href="#fn-ref-14" class="symbol">&#8617;</a></li>
+<li id="fn-15">返回值可能由于 Ruby 版本的不同而有所不同。这个例子假设你使用的是 Ruby 1.9.3 或以上版本。 <a href="#fn-ref-15" class="symbol">&#8617;</a></li>
+<li id="fn-16">关于 Ruby 类和 <code>self</code> 关键字，请阅读 <a href="http://railstips.org/">RailsTips</a> 中的《<a href="http://railstips.org/blog/archives/2006/11/18/class-and-instance-variables-in-ruby/">Class and Instance Variables in Ruby</a>》一文。 <a href="#fn-ref-16" class="symbol">&#8617;</a></li>
+<li id="fn-17">你没必要知道继承关系中每个类的作用。我也不知道它们都是干什么的，而我从 2005 年起就开始使用 Ruby on Rails 了。这可能意味着以下两个问题中的一个：第一，我是个废柴；第二，不需要知道所有内部知识也能成为熟练的 Rails 开发者。我们当然都希望是第二点。 <a href="#fn-ref-17" class="symbol">&#8617;</a></li>
+</ol>
+</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy;2013-2016 <a href="http://about.ac" title="安道的个人网站" target="_blank">安道</a></p>
+      <p>
+        <a href="https://twitter.com/andor_chen" title="在 Twitter 中关注 @andor_chen"  target="_blank"><i class="icon-twitter"></i></a>
+        <a href="http://weibo.com/andor27" title="在微博中关注 @andor_chen"  target="_blank"><i class="icon-weibo"></i></a>
+      </p>
+      <p>保留部分权利</p>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -265,7 +265,7 @@ hello, world!
 <p>这个云端开发环境的使用步骤如下：</p>
 <ol class="arabic">
 <li>
-<p>在 Cloud9 中<a href="https://c9.io/web/sign-up/free">注册一个免费账户</a>；</p>
+<p>在 Cloud9 中<a href="https://c9.io/signup">注册一个免费账户</a>；</p>
 </li>
 <li>
 <p>点击“Go to your Dashboard”（进入控制台）；</p>
@@ -294,10 +294,10 @@ hello, world!
 <h5><span class="title-label">代码清单 1.1</span>：安装指定版本的 Rails</h5>
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>gem install rails -v 5.0.0.rc1
+<div class="highlight language-sh"><pre><span class="nv">$ </span>gem install rails -v 5.0.0.rc2
 </pre></div>
 </div>
-<p><code>-v</code> 旗标的作用是指定安装哪个 Rails 版本。你使用的版本必须和我一样，这样学习的过程中，你我得到的结果才相同。目前，Rails 的版本号最后有 <code>rc1</code>，表明这是“候选发布”版本，而不是最终的版本。Rails 5 正式发布后，本书会及时更新。</p>
+<p><code>-v</code> 旗标的作用是指定安装哪个 Rails 版本。你使用的版本必须和我一样，这样学习的过程中，你我得到的结果才相同。目前，Rails 的版本号最后有 <code>rc2</code>，表明这是“候选发布”版本，而不是最终的版本。Rails 5 正式发布后，本书会及时更新。</p>
 </section>
 </section>
 <section data-type="sect1" id="the-hello-application">
@@ -367,17 +367,17 @@ hello, world!
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">移动文件（重命名）</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>mv &lt;source&gt; &lt;target&gt;</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$ mv README.rdoc README.md</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$ mv foo bar</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">复制文件</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>cp &lt;source&gt; &lt;target&gt;</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$ cp README.rdoc README.md</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$ cp foo bar</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">删除文件</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rm &lt;file&gt;</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$ rm README.rdoc</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$ rm foo</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">删除空目录</p></td>
@@ -402,7 +402,7 @@ hello, world!
 
 
 <div class="highlight language-sh"><pre><span class="hll"><span class="nv">$ </span><span class="nb">cd</span> ~/workspace
-</span><span class="hll"><span class="nv">$ </span>rails _5.0.0.rc1_ new hello_app
+</span><span class="hll"><span class="nv">$ </span>rails _5.0.0.rc2_ new hello_app
 </span>      create
       create  README.md
       create  Rakefile
@@ -556,7 +556,7 @@ Use <span class="sb">`</span>bundle show <span class="o">[</span>gemname<span cl
 
 
 <span class="c1"># Bundle edge Rails instead: gem 'rails', github: 'rails/rails'</span>
-<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span> <span class="s1">'&gt;= 5.0.0.rc1'</span><span class="p">,</span> <span class="s1">'&lt; 5.1'</span>
+<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span> <span class="s1">'&gt;= 5.0.0.rc2'</span><span class="p">,</span> <span class="s1">'&lt; 5.1'</span>
 <span class="c1"># Use sqlite3 as the database for Active Record</span>
 <span class="n">gem</span> <span class="s1">'sqlite3'</span>
 <span class="c1"># Use Puma as the app server</span>
@@ -636,7 +636,7 @@ Use <span class="sb">`</span>bundle show <span class="o">[</span>gemname<span cl
 
 <div class="highlight language-ruby"><pre><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
 
-<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>        <span class="s1">'&gt;= 5.0.0.rc1'</span><span class="p">,</span> <span class="s1">'&lt; 5.1'</span>
+<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>        <span class="s1">'&gt;= 5.0.0.rc2'</span><span class="p">,</span> <span class="s1">'&lt; 5.1'</span>
 <span class="n">gem</span> <span class="s1">'puma'</span><span class="p">,</span>         <span class="s1">'3.4.0'</span>
 <span class="n">gem</span> <span class="s1">'sass-rails'</span><span class="p">,</span>   <span class="s1">'5.0.4'</span>
 <span class="n">gem</span> <span class="s1">'uglifier'</span><span class="p">,</span>     <span class="s1">'3.0.0'</span>
@@ -677,7 +677,7 @@ Use <span class="sb">`</span>bundle show <span class="o">[</span>gemname<span cl
 .
 </pre></div>
 </div>
-<p><code>bundle install</code> 命令可能要执行一会儿，不过结束后我们的应用就能运行了。</p>
+<p><code>bundle install</code> 命令可能要执行一会儿，不过结束后我们的应用就能运行了。顺便说一下，执行 <code>bundle install</code> 命令时可能会提醒你先执行 <code>bundle update</code> 命令。此时，应该按照提醒，先执行 <code>bundle update</code>。</p>
 </section>
 <section data-type="sect2" id="rails-server">
 <h2><span class="title-label">1.3.2</span> <code>rails server</code></h2>
@@ -1141,7 +1141,7 @@ Fast-forward
 
 <div class="highlight language-ruby"><pre><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
 
-<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>        <span class="s1">'&gt;= 5.0.0.rc1'</span><span class="p">,</span> <span class="s1">'&lt; 5.1'</span>
+<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>        <span class="s1">'&gt;= 5.0.0.rc2'</span><span class="p">,</span> <span class="s1">'&lt; 5.1'</span>
 <span class="n">gem</span> <span class="s1">'puma'</span><span class="p">,</span>         <span class="s1">'3.4.0'</span>
 <span class="n">gem</span> <span class="s1">'sass-rails'</span><span class="p">,</span>   <span class="s1">'5.0.4'</span>
 <span class="n">gem</span> <span class="s1">'uglifier'</span><span class="p">,</span>     <span class="s1">'3.0.0'</span>
