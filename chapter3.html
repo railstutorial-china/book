@@ -9,7 +9,7 @@
   <meta name="keywords" content="ruby, rails, tutorial"/>
   <meta name="author" content="Michael Hartl"/>
   <meta name="translator" content="安道"/>
-  <meta name="generator" content="persie 0.0.1.beta.3"/>
+  <meta name="generator" content="persie 0.0.2.beta.1"/>
   <link rel="stylesheet" type="text/css" href="http://railstutorial-china.org/assets/css/main.css"/>
   <link rel="stylesheet" type="text/css" href="book.css"/>
   <script type="text/javascript" src="http://railstutorial-china.org/assets/js/global.js"></script>
@@ -70,10 +70,10 @@
 <h5><span class="title-label">代码清单 3.1</span>：创建一个新应用</h5>
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span><span class="nb">cd</span> ~/workspace
-<span class="nv">$ </span>rails _5.0.0.rc2_ new sample_app
-<span class="nv">$ </span><span class="nb">cd </span>sample_app/
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span><span class="nb">cd</span> ~/workspace
+<span class="gp">$ </span>rails _5.0.0_ new sample_app
+<span class="gp">$ </span><span class="nb">cd </span>sample_app/
+</code></pre></div>
 </div>
 <p>（与 <a href="chapter2.html#planning-the-application">2.1 节</a>一样，如果使用云端 IDE，可以在同一个工作空间中创建这个应用，没必要再新建一个工作空间。）</p>
 <p>类似 <a href="chapter2.html#planning-the-application">2.1 节</a>，接下来我们要用文本编辑器打开并编辑 <code>Gemfile</code> 文件，写入应用所需的 gem。<a href="#listing-gemfile-sample-app">代码清单 3.2</a> 与<a href="chapter1.html#listing-gemfile-sqlite-version">代码清单 1.5</a> 和<a href="chapter2.html#listing-demo-gemfile-sqlite-version-redux">代码清单 2.1</a> 一样，不过 <code>test</code> 组中的 gem 有所不同，这些是高级测试设置（<a href="#advanced-testing-setup">3.6 节</a>）和集成测试（<a href="chapter5.html#layout-link-tests">5.3.4 节</a>）所需的。注意，如果现在你想安装这个应用使用的所有 gem，要写入<a href="chapter13.html#listing-final-gemfile">代码清单 13.72</a> 中的内容。</p>
@@ -81,66 +81,66 @@
 <h5><span class="title-label">代码清单 3.2</span>：这个演示应用的 <code>Gemfile</code> 文件</h5>
 
 
-<div class="highlight language-sh"><pre><span class="nb">source</span> <span class="s1">'https://rubygems.org'</span>
+<div class="highlight language-sh"><pre><code><span class="nb">source</span> <span class="s1">'https://rubygems.org'</span>
 
-gem <span class="s1">'rails'</span>,        <span class="s1">'&gt;= 5.0.0.rc2'</span>, <span class="s1">'&lt; 5.1'</span>
+gem <span class="s1">'rails'</span>,        <span class="s1">'5.0.0'</span>
 gem <span class="s1">'puma'</span>,         <span class="s1">'3.4.0'</span>
-gem <span class="s1">'sass-rails'</span>,   <span class="s1">'5.0.4'</span>
+gem <span class="s1">'sass-rails'</span>,   <span class="s1">'5.0.5'</span>
 gem <span class="s1">'uglifier'</span>,     <span class="s1">'3.0.0'</span>
-gem <span class="s1">'coffee-rails'</span>, <span class="s1">'4.1.1'</span>
+gem <span class="s1">'coffee-rails'</span>, <span class="s1">'4.2.1'</span>
 gem <span class="s1">'jquery-rails'</span>, <span class="s1">'4.1.1'</span>
-gem <span class="s1">'turbolinks'</span>,   <span class="s1">'5.0.0.beta2'</span>
+gem <span class="s1">'turbolinks'</span>,   <span class="s1">'5.0.0'</span>
 gem <span class="s1">'jbuilder'</span>,     <span class="s1">'2.4.1'</span>
 
 group :development, :test <span class="k">do</span>
-  gem <span class="s1">'sqlite3'</span>, <span class="s1">'1.3.11'</span>
+<span class="k">  </span>gem <span class="s1">'sqlite3'</span>, <span class="s1">'1.3.11'</span>
   gem <span class="s1">'byebug'</span>,  <span class="s1">'9.0.0'</span>, platform: :mri
 end
 
 group :development <span class="k">do</span>
-  gem <span class="s1">'web-console'</span>,           <span class="s1">'3.1.1'</span>
+<span class="k">  </span>gem <span class="s1">'web-console'</span>,           <span class="s1">'3.1.1'</span>
   gem <span class="s1">'listen'</span>,                <span class="s1">'3.0.8'</span>
-  gem <span class="s1">'spring'</span>,                <span class="s1">'1.7.1'</span>
+  gem <span class="s1">'spring'</span>,                <span class="s1">'1.7.2'</span>
   gem <span class="s1">'spring-watcher-listen'</span>, <span class="s1">'2.0.0'</span>
 end
 
 group :test <span class="k">do</span>
-  gem <span class="s1">'rails-controller-testing'</span>, <span class="s1">'0.1.1'</span>
+<span class="k">  </span>gem <span class="s1">'rails-controller-testing'</span>, <span class="s1">'0.1.1'</span>
   gem <span class="s1">'minitest-reporters'</span>,       <span class="s1">'1.1.9'</span>
   gem <span class="s1">'guard'</span>,                    <span class="s1">'2.13.0'</span>
   gem <span class="s1">'guard-minitest'</span>,           <span class="s1">'2.4.4'</span>
 end
 
 group :production <span class="k">do</span>
-  gem <span class="s1">'pg'</span>, <span class="s1">'0.18.4'</span>
+<span class="k">  </span>gem <span class="s1">'pg'</span>, <span class="s1">'0.18.4'</span>
 end
 
 <span class="c"># Windows does not include zoneinfo files, so bundle the tzinfo-data gem</span>
-gem <span class="s1">'tzinfo-data'</span>, platforms: <span class="o">[</span>:mingw, :mswin, :x64_mingw, :jruby<span class="o">]</span>
-</pre></div>
+gem <span class="s1">'tzinfo-data'</span>, platforms: <span class="o">[</span>:mingw, :mswin, :x64_mingw, :jruby]
+</code></pre></div>
 </div>
 <p>与前两章一样，我们要执行 <code>bundle install</code> 命令安装并引入 <code>Gemfile</code> 文件中指定的 gem，而且要指定 <code>--without production</code> 选项，<sup>[<a id="fn-ref-2" href="#fn-2">2</a>]</sup>不安装生产环境使用的 gem：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>bundle install --without production
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>bundle install --without production
+</code></pre></div>
 </div>
 <p>运行上述命令后不会在开发环境中安装 PostgreSQL 所需的 <code>pg</code> gem，在生产环境和测试环境中我们使用 SQLite。Heroku 极力不建议在开发环境和生产环境中使用不同的数据库，但是对这个演示应用来说，这两种数据库没什么差别，而且在本地安装、配置 SQLite 比 PostgreSQL 容易得多。<sup>[<a id="fn-ref-3" href="#fn-3">3</a>]</sup>如果你之前安装了某个 gem（例如 Rails 本身）的其他版本，与 <code>Gemfile</code> 中指定的版本号不同，最好再执行 <code>bundle update</code> 命令更新 gem，确保安装的版本和指定的一致：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>bundle update
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>bundle update
+</code></pre></div>
 </div>
 <p>最后，我们要初始化 Git 仓库：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>git init
-<span class="nv">$ </span>git add -A
-<span class="nv">$ </span>git commit -m <span class="s2">"Initialize repository"</span>
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git init
+<span class="gp">$ </span>git add -A
+<span class="gp">$ </span>git commit -m <span class="s2">"Initialize repository"</span>
+</code></pre></div>
 </div>
 <p>与第一个应用一样，我建议你更新一下 <code>README</code> 文件，更好的描述这个应用。我们先把这个文件中的内容删掉，然后换成<a href="#listing-sample-app-readme">代码清单 3.3</a> 中的 Markdown 内容。注意，文件中说明了如何安装这个应用。（直到<a href="chapter6.html#modeling-users">第 6 章</a>才会执行 <code>rails db:migrate</code> 命令，不过现在写上也无妨。）</p>
 <div id="listing-sample-app-readme" data-type="listing">
@@ -148,12 +148,18 @@ gem <span class="s1">'tzinfo-data'</span>, platforms: <span class="o">[</span>:m
 
 <div class="source-file">README.md</div>
 
-<div class="highlight language-text"><pre># Ruby on Rails Tutorial sample application
+<div class="highlight language-text"><pre><code># Ruby on Rails Tutorial sample application
 
 This is the sample application for
 [*Ruby on Rails Tutorial:
 Learn Web Development with Rails*](http://www.railstutorial.org/)
 by [Michael Hartl](http://www.michaelhartl.com/).
+
+## License
+
+All source code in the [Ruby on Rails Tutorial](http://railstutorial.org/)
+is available jointly under the MIT License and the Beerware License. See
+[LICENSE.md](LICENSE.md) for details.
 
 ## Getting started
 
@@ -183,22 +189,21 @@ $ rails server
 
 For more information, see the
 [*Ruby on Rails Tutorial* book](http://www.railstutorial.org/book).
-</pre></div>
+</code></pre></div>
 </div>
 <p>然后，提交改动：</p>
 <div data-type="listing">
 
 <pre class="highlight language-sh"><code><span class="gp">$ </span>git commit -am <span class="s2">"Improve the README"</span></code></pre>
-
 </div>
 <p>你可能还记得，在 <a href="chapter1.html#git-commands">1.4.4 节</a>，我们使用 <code>git commit -a -m "Message"</code> 命令，指定了表示“全部变化”的旗标 <code>-a</code> 和提交信息的旗标 <code>-m</code>。如上述命令所示，我们可以把两个旗标合在一起，写成 <code>git commit -am "Message"</code>。</p>
 <p>既然本书后续内容会一直使用这个演示应用，那么最好<a href="https://bitbucket.org/repo/create">在 Bitbucket 中新建一个仓库</a>，把这个应用推送上去：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>git remote add origin git@bitbucket.org:&lt;username&gt;/sample_app.git
-<span class="nv">$ </span>git push -u origin --all <span class="c"># 首次推送这个应用</span>
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git remote add origin git@bitbucket.org:&lt;username&gt;/sample_app.git
+<span class="gp">$ </span>git push -u origin --all <span class="c"># 首次推送这个应用</span>
+</code></pre></div>
 </div>
 <p>为了避免以后遇到焦头烂额的问题，在这个早期阶段也可以把应用部署到 Heroku 中。参照<a href="chapter1.html#beginning">第 1 章</a>和<a href="chapter2.html#a-toy-app">第 2 章</a>，我建议像<a href="#listing-hello-action-redux-2">代码清单 3.4</a> 和<a href="#listing-hello-root-route-redux-2">代码清单 3.5</a> 那样做，创建一个显示“hello, world!”的首页。（之所以这样做是因为 Rails 的默认页面往往无法在 Heroku 中显示，很难判断部署成功还是失败。）</p>
 <div id="listing-hello-action-redux-2" data-type="listing">
@@ -206,44 +211,44 @@ For more information, see the
 
 <div class="source-file">app/controllers/application_controller.rb</div>
 
-<div class="highlight language-ruby"><pre><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+<div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
   <span class="c1"># Prevent CSRF attacks by raising an exception.</span>
   <span class="c1"># For APIs, you may want to use :null_session instead.</span>
-  <span class="n">protect_from_forgery</span> <span class="ss">with</span><span class="p">:</span> <span class="ss">:exception</span>
+  <span class="n">protect_from_forgery</span> <span class="ss">with: :exception</span>
 
   <span class="k">def</span> <span class="nf">hello</span>
-<span class="hll">    <span class="n">render</span> <span class="ss">html</span><span class="p">:</span> <span class="s2">"hello, world!"</span>
-</span>  <span class="k">end</span>
+<span class="hll">    <span class="n">render</span> <span class="ss">html: </span><span class="s2">"hello, world!"</span></span>
+  <span class="k">end</span>
 <span class="k">end</span>
-</pre></div>
+</code></pre></div>
 </div>
 <div id="listing-hello-root-route-redux-2" data-type="listing">
 <h5><span class="title-label">代码清单 3.5</span>：设置根路由</h5>
 
 <div class="source-file">config/routes.rb</div>
 
-<div class="highlight language-ruby"><pre><span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+<div class="highlight language-ruby"><pre><code><span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
   <span class="n">root</span> <span class="s1">'application#hello'</span>
 <span class="k">end</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p>然后提交改动，推送到 Bitbucket 和 Heroku 中：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>git commit -am <span class="s2">"Add hello"</span>
-<span class="nv">$ </span>git push
-<span class="nv">$ </span>heroku create
-<span class="nv">$ </span>git push heroku master
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git commit -am <span class="s2">"Add hello"</span>
+<span class="gp">$ </span>git push
+<span class="gp">$ </span>heroku create
+<span class="gp">$ </span>git push heroku master
+</code></pre></div>
 </div>
 <p>与 <a href="chapter1.html#deploying">1.5 节</a>一样，你可能会看到一些警告消息，现在暂且不管，<a href="chapter7.html#professional-grade-deployment">7.5 节</a>会解决。除了 Heroku 为应用分配的地址之外，看到的页面应该和<a href="chapter1.html#fig-heroku-app">图 1.20</a> 一样。</p>
 <p>在阅读本书的过程中，我建议你定期推送和部署，这样不仅能在远程仓库中备份，还能尽早发现在生产环境中可能出现的问题。如果遇到和 Heroku 有关的问题，可以查看生产环境中的日志，试着找出问题所在：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>heroku logs
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>heroku logs
+</code></pre></div>
 </div>
 <p>注意，如果你决定把真实的应用部署到 Heroku 中，一定要按照 <a href="chapter7.html#professional-grade-deployment">7.5 节</a>介绍的方法配置生产环境的 Web 服务器。</p>
 <h4 id="exercises-sample-app-setup" class="discrete">练习</h4>
@@ -263,8 +268,8 @@ For more information, see the
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>git checkout -b static-pages
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git checkout -b static-pages
+</code></pre></div>
 </div>
 <section data-type="sect2" id="generated-static-pages">
 <h2><span class="title-label">3.2.1</span> 生成静态页面</h2>
@@ -273,8 +278,8 @@ For more information, see the
 <h5><span class="title-label">代码清单 3.6</span>：生成 <code>StaticPages</code> 控制器</h5>
 
 
-<div class="highlight language-sh"><pre><span class="hll"><span class="nv">$ </span>rails generate controller StaticPages home <span class="nb">help</span>
-</span><span class="nb">      </span>create  app/controllers/static_pages_controller.rb
+<div class="highlight language-sh"><pre><code><span class="hll"><span class="gp">$ </span>rails generate controller StaticPages home <span class="nb">help</span></span>
+<span class="nb">      </span>create  app/controllers/static_pages_controller.rb
        route  get <span class="s1">'static_pages/help'</span>
        route  get <span class="s1">'static_pages/home'</span>
       invoke  erb
@@ -291,7 +296,7 @@ For more information, see the
       create      app/assets/javascripts/static_pages.coffee
       invoke    scss
       create      app/assets/stylesheets/static_pages.scss
-</pre></div>
+</code></pre></div>
 </div>
 <p>顺便说一下，<code>rails generate</code> 可以简写成 <code>rails g</code>。除此之外，Rails 还提供了几个命令的简写形式，参见<a href="#table-shortcuts">表 3.1</a>。为了明确表述，本书会一直使用命令的完整形式，但在实际使用中，大多数 Rails 开发者或多或少都会使用简写形式。<sup>[<a id="fn-ref-5" href="#fn-5">5</a>]</sup></p>
 <table id="table-shortcuts" class="tableblock frame-all grid-all" style="width: 100%;">
@@ -333,24 +338,23 @@ For more information, see the
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>git add -A
-<span class="nv">$ </span>git commit -m <span class="s2">"Add a Static Pages controller"</span>
-<span class="nv">$ </span>git push -u origin static-pages
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git add -A
+<span class="gp">$ </span>git commit -m <span class="s2">"Add a Static Pages controller"</span>
+<span class="gp">$ </span>git push -u origin static-pages
+</code></pre></div>
 </div>
 <p>最后一个命令的意思是，把 <code>static-pages</code> 主题分支推送到 Bitbucket。以后再推送时，可以省略后面的参数，简写成：</p>
 <div data-type="listing">
 
 <pre class="highlight language-sh"><code><span class="gp">$ </span>git push</code></pre>
-
 </div>
 <p>在现实的开发过程中，我一般都会先提交再推送，但是为了行文简洁，从这往后我们会省略提交这一步。</p>
 <p>注意，在<a href="#listing-generating-pages">代码清单 3.6</a> 中，我们传入的控制器名使用驼峰式（因为像<a href="https://zh.wikipedia.org/wiki/%E5%8F%8C%E5%B3%B0%E9%AA%86%E9%A9%BC">骆驼的双峰</a>一样），创建的控制器文件名则是<a href="https://en.wikipedia.org/wiki/Snake_case">蛇底式</a>。所以，传入“StaticPages”得到的文件是 <code>static_pages_controller.rb</code>。这只是一种约定。其实在命令行中也可以使用蛇底式：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>rails generate controller static_pages ...
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate controller static_pages ...
+</code></pre></div>
 </div>
 <p>这个命令也会生成名为 <code>static_pages_controller.rb</code> 的控制器文件。因为 Ruby 的类名使用驼峰式（<a href="chapter4.html#ruby-classes">4.4 节</a>），所以提到控制器时我会使用驼峰式，不过这是我的个人选择。（因为 Ruby 文件名一般使用蛇底式，所以 Rails 生成器使用 <a href="http://api.rubyonrails.org/classes/ActiveSupport/Inflector.html#method-i-underscore"><code>underscore</code></a> 方法把驼峰式转换成蛇底式。）</p>
 <p>顺便说一下，如果在生成代码时出错了，知道如何撤销操作就很有用了。<a href="#aside-undoing-things">旁注 3.1</a> 中介绍了一些在 Rails 中撤销操作的方法。</p>
@@ -361,45 +365,45 @@ For more information, see the
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>rails generate controller StaticPages home <span class="nb">help</span>
-<span class="nv">$ </span>rails destroy  controller StaticPages home <span class="nb">help</span>
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate controller StaticPages home <span class="nb">help</span>
+<span class="gp">$ </span>rails destroy  controller StaticPages home <span class="nb">help</span>
+</code></pre></div>
 </div>
 <p><a href="chapter6.html#modeling-users">第 6 章</a>会使用下面的命令生成模型：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>rails generate model User name:string email:string
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate model User name:string email:string
+</code></pre></div>
 </div>
 <p>这个操作可以使用下面的命令撤销：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>rails destroy model User
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails destroy model User
+</code></pre></div>
 </div>
 <p>（这里，我们可以省略命令行中其余的参数。读到<a href="chapter6.html#modeling-users">第 6 章</a>时，看看你能否发现为什么可以这样做。）</p>
 <p>对模型来说，还涉及到撤销迁移。<a href="chapter2.html#a-toy-app">第 2 章</a>已经简要介绍了迁移，<a href="chapter6.html#modeling-users">第 6 章</a>开始会深入说明。迁移通过下面的命令改变数据库的状态：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>rails db:migrate
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails db:migrate
+</code></pre></div>
 </div>
 <p>我们可以使用下面的命令撤销前一个迁移操作：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>rails db:rollback
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails db:rollback
+</code></pre></div>
 </div>
 <p>如果要回到最开始的状态，可以使用：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>rails db:migrate <span class="nv">VERSION</span><span class="o">=</span>0
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails db:migrate <span class="nv">VERSION</span><span class="o">=</span>0
+</code></pre></div>
 </div>
 <p>你可能猜到了，把数字 0 换成其他数字就会回到相应的版本，这些版本数字是按照迁移执行的顺序排列的。</p>
 <p>知道这些技术，我们就能得心应对开发过程中遇到的各种问题了。</p>
@@ -411,27 +415,27 @@ For more information, see the
 
 <div class="source-file">config/routes.rb</div>
 
-<div class="highlight language-sh"><pre>Rails.application.routes.draw <span class="k">do</span>
-<span class="hll">  get  <span class="s1">'static_pages/home'</span>
-</span><span class="hll">  get  <span class="s1">'static_pages/help'</span>
-</span>  root <span class="s1">'application#hello'</span>
+<div class="highlight language-sh"><pre><code>Rails.application.routes.draw <span class="k">do</span>
+<span class="hll"><span class="k">  </span>get  <span class="s1">'static_pages/home'</span></span>
+<span class="hll">  get  <span class="s1">'static_pages/help'</span></span>
+  root <span class="s1">'application#hello'</span>
 end
-</pre></div>
+</code></pre></div>
 </div>
 <div id="fig-config-directory-rails" class="figure"><img src="images/chapter3/config_directory_4th_edition.png" alt="config directory 4th edition" /><div class="figcaption"><span class="title-label">图 3.1</span>：演示应用 <code>config</code> 文件夹中的内容</div></div>
 <p>如下的规则</p>
 <div data-type="listing">
 
 
-<div class="highlight language-ruby"><pre><span class="n">get</span> <span class="s1">'static_pages/home'</span>
-</pre></div>
+<div class="highlight language-ruby"><pre><code><span class="n">get</span> <span class="s1">'static_pages/home'</span>
+</code></pre></div>
 </div>
 <p>把发给 /static_pages/home 的请求映射到 <code>StaticPages</code> 控制器的 <code>home</code> 动作上。另外，<code>get</code> 表明这个路由响应的是 GET 请求。GET 是 HTTP（Hypertext Transfer Protocol，超文本传输协议）支持的基本请求方法之一（<a href="#aside-get-etc">旁注 3.2</a>）。这里，当我们在 <code>StaticPages</code> 控制器中生成 <code>home</code> 动作时，就自动在 /static_pages/home 地址上获得了一个页面。若想查看这个页面，按照 <a href="chapter1.html#rails-server">1.3.2 节</a>中的方法，启动 Rails 开发服务器：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>rails server -b <span class="nv">$IP</span> -p <span class="nv">$PORT</span>    <span class="c"># 在本地只需执行 `rails server`</span>
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails server -b <span class="nv">$IP</span> -p <span class="nv">$PORT</span>    <span class="c"># 在本地只需执行 `rails server`</span>
+</code></pre></div>
 </div>
 <p>然后访问 /static_pages/home，如<a href="#fig-raw-home-view">图 3.2</a> 所示。</p>
 <div id="fig-raw-home-view" class="figure"><img src="images/chapter3/raw_home_view_3rd_edition.png" alt="raw home view 3rd edition" /><div class="figcaption"><span class="title-label">图 3.2</span>：简陋的首页（/static_pages/home）</div></div>
@@ -446,7 +450,7 @@ end
 
 <div class="source-file">app/controllers/static_pages_controller.rb</div>
 
-<div class="highlight language-ruby"><pre><span class="k">class</span> <span class="nc">StaticPagesController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+<div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">StaticPagesController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
 
   <span class="k">def</span> <span class="nf">home</span>
   <span class="k">end</span>
@@ -454,19 +458,19 @@ end
   <span class="k">def</span> <span class="nf">help</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p>从上面代码中的 <code>class</code> 可以看出，<code>static_pages_controller.rb</code> 文件中定义了一个类，名为 <code>StaticPagesController</code>。类是一种组织函数（也叫方法）的便利方式，例如 <code>home</code> 和 <code>help</code> 动作就是方法，使用 <code>def</code> 关键字定义。<a href="chapter2.html#inheritance-hierarchies">2.3.4 节</a>说过，尖括号 <code>&lt;</code> 表示 <code>StaticPagesController</code> 继承自 <code>ApplicationController</code> 类；稍后你会看到，这意味着我们定义的页面拥有了 Rails 提供的大量功能。（我们会在 <a href="chapter4.html#ruby-classes">4.4 节</a>更详细的介绍类和继承。）</p>
 <p>现在，<code>StaticPages</code> 控制器中的两个方法都是空的：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-ruby"><pre><span class="k">def</span> <span class="nf">home</span>
+<div class="highlight language-ruby"><pre><code><span class="k">def</span> <span class="nf">home</span>
 <span class="k">end</span>
 
 <span class="k">def</span> <span class="nf">help</span>
 <span class="k">end</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p>如果是普通的 Ruby 代码，这两个方法什么也做不了。不过在 Rails 中就不一样了，<code>StaticPagesController</code> 是一个 Ruby 类，但是因为它继承自 <code>ApplicationController</code>，其中的方法对 Rails 来说就有了特殊意义：访问 /static_pages/home 时，Rails 会在 <code>StaticPages</code> 控制器中寻找 <code>home</code> 动作，然后执行该动作，再渲染相应的视图（MVC 中的 V，参见 <a href="chapter1.html#mvc">1.3.3 节</a>）。这里，<code>home</code> 动作是空的，所以访问 /static_pages/home 后只会渲染视图。那么，视图是什么样子，怎么才能找到它呢？</p>
 <p>如果你再看一下<a href="#listing-generating-pages">代码清单 3.6</a> 的输出，或许能猜到动作和视图之间的对应关系：<code>home</code> 动作对应的视图是 <code>home.html.erb</code>。<a href="#slightly-dynamic-pages">3.4 节</a>会告诉你 <code>.erb</code> 是什么意思。看到 <code>.html</code> 你或许就不奇怪了，这个文件基本上就是 HTML，如<a href="#listing-raw-home-view">代码清单 3.9</a> 所示。</p>
@@ -475,9 +479,9 @@ end
 
 <div class="source-file">app/views/static_pages/home.html.erb</div>
 
-<div class="highlight language-erb"><pre><span class="x">&lt;h1&gt;StaticPages#home&lt;/h1&gt;</span>
-<span class="x">&lt;p&gt;Find me in app/views/static_pages/home.html.erb&lt;/p&gt;</span>
-</pre></div>
+<div class="highlight language-erb"><pre><code><span class="nt">&lt;h1&gt;</span>StaticPages#home<span class="nt">&lt;/h1&gt;</span>
+<span class="nt">&lt;p&gt;</span>Find me in app/views/static_pages/home.html.erb<span class="nt">&lt;/p&gt;</span>
+</code></pre></div>
 </div>
 <p><code>help</code> 动作的视图类似，如<a href="#listing-raw-help-view">代码清单 3.10</a> 所示。</p>
 <div id="listing-raw-help-view" data-type="listing">
@@ -485,9 +489,9 @@ end
 
 <div class="source-file">app/views/static_pages/help.html.erb</div>
 
-<div class="highlight language-erb"><pre><span class="x">&lt;h1&gt;StaticPages#help&lt;/h1&gt;</span>
-<span class="x">&lt;p&gt;Find me in app/views/static_pages/help.html.erb&lt;/p&gt;</span>
-</pre></div>
+<div class="highlight language-erb"><pre><code><span class="nt">&lt;h1&gt;</span>StaticPages#help<span class="nt">&lt;/h1&gt;</span>
+<span class="nt">&lt;p&gt;</span>Find me in app/views/static_pages/help.html.erb<span class="nt">&lt;/p&gt;</span>
+</code></pre></div>
 </div>
 <p>这两个视图都只是占位用的，它们的内容中都有一个一级标题（<code>h1</code> 标签）和一个显示视图文件完整路径的段落（<code>p</code> 标签）。</p>
 <h5 id="exercises-generated-static-pages" class="discrete">练习</h5>
@@ -508,20 +512,20 @@ end
 
 <div class="source-file">app/views/static_pages/home.html.erb</div>
 
-<div class="highlight language-html"><pre><span class="nt">&lt;h1&gt;</span>Sample App<span class="nt">&lt;/h1&gt;</span>
+<div class="highlight language-html"><pre><code><span class="nt">&lt;h1&gt;</span>Sample App<span class="nt">&lt;/h1&gt;</span>
 <span class="nt">&lt;p&gt;</span>
   This is the home page for the
   <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://www.railstutorial.org/"</span><span class="nt">&gt;</span>Ruby on Rails Tutorial<span class="nt">&lt;/a&gt;</span>
   sample application.
 <span class="nt">&lt;/p&gt;</span>
-</pre></div>
+</code></pre></div>
 </div>
 <div id="listing-custom-help-page" data-type="listing">
 <h5><span class="title-label">代码清单 3.12</span>：修改“帮助”页面的 HTML</h5>
 
 <div class="source-file">app/views/static_pages/help.html.erb</div>
 
-<div class="highlight language-html"><pre><span class="nt">&lt;h1&gt;</span>Help<span class="nt">&lt;/h1&gt;</span>
+<div class="highlight language-html"><pre><code><span class="nt">&lt;h1&gt;</span>Help<span class="nt">&lt;/h1&gt;</span>
 <span class="nt">&lt;p&gt;</span>
   Get help on the Ruby on Rails Tutorial at the
   <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://www.railstutorial.org/help"</span><span class="nt">&gt;</span>Rails Tutorial help page<span class="nt">&lt;/a&gt;</span>.
@@ -529,7 +533,7 @@ end
   <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://www.railstutorial.org/book"</span><span class="nt">&gt;&lt;em&gt;</span>Ruby on Rails Tutorial<span class="nt">&lt;/em&gt;</span>
   book<span class="nt">&lt;/a&gt;</span>.
 <span class="nt">&lt;/p&gt;</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p>修改之后，这两个页面显示的内容如<a href="#fig-custom-home-page">图 3.3</a> 和 <a href="#fig-custom-help-page">图 3.4</a> 所示。</p>
 <div id="fig-custom-home-page" class="figure"><img src="images/chapter3/custom_home_page.png" alt="custom home page" /><div class="figcaption"><span class="title-label">图 3.3</span>：修改后的“首页”</div></div>
@@ -586,9 +590,9 @@ end
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>ls <span class="nb">test</span>/controllers/
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>ls <span class="nb">test</span>/controllers/
 static_pages_controller_test.rb
-</pre></div>
+</code></pre></div>
 </div>
 <p>我们来看一下这个文件的内容，如<a href="#listing-default-controller-test">代码清单 3.13</a> 所示。</p>
 <div id="listing-default-controller-test" data-type="listing">
@@ -596,7 +600,7 @@ static_pages_controller_test.rb
 
 <div class="source-file">test/controllers/static_pages_controller_test.rb</div>
 
-<div class="highlight language-ruby"><pre><span class="nb">require</span> <span class="s1">'test_helper'</span>
+<div class="highlight language-ruby"><pre><code><span class="nb">require</span> <span class="s1">'test_helper'</span>
 
 <span class="k">class</span> <span class="nc">StaticPagesControllerTest</span> <span class="o">&lt;</span> <span class="no">ActionDispatch</span><span class="o">::</span><span class="no">IntegrationTest</span>
 
@@ -610,26 +614,26 @@ static_pages_controller_test.rb
     <span class="n">assert_response</span> <span class="ss">:success</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p>现在无需理解详细的句法，不过可以看出，其中有两个测试，对应我们在命令行中传入的两个动作（<a href="#listing-generating-pages">代码清单 3.6</a>）。各个测试先访问 URL，然后确认（通过“断言”）得到的是成功响应。其中，<code>get</code> 表示测试期望这两个页面是普通的网页，可以通过 <code>GET</code> 请求访问（<a href="#aside-get-etc">旁注 3.2</a>）；<code>:success</code> 响应（表示 <a href="http://en.wikipedia.org/wiki/List_of_HTTP_status_codes#2xx_Success">200 OK</a>）是对 HTTP <a href="http://en.wikipedia.org/wiki/List_of_HTTP_status_codes">响应码</a>的抽象表示。也就是说，下面这个测试的意思是：为了测试首页，向 <code>StaticPages</code> 控制器中 <code>home</code> 动作对应的 URL 发起 <code>GET</code> 请求，确认得到的是表示成功的响应码。</p>
 <div data-type="listing">
 
 
-<div class="highlight language-ruby"><pre><span class="nb">test</span> <span class="s2">"should get home"</span> <span class="k">do</span>
+<div class="highlight language-ruby"><pre><code><span class="nb">test</span> <span class="s2">"should get home"</span> <span class="k">do</span>
   <span class="n">get</span> <span class="n">static_pages_home_url</span>
   <span class="n">assert_response</span> <span class="ss">:success</span>
 <span class="k">end</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p>下面我们要运行测试组件，确认测试现在可以通过。我们要执行下述命令：</p>
 <div data-type="listing">
 <h5><span class="title-label">代码清单 3.14</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>rails <span class="nb">test</span>
-<span class="m">2</span> tests, <span class="m">2</span> assertions, <span class="m">0</span> failures, <span class="m">0</span> errors, <span class="m">0</span> skips
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+2 tests, 2 assertions, 0 failures, 0 errors, 0 skips
+</code></pre></div>
 </div>
 <p>与预期一样，一开始测试组件可以通过（<strong class="green">GREEN</strong>）。（如果没按照 <a href="#minitest-reporters">3.6.1 节</a>的说明添加 MiniTest 报告程序，不会看到绿色。）在某些系统中，测试要花相当长的时间才能启动，这是因为（1）要启动 Spring 服务器，预载部分 Rails 环境，不过只有首次启动时会受此影响；（2）启动 Ruby 要花点儿时间。（第二点可以使用 <a href="#guard">3.6.2 节</a>推荐的 Guard 改善。）</p>
 </section>
@@ -642,7 +646,7 @@ static_pages_controller_test.rb
 
 <div class="source-file">test/controllers/static_pages_controller_test.rb</div>
 
-<div class="highlight language-ruby"><pre><span class="nb">require</span> <span class="s1">'test_helper'</span>
+<div class="highlight language-ruby"><pre><code><span class="nb">require</span> <span class="s1">'test_helper'</span>
 
 <span class="k">class</span> <span class="nc">StaticPagesControllerTest</span> <span class="o">&lt;</span> <span class="no">ActionDispatch</span><span class="o">::</span><span class="no">IntegrationTest</span>
 
@@ -656,12 +660,12 @@ static_pages_controller_test.rb
     <span class="n">assert_response</span> <span class="ss">:success</span>
   <span class="k">end</span>
 
-<span class="hll">  <span class="nb">test</span> <span class="s2">"should get about"</span> <span class="k">do</span>
-</span><span class="hll">    <span class="n">get</span> <span class="n">static_pages_about_url</span>
-</span><span class="hll">    <span class="n">assert_response</span> <span class="ss">:success</span>
-</span><span class="hll">  <span class="k">end</span>
-</span><span class="k">end</span>
-</pre></div>
+<span class="hll">  <span class="nb">test</span> <span class="s2">"should get about"</span> <span class="k">do</span></span>
+<span class="hll">    <span class="n">get</span> <span class="n">static_pages_about_url</span></span>
+<span class="hll">    <span class="n">assert_response</span> <span class="ss">:success</span></span>
+<span class="hll">  <span class="k">end</span></span>
+<span class="k">end</span>
+</code></pre></div>
 </div>
 <p>如高亮显示的那几行所示，为“关于”页面编写的测试与首页和“帮助”页面的测试类似，只不过把“home”或“help”换成了“about”。</p>
 <p>与预期一样，这个测试现在失败：</p>
@@ -669,9 +673,9 @@ static_pages_controller_test.rb
 <h5><span class="title-label">代码清单 3.16</span>：<strong class="red">RED</strong></h5>
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>rails <span class="nb">test</span>
-<span class="m">3</span> tests, <span class="m">2</span> assertions, <span class="m">0</span> failures, <span class="m">1</span> errors, <span class="m">0</span> skips
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+3 tests, 2 assertions, 0 failures, 1 errors, 0 skips
+</code></pre></div>
 </div>
 </section>
 <section data-type="sect2" id="green">
@@ -682,9 +686,9 @@ static_pages_controller_test.rb
 <h5><span class="title-label">代码清单 3.17</span>：<strong class="red">RED</strong></h5>
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>rails <span class="nb">test</span>
-NameError: undefined <span class="nb">local </span>variable or method <span class="sb">`</span>static_pages_about_url<span class="err">'</span>
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+NameError: undefined <span class="nb">local </span>variable or method <span class="sb">`</span>static_pages_about_url<span class="s1">'</span>
+</code></pre></div>
 </div>
 <p>这个错误消息说，获取“关于”页面地址的方法不存在，其实就是提示我们要在路由文件中添加一个规则。参照<a href="#listing-pages-routes">代码清单 3.7</a>，我们可以编写如<a href="#listing-about-route">代码清单 3.18</a> 所示的路由。</p>
 <div id="listing-about-route" data-type="listing">
@@ -692,30 +696,30 @@ NameError: undefined <span class="nb">local </span>variable or method <span clas
 
 <div class="source-file">config/routes.rb</div>
 
-<div class="highlight language-ruby"><pre><span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+<div class="highlight language-ruby"><pre><code><span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
   <span class="n">get</span>  <span class="s1">'static_pages/home'</span>
   <span class="n">get</span>  <span class="s1">'static_pages/help'</span>
-<span class="hll">  <span class="n">get</span>  <span class="s1">'static_pages/about'</span>
-</span>  <span class="n">root</span> <span class="s1">'application#hello'</span>
+<span class="hll">  <span class="n">get</span>  <span class="s1">'static_pages/about'</span></span>
+  <span class="n">root</span> <span class="s1">'application#hello'</span>
 <span class="k">end</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p>这段代码中高亮的那行告诉 Rails，把发给 /static_pages/about 页面的 <code>GET</code> 请求交给 <code>StaticPages</code> 控制器的 <code>about</code> 动作处理。这条规则会自动创建一个辅助方法：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-ruby"><pre><span class="n">static_pages_about_url</span>
-</pre></div>
+<div class="highlight language-ruby"><pre><code><span class="n">static_pages_about_url</span>
+</code></pre></div>
 </div>
 <p>再次运行测试组件，仍然无法通过，不过错误消息变了：</p>
 <div data-type="listing">
 <h5><span class="title-label">代码清单 3.19</span>：<strong class="red">RED</strong></h5>
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
 AbstractController::ActionNotFound:
-The action <span class="s1">'about'</span> could not be found <span class="k">for</span> StaticPagesController
-</pre></div>
+The action <span class="s1">'about'</span> could not be found <span class="k">for </span>StaticPagesController
+</code></pre></div>
 </div>
 <p>这个错误消息的意思是，<code>StaticPages</code> 控制器缺少 <code>about</code> 动作。我们可以参照<a href="#listing-static-pages-controller">代码清单 3.8</a> 编写这个动作，如<a href="#listing-adding-the-about-page">代码清单 3.20</a> 所示。</p>
 <div id="listing-adding-the-about-page" data-type="listing">
@@ -723,7 +727,7 @@ The action <span class="s1">'about'</span> could not be found <span class="k">fo
 
 <div class="source-file">app/controllers/static_pages_controller.rb</div>
 
-<div class="highlight language-ruby"><pre><span class="k">class</span> <span class="nc">StaticPagesController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+<div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">StaticPagesController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
 
   <span class="k">def</span> <span class="nf">home</span>
   <span class="k">end</span>
@@ -731,10 +735,10 @@ The action <span class="s1">'about'</span> could not be found <span class="k">fo
   <span class="k">def</span> <span class="nf">help</span>
   <span class="k">end</span>
 
-<span class="hll">  <span class="k">def</span> <span class="nf">about</span>
-</span><span class="hll">  <span class="k">end</span>
-</span><span class="k">end</span>
-</pre></div>
+<span class="hll">  <span class="k">def</span> <span class="nf">about</span></span>
+<span class="hll">  <span class="k">end</span></span>
+<span class="k">end</span>
+</code></pre></div>
 </div>
 <p>现在测试依旧失败，不过测试消息又变了：</p>
 <div data-type="listing">
@@ -742,15 +746,14 @@ The action <span class="s1">'about'</span> could not be found <span class="k">fo
 <pre class="highlight language-sh"><code><span class="gp">$ </span>rails <span class="nb">test
 </span>ActionController::UnknownFormat: StaticPagesController#about is missing
 a template <span class="k">for </span>this request format and variant.</code></pre>
-
 </div>
 <p>这表明没有模板。在 Rails 中，模板就是视图。<a href="#generated-static-pages">3.2.1 节</a>说过，<code>home</code> 动作对应的视图是 <code>home.html.erb</code>，保存在 <code>app/views/static_pages</code> 文件夹中。所以，我们要在这个文件夹中新建一个文件，而且要命名为 <code>about.html.erb</code>。</p>
 <p>在不同的系统中新建文件有不同的方法，不过大多数情况下都可以在想要新建文件的文件夹中点击鼠标右键，然后在弹出的菜单中选择“新建文件”。我们也可以使用文本编辑器的“文件”菜单，新建文件后再选择保存的位置。除此之外，还可以使用我最喜欢的 <a href="http://en.wikipedia.org/wiki/Touch_(Unix)">Unix <code>touch</code> 命令</a>，如下所示：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>touch app/views/static_pages/about.html.erb
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>touch app/views/static_pages/about.html.erb
+</code></pre></div>
 </div>
 <p>如《<a href="https://www.learnenough.com/command-line-tutorial#sec-listing">Learn Enough Command Line to Be Dangerous</a>》所讲，<code>touch</code> 的作用是更新文件或文件夹的修改时间戳，但有个副作用：如果文件不存在，它会新建一个空文件。（如果使用云端 IDE，或许要刷新文件树，参见 <a href="chapter1.html#bundler">1.3.1 节</a>。这也体现了“<a href="chapter1.html#aside-technical-sophistication">技术是复杂的</a>”。）<sup>[<a id="fn-ref-8" href="#fn-8">8</a>]</sup></p>
 <p>在正确的文件夹中创建 <code>about.html.erb</code> 文件之后，写入<a href="#listing-custom-about-page">代码清单 3.21</a> 中的内容。</p>
@@ -759,7 +762,7 @@ a template <span class="k">for </span>this request format and variant.</code></p
 
 <div class="source-file">app/views/static_pages/about.html.erb</div>
 
-<div class="highlight language-html"><pre><span class="nt">&lt;h1&gt;</span>About<span class="nt">&lt;/h1&gt;</span>
+<div class="highlight language-html"><pre><code><span class="nt">&lt;h1&gt;</span>About<span class="nt">&lt;/h1&gt;</span>
 <span class="nt">&lt;p&gt;</span>
   The <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://www.railstutorial.org/"</span><span class="nt">&gt;&lt;em&gt;</span>Ruby on Rails
   Tutorial<span class="nt">&lt;/em&gt;&lt;/a&gt;</span> is a
@@ -769,16 +772,16 @@ a template <span class="k">for </span>this request format and variant.</code></p
   <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://rubyonrails.org/"</span><span class="nt">&gt;</span>Ruby on Rails<span class="nt">&lt;/a&gt;</span>.
   This is the sample application for the tutorial.
 <span class="nt">&lt;/p&gt;</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p>现在执行 <code>rails test</code> 命令，会看到测试能通过了：</p>
 <div data-type="listing">
 <h5><span class="title-label">代码清单 3.22</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>rails <span class="nb">test</span>
-<span class="m">3</span> tests, <span class="m">3</span> assertions, <span class="m">0</span> failures, <span class="m">0</span> errors, <span class="m">0</span> skips
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+3 tests, 3 assertions, 0 failures, 0 errors, 0 skips
+</code></pre></div>
 </div>
 <p>当然，我们还可以在浏览器中查看这个页面（<a href="#fig-about-us">图 3.5</a>），以防测试欺骗我们。</p>
 <div id="fig-about-us" class="figure"><img src="images/chapter3/about_us_3rd_edition.png" alt="about us 3rd edition" /><div class="figcaption"><span class="title-label">图 3.5</span>：新添加的“关于”页面（/static_pages/about）</div></div>
@@ -796,8 +799,8 @@ a template <span class="k">for </span>this request format and variant.</code></p
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>mv app/views/layouts/application.html.erb layout_file   <span class="c"># 临时改动</span>
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>mv app/views/layouts/application.html.erb layout_file   <span class="c"># 临时改动</span>
+</code></pre></div>
 </div>
 <p>在真实的应用中你不需要这么做，不过没有这个文件能让你更好地理解它的作用。</p>
 <table id="table-static-pages" class="tableblock frame-all grid-all" style="width: 100%;">
@@ -844,7 +847,7 @@ a template <span class="k">for </span>this request format and variant.</code></p
 <h5><span class="title-label">代码清单 3.23</span>：网页一般的 HTML 结构</h5>
 
 
-<div class="highlight language-html"><pre><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<div class="highlight language-html"><pre><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
 <span class="nt">&lt;html&gt;</span>
   <span class="nt">&lt;head&gt;</span>
     <span class="nt">&lt;title&gt;</span>Greeting<span class="nt">&lt;/title&gt;</span>
@@ -853,15 +856,15 @@ a template <span class="k">for </span>this request format and variant.</code></p
     <span class="nt">&lt;p&gt;</span>Hello, world!<span class="nt">&lt;/p&gt;</span>
   <span class="nt">&lt;/body&gt;</span>
 <span class="nt">&lt;/html&gt;</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p>这段代码的最顶部是文档类型声明（document type declaration，简称 doctype），作用是告诉浏览器使用哪个 HTML 版本（这里使用 <a href="http://en.wikipedia.org/wiki/HTML5">HTML5</a>）<sup>[<a id="fn-ref-9" href="#fn-9">9</a>]</sup>。随后是 <code>head</code> 部分，里面有一个 <code>title</code> 标签，其内容是“Greeting”。然后是 <code>body</code> 部分，里面有一个 <code>p</code> 标签（段落），其内容是“Hello, world!”。（缩进是可选的，HTML 不会特别对待空白，制表符和空格都会被忽略，但缩进可以让文档结构更清晰。）</p>
 <p>我们要使用 <code>assert_select</code> 方法分别为<a href="#table-static-pages">表 3.2</a> 中的每个标题编写简单的测试，然后合并到<a href="#listing-about-test">代码清单 3.15</a> 中。<code>assert_select</code> 方法的作用是检查有没有指定的 HTML 标签。这种方法有时也叫“选择符”，从方法名可以看出这一点。<sup>[<a id="fn-ref-10" href="#fn-10">10</a>]</sup></p>
 <div data-type="listing">
 
 
-<div class="highlight language-ruby"><pre><span class="n">assert_select</span> <span class="s2">"title"</span><span class="p">,</span> <span class="s2">"Home | Ruby on Rails Tutorial Sample App"</span>
-</pre></div>
+<div class="highlight language-ruby"><pre><code><span class="n">assert_select</span> <span class="s2">"title"</span><span class="p">,</span> <span class="s2">"Home | Ruby on Rails Tutorial Sample App"</span>
+</code></pre></div>
 </div>
 <p>这行代码的作用是检查有没有 <code>&lt;title&gt;</code> 标签，以及其中的内容是不是“Home | Ruby on Rails Tutorial Sample App”字符串。把这样的代码分别放到三个页面的测试中，得到的结果如<a href="#listing-title-tests">代码清单 3.24</a> 所示。</p>
 <div id="listing-title-tests" data-type="listing">
@@ -869,38 +872,38 @@ a template <span class="k">for </span>this request format and variant.</code></p
 
 <div class="source-file">test/controllers/static_pages_controller_test.rb</div>
 
-<div class="highlight language-ruby"><pre><span class="nb">require</span> <span class="s1">'test_helper'</span>
+<div class="highlight language-ruby"><pre><code><span class="nb">require</span> <span class="s1">'test_helper'</span>
 
 <span class="k">class</span> <span class="nc">StaticPagesControllerTest</span> <span class="o">&lt;</span> <span class="no">ActionDispatch</span><span class="o">::</span><span class="no">IntegrationTest</span>
 
   <span class="nb">test</span> <span class="s2">"should get home"</span> <span class="k">do</span>
     <span class="n">get</span> <span class="n">static_pages_home_url</span>
     <span class="n">assert_response</span> <span class="ss">:success</span>
-<span class="hll">    <span class="n">assert_select</span> <span class="s2">"title"</span><span class="p">,</span> <span class="s2">"Home | Ruby on Rails Tutorial Sample App"</span>
-</span>  <span class="k">end</span>
+<span class="hll">    <span class="n">assert_select</span> <span class="s2">"title"</span><span class="p">,</span> <span class="s2">"Home | Ruby on Rails Tutorial Sample App"</span></span>
+  <span class="k">end</span>
 
   <span class="nb">test</span> <span class="s2">"should get help"</span> <span class="k">do</span>
     <span class="n">get</span> <span class="n">static_pages_help_url</span>
     <span class="n">assert_response</span> <span class="ss">:success</span>
-<span class="hll">    <span class="n">assert_select</span> <span class="s2">"title"</span><span class="p">,</span> <span class="s2">"Help | Ruby on Rails Tutorial Sample App"</span>
-</span>  <span class="k">end</span>
+<span class="hll">    <span class="n">assert_select</span> <span class="s2">"title"</span><span class="p">,</span> <span class="s2">"Help | Ruby on Rails Tutorial Sample App"</span></span>
+  <span class="k">end</span>
 
   <span class="nb">test</span> <span class="s2">"should get about"</span> <span class="k">do</span>
     <span class="n">get</span> <span class="n">static_pages_about_url</span>
     <span class="n">assert_response</span> <span class="ss">:success</span>
-<span class="hll">    <span class="n">assert_select</span> <span class="s2">"title"</span><span class="p">,</span> <span class="s2">"About | Ruby on Rails Tutorial Sample App"</span>
-</span>  <span class="k">end</span>
+<span class="hll">    <span class="n">assert_select</span> <span class="s2">"title"</span><span class="p">,</span> <span class="s2">"About | Ruby on Rails Tutorial Sample App"</span></span>
+  <span class="k">end</span>
 <span class="k">end</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p>写好测试之后，应该确认一下现在测试组件是失败的（<strong class="red">RED</strong>）：</p>
 <div data-type="listing">
 <h5><span class="title-label">代码清单 3.25</span>：<strong class="red">RED</strong></h5>
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>rails <span class="nb">test</span>
-<span class="m">3</span> tests, <span class="m">6</span> assertions, <span class="m">3</span> failures, <span class="m">0</span> errors, <span class="m">0</span> skips
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+3 tests, 6 assertions, 3 failures, 0 errors, 0 skips
+</code></pre></div>
 </div>
 </section>
 <section data-type="sect2" id="adding-page-titles">
@@ -911,7 +914,7 @@ a template <span class="k">for </span>this request format and variant.</code></p
 
 <div class="source-file">app/views/static_pages/home.html.erb</div>
 
-<div class="highlight language-html"><pre><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<div class="highlight language-html"><pre><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
 <span class="nt">&lt;html&gt;</span>
   <span class="nt">&lt;head&gt;</span>
     <span class="nt">&lt;title&gt;</span>Home | Ruby on Rails Tutorial Sample App<span class="nt">&lt;/title&gt;</span>
@@ -925,17 +928,17 @@ a template <span class="k">for </span>this request format and variant.</code></p
     <span class="nt">&lt;/p&gt;</span>
   <span class="nt">&lt;/body&gt;</span>
 <span class="nt">&lt;/html&gt;</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p>修改之后的首页如<a href="#fig-home-view-full-html">图 3.6</a> 所示。<sup>[<a id="fn-ref-11" href="#fn-11">11</a>]</sup></p>
-<div id="fig-home-view-full-html" class="figure"><img src="images/chapter3/home_view_full_html.png" alt="home view full html" /><div class="figcaption"><span class="title-label">图 3.6</span>：添加标题后的首页</div></div>
+<div id="fig-home-view-full-html" class="figure"><img src="images/chapter3/home_view_full_html_4th_ed.png" alt="home view full html 4th ed" /><div class="figcaption"><span class="title-label">图 3.6</span>：添加标题后的首页</div></div>
 <p>使用类似的方式修改“帮助”页面和“关于”页面，得到的代码如<a href="#listing-help-view-full-html">代码清单 3.27</a> 和<a href="#listing-about-view-full-html">代码清单 3.28</a> 所示。</p>
 <div id="listing-help-view-full-html" data-type="listing">
 <h5><span class="title-label">代码清单 3.27</span>：具有完整 HTML 结构的“帮助”页面 <span class="red">RED</span></h5>
 
 <div class="source-file">app/views/static_pages/help.html.erb</div>
 
-<div class="highlight language-html"><pre><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<div class="highlight language-html"><pre><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
 <span class="nt">&lt;html&gt;</span>
   <span class="nt">&lt;head&gt;</span>
     <span class="nt">&lt;title&gt;</span>Help | Ruby on Rails Tutorial Sample App<span class="nt">&lt;/title&gt;</span>
@@ -952,14 +955,14 @@ a template <span class="k">for </span>this request format and variant.</code></p
     <span class="nt">&lt;/p&gt;</span>
   <span class="nt">&lt;/body&gt;</span>
 <span class="nt">&lt;/html&gt;</span>
-</pre></div>
+</code></pre></div>
 </div>
 <div id="listing-about-view-full-html" data-type="listing">
 <h5><span class="title-label">代码清单 3.28</span>：具有完整 HTML 结构的“关于”页面 <span class="green">GREEN</span></h5>
 
 <div class="source-file">app/views/static_pages/about.html.erb</div>
 
-<div class="highlight language-html"><pre><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<div class="highlight language-html"><pre><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
 <span class="nt">&lt;html&gt;</span>
   <span class="nt">&lt;head&gt;</span>
     <span class="nt">&lt;title&gt;</span>About | Ruby on Rails Tutorial Sample App<span class="nt">&lt;/title&gt;</span>
@@ -977,16 +980,16 @@ a template <span class="k">for </span>this request format and variant.</code></p
     <span class="nt">&lt;/p&gt;</span>
   <span class="nt">&lt;/body&gt;</span>
 <span class="nt">&lt;/html&gt;</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p>现在，测试组件能通过了：</p>
 <div data-type="listing">
 <h5><span class="title-label">代码清单 3.29</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>rails <span class="nb">test</span>
-<span class="m">3</span> tests, <span class="m">6</span> assertions, <span class="m">0</span> failures, <span class="m">0</span> errors, <span class="m">0</span> skips
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+3 tests, 6 assertions, 0 failures, 0 errors, 0 skips
+</code></pre></div>
 </div>
 <h5 id="exercises-adding-page-titles" class="discrete">练习</h5>
 <p>从本节开始，我们将修改应用代码，而且这些改动不会体现在以后的代码清单中。这么做是为了让没有做练习的读者能读懂正文，因为解答练习所需的代码与正文有差异。这也体现了“<a href="chapter1.html#aside-technical-sophistication">技术是复杂的</a>”。</p>
@@ -1000,33 +1003,33 @@ a template <span class="k">for </span>this request format and variant.</code></p
 
 <div class="source-file">test/controllers/static_pages_controller_test.rb</div>
 
-<div class="highlight language-ruby"><pre><span class="nb">require</span> <span class="s1">'test_helper'</span>
+<div class="highlight language-ruby"><pre><code><span class="nb">require</span> <span class="s1">'test_helper'</span>
 
 <span class="k">class</span> <span class="nc">StaticPagesControllerTest</span> <span class="o">&lt;</span> <span class="no">ActionDispatch</span><span class="o">::</span><span class="no">IntegrationTest</span>
 
-<span class="hll">  <span class="k">def</span> <span class="nf">setup</span>
-</span><span class="hll">    <span class="vi">@base_title</span> <span class="o">=</span> <span class="s2">"Ruby on Rails Tutorial Sample App"</span>
-</span><span class="hll">  <span class="k">end</span>
-</span>
+<span class="hll">  <span class="k">def</span> <span class="nf">setup</span></span>
+<span class="hll">    <span class="vi">@base_title</span> <span class="o">=</span> <span class="s2">"Ruby on Rails Tutorial Sample App"</span></span>
+<span class="hll">  <span class="k">end</span></span>
+
   <span class="nb">test</span> <span class="s2">"should get home"</span> <span class="k">do</span>
     <span class="n">get</span> <span class="n">static_pages_home_url</span>
     <span class="n">assert_response</span> <span class="ss">:success</span>
-<span class="hll">    <span class="n">assert_select</span> <span class="s2">"title"</span><span class="p">,</span> <span class="s2">"Home | </span><span class="si">#{</span><span class="vi">@base_title</span><span class="si">}</span><span class="s2">"</span>
-</span>  <span class="k">end</span>
+<span class="hll">    <span class="n">assert_select</span> <span class="s2">"title"</span><span class="p">,</span> <span class="s2">"Home | </span><span class="si">#{</span><span class="vi">@base_title</span><span class="si">}</span><span class="s2">"</span></span>
+  <span class="k">end</span>
 
   <span class="nb">test</span> <span class="s2">"should get help"</span> <span class="k">do</span>
     <span class="n">get</span> <span class="n">static_pages_help_url</span>
     <span class="n">assert_response</span> <span class="ss">:success</span>
-<span class="hll">    <span class="n">assert_select</span> <span class="s2">"title"</span><span class="p">,</span> <span class="s2">"Help | </span><span class="si">#{</span><span class="vi">@base_title</span><span class="si">}</span><span class="s2">"</span>
-</span>  <span class="k">end</span>
+<span class="hll">    <span class="n">assert_select</span> <span class="s2">"title"</span><span class="p">,</span> <span class="s2">"Help | </span><span class="si">#{</span><span class="vi">@base_title</span><span class="si">}</span><span class="s2">"</span></span>
+  <span class="k">end</span>
 
   <span class="nb">test</span> <span class="s2">"should get about"</span> <span class="k">do</span>
     <span class="n">get</span> <span class="n">static_pages_about_url</span>
     <span class="n">assert_response</span> <span class="ss">:success</span>
-<span class="hll">    <span class="n">assert_select</span> <span class="s2">"title"</span><span class="p">,</span> <span class="s2">"About | </span><span class="si">#{</span><span class="vi">@base_title</span><span class="si">}</span><span class="s2">"</span>
-</span>  <span class="k">end</span>
+<span class="hll">    <span class="n">assert_select</span> <span class="s2">"title"</span><span class="p">,</span> <span class="s2">"About | </span><span class="si">#{</span><span class="vi">@base_title</span><span class="si">}</span><span class="s2">"</span></span>
+  <span class="k">end</span>
 <span class="k">end</span>
-</pre></div>
+</code></pre></div>
 </div>
 </section>
 <section data-type="sect2" id="layouts-and-embedded-ruby">
@@ -1051,36 +1054,36 @@ a template <span class="k">for </span>this request format and variant.</code></p
 
 <div class="source-file">app/views/static_pages/home.html.erb</div>
 
-<div class="highlight language-erb"><pre><span class="hll"><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s2">"Home"</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
-</span><span class="x">&lt;!DOCTYPE html&gt;</span>
-<span class="x">&lt;html&gt;</span>
-<span class="x">  &lt;head&gt;</span>
-<span class="hll"><span class="x">    &lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"> | Ruby on Rails Tutorial Sample App&lt;/title&gt;</span>
-</span><span class="x">  &lt;/head&gt;</span>
-<span class="x">  &lt;body&gt;</span>
-<span class="x">    &lt;h1&gt;Sample App&lt;/h1&gt;</span>
-<span class="x">    &lt;p&gt;</span>
-<span class="x">      This is the home page for the</span>
-<span class="x">      &lt;a href="http://www.railstutorial.org/"&gt;Ruby on Rails Tutorial&lt;/a&gt;</span>
-<span class="x">      sample application.</span>
-<span class="x">    &lt;/p&gt;</span>
-<span class="x">  &lt;/body&gt;</span>
-<span class="x">&lt;/html&gt;</span>
-</pre></div>
+<div class="highlight language-erb"><pre><code><span class="hll"><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s2">"Home"</span><span class="p">)</span> <span class="cp">%&gt;</span></span>
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+<span class="hll">    <span class="nt">&lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">)</span> <span class="cp">%&gt;</span> | Ruby on Rails Tutorial Sample App<span class="nt">&lt;/title&gt;</span></span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;h1&gt;</span>Sample App<span class="nt">&lt;/h1&gt;</span>
+    <span class="nt">&lt;p&gt;</span>
+      This is the home page for the
+      <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://www.railstutorial.org/"</span><span class="nt">&gt;</span>Ruby on Rails Tutorial<span class="nt">&lt;/a&gt;</span>
+      sample application.
+    <span class="nt">&lt;/p&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div>
 </div>
 <p>在这段代码中我们第一次使用了嵌入式 Ruby（简称 ERb）。（现在你应该知道为什么 HTML 视图文件的扩展名是 <code>.html.erb</code> 了。）ERb 是为网页添加动态内容使用的主要模板系统。<sup>[<a id="fn-ref-12" href="#fn-12">12</a>]</sup>下面的代码</p>
 <div data-type="listing">
 
 
-<div class="highlight language-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'Home'</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
-</pre></div>
+<div class="highlight language-erb"><pre><code><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'Home'</span><span class="p">)</span> <span class="cp">%&gt;</span>
+</code></pre></div>
 </div>
 <p>通过 <code>&lt;% …​ %&gt;</code> 调用 Rails 提供的 <code>provide</code> 函数，把字符串 <code>"Home"</code> 赋给 <code>:title</code>。<sup>[<a id="fn-ref-13" href="#fn-13">13</a>]</sup>然后，在标题中，我们使用类似的符号 <code>&lt;%= …​ %&gt;</code>，通过 Ruby 的 <code>yield</code> 函数把标题插入模板中：<sup>[<a id="fn-ref-14" href="#fn-14">14</a>]</sup></p>
 <div data-type="listing">
 
 
-<div class="highlight language-erb"><pre><span class="x">&lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"> | Ruby on Rails Tutorial Sample App&lt;/title&gt;</span>
-</pre></div>
+<div class="highlight language-erb"><pre><code><span class="nt">&lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">)</span> <span class="cp">%&gt;</span> | Ruby on Rails Tutorial Sample App<span class="nt">&lt;/title&gt;</span>
+</code></pre></div>
 </div>
 <p>（这两种嵌入 Ruby 代码的方式区别在于，<code>&lt;% …​ %&gt;</code> 只<strong>执行</strong>其中的代码；<code>&lt;%= …​ %&gt;</code> 也会执行其中的代码，而且会把执行的结果<strong>插入</strong>模板中。）最终得到的页面跟以前一样，不过，现在标题中变动的部分通过 ERb 动态生成。</p>
 <p>我们可以运行前一节编写的测试确认一下。现在，测试还能通过：</p>
@@ -1088,9 +1091,9 @@ a template <span class="k">for </span>this request format and variant.</code></p
 <h5><span class="title-label">代码清单 3.32</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>rails <span class="nb">test</span>
-<span class="m">3</span> tests, <span class="m">6</span> assertions, <span class="m">0</span> failures, <span class="m">0</span> errors, <span class="m">0</span> skips
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+3 tests, 6 assertions, 0 failures, 0 errors, 0 skips
+</code></pre></div>
 </div>
 <p>然后，按照相同的方式修改“帮助”（<a href="#listing-help-view-erb-title">代码清单 3.33</a>）和“关于”页面（<a href="#listing-about-view-erb-title">代码清单 3.34</a>）。</p>
 <div id="listing-help-view-erb-title" data-type="listing">
@@ -1098,82 +1101,82 @@ a template <span class="k">for </span>this request format and variant.</code></p
 
 <div class="source-file">app/views/static_pages/help.html.erb</div>
 
-<div class="highlight language-erb"><pre><span class="hll"><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s2">"Help"</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
-</span><span class="x">&lt;!DOCTYPE html&gt;</span>
-<span class="x">&lt;html&gt;</span>
-<span class="x">  &lt;head&gt;</span>
-<span class="hll"><span class="x">    &lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"> | Ruby on Rails Tutorial Sample App&lt;/title&gt;</span>
-</span><span class="x">  &lt;/head&gt;</span>
-<span class="x">  &lt;body&gt;</span>
-<span class="x">    &lt;h1&gt;Help&lt;/h1&gt;</span>
-<span class="x">    &lt;p&gt;</span>
-<span class="x">      Get help on the Ruby on Rails Tutorial at the</span>
-<span class="x">      &lt;a href="http://www.railstutorial.org/help"&gt;Rails Tutorial help</span>
-<span class="x">      section&lt;/a&gt;.</span>
-<span class="x">      To get help on this sample app, see the</span>
-<span class="x">      &lt;a href="http://www.railstutorial.org/book"&gt;&lt;em&gt;Ruby on Rails</span>
-<span class="x">      Tutorial&lt;/em&gt; book&lt;/a&gt;.</span>
-<span class="x">    &lt;/p&gt;</span>
-<span class="x">  &lt;/body&gt;</span>
-<span class="x">&lt;/html&gt;</span>
-</pre></div>
+<div class="highlight language-erb"><pre><code><span class="hll"><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s2">"Help"</span><span class="p">)</span> <span class="cp">%&gt;</span></span>
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+<span class="hll">    <span class="nt">&lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">)</span> <span class="cp">%&gt;</span> | Ruby on Rails Tutorial Sample App<span class="nt">&lt;/title&gt;</span></span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;h1&gt;</span>Help<span class="nt">&lt;/h1&gt;</span>
+    <span class="nt">&lt;p&gt;</span>
+      Get help on the Ruby on Rails Tutorial at the
+      <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://www.railstutorial.org/help"</span><span class="nt">&gt;</span>Rails Tutorial help
+      section<span class="nt">&lt;/a&gt;</span>.
+      To get help on this sample app, see the
+      <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://www.railstutorial.org/book"</span><span class="nt">&gt;&lt;em&gt;</span>Ruby on Rails
+      Tutorial<span class="nt">&lt;/em&gt;</span> book<span class="nt">&lt;/a&gt;</span>.
+    <span class="nt">&lt;/p&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div>
 </div>
 <div id="listing-about-view-erb-title" data-type="listing">
 <h5><span class="title-label">代码清单 3.34</span>：标题中使用了嵌入式 Ruby 代码的“关于”页面视图 <span class="green">GREEN</span></h5>
 
 <div class="source-file">app/views/static_pages/about.html.erb</div>
 
-<div class="highlight language-erb"><pre><span class="hll"><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s2">"About"</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
-</span><span class="x">&lt;!DOCTYPE html&gt;</span>
-<span class="x">&lt;html&gt;</span>
-<span class="x">  &lt;head&gt;</span>
-<span class="hll"><span class="x">    &lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"> | Ruby on Rails Tutorial Sample App&lt;/title&gt;</span>
-</span><span class="x">  &lt;/head&gt;</span>
-<span class="x">  &lt;body&gt;</span>
-<span class="x">    &lt;h1&gt;About&lt;/h1&gt;</span>
-<span class="x">    &lt;p&gt;</span>
-<span class="x">      The &lt;a href="http://www.railstutorial.org/"&gt;&lt;em&gt;Ruby on Rails</span>
-<span class="x">      Tutorial&lt;/em&gt;&lt;/a&gt; is a</span>
-<span class="x">      &lt;a href="http://www.railstutorial.org/book"&gt;book&lt;/a&gt; and</span>
-<span class="x">      &lt;a href="http://screencasts.railstutorial.org/"&gt;screencast series&lt;/a&gt;</span>
-<span class="x">      to teach web development with</span>
-<span class="x">      &lt;a href="http://rubyonrails.org/"&gt;Ruby on Rails&lt;/a&gt;.</span>
-<span class="x">      This is the sample application for the tutorial.</span>
-<span class="x">    &lt;/p&gt;</span>
-<span class="x">  &lt;/body&gt;</span>
-<span class="x">&lt;/html&gt;</span>
-</pre></div>
+<div class="highlight language-erb"><pre><code><span class="hll"><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s2">"About"</span><span class="p">)</span> <span class="cp">%&gt;</span></span>
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+<span class="hll">    <span class="nt">&lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">)</span> <span class="cp">%&gt;</span> | Ruby on Rails Tutorial Sample App<span class="nt">&lt;/title&gt;</span></span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;h1&gt;</span>About<span class="nt">&lt;/h1&gt;</span>
+    <span class="nt">&lt;p&gt;</span>
+      The <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://www.railstutorial.org/"</span><span class="nt">&gt;&lt;em&gt;</span>Ruby on Rails
+      Tutorial<span class="nt">&lt;/em&gt;&lt;/a&gt;</span> is a
+      <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://www.railstutorial.org/book"</span><span class="nt">&gt;</span>book<span class="nt">&lt;/a&gt;</span> and
+      <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://screencasts.railstutorial.org/"</span><span class="nt">&gt;</span>screencast series<span class="nt">&lt;/a&gt;</span>
+      to teach web development with
+      <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://rubyonrails.org/"</span><span class="nt">&gt;</span>Ruby on Rails<span class="nt">&lt;/a&gt;</span>.
+      This is the sample application for the tutorial.
+    <span class="nt">&lt;/p&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div>
 </div>
 <p>至此，我们把页面标题中的变动部分都换成了 ERb。现在，各个页面的内容类似下面这样：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s2">"The Title"</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">&lt;!DOCTYPE html&gt;</span>
-<span class="x">&lt;html&gt;</span>
-<span class="x">  &lt;head&gt;</span>
-<span class="x">    &lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"> | Ruby on Rails Tutorial Sample App&lt;/title&gt;</span>
-<span class="x">  &lt;/head&gt;</span>
-<span class="x">  &lt;body&gt;</span>
-<span class="x">    Contents</span>
-<span class="x">  &lt;/body&gt;</span>
-<span class="x">&lt;/html&gt;</span>
-</pre></div>
+<div class="highlight language-erb"><pre><code><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s2">"The Title"</span><span class="p">)</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">)</span> <span class="cp">%&gt;</span> | Ruby on Rails Tutorial Sample App<span class="nt">&lt;/title&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    Contents
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div>
 </div>
 <p>也就是说，所有的页面结构都是一样的，包括 <code>title</code> 标签中的内容，只有 <code>body</code> 标签中的内容有些差别。</p>
 <p>为了提取出共用的结构，Rails 提供了一个特别的布局文件，名为 <code>application.html.erb</code>。我们在 <a href="#slightly-dynamic-pages">3.4 节</a>重命名了这个文件，现在改回来：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>mv layout_file app/views/layouts/application.html.erb
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>mv layout_file app/views/layouts/application.html.erb
+</code></pre></div>
 </div>
 <p>若想使用这个布局，我们要把默认的标题换成前面几段代码中使用的嵌入式 Ruby：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-erb"><pre><span class="x">&lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"> | Ruby on Rails Tutorial Sample App&lt;/title&gt;</span>
-</pre></div>
+<div class="highlight language-erb"><pre><code><span class="nt">&lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">)</span> <span class="cp">%&gt;</span> | Ruby on Rails Tutorial Sample App<span class="nt">&lt;/title&gt;</span>
+</code></pre></div>
 </div>
 <p>修改后得到的布局文件如<a href="#listing-application-layout">代码清单 3.35</a> 所示。</p>
 <div id="listing-application-layout" data-type="listing">
@@ -1181,38 +1184,38 @@ a template <span class="k">for </span>this request format and variant.</code></p
 
 <div class="source-file">app/views/layouts/application.html.erb</div>
 
-<div class="highlight language-erb"><pre><span class="x">&lt;!DOCTYPE html&gt;</span>
-<span class="x">&lt;html&gt;</span>
-<span class="x">  &lt;head&gt;</span>
-<span class="hll"><span class="x">    &lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"> | Ruby on Rails Tutorial Sample App&lt;/title&gt;</span>
-</span><span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">csrf_meta_tags</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span>    <span class="s1">'application'</span><span class="p">,</span> <span class="ss">media</span><span class="p">:</span> <span class="s1">'all'</span><span class="p">,</span>
-                                              <span class="s1">'data-turbolinks-track'</span><span class="p">:</span> <span class="s1">'reload'</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">javascript_include_tag</span> <span class="s1">'application'</span><span class="p">,</span> <span class="s1">'data-turbolinks-track'</span><span class="p">:</span> <span class="s1">'reload'</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">  &lt;/head&gt;</span>
+<div class="highlight language-erb"><pre><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+<span class="hll">    <span class="nt">&lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">)</span> <span class="cp">%&gt;</span> | Ruby on Rails Tutorial Sample App<span class="nt">&lt;/title&gt;</span></span>
+    <span class="cp">&lt;%=</span> <span class="n">csrf_meta_tags</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span>    <span class="s1">'application'</span><span class="p">,</span> <span class="ss">media: </span><span class="s1">'all'</span><span class="p">,</span>
+                                              <span class="s1">'data-turbolinks-track'</span><span class="p">:</span> <span class="s1">'reload'</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">javascript_include_tag</span> <span class="s1">'application'</span><span class="p">,</span> <span class="s1">'data-turbolinks-track'</span><span class="p">:</span> <span class="s1">'reload'</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
 
-<span class="x">  &lt;body&gt;</span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="k">yield</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">  &lt;/body&gt;</span>
-<span class="x">&lt;/html&gt;</span>
-</pre></div>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="k">yield</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div>
 </div>
 <p>注意，其中有一行比较特殊：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-erb"><pre><span class="cp">&lt;%=</span> <span class="k">yield</span> <span class="cp">%&gt;</span><span class="x"></span>
-</pre></div>
+<div class="highlight language-erb"><pre><code><span class="cp">&lt;%=</span> <span class="k">yield</span> <span class="cp">%&gt;</span>
+</code></pre></div>
 </div>
 <p>这行代码的作用是，把每个页面的内容插入布局中。没必要了解它的具体实现过程，我们只需知道，在布局中使用这行代码后，访问 /static_pages/home 时会把 <code>home.html.erb</code> 中的内容转换成 HTML，然后插入 <code>&lt;%= yield %&gt;</code> 所在的位置。</p>
 <p>还要注意，默认的 Rails 布局文件中有下面这几行代码：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-erb"><pre><span class="cp">&lt;%=</span> <span class="n">csrf_meta_tags</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span> <span class="o">.</span><span class="n">.</span><span class="o">.</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="cp">&lt;%=</span> <span class="n">javascript_include_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="o">.</span><span class="n">.</span><span class="o">.</span> <span class="cp">%&gt;</span><span class="x"></span>
-</pre></div>
+<div class="highlight language-erb"><pre><code><span class="cp">&lt;%=</span> <span class="n">csrf_meta_tags</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span> <span class="p">.</span><span class="nf">.</span><span class="o">.</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%=</span> <span class="n">javascript_include_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="p">.</span><span class="nf">.</span><span class="o">.</span> <span class="cp">%&gt;</span>
+</code></pre></div>
 </div>
 <p>这几行代码的作用是，引入应用的样式表和 JavaScript 文件（Asset Pipeline 的一部分，<a href="chapter5.html#the-asset-pipeline">5.2.1 节</a>会介绍）；Rails 提供的 <code>csrf_meta_tags</code> 方法，作用是避免跨站请求伪造（Cross-Site Request Forgery，简称 CSRF，一种恶意网络攻击）。</p>
 <p>现在，<a href="#listing-home-view-erb-title">代码清单 3.31</a>、<a href="#listing-help-view-erb-title">代码清单 3.33</a> 和 <a href="#listing-about-view-erb-title">代码清单 3.34</a> 的内容还是和布局文件中类似的 HTML 结构，所以我们要把完整的结构删除，只保留需要的内容。清理后的视图如<a href="#listing-home-view-interior">代码清单 3.36</a>、<a href="#listing-help-view-interior">代码清单 3.37</a> 和 <a href="#listing-about-view-interior">代码清单 3.38</a> 所示。</p>
@@ -1221,48 +1224,48 @@ a template <span class="k">for </span>this request format and variant.</code></p
 
 <div class="source-file">app/views/static_pages/home.html.erb</div>
 
-<div class="highlight language-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s2">"Home"</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">&lt;h1&gt;Sample App&lt;/h1&gt;</span>
-<span class="x">&lt;p&gt;</span>
-<span class="x">  This is the home page for the</span>
-<span class="x">  &lt;a href="http://www.railstutorial.org/"&gt;Ruby on Rails Tutorial&lt;/a&gt;</span>
-<span class="x">  sample application.</span>
-<span class="x">&lt;/p&gt;</span>
-</pre></div>
+<div class="highlight language-erb"><pre><code><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s2">"Home"</span><span class="p">)</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;h1&gt;</span>Sample App<span class="nt">&lt;/h1&gt;</span>
+<span class="nt">&lt;p&gt;</span>
+  This is the home page for the
+  <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://www.railstutorial.org/"</span><span class="nt">&gt;</span>Ruby on Rails Tutorial<span class="nt">&lt;/a&gt;</span>
+  sample application.
+<span class="nt">&lt;/p&gt;</span>
+</code></pre></div>
 </div>
 <div id="listing-help-view-interior" data-type="listing">
 <h5><span class="title-label">代码清单 3.37</span>：去除完整的 HTML 结构后的“帮助”页面 <span class="green">GREEN</span></h5>
 
 <div class="source-file">app/views/static_pages/help.html.erb</div>
 
-<div class="highlight language-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s2">"Help"</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">&lt;h1&gt;Help&lt;/h1&gt;</span>
-<span class="x">&lt;p&gt;</span>
-<span class="x">  Get help on the Ruby on Rails Tutorial at the</span>
-<span class="x">  &lt;a href="http://www.railstutorial.org/help"&gt;Rails Tutorial help section&lt;/a&gt;.</span>
-<span class="x">  To get help on this sample app, see the</span>
-<span class="x">  &lt;a href="http://www.railstutorial.org/book"&gt;&lt;em&gt;Ruby on Rails Tutorial&lt;/em&gt;</span>
-<span class="x">  book&lt;/a&gt;.</span>
-<span class="x">&lt;/p&gt;</span>
-</pre></div>
+<div class="highlight language-erb"><pre><code><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s2">"Help"</span><span class="p">)</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;h1&gt;</span>Help<span class="nt">&lt;/h1&gt;</span>
+<span class="nt">&lt;p&gt;</span>
+  Get help on the Ruby on Rails Tutorial at the
+  <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://www.railstutorial.org/help"</span><span class="nt">&gt;</span>Rails Tutorial help section<span class="nt">&lt;/a&gt;</span>.
+  To get help on this sample app, see the
+  <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://www.railstutorial.org/book"</span><span class="nt">&gt;&lt;em&gt;</span>Ruby on Rails Tutorial<span class="nt">&lt;/em&gt;</span>
+  book<span class="nt">&lt;/a&gt;</span>.
+<span class="nt">&lt;/p&gt;</span>
+</code></pre></div>
 </div>
 <div id="listing-about-view-interior" data-type="listing">
 <h5><span class="title-label">代码清单 3.38</span>：去除完整的 HTML 结构后的“关于”页面 <span class="green">GREEN</span></h5>
 
 <div class="source-file">app/views/static_pages/about.html.erb</div>
 
-<div class="highlight language-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s2">"About"</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">&lt;h1&gt;About&lt;/h1&gt;</span>
-<span class="x">&lt;p&gt;</span>
-<span class="x">  The &lt;a href="http://www.railstutorial.org/"&gt;&lt;em&gt;Ruby on Rails</span>
-<span class="x">  Tutorial&lt;/em&gt;&lt;/a&gt; is a</span>
-<span class="x">  &lt;a href="http://www.railstutorial.org/book"&gt;book&lt;/a&gt; and</span>
-<span class="x">  &lt;a href="http://screencasts.railstutorial.org/"&gt;screencast series&lt;/a&gt;</span>
-<span class="x">  to teach web development with</span>
-<span class="x">  &lt;a href="http://rubyonrails.org/"&gt;Ruby on Rails&lt;/a&gt;.</span>
-<span class="x">  This is the sample application for the tutorial.</span>
-<span class="x">&lt;/p&gt;</span>
-</pre></div>
+<div class="highlight language-erb"><pre><code><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s2">"About"</span><span class="p">)</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;h1&gt;</span>About<span class="nt">&lt;/h1&gt;</span>
+<span class="nt">&lt;p&gt;</span>
+  The <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://www.railstutorial.org/"</span><span class="nt">&gt;&lt;em&gt;</span>Ruby on Rails
+  Tutorial<span class="nt">&lt;/em&gt;&lt;/a&gt;</span> is a
+  <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://www.railstutorial.org/book"</span><span class="nt">&gt;</span>book<span class="nt">&lt;/a&gt;</span> and
+  <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://screencasts.railstutorial.org/"</span><span class="nt">&gt;</span>screencast series<span class="nt">&lt;/a&gt;</span>
+  to teach web development with
+  <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://rubyonrails.org/"</span><span class="nt">&gt;</span>Ruby on Rails<span class="nt">&lt;/a&gt;</span>.
+  This is the sample application for the tutorial.
+<span class="nt">&lt;/p&gt;</span>
+</code></pre></div>
 </div>
 <p>修改这几个视图后，首页、“帮助”页面和“关于”页面显示的内容还和之前一样，但是没有多少重复内容了。</p>
 <p>经验告诉我们，即便是十分简单的重构，也容易出错，所以才要认真编写测试组件。有了测试，我们就无需手动检查每个页面，看有没有错误。初期阶段手动检查还不算难，但是当应用不断变大之后，情况就不同了。我们只需验证测试组件是否还能通过即可：</p>
@@ -1270,9 +1273,9 @@ a template <span class="k">for </span>this request format and variant.</code></p
 <h5><span class="title-label">代码清单 3.39</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>rails <span class="nb">test</span>
-<span class="m">3</span> tests, <span class="m">6</span> assertions, <span class="m">0</span> failures, <span class="m">0</span> errors, <span class="m">0</span> skips
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+3 tests, 6 assertions, 0 failures, 0 errors, 0 skips
+</code></pre></div>
 </div>
 <p>测试不能证明代码完全正确，但至少能提高正确的可能性，而且还提供了安全防护措施，能避免以后出问题。</p>
 <h5 id="exercises-layouts-and-embedded-ruby" class="discrete">练习</h5>
@@ -1286,13 +1289,13 @@ a template <span class="k">for </span>this request format and variant.</code></p
 
 <div class="source-file">app/views/static_pages/contact.html.erb</div>
 
-<div class="highlight language-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s2">"Contact"</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">&lt;h1&gt;Contact&lt;/h1&gt;</span>
-<span class="x">&lt;p&gt;</span>
-<span class="x">  Contact the Ruby on Rails Tutorial about the sample app at the</span>
-<span class="x">  &lt;a href="http://www.railstutorial.org/contact"&gt;contact page&lt;/a&gt;.</span>
-<span class="x">&lt;/p&gt;</span>
-</pre></div>
+<div class="highlight language-erb"><pre><code><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s2">"Contact"</span><span class="p">)</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;h1&gt;</span>Contact<span class="nt">&lt;/h1&gt;</span>
+<span class="nt">&lt;p&gt;</span>
+  Contact the Ruby on Rails Tutorial about the sample app at the
+  <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://www.railstutorial.org/contact"</span><span class="nt">&gt;</span>contact page<span class="nt">&lt;/a&gt;</span>.
+<span class="nt">&lt;/p&gt;</span>
+</code></pre></div>
 </div>
 </section>
 <section data-type="sect2" id="setting-the-root-route">
@@ -1301,15 +1304,15 @@ a template <span class="k">for </span>this request format and variant.</code></p
 <div data-type="listing">
 
 
-<div class="highlight language-ruby"><pre><span class="n">root</span> <span class="s1">'application#hello'</span>
-</pre></div>
+<div class="highlight language-ruby"><pre><code><span class="n">root</span> <span class="s1">'application#hello'</span>
+</code></pre></div>
 </div>
 <p>改成</p>
 <div data-type="listing">
 
 
-<div class="highlight language-ruby"><pre><span class="n">root</span> <span class="s1">'static_pages#home'</span>
-</pre></div>
+<div class="highlight language-ruby"><pre><code><span class="n">root</span> <span class="s1">'static_pages#home'</span>
+</code></pre></div>
 </div>
 <p>这样对 / 的请求就交给 <code>StaticPages</code> 控制器的 <code>home</code> 动作处理了。修改路由后，首页如<a href="#fig-home-root-route">图 3.7</a> 所示。</p>
 <div id="fig-home-root-route" class="figure"><img src="images/chapter3/home_root_route.png" alt="home root route" /><div class="figcaption"><span class="title-label">图 3.7</span>：在根路由上显示的首页</div></div>
@@ -1318,13 +1321,13 @@ a template <span class="k">for </span>this request format and variant.</code></p
 
 <div class="source-file">config/routes.rb</div>
 
-<div class="highlight language-ruby"><pre><span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
-<span class="hll">  <span class="n">root</span> <span class="s1">'static_pages#home'</span>
-</span>  <span class="n">get</span>  <span class="s1">'static_pages/home'</span>
+<div class="highlight language-ruby"><pre><code><span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
+<span class="hll">  <span class="n">root</span> <span class="s1">'static_pages#home'</span></span>
+  <span class="n">get</span>  <span class="s1">'static_pages/home'</span>
   <span class="n">get</span>  <span class="s1">'static_pages/help'</span>
   <span class="n">get</span>  <span class="s1">'static_pages/about'</span>
 <span class="k">end</span>
-</pre></div>
+</code></pre></div>
 </div>
 <h5 id="exercises-setting-the-root-route" class="discrete">练习</h5>
 <ol class="arabic">
@@ -1340,15 +1343,15 @@ a template <span class="k">for </span>this request format and variant.</code></p
 
 <div class="source-file">test/controllers/static_pages_controller_test.rb</div>
 
-<div class="highlight language-ruby"><pre><span class="nb">require</span> <span class="s1">'test_helper'</span>
+<div class="highlight language-ruby"><pre><code><span class="nb">require</span> <span class="s1">'test_helper'</span>
 
 <span class="k">class</span> <span class="nc">StaticPagesControllerTest</span> <span class="o">&lt;</span> <span class="no">ActionDispatch</span><span class="o">::</span><span class="no">IntegrationTest</span>
 
-<span class="hll">  <span class="nb">test</span> <span class="s2">"should get root"</span> <span class="k">do</span>
-</span><span class="hll">    <span class="n">get</span> <span class="no">FILL_IN</span>
-</span><span class="hll">    <span class="n">assert_response</span> <span class="no">FILL_IN</span>
-</span><span class="hll">  <span class="k">end</span>
-</span>
+<span class="hll">  <span class="nb">test</span> <span class="s2">"should get root"</span> <span class="k">do</span></span>
+<span class="hll">    <span class="n">get</span> <span class="no">FILL_IN</span></span>
+<span class="hll">    <span class="n">assert_response</span> <span class="no">FILL_IN</span></span>
+<span class="hll">  <span class="k">end</span></span>
+
   <span class="nb">test</span> <span class="s2">"should get home"</span> <span class="k">do</span>
     <span class="n">get</span> <span class="n">static_pages_home_url</span>
     <span class="n">assert_response</span> <span class="ss">:success</span>
@@ -1364,20 +1367,20 @@ a template <span class="k">for </span>this request format and variant.</code></p
     <span class="n">assert_response</span> <span class="ss">:success</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</pre></div>
+</code></pre></div>
 </div>
 <div id="listing-home-root-route-commented-out" data-type="listing">
 <h5><span class="title-label">代码清单 3.43</span>：注释掉根路由，让测试失败 <span class="red">RED</span></h5>
 
 <div class="source-file">config/routes.rb</div>
 
-<div class="highlight language-ruby"><pre><span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
-<span class="hll"><span class="c1">#   root 'static_pages#home'</span>
-</span>  <span class="n">get</span>  <span class="s1">'static_pages/home'</span>
+<div class="highlight language-ruby"><pre><code><span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
+<span class="hll"><span class="c1">#   root 'static_pages#home'</span></span>
+  <span class="n">get</span>  <span class="s1">'static_pages/home'</span>
   <span class="n">get</span>  <span class="s1">'static_pages/help'</span>
   <span class="n">get</span>  <span class="s1">'static_pages/about'</span>
 <span class="k">end</span>
-</pre></div>
+</code></pre></div>
 </div>
 </section>
 </section>
@@ -1388,32 +1391,32 @@ a template <span class="k">for </span>this request format and variant.</code></p
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>git add -A
-<span class="nv">$ </span>git commit -m <span class="s2">"Finish static pages"</span>
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git add -A
+<span class="gp">$ </span>git commit -m <span class="s2">"Finish static pages"</span>
+</code></pre></div>
 </div>
 <p>然后，使用 <a href="chapter1.html#git-commands">1.4.4 节</a>介绍的方法，把改动合并到主分支中：<sup>[<a id="fn-ref-16" href="#fn-16">16</a>]</sup></p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>git checkout master
-<span class="nv">$ </span>git merge static-pages
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git checkout master
+<span class="gp">$ </span>git merge static-pages
+</code></pre></div>
 </div>
 <p>每次完成一些工作后，最好把代码推送到远程仓库中（如果你按照 <a href="chapter1.html#bitbucket">1.4.3 节</a>中的步骤做了，远程仓库在 Bitbucket 中）：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>git push
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git push
+</code></pre></div>
 </div>
 <p>我还建议你把这个应用部署到 Heroku 中：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>rails <span class="nb">test</span>
-<span class="nv">$ </span>git push heroku
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<span class="gp">$ </span>git push heroku
+</code></pre></div>
 </div>
 <p>在部署之前先运行测试组件是个好习惯。</p>
 <section data-type="sect2" id="mostly-static-pages-learned">
@@ -1450,8 +1453,8 @@ a template <span class="k">for </span>this request format and variant.</code></p
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>git checkout master
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git checkout master
+</code></pre></div>
 </div>
 <section data-type="sect2" id="minitest-reporters">
 <h2><span class="title-label">3.6.1</span> MiniTest 报告程序</h2>
@@ -1461,19 +1464,19 @@ a template <span class="k">for </span>this request format and variant.</code></p
 
 <div class="source-file">test/test_helper.rb</div>
 
-<div class="highlight language-ruby"><pre><span class="no">ENV</span><span class="o">[</span><span class="s1">'RAILS_ENV'</span><span class="o">]</span> <span class="o">||=</span> <span class="s1">'test'</span>
-<span class="nb">require</span> <span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="s1">'../../config/environment'</span><span class="p">,</span> <span class="bp">__FILE__</span><span class="p">)</span>
+<div class="highlight language-ruby"><pre><code><span class="no">ENV</span><span class="p">[</span><span class="s1">'RAILS_ENV'</span><span class="p">]</span> <span class="o">||=</span> <span class="s1">'test'</span>
+<span class="nb">require</span> <span class="no">File</span><span class="p">.</span><span class="nf">expand_path</span><span class="p">(</span><span class="s1">'../../config/environment'</span><span class="p">,</span> <span class="kp">__FILE__</span><span class="p">)</span>
 <span class="nb">require</span> <span class="s1">'rails/test_help'</span>
-<span class="hll"><span class="nb">require</span> <span class="s2">"minitest/reporters"</span>
-</span><span class="hll"><span class="no">Minitest</span><span class="o">::</span><span class="no">Reporters</span><span class="o">.</span><span class="n">use!</span>
-</span>
+<span class="hll"><span class="nb">require</span> <span class="s2">"minitest/reporters"</span></span>
+<span class="hll"><span class="no">Minitest</span><span class="o">::</span><span class="no">Reporters</span><span class="p">.</span><span class="nf">use!</span></span>
+
 <span class="k">class</span> <span class="nc">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
   <span class="c1"># Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.</span>
   <span class="n">fixtures</span> <span class="ss">:all</span>
 
   <span class="c1"># Add more helper methods to be used by all tests here...</span>
 <span class="k">end</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p>修改后，在云端 IDE 中显示的效果如<a href="#fig-red-to-green">图 3.8</a> 所示。</p>
 <div id="fig-red-to-green" class="figure"><img src="images/chapter3/red_to_green.png" alt="red to green" /><div class="figcaption"><span class="title-label">图 3.8</span>：在云端 IDE 中测试由红变绿</div></div>
@@ -1485,10 +1488,10 @@ a template <span class="k">for </span>this request format and variant.</code></p
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>guard init
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>bundle <span class="nb">exec </span>guard init
 Writing new Guardfile to /home/ubuntu/workspace/sample_app/Guardfile
 00:51:32 - INFO - minitest guard added to Guardfile, feel free to edit it
-</pre></div>
+</code></pre></div>
 </div>
 <p>然后，编辑生成的 <code>Guardfile</code> 文件，让 Guard 在集成测试和视图发生变化后运行正确的测试，如<a href="#listing-guardfile">代码清单 3.45</a> 所示。（这个文件的内容很长，而且需要高级知识，所以我建议直接复制粘贴。）</p>
 <p>注意：目前，Guard 和 Spring 之间的交互有问题，每次都会运行全部测试。我会关注这个问题，等解决后再更新这一节。</p>
@@ -1496,23 +1499,23 @@ Writing new Guardfile to /home/ubuntu/workspace/sample_app/Guardfile
 <h5><span class="title-label">代码清单 3.45</span>：修改后的 <code>Guardfile</code> 文件</h5>
 
 
-<div class="highlight language-ruby"><pre><span class="c1"># Defines the matching rules for Guard.</span>
-<span class="hll"><span class="n">guard</span> <span class="ss">:minitest</span><span class="p">,</span> <span class="ss">spring</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">all_on_start</span><span class="p">:</span> <span class="kp">false</span> <span class="k">do</span>
-</span>  <span class="n">watch</span><span class="p">(</span><span class="sr">%r{^test/(.*)/?(.*)_test\.rb$}</span><span class="p">)</span>
+<div class="highlight language-ruby"><pre><code><span class="c1"># Defines the matching rules for Guard.</span>
+<span class="hll"><span class="n">guard</span> <span class="ss">:minitest</span><span class="p">,</span> <span class="ss">spring: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">all_on_start: </span><span class="kp">false</span> <span class="k">do</span></span>
+  <span class="n">watch</span><span class="p">(</span><span class="sr">%r{^test/(.*)/?(.*)_test</span><span class="se">\.</span><span class="sr">rb$}</span><span class="p">)</span>
   <span class="n">watch</span><span class="p">(</span><span class="s1">'test/test_helper.rb'</span><span class="p">)</span> <span class="p">{</span> <span class="s1">'test'</span> <span class="p">}</span>
   <span class="n">watch</span><span class="p">(</span><span class="s1">'config/routes.rb'</span><span class="p">)</span>    <span class="p">{</span> <span class="n">integration_tests</span> <span class="p">}</span>
-  <span class="n">watch</span><span class="p">(</span><span class="sr">%r{^app/models/(.*?)\.rb$}</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">matches</span><span class="o">|</span>
-    <span class="s2">"test/models/</span><span class="si">#{</span><span class="n">matches</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="si">}</span><span class="s2">_test.rb"</span>
+  <span class="n">watch</span><span class="p">(</span><span class="sr">%r{^app/models/(.*?)</span><span class="se">\.</span><span class="sr">rb$}</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">matches</span><span class="o">|</span>
+    <span class="s2">"test/models/</span><span class="si">#{</span><span class="n">matches</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">_test.rb"</span>
   <span class="k">end</span>
-  <span class="n">watch</span><span class="p">(</span><span class="sr">%r{^app/controllers/(.*?)_controller\.rb$}</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">matches</span><span class="o">|</span>
-    <span class="n">resource_tests</span><span class="p">(</span><span class="n">matches</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">)</span>
+  <span class="n">watch</span><span class="p">(</span><span class="sr">%r{^app/controllers/(.*?)_controller</span><span class="se">\.</span><span class="sr">rb$}</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">matches</span><span class="o">|</span>
+    <span class="n">resource_tests</span><span class="p">(</span><span class="n">matches</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
   <span class="k">end</span>
-  <span class="n">watch</span><span class="p">(</span><span class="sr">%r{^app/views/([^/]*?)/.*\.html\.erb$}</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">matches</span><span class="o">|</span>
-    <span class="o">[</span><span class="s2">"test/controllers/</span><span class="si">#{</span><span class="n">matches</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="si">}</span><span class="s2">_controller_test.rb"</span><span class="o">]</span> <span class="o">+</span>
-    <span class="n">integration_tests</span><span class="p">(</span><span class="n">matches</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">)</span>
+  <span class="n">watch</span><span class="p">(</span><span class="sr">%r{^app/views/([^/]*?)/.*</span><span class="se">\.</span><span class="sr">html</span><span class="se">\.</span><span class="sr">erb$}</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">matches</span><span class="o">|</span>
+    <span class="p">[</span><span class="s2">"test/controllers/</span><span class="si">#{</span><span class="n">matches</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">_controller_test.rb"</span><span class="p">]</span> <span class="o">+</span>
+    <span class="n">integration_tests</span><span class="p">(</span><span class="n">matches</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
   <span class="k">end</span>
-  <span class="n">watch</span><span class="p">(</span><span class="sr">%r{^app/helpers/(.*?)_helper\.rb$}</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">matches</span><span class="o">|</span>
-    <span class="n">integration_tests</span><span class="p">(</span><span class="n">matches</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">)</span>
+  <span class="n">watch</span><span class="p">(</span><span class="sr">%r{^app/helpers/(.*?)_helper</span><span class="se">\.</span><span class="sr">rb$}</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">matches</span><span class="o">|</span>
+    <span class="n">integration_tests</span><span class="p">(</span><span class="n">matches</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
   <span class="k">end</span>
   <span class="n">watch</span><span class="p">(</span><span class="s1">'app/views/layouts/application.html.erb'</span><span class="p">)</span> <span class="k">do</span>
     <span class="s1">'test/integration/site_layout_test.rb'</span>
@@ -1521,24 +1524,24 @@ Writing new Guardfile to /home/ubuntu/workspace/sample_app/Guardfile
     <span class="n">integration_tests</span> <span class="o">&lt;&lt;</span> <span class="s1">'test/helpers/sessions_helper_test.rb'</span>
   <span class="k">end</span>
   <span class="n">watch</span><span class="p">(</span><span class="s1">'app/controllers/sessions_controller.rb'</span><span class="p">)</span> <span class="k">do</span>
-    <span class="o">[</span><span class="s1">'test/controllers/sessions_controller_test.rb'</span><span class="p">,</span>
-     <span class="s1">'test/integration/users_login_test.rb'</span><span class="o">]</span>
+    <span class="p">[</span><span class="s1">'test/controllers/sessions_controller_test.rb'</span><span class="p">,</span>
+     <span class="s1">'test/integration/users_login_test.rb'</span><span class="p">]</span>
   <span class="k">end</span>
   <span class="n">watch</span><span class="p">(</span><span class="s1">'app/controllers/account_activations_controller.rb'</span><span class="p">)</span> <span class="k">do</span>
     <span class="s1">'test/integration/users_signup_test.rb'</span>
   <span class="k">end</span>
   <span class="n">watch</span><span class="p">(</span><span class="sr">%r{app/views/users/*}</span><span class="p">)</span> <span class="k">do</span>
     <span class="n">resource_tests</span><span class="p">(</span><span class="s1">'users'</span><span class="p">)</span> <span class="o">+</span>
-    <span class="o">[</span><span class="s1">'test/integration/microposts_interface_test.rb'</span><span class="o">]</span>
+    <span class="p">[</span><span class="s1">'test/integration/microposts_interface_test.rb'</span><span class="p">]</span>
   <span class="k">end</span>
 <span class="k">end</span>
 
 <span class="c1"># Returns the integration tests corresponding to the given resource.</span>
 <span class="k">def</span> <span class="nf">integration_tests</span><span class="p">(</span><span class="n">resource</span> <span class="o">=</span> <span class="ss">:all</span><span class="p">)</span>
   <span class="k">if</span> <span class="n">resource</span> <span class="o">==</span> <span class="ss">:all</span>
-    <span class="no">Dir</span><span class="o">[</span><span class="s2">"test/integration/*"</span><span class="o">]</span>
+    <span class="no">Dir</span><span class="p">[</span><span class="s2">"test/integration/*"</span><span class="p">]</span>
   <span class="k">else</span>
-    <span class="no">Dir</span><span class="o">[</span><span class="s2">"test/integration/</span><span class="si">#{</span><span class="n">resource</span><span class="si">}</span><span class="s2">_*.rb"</span><span class="o">]</span>
+    <span class="no">Dir</span><span class="p">[</span><span class="s2">"test/integration/</span><span class="si">#{</span><span class="n">resource</span><span class="si">}</span><span class="s2">_*.rb"</span><span class="p">]</span>
   <span class="k">end</span>
 <span class="k">end</span>
 
@@ -1551,14 +1554,14 @@ Writing new Guardfile to /home/ubuntu/workspace/sample_app/Guardfile
 <span class="k">def</span> <span class="nf">resource_tests</span><span class="p">(</span><span class="n">resource</span><span class="p">)</span>
   <span class="n">integration_tests</span><span class="p">(</span><span class="n">resource</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">controller_test</span><span class="p">(</span><span class="n">resource</span><span class="p">)</span>
 <span class="k">end</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p>下面这行会让 Guard 使用 Rails 提供的 Spring 服务器减少加载时间，而且启动时不运行整个测试组件。</p>
 <div data-type="listing">
 
 
-<div class="highlight language-ruby"><pre><span class="n">guard</span> <span class="ss">:minitest</span><span class="p">,</span> <span class="ss">spring</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">all_on_start</span><span class="p">:</span> <span class="kp">false</span> <span class="k">do</span>
-</pre></div>
+<div class="highlight language-ruby"><pre><code><span class="n">guard</span> <span class="ss">:minitest</span><span class="p">,</span> <span class="ss">spring: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">all_on_start: </span><span class="kp">false</span> <span class="k">do</span>
+</code></pre></div>
 </div>
 <p>使用 Guard 时，为了避免 Spring 和 Git 发生冲突，应该把 <code>spring/</code> 文件夹加到 <code>.gitignore</code> 文件中，让 Git 忽略这个文件夹。在云端 IDE 中要这么做：</p>
 <ol class="arabic">
@@ -1579,7 +1582,7 @@ Writing new Guardfile to /home/ubuntu/workspace/sample_app/Guardfile
 <h5><span class="title-label">代码清单 3.46</span>：把 Spring 添加到 <code>.gitignore</code> 文件中</h5>
 
 
-<div class="highlight language-text"><pre># See https://help.github.com/articles/ignoring-files for more about
+<div class="highlight language-text"><pre><code># See https://help.github.com/articles/ignoring-files for more about
 # ignoring files.
 #
 # If you find yourself ignoring temporary files generated by your text editor
@@ -1602,9 +1605,9 @@ Writing new Guardfile to /home/ubuntu/workspace/sample_app/Guardfile
 # Ignore Byebug command history file.
 .byebug_history
 
-<span class="hll"># Ignore Spring files.
-</span><span class="hll">/spring/*.pid
-</span></pre></div>
+<span class="hll"># Ignore Spring files.</span>
+<span class="hll">/spring/*.pid</span>
+</code></pre></div>
 </div>
 <p>写作本书时，Spring 服务器还有点儿怪异，有时 Spring 进程会不断拖慢测试的运行速度。如果你发现测试变得异常缓慢，最好查看系统进程（<a href="#aside-processes">旁注 3.4</a>），如果需要，把 Spring 进程杀死。</p>
 <div data-type="sidebar" id="aside-processes" class="sidebar">
@@ -1613,38 +1616,38 @@ Writing new Guardfile to /home/ubuntu/workspace/sample_app/Guardfile
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>ps aux
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>ps aux
+</code></pre></div>
 </div>
 <p>若想过滤输出的进程，可以使用 Unix 管道操作（<code>|</code>）把 <code>ps</code> 命令的结果传给 <code>grep</code>，进行模式匹配：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>ps aux <span class="p">|</span> grep spring
-ubuntu <span class="m">12241</span> 0.3 0.5 <span class="m">589960</span> <span class="m">178416</span> ? Ssl Sep20 1:46
-spring app <span class="p">|</span> sample_app <span class="p">|</span> started <span class="m">7</span> hours ago
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>ps aux | grep spring
+ubuntu 12241 0.3 0.5 589960 178416 ? Ssl Sep20 1:46
+spring app | sample_app | started 7 hours ago
+</code></pre></div>
 </div>
 <p>显示的结果中有进程的部分详细信息，其中最重要的是第一个数字，即进程的 ID（PID）。若要终止不想要的进程，可以使用 <code>kill</code> 命令，向指定的 PID 发送 kill 信号（<a href="https://en.wikipedia.org/wiki/Unix_signal">恰巧是 15</a>）：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span><span class="nb">kill</span> -15 12241
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span><span class="nb">kill</span> -15 12241
+</code></pre></div>
 </div>
 <p>关闭单个进程，例如不再使用的 Rails 服务器进程（可执行 <code>ps aux | grep server</code> 命令找到 PID），我推荐使用这种方法。不过，有时最好能批量关闭进程名中包含特定文本的进程，例如关闭系统中所有的 <code>spring</code> 进程。对 Spring 来说，首先应该尝试使用 <code>spring</code> 命令关闭进程：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>spring stop
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>spring stop
+</code></pre></div>
 </div>
 <p>不过，有时这么做没用，此时可以使用 <code>pkill</code> 命令关闭所有名为“spring”的进程：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>pkill -15 -f spring
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>pkill -15 -f spring
+</code></pre></div>
 </div>
 <p>只要发现表现异常，或者进程静止了，最好执行 <code>ps aux</code> 命令看看怎么回事，然后再执行 <code>kill -15 &lt;pid&gt;</code> 或 <code>pkill -15 -f &lt;name&gt;</code> 命令关闭进程。</p>
 </div>
@@ -1652,8 +1655,8 @@ spring app <span class="p">|</span> sample_app <span class="p">|</span> started 
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>guard
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>bundle <span class="nb">exec </span>guard
+</code></pre></div>
 </div>
 <p><a href="#listing-guardfile">代码清单 3.45</a> 中的规则针对本书做了优化，例如，修改控制器后会自动运行集成测试。如果想运行所有测试，在 <code>guard&gt;</code> 控制台中按回车键。（有时会看到一个错误，说连接 Spring 服务器失败。再次按回车键就能解决这个问题。）</p>
 <p>若想退出 Guard，按 Ctrl-D 键。如果想为 Guard 添加其他匹配器，参阅<a href="#listing-guardfile">代码清单 3.45</a>、<a href="https://github.com/guard/guard#readme">Guard 的自述文件</a>和<a href="https://github.com/guard/guard/wiki">维基</a>。</p>
@@ -1661,9 +1664,9 @@ spring app <span class="p">|</span> sample_app <span class="p">|</span> started 
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><span class="nv">$ </span>git add -A
-<span class="nv">$ </span>git commit -m <span class="s2">"Complete advanced setup"</span>
-</pre></div>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git add -A
+<span class="gp">$ </span>git commit -m <span class="s2">"Complete advanced setup"</span>
+</code></pre></div>
 </div>
 </section>
 </section>
@@ -1694,7 +1697,7 @@ spring app <span class="p">|</span> sample_app <span class="p">|</span> started 
 <li id="fn-8">也可以使用 <code>c9</code> 命令创建并打开文件：<code>c9 open &lt;filename&gt;</code>。 <a href="#fn-ref-8" class="symbol">&#8617;</a></li>
 <li id="fn-9">HTML 一直在变化，显式声明一个 doctype 可以确保未来的浏览器还可以正确解析页面。<code>&lt;!DOCTYPE html&gt;</code> 这种极为简单的格式是最新的 HTML 标准 HTML5 的一个特色。 <a href="#fn-ref-9" class="symbol">&#8617;</a></li>
 <li id="fn-10"><a href="http://guides.rubyonrails.org/testing.html#available-assertions">Rails 指南中介绍测试的文章</a>列出了常用的 MiniTest 断言。 <a href="#fn-ref-10" class="symbol">&#8617;</a></li>
-<li id="fn-11">书中大多数截图都使用 Google Chrome，但是这张截图使用 Safari，因为 Chrome 无法显示完整的标题。 <a href="#fn-ref-11" class="symbol">&#8617;</a></li>
+<li id="fn-11">书中大多数截图都使用 Google Chrome，但是这张截图使用 Safari，因为 Chrome 无法显示完整的标题。（写作本书时，Safari 必须有多个标签页才会显示页面标题，因此<a href="#fig-home-view-full-html">图 3.6</a> 中有两个标签页。）此外请注意，<a href="#fig-home-view-full-html">图 3.6</a> 中的 URL 其实是 /static_pages/home，而 Safari 只显示了基 URL，即 Cloud9 为我分配的开发服务器地址。 <a href="#fn-ref-11" class="symbol">&#8617;</a></li>
 <li id="fn-12">还有一种受欢迎的模板系统是 <a href="http://haml.info/">Haml</a>（不是“HAML”），我个人很喜欢用，不过在这样的初级教程中使用不太合适。 <a href="#fn-ref-12" class="symbol">&#8617;</a></li>
 <li id="fn-13">经验丰富的 Rails 开发者可能觉得这里应该使用 <code>content_for</code>，可是它在 Asset Pipeline 中有点问题。<code>provide</code> 函数是替代方案。 <a href="#fn-ref-13" class="symbol">&#8617;</a></li>
 <li id="fn-14">如果你学过 Ruby，可能会猜测 Rails 是把内容“拽入”区块中的，这么想也对。不过使用 Rails 开发应用不必知道这一点。 <a href="#fn-ref-14" class="symbol">&#8617;</a></li>
