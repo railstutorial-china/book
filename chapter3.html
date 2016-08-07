@@ -212,8 +212,6 @@ For more information, see the
 <div class="source-file">app/controllers/application_controller.rb</div>
 
 <div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
-  <span class="c1"># Prevent CSRF attacks by raising an exception.</span>
-  <span class="c1"># For APIs, you may want to use :null_session instead.</span>
   <span class="n">protect_from_forgery</span> <span class="ss">with: :exception</span>
 
   <span class="k">def</span> <span class="nf">hello</span>
