@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"/>
+  <title>Ruby on Rails 教程 - 第 8 章 基本登录功能</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="最好的 Ruby on Rails 入门教程"/>
+  <meta name="keywords" content="ruby, rails, tutorial"/>
+  <meta name="author" content="Michael Hartl"/>
+  <meta name="translator" content="安道"/>
+  <meta name="generator" content="persie 0.0.2.beta.1"/>
+  <link rel="stylesheet" type="text/css" href="http://railstutorial-china.org/assets/css/main.css"/>
+  <link rel="stylesheet" type="text/css" href="book.css"/>
+  <script type="text/javascript" src="http://railstutorial-china.org/assets/js/global.js"></script>
+</head>
+<body>
+
+<body class="book-page">
+
+  <nav class="navbar">
+    <div class="container">
+
+      <div class="clearfix">
+        <a class="navbar-brand hidden-sm-up" href="http://railstutorial-china.org/" title="Ruby on Rails 教程">Ruby on Rails 教程</a>
+        <button class="navbar-toggler hidden-sm-up pull-xs-right" type="button" data-toggle="collapse" data-target="#main-nav">&#9776;</button>
+      </div>
+
+      <a class="navbar-brand hidden-xs-down" href="http://railstutorial-china.org/" title="Ruby on Rails 教程">Ruby on Rails 教程</a>
+
+      <div class="collapse navbar-toggleable-xs pull-sm-right" id="main-nav">
+        <ul class="nav navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="http://railstutorial-china.org/" title="首页">首页</a></li>
+          <li class="nav-item"><a class="nav-link" href="http://railstutorial-china.org/blog/" title="博客">博客</a></li>
+          <li class="nav-item active"><a class="nav-link" href="http://railstutorial-china.org/book/" title="阅读">阅读</a></li>
+          <li class="nav-item"><a class="nav-link" href="http://railstutorial-china.org/#ebook" title="电子书">电子书</a></li>
+          <li class="nav-item"><a class="nav-link" href="https://selfstore.io/products/189/topics" title="讨论区">讨论区</a></li>
+        </ul>
+      </div>
+
+    </div>
+  </nav>
+
+
+  <div class="content">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-offset-2 col-lg-8">
+          <div class="book-versions">
+            选择版本：
+            <a class="btn btn-primary" href="http://railstutorial-china.org/book/" title="Ruby on Rails 教程（原书第 4 版，针对 Rails 5）">Rails 5</a>
+            <a class="btn btn-secondary" href="http://railstutorial-china.org/rails42/" title="Ruby on Rails 教程（原书第 3 版，针对 Rails 4.2）">Rails 4.2</a>
+            <a class="btn btn-secondary" href="http://railstutorial-china.org/rails4/" title="Ruby on Rails 教程（原书第 3 版，针对 Rails 4.0）">Rails 4.0</a>
+            <a class="btn btn-secondary" href="http://railstutorial-china.org/rails3/" title="Ruby on Rails 教程（原书第 2 版，针对 Rails 3.2）">Rails 3.2</a>
+          </div>
+
+          <div class="alert alert-warning">
+            <p>在线版的内容可能落后于电子书，如果想及时获得更新，请<a href="http://railstutorial-china.org/#ebook" title="购买电子书">购买电子书</a>。</p>
+          </div>
+
+          <article class="article">
+            <section data-type="chapter" id="basic-login">
+<h1><span class="title-label">第 8 章</span> 基本登录功能</h1>
+<p><a href="chapter7.html#sign-up">第 7 章</a>实现了用户注册功能，接下来该实现登录和退出功能了。本章实现基本的登录系统，不过完全可用：应用维持登录状态，直到用户关闭浏览器为止。本章开发的身份验证系统可用于定制网站的内容，还能基于登录状态和用户的身份实现权限机制。例如，本章我们会更新网站的页头，加入“登录”或“退出”链接，以及指向个人资料页面的链接。</p>
+<p><a href="chapter10.html#updating-showing-and-deleting-users">第 10 章</a>会实现一种安全机制，只有已登录的用户才能访问用户列表页面，只有用户自己才能编辑自己的信息，只有管理员才能从数据库中删除其他用户。<a href="chapter13.html#user-microposts">第 13 章</a>会使用已登录用户的身份发布他自己的微博。<a href="chapter14.html#following-users">第 14 章</a>会让当前登录的用户关注网站中的其他用户，以便查看所关注用户的微博更新。</p>
+<p>本章开发的身份验证系统还将为<a href="chapter9.html#advanced-login">第 9 章</a>开发的高级登录系统奠定基础。那个高级系统不会在用户关闭浏览器后清除登录状态，我们将先自动记住用户登录状态，然后为用户提供选择，当他们勾选“记住我”复选框时才记住登录状态。<a href="#basic-login">第 8 章</a>和<a href="chapter9.html#advanced-login">第 9 章</a>实现的登录系统是网上最常见的三种。</p>
+<section data-type="sect1" id="sessions">
+<h1><span class="title-label">8.1</span> 会话</h1>
+<p><a href="http://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol">HTTP</a> 协议<a href="https://en.wikipedia.org/wiki/Stateless_protocol">没有状态</a>，每个请求都是独立的事务，无法使用之前请求中的信息。所以，在 HTTP 协议中无法在两个页面之间记住用户的身份。需要用户登录的应用都要使用<a href="http://en.wikipedia.org/wiki/Session_(computer_science)">会话</a>（session）。会话是两台电脑之间的半永久性连接，例如运行 Web 浏览器的客户端电脑和运行 Rails 的服务器。</p>
+<p>在 Rails 中实现会话最常见的方式是使用 <a href="http://en.wikipedia.org/wiki/HTTP_cookie">cookie</a>。cookie 是存储在用户浏览器中的少量文本。访问其他页面时，cookie 中存储的信息仍在，所以可以在 cookie 中存储一些信息，例如用户的 ID，让应用从数据库中取回已登录的用户。这一节和 <a href="#logging-in">8.2 节</a>会使用 Rails 提供的 <code>session</code> 方法实现临时会话，浏览器关闭后会话自动失效。<sup>[<a id="fn-ref-1" href="#fn-1">1</a>]</sup><a href="chapter9.html#advanced-login">第 9 章</a>会使用 Rails 提供的 <code>cookies</code> 方法让会话持续的时间久一些。</p>
+<p>把会话看成符合 REST 架构的资源便于操作，访问登录页面时渲染一个用于创建会话的表单，登录时创建会话，退出时再把会话销毁。不过会话和 <code>Users</code> 资源不同，<code>Users</code> 资源（通过 <code>User</code> 模型）使用数据库存储数据，而会话要使用 cookie。所以，登录功能的大部分工作是实现基于会话的身份验证机制。这一节和下一节要为登录功能做些准备工作，包括创建 <code>Sessions</code> 控制器、登录表单和相关的控制器动作。<a href="#logging-in">8.2 节</a>再添加所需的代码处理会话，完成登录功能。</p>
+<p>与前面的章节一样，我们要在主题分支中工作，本章结束时再合并到主分支：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git checkout -b basic-login
+</code></pre></div>
+</div>
+<section data-type="sect2" id="sessions-controller">
+<h2><span class="title-label">8.1.1</span> <code>Sessions</code> 控制器</h2>
+<p>登录和退出功能由 <code>Sessions</code> 控制器中的相应动作处理，登录表单在 <code>new</code> 动作中处理（本节的内容），登录的过程是向 <code>create</code> 动作发送 <code>POST</code> 请求（<a href="#logging-in">8.2 节</a>），退出则是向 <code>destroy</code> 动作发送 <code>DELETE</code> 请求（<a href="#logging-out">8.3 节</a>）。（HTTP 请求与 REST 动作之间的对应关系参见<a href="chapter7.html#table-restful-users">表 7.1</a>。）</p>
+<p>首先，生成 <code>Sessions</code> 控制器，以及其中的 <code>new</code> 动作。</p>
+<div id="generate-sessions-controller" data-type="listing">
+<h5><span class="title-label">代码清单 8.1</span>：生成 <code>Sessions</code> 控制器</h5>
+
+
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate controller Sessions new
+</code></pre></div>
+</div>
+<p>（参数中指定 <code>new</code> 的话，还会生成对应的视图，不过我们才没指定 <code>create</code> 和 <code>destroy</code>，因为这两个动作没有视图。）参照 <a href="chapter7.html#signup-form">7.2 节</a>创建注册页面的方式，我们要创建一个登录表单，用于创建会话，构思如<a href="#fig-login-mockup">图 8.1</a> 所示。</p>
+<div id="fig-login-mockup" class="figure"><img src="images/chapter8/login_mockup.png" alt="login mockup" /><div class="figcaption"><span class="title-label">图 8.1</span>：登录表单的构思图</div></div>
+<p><code>Users</code> 资源使用特殊的 <code>resources</code> 方法自动获得符合 REST 架构的路由（<a href="chapter7.html#listing-users-resource">代码清单 7.3</a>），而 <code>Sessions</code> 资源则只能使用具名路由，处理发给 /login 地址的 <code>GET</code> 和 <code>POST</code> 请求，以及发给 /logout 地址的 <code>DELETE</code> 请求，如<a href="#listing-sessions-resource">代码清单 8.2</a> 所示。（删除了 <code>rails generate controller</code> 生成的无用路由。）</p>
+<div id="listing-sessions-resource" data-type="listing">
+<h5><span class="title-label">代码清单 8.2</span>：添加 <code>Sessions</code> 控制器的路由</h5>
+
+<div class="source-file">config/routes.rb</div>
+
+<div class="highlight language-ruby"><pre><code><span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
+  <span class="n">root</span>   <span class="s1">'static_pages#home'</span>
+  <span class="n">get</span>    <span class="s1">'/help'</span><span class="p">,</span>    <span class="ss">to: </span><span class="s1">'static_pages#help'</span>
+  <span class="n">get</span>    <span class="s1">'/about'</span><span class="p">,</span>   <span class="ss">to: </span><span class="s1">'static_pages#about'</span>
+  <span class="n">get</span>    <span class="s1">'/contact'</span><span class="p">,</span> <span class="ss">to: </span><span class="s1">'static_pages#contact'</span>
+  <span class="n">get</span>    <span class="s1">'/signup'</span><span class="p">,</span>  <span class="ss">to: </span><span class="s1">'users#new'</span>
+<span class="hll">  <span class="n">get</span>    <span class="s1">'/login'</span><span class="p">,</span>   <span class="ss">to: </span><span class="s1">'sessions#new'</span></span>
+<span class="hll">  <span class="n">post</span>   <span class="s1">'/login'</span><span class="p">,</span>   <span class="ss">to: </span><span class="s1">'sessions#create'</span></span>
+<span class="hll">  <span class="n">delete</span> <span class="s1">'/logout'</span><span class="p">,</span>  <span class="ss">to: </span><span class="s1">'sessions#destroy'</span></span>
+  <span class="n">resources</span> <span class="ss">:users</span>
+<span class="k">end</span>
+</code></pre></div>
+</div>
+<p><a href="#listing-sessions-resource">代码清单 8.2</a> 中的规则会把 URL 和动作对应起来，就像<a href="chapter7.html#table-restful-users">表 7.1</a> 那样，如<a href="#table-restful-sessions">表 8.1</a> 所示。</p>
+<table id="table-restful-sessions" class="tableblock frame-all grid-all" style="width: 100%;">
+<caption><span class="title-label">表 8.1</span>：<a href="#listing-sessions-resource">代码清单 8.2</a> 中会话相关的规则生成的路由</caption>
+<colgroup>
+<col style="width: 15%;" />
+<col style="width: 15%;" />
+<col style="width: 15%;" />
+<col style="width: 15%;" />
+<col style="width: 40%;" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">HTTP 请求</th>
+<th class="tableblock halign-left valign-top">URL</th>
+<th class="tableblock halign-left valign-top">具名路由</th>
+<th class="tableblock halign-left valign-top">动作</th>
+<th class="tableblock halign-left valign-top">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>GET</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/login</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>login_path</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>new</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">创建新会话的页面（登录）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>POST</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/login</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>login_path</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>create</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">创建新会话（登录）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DELETE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/logout</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>logout_path</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>destroy</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">删除会话（退出）</p></td>
+</tr>
+</tbody>
+</table>
+<p>至此，我们添加了好几个自定义的具名路由，现在最好看一下完整的路由列表。我们可以执行 <code>rails routes</code> 命令生成路由列表：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails routes
+   Prefix Verb   URI Pattern               Controller#Action
+     root GET    /                         static_pages#home
+     <span class="nb">help </span>GET    /help<span class="o">(</span>.:format<span class="o">)</span>           static_pages#help
+    about GET    /about<span class="o">(</span>.:format<span class="o">)</span>          static_pages#about
+  contact GET    /contact<span class="o">(</span>.:format<span class="o">)</span>        static_pages#contact
+   signup GET    /signup<span class="o">(</span>.:format<span class="o">)</span>         users#new
+    login GET    /login<span class="o">(</span>.:format<span class="o">)</span>          sessions#new
+          POST   /login<span class="o">(</span>.:format<span class="o">)</span>          sessions#create
+   <span class="nb">logout </span>DELETE /logout<span class="o">(</span>.:format<span class="o">)</span>         sessions#destroy
+    users GET    /users<span class="o">(</span>.:format<span class="o">)</span>          users#index
+          POST   /users<span class="o">(</span>.:format<span class="o">)</span>          users#create
+ new_user GET    /users/new<span class="o">(</span>.:format<span class="o">)</span>      users#new
+edit_user GET    /users/:id/edit<span class="o">(</span>.:format<span class="o">)</span> users#edit
+     user GET    /users/:id<span class="o">(</span>.:format<span class="o">)</span>      users#show
+          PATCH  /users/:id<span class="o">(</span>.:format<span class="o">)</span>      users#update
+          PUT    /users/:id<span class="o">(</span>.:format<span class="o">)</span>      users#update
+          DELETE /users/:id<span class="o">(</span>.:format<span class="o">)</span>      users#destroy
+</code></pre></div>
+</div>
+<p>你没必要完全理解输出的这些路由。像这样查看路由能对应用支持的动作有个整体认识。</p>
+<h5 id="exercises-sessions-controller" class="discrete">练习</h5>
+<ol class="arabic">
+<li>
+<p><code>GET login_path</code> 和 <code>POST login_path</code> 之间有什么区别？</p>
+</li>
+<li>
+<p>把 <code>rails routes</code> 命令的输出通过管道传给 <code>grep</code>，列出与 <code>Users</code> 资源相关的全部路由。以同样的方法列出 <code>Sessions</code> 资源相关的全部路由。这两个资源各有多少路由？</p>
+</li>
+</ol>
+</section>
+<section data-type="sect2" id="login-form">
+<h2><span class="title-label">8.1.2</span> 登录表单</h2>
+<p>定义好相关的控制器和路由之后，我们要编写新建会话的视图，也就是登录表单。比较<a href="#fig-login-mockup">图 8.1</a> 和<a href="chapter7.html#fig-signup-mockup">图 7.11</a> 之后发现，登录表单和注册表单的外观类似，不过登录表单只有两个输入框（电子邮件地址和密码），而注册表单有四个输入框。</p>
+<p>如<a href="#fig-login-failure-mockup">图 8.2</a> 所示，如果提交的登录信息无效，要重新渲染登录页面，并显示一个错误消息。在 <a href="chapter7.html#signup-error-messages">7.3.3 节</a>，我们使用错误消息局部视图显示错误消息，但是那些消息由 Active Record 自动提供，而错误消息局部视图不能显示创建会话时的错误，因为会话不是 Active Record 对象，因此我们要使用闪现消息渲染登录时的错误消息。</p>
+<div id="fig-login-failure-mockup" class="figure"><img src="images/chapter8/login_failure_mockup.png" alt="login failure mockup" /><div class="figcaption"><span class="title-label">图 8.2</span>：登录失败后显示的页面构思图</div></div>
+<p><a href="chapter7.html#listing-signup-form">代码清单 7.15</a> 中的注册表单使用 <code>form_for</code> 辅助方法，并且把表示用户实例的 <code>@user</code> 变量作为参数传给 <code>form_for</code>：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-erb"><pre><code><span class="cp">&lt;%=</span> <span class="n">form_for</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span>
+  .
+  .
+  .
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+</code></pre></div>
+</div>
+<p>登录表单和注册表单之间的主要区别是，会话不是模型，因此不能创建类似 <code>@user</code> 的变量。所以，构建登录表单时，我们要为 <code>form_for</code> 稍微多提供一些信息。</p>
+<p><code>form_for(@user)</code> 的作用是让表单向 /users 发起 <code>POST</code> 请求。对会话来说，我们需要指明资源的名称以及相应的 URL：<sup>[<a id="fn-ref-2" href="#fn-2">2</a>]</sup></p>
+<div data-type="listing">
+
+
+<div class="highlight language-erb"><pre><code>form_for(:session, url: login_path)
+</code></pre></div>
+</div>
+<p>知道怎么调用 <code>form_for</code> 之后，参照注册表单（<a href="chapter7.html#listing-signup-form">代码清单 7.15</a>）编写<a href="#fig-login-mockup">图 8.1</a> 中构思的登录表单就容易了，如<a href="#listing-login-form">代码清单 8.3</a> 所示。</p>
+<div id="listing-login-form" data-type="listing">
+<h5><span class="title-label">代码清单 8.3</span>：登录表单的代码</h5>
+
+<div class="source-file">app/views/sessions/new.html.erb</div>
+
+<div class="highlight language-erb"><pre><code><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s2">"Log in"</span><span class="p">)</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;h1&gt;</span>Log in<span class="nt">&lt;/h1&gt;</span>
+
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"row"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"col-md-6 col-md-offset-3"</span><span class="nt">&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">form_for</span><span class="p">(</span><span class="ss">:session</span><span class="p">,</span> <span class="ss">url: </span><span class="n">login_path</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span>
+
+      <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">label</span> <span class="ss">:email</span> <span class="cp">%&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">email_field</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">class: </span><span class="s1">'form-control'</span> <span class="cp">%&gt;</span>
+
+      <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">label</span> <span class="ss">:password</span> <span class="cp">%&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">password_field</span> <span class="ss">:password</span><span class="p">,</span> <span class="ss">class: </span><span class="s1">'form-control'</span> <span class="cp">%&gt;</span>
+
+      <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">submit</span> <span class="s2">"Log in"</span><span class="p">,</span> <span class="ss">class: </span><span class="s2">"btn btn-primary"</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+
+    <span class="nt">&lt;p&gt;</span>New user? <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign up now!"</span><span class="p">,</span> <span class="n">signup_path</span> <span class="cp">%&gt;</span><span class="nt">&lt;/p&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+</code></pre></div>
+</div>
+<p>注意，为了操作方便，我们还加入了指向“注册”页面的链接。<a href="#listing-login-form">代码清单 8.3</a> 中的登录表单如<a href="#fig-login-form">图 8.3</a> 所示。（导航栏中的“Log in”还没填写地址，所以你要在地址栏中输入 /login。<a href="#changing-the-layout-links">8.2.3 节</a>会修正这个问题。）</p>
+<p>生成的表单 HTML 如<a href="#listing-login-form-html">代码清单 8.4</a> 所示。</p>
+<div id="listing-login-form-html" data-type="listing">
+<h5><span class="title-label">代码清单 8.4</span>：<a href="#listing-login-form">代码清单 8.3</a> 中的登录表单生成的 HTML</h5>
+
+
+<div class="highlight language-html"><pre><code><span class="nt">&lt;form</span> <span class="na">accept-charset=</span><span class="s">"UTF-8"</span> <span class="na">action=</span><span class="s">"/login"</span> <span class="na">method=</span><span class="s">"post"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">name=</span><span class="s">"utf8"</span> <span class="na">type=</span><span class="s">"hidden"</span> <span class="na">value=</span><span class="s">"&amp;#x2713;"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">name=</span><span class="s">"authenticity_token"</span> <span class="na">type=</span><span class="s">"hidden"</span>
+         <span class="na">value=</span><span class="s">"NNb6+J/j46LcrgYUC60wQ2titMuJQ5lLqyAbnbAUkdo="</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">"session_email"</span><span class="nt">&gt;</span>Email<span class="nt">&lt;/label&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">class=</span><span class="s">"form-control"</span> <span class="na">id=</span><span class="s">"session_email"</span>
+         <span class="na">name=</span><span class="s">"session[email]"</span> <span class="na">type=</span><span class="s">"text"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">"session_password"</span><span class="nt">&gt;</span>Password<span class="nt">&lt;/label&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"session_password"</span> <span class="na">name=</span><span class="s">"session[password]"</span>
+         <span class="na">type=</span><span class="s">"password"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">class=</span><span class="s">"btn btn-primary"</span> <span class="na">name=</span><span class="s">"commit"</span> <span class="na">type=</span><span class="s">"submit"</span>
+       <span class="na">value=</span><span class="s">"Log in"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+</code></pre></div>
+</div>
+<p>对比一下<a href="#listing-login-form-html">代码清单 8.4</a> 和<a href="chapter7.html#listing-signup-form-html">代码清单 7.17</a>，你可能已经猜到了，提交登录表单后会生成一个 <code>params</code> 哈希，其中 <code>params[:session][:email]</code> 和 <code>params[:session][:password]</code> 分别对应电子邮件地址和密码字段。</p>
+<div id="fig-login-form" class="figure"><img src="images/chapter8/login_form.png" alt="login form" /><div class="figcaption"><span class="title-label">图 8.3</span>：登录表单</div></div>
+<h5 id="exercises-login-form" class="discrete">练习</h5>
+<ol class="arabic">
+<li>
+<p>提交<a href="#listing-login-form">代码清单 8.3</a> 中的表单后，应用会转向 <code>Sessions</code> 控制器的 <code>create</code> 动作。Rails 怎么知道要这么做的？提示：参考<a href="#table-restful-sessions">表 8.1</a> 和<a href="#listing-login-form-html">代码清单 8.4</a> 中的第一行。</p>
+</li>
+</ol>
+</section>
+<section data-type="sect2" id="finding-and-authenticating-a-user">
+<h2><span class="title-label">8.1.3</span> 查找并验证用户的身份</h2>
+<p>与创建用户类似，创建会话（登录）时要先处理提交无效数据的情况。我们会先分析提交表单后会发生什么，想办法在登录失败时显示有帮助的错误消息（如<a href="#fig-login-failure-mockup">图 8.2</a> 中的构思）。然后，以此为基础，验证提交的电子邮件地址和密码，处理登录成功的情况（<a href="#logging-in">8.2 节</a>）。</p>
+<p>首先，我们要为 <code>Sessions</code> 控制器编写一个最简单的 <code>create</code> 动作，以及空的 <code>new</code> 动作和 <code>destroy</code> 动作，如<a href="#listing-initial-create-session">代码清单 8.5</a> 所示。<code>create</code> 动作现在只渲染 <code>new</code> 视图，不过这为后续工作做好了准备。提交 /login 页面中的表单后，显示的页面如<a href="#fig-initial-failed-login-rails-3">图 8.4</a> 所示。</p>
+<div id="listing-initial-create-session" data-type="listing">
+<h5><span class="title-label">代码清单 8.5</span>：<code>Sessions</code> 控制器中 <code>create</code> 动作的初始版本</h5>
+
+<div class="source-file">app/controllers/sessions_controller.rb</div>
+
+<div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">SessionsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+
+  <span class="k">def</span> <span class="nf">new</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">create</span>
+<span class="hll">    <span class="n">render</span> <span class="s1">'new'</span></span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">destroy</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+</div>
+<div id="fig-initial-failed-login-rails-3" class="figure"><img src="images/chapter8/initial_failed_login_3rd_edition.png" alt="initial failed login 3rd edition" /><div class="figcaption"><span class="title-label">图 8.4</span>：添加<a href="#listing-initial-create-session">代码清单 8.5</a> 中的 <code>create</code> 动作后，登录失败后显示的页面</div></div>
+<p>仔细看一下<a href="#fig-initial-failed-login-rails-3">图 8.4</a> 中显示的调试信息，你会发现，正如 <a href="#login-form">8.1.2 节</a>末尾所说的，提交表单后会生成 <code>params</code> 哈希，电子邮件地址和密码都在 <code>:session</code> 键中（下述代码省略了一些 Rails 内部使用的信息）：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-yaml"><pre><code><span class="nn">---</span>
+<span class="s">session</span><span class="pi">:</span>
+  <span class="s">email</span><span class="pi">:</span> <span class="s1">'</span><span class="s">user@example.com'</span>
+  <span class="s">password</span><span class="pi">:</span> <span class="s1">'</span><span class="s">foobar'</span>
+<span class="s">commit</span><span class="pi">:</span> <span class="s">Log in</span>
+<span class="s">action</span><span class="pi">:</span> <span class="s">create</span>
+<span class="s">controller</span><span class="pi">:</span> <span class="s">sessions</span>
+</code></pre></div>
+</div>
+<p>与注册表单类似（<a href="chapter7.html#fig-signup-failure">图 7.15</a>），这些参数是一个嵌套哈希，在<a href="chapter4.html#listing-nested-hashes">代码清单 4.13</a> 中见过。具体而言，<code>params</code> 包含了如下的嵌套哈希：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><code><span class="p">{</span> <span class="ss">session: </span><span class="p">{</span> <span class="ss">password: </span><span class="s2">"foobar"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span> <span class="p">}</span> <span class="p">}</span>
+</code></pre></div>
+</div>
+<p>也就是说</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><code><span class="n">params</span><span class="p">[</span><span class="ss">:session</span><span class="p">]</span>
+</code></pre></div>
+</div>
+<p>本身就是一个哈希：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><code><span class="p">{</span> <span class="ss">password: </span><span class="s2">"foobar"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span> <span class="p">}</span>
+</code></pre></div>
+</div>
+<p>所以，</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><code><span class="n">params</span><span class="p">[</span><span class="ss">:session</span><span class="p">][</span><span class="ss">:email</span><span class="p">]</span>
+</code></pre></div>
+</div>
+<p>是提交的电子邮件地址，而</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><code><span class="n">params</span><span class="p">[</span><span class="ss">:session</span><span class="p">][</span><span class="ss">:password</span><span class="p">]</span>
+</code></pre></div>
+</div>
+<p>是提交的密码。</p>
+<p>也就是说，在 <code>create</code> 动作中，<code>params</code> 哈希包含了使用电子邮件地址和密码验证用户身份所需的全部数据。其实，我们已经有了需要使用的方法：Active Record 提供的 <code>User.find_by</code> 方法（<a href="chapter6.html#finding-user-objects">6.1.4 节</a>）和 <code>has_secure_password</code> 提供的 <code>authenticate</code> 方法（<a href="chapter6.html#creating-and-authenticating-a-user">6.3.4 节</a>）。前面说过，如果身份验证失败，<code>authenticate</code> 方法会返回 <code>false</code>。基于以上分析，我们计划按照<a href="#listing-find-authenticate-user">代码清单 8.6</a> 中的方式实现用户登录功能。</p>
+<div id="listing-find-authenticate-user" data-type="listing">
+<h5><span class="title-label">代码清单 8.6</span>：查找并验证用户的身份</h5>
+
+<div class="source-file">app/controllers/sessions_controller.rb</div>
+
+<div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">SessionsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+
+  <span class="k">def</span> <span class="nf">new</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">create</span>
+<span class="hll">    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">email: </span><span class="n">params</span><span class="p">[</span><span class="ss">:session</span><span class="p">][</span><span class="ss">:email</span><span class="p">].</span><span class="nf">downcase</span><span class="p">)</span></span>
+<span class="hll">    <span class="k">if</span> <span class="n">user</span> <span class="o">&amp;&amp;</span> <span class="n">user</span><span class="p">.</span><span class="nf">authenticate</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:session</span><span class="p">][</span><span class="ss">:password</span><span class="p">])</span></span>
+      <span class="c1"># 登入用户，然后重定向到用户的资料页面</span>
+    <span class="k">else</span>
+      <span class="c1"># 创建一个错误消息</span>
+      <span class="n">render</span> <span class="s1">'new'</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">destroy</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+</div>
+<p><a href="#listing-find-authenticate-user">代码清单 8.6</a> 中高亮显示的第一行使用提交的电子邮件地址从数据库中取出相应的用户。（我们在 <a href="chapter6.html#uniqueness-validation">6.2.5 节</a>说过，电子邮件地址都是以小写字母形式保存的，所以这里调用了 <code>downcase</code> 方法，确保提交有效的地址后能查到相应的记录。）高亮显示的第二行看起来很怪，但在 Rails 中经常使用：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><code><span class="n">user</span> <span class="o">&amp;&amp;</span> <span class="n">user</span><span class="p">.</span><span class="nf">authenticate</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:session</span><span class="p">][</span><span class="ss">:password</span><span class="p">])</span>
+</code></pre></div>
+</div>
+<p>我们使用 <code>&amp;&amp;</code>（逻辑与）检测获取的用户是否有效。因为除了 <code>nil</code> 和 <code>false</code> 之外的所有对象都被视作 <code>true</code>，上面这个语句可能出现的结果如<a href="#table-user-and-and">表 8.2</a>所示。从表中可以看出，当且仅当数据库中存在提交的电子邮件地址，而且对应的密码和提交的密码匹配时，这个语句才会返回 <code>true</code>。</p>
+<table id="table-user-and-and" class="tableblock frame-all grid-all" style="width: 100%;">
+<caption><span class="title-label">表 8.2</span>：<code>user &amp;&amp; user.authenticate(…​)</code> 可能得到的结果</caption>
+<colgroup>
+<col style="width: 33%;" />
+<col style="width: 33%;" />
+<col style="width: 33%;" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">用户</th>
+<th class="tableblock halign-left valign-top">密码</th>
+<th class="tableblock halign-left valign-top">a &amp;&amp; b</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">不存在</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">任意值</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(nil &amp;&amp; [anything]) == false</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">存在</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">错误的密码</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(true &amp;&amp; false) == false</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">存在</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">正确的密码</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(true &amp;&amp; true) == true</code></p></td>
+</tr>
+</tbody>
+</table>
+<h5 id="exercises-finding-and-authenticating-a-user" class="discrete">练习</h5>
+<ol class="arabic">
+<li>
+<p>在 Rails 控制台中确认<a href="#table-user-and-and">表 8.2</a> 中的各个值。先从 <code>user = nil</code> 开始，然后使用 <code>user = User.first</code>。提示：为了把结果转换成布尔值，使用 <a href="chapter4.html#objects-and-message-passing">4.2.3 节</a>讲到的两个感叹号，例如 <code>!!(user &amp;&amp; user.authenticate('foobar'))</code>。</p>
+</li>
+</ol>
+</section>
+<section data-type="sect2" id="rendering-with-a-flash-message">
+<h2><span class="title-label">8.1.4</span> 渲染闪现消息</h2>
+<p>在 <a href="chapter7.html#signup-error-messages">7.3.3 节</a>，我们使用 <code>User</code> 模型的验证错误显示注册失败时的错误消息。这些错误关联在某个 Active Record 对象上，不过现在不能使用这种方式了，因为会话不是 Active Record 模型。我们要采取的方法是，登录失败时，在闪现消息中显示消息。<a href="#listing-failed-login-attempt">代码清单 8.7</a> 是我们首次尝试实现写出的代码，其中有个小小的错误。</p>
+<div id="listing-failed-login-attempt" data-type="listing">
+<h5><span class="title-label">代码清单 8.7</span>：尝试处理登录失败（有个小小的错误）</h5>
+
+<div class="source-file">app/controllers/sessions_controller.rb</div>
+
+<div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">SessionsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+
+  <span class="k">def</span> <span class="nf">new</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">create</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">email: </span><span class="n">params</span><span class="p">[</span><span class="ss">:session</span><span class="p">][</span><span class="ss">:email</span><span class="p">].</span><span class="nf">downcase</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">user</span> <span class="o">&amp;&amp;</span> <span class="n">user</span><span class="p">.</span><span class="nf">authenticate</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:session</span><span class="p">][</span><span class="ss">:password</span><span class="p">])</span>
+      <span class="c1"># 登入用户，然后重定向到用户的资料页面</span>
+    <span class="k">else</span>
+<span class="hll">      <span class="n">flash</span><span class="p">[</span><span class="ss">:danger</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Invalid email/password combination'</span> <span class="c1"># 不完全正确</span></span>
+      <span class="n">render</span> <span class="s1">'new'</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">destroy</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+</div>
+<p>布局中已经加入了显示闪现消息的局部视图（<a href="chapter7.html#listing-layout-flash">代码清单 7.31</a>），所以无需其他修改，<code>flash[:danger]</code> 消息就会显示出来，而且因为使用了 Bootstrap 提供的 CSS，消息的样式也很美观，如<a href="#fig-failed-login-flash">图 8.5</a> 所示。</p>
+<p>不过，就像<a href="#listing-failed-login-attempt">代码清单 8.7</a> 中的注释所说，代码不完全正确。显示的页面看起来很正常啊，有什么问题呢？问题在于，闪现消息在一个请求的生命周期内是持续存在的，而重新渲染页面（使用 <code>render</code> 方法）和<a href="chapter7.html#listing-signup-flash">代码清单 7.29</a> 中的重定向不同，不算是一次新请求，所以你会发现这个闪现消息存在的时间比预计的要长很多。例如，提交无效的登录信息，然后访问首页，还会显示这个闪现消息，如<a href="#fig-flash-persistence">图 8.6</a> 所示。<a href="#a-flash-test">8.1.5 节</a>会修正这个问题。</p>
+<div id="fig-failed-login-flash" class="figure"><img src="images/chapter8/failed_login_flash_3rd_edition.png" alt="failed login flash 3rd edition" /><div class="figcaption"><span class="title-label">图 8.5</span>：登录失败后显示的闪现消息</div></div>
+<div id="fig-flash-persistence" class="figure"><img src="images/chapter8/flash_persistence_3rd_edition.png" alt="flash persistence 3rd edition" /><div class="figcaption"><span class="title-label">图 8.6</span>：闪现消息一直存在</div></div>
+</section>
+<section data-type="sect2" id="a-flash-test">
+<h2><span class="title-label">8.1.5</span> 测试闪现消息</h2>
+<p>闪现消息的错误表现是应用的一个小 bug。根据<a href="chapter3.html#aside-when-to-test">旁注 3.3</a> 中的测试指导方针，遇到这种情况应该编写测试，捕获错误，防止以后再发生。因此，在继续之前，我们要为登录表单的提交操作编写一个简短的集成测试。测试能捕获这个问题，也能避免回归，而且还能为后面的登录和退出功能的集成测试奠定好的基础。</p>
+<p>首先，为应用的登录功能生成一个集成测试文件：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-sh"><pre><code><span class="hll"><span class="gp">$ </span>rails generate integration_test users_login</span>
+      invoke  test_unit
+      create    <span class="nb">test</span>/integration/users_login_test.rb
+</code></pre></div>
+</div>
+<p>然后，我们要编写一个测试，模拟<a href="#fig-failed-login-flash">图 8.5</a> 和<a href="#fig-flash-persistence">图 8.6</a> 中的连续操作。基本的步骤如下：</p>
+<ol class="arabic">
+<li>
+<p>访问登录页面；</p>
+</li>
+<li>
+<p>确认正确渲染了登录表单；</p>
+</li>
+<li>
+<p>提交无效的 <code>params</code> 哈希，向登录页面发起 <code>post</code> 请求；</p>
+</li>
+<li>
+<p>确认重新渲染了登录表单，而且显示了一个闪现消息；</p>
+</li>
+<li>
+<p>访问其他页面（例如首页）；</p>
+</li>
+<li>
+<p>确认这个页面中没显示前面那个闪现消息。</p>
+</li>
+</ol>
+<p>实现上述步骤的测试如<a href="#listing-flash-persistence-test">代码清单 8.8</a> 所示。</p>
+<div id="listing-flash-persistence-test" data-type="listing">
+<h5><span class="title-label">代码清单 8.8</span>：捕获继续显示闪现消息的测试 <span class="red">RED</span></h5>
+
+<div class="source-file">test/integration/users_login_test.rb</div>
+
+<div class="highlight language-ruby"><pre><code><span class="nb">require</span> <span class="s1">'test_helper'</span>
+
+<span class="k">class</span> <span class="nc">UsersLoginTest</span> <span class="o">&lt;</span> <span class="no">ActionDispatch</span><span class="o">::</span><span class="no">IntegrationTest</span>
+
+  <span class="nb">test</span> <span class="s2">"login with invalid information"</span> <span class="k">do</span>
+    <span class="n">get</span> <span class="n">login_path</span>
+    <span class="n">assert_template</span> <span class="s1">'sessions/new'</span>
+    <span class="n">post</span> <span class="n">login_path</span><span class="p">,</span> <span class="ss">params: </span><span class="p">{</span> <span class="ss">session: </span><span class="p">{</span> <span class="ss">email: </span><span class="s2">""</span><span class="p">,</span> <span class="ss">password: </span><span class="s2">""</span> <span class="p">}</span> <span class="p">}</span>
+    <span class="n">assert_template</span> <span class="s1">'sessions/new'</span>
+    <span class="n">assert_not</span> <span class="n">flash</span><span class="p">.</span><span class="nf">empty?</span>
+    <span class="n">get</span> <span class="n">root_path</span>
+    <span class="n">assert</span> <span class="n">flash</span><span class="p">.</span><span class="nf">empty?</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+</div>
+<p>添加上述测试之后，登录测试应该失败：</p>
+<div data-type="listing">
+<h5><span class="title-label">代码清单 8.9</span>：<strong class="red">RED</strong></h5>
+
+
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test test</span>/integration/users_login_test.rb
+</code></pre></div>
+</div>
+<p>为了只运行一个测试文件，执行 <code>rails test</code> 命令时指定了文件的完整路径。</p>
+<p>让<a href="#listing-flash-persistence-test">代码清单 8.8</a> 中的测试通过的方法是，把 <code>flash</code> 换成特殊的 <code>flash.now</code>。<code>flash.now</code> 专门用于在重新渲染的页面中显示闪现消息。与 <code>flash</code> 不同的是，<code>flash.now</code> 中的内容会在下次请求时消失——这正是<a href="#listing-flash-persistence-test">代码清单 8.8</a> 中的测试所需的行为。替换之后，正确的应用代码如<a href="#listing-correct-login-failure">代码清单 8.10</a> 所示。</p>
+<div id="listing-correct-login-failure" data-type="listing">
+<h5><span class="title-label">代码清单 8.10</span>：处理登录失败正确的代码 <span class="green">GREEN</span></h5>
+
+<div class="source-file">app/controllers/sessions_controller.rb</div>
+
+<div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">SessionsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+
+  <span class="k">def</span> <span class="nf">new</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">create</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">email: </span><span class="n">params</span><span class="p">[</span><span class="ss">:session</span><span class="p">][</span><span class="ss">:email</span><span class="p">].</span><span class="nf">downcase</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">user</span> <span class="o">&amp;&amp;</span> <span class="n">user</span><span class="p">.</span><span class="nf">authenticate</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:session</span><span class="p">][</span><span class="ss">:password</span><span class="p">])</span>
+      <span class="c1"># 登入用户，然后重定向到用户的资料页面</span>
+    <span class="k">else</span>
+<span class="hll">      <span class="n">flash</span><span class="p">.</span><span class="nf">now</span><span class="p">[</span><span class="ss">:danger</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Invalid email/password combination'</span></span>
+      <span class="n">render</span> <span class="s1">'new'</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">destroy</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+</div>
+<p>然后，我们可以确认登录功能的集成测试和整个测试组件都能通过：</p>
+<div data-type="listing">
+<h5><span class="title-label">代码清单 8.11</span>：<strong class="green">GREEN</strong></h5>
+
+
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test test</span>/integration/users_login_test.rb
+<span class="gp">$ </span>rails <span class="nb">test</span>
+</code></pre></div>
+</div>
+<h5 id="exercises-a-flash-test" class="discrete">练习</h5>
+<ol class="arabic">
+<li>
+<p>在你的浏览器中确认前面的步骤是正确的，即访问另一个页面时没有显示闪现消息。</p>
+</li>
+</ol>
+</section>
+</section>
+<section data-type="sect1" id="logging-in">
+<h1><span class="title-label">8.2</span> 登录</h1>
+<p>登录表单已经可以处理无效提交，下一步要正确处理有效提交，登入用户。本节通过临时会话让用户登录，浏览器关闭后会话自动失效。<a href="chapter9.html#remember-me">9.1 节</a>会实现持久会话，即便浏览器关闭，用户依然处于登录状态。</p>
+<p>实现会话的过程中要定义很多相关的函数，在多个控制器和视图中使用。<a href="chapter4.html#back-to-the-title-helper">4.2.5 节</a>说过，Ruby 支持使用模块把这些函数集中放在一处。Rails 生成器很人性化，生成 <code>Sessions</code> 控制器时（<a href="#sessions-controller">8.1.1 节</a>）自动生成了一个 <code>Sessions</code> 辅助模块。而且，其中的辅助方法会自动引入 Rails 视图。如果在控制器的基类（<code>ApplicationController</code>）中引入辅助方法模块，还可以在控制器中使用，如<a href="#listing-sessions-helper-include">代码清单 8.12</a> 所示。</p>
+<div id="listing-sessions-helper-include" data-type="listing">
+<h5><span class="title-label">代码清单 8.12</span>：在 <code>Application</code> 控制器中引入 <code>Sessions</code> 辅助模块</h5>
+
+<div class="source-file">app/controllers/application_controller.rb</div>
+
+<div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">protect_from_forgery</span> <span class="ss">with: :exception</span>
+<span class="hll">  <span class="kp">include</span> <span class="no">SessionsHelper</span></span>
+<span class="k">end</span>
+</code></pre></div>
+</div>
+<p>做好这些准备工作后，现在可以开始编写代码登入用户了。</p>
+<section data-type="sect2" id="the-log-in-method">
+<h2><span class="title-label">8.2.1</span> <code>log_in</code> 方法</h2>
+<p>有 Rails 提供的 <code>session</code> 方法协助，登入用户很简单。（<code>session</code> 方法与 <a href="#sessions-controller">8.1.1 节</a>生成的 <code>Sessions</code> 控制器没有关系。）我们可以把 <code>session</code> 视作一个哈希，按照下面的方式赋值：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><code><span class="n">session</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="nf">id</span>
+</code></pre></div>
+</div>
+<p>这么做会在用户的浏览器中创建一个临时 cookie，内容是加密后的用户 ID。在后续的请求中，可以使用 <code>session[:user_id]</code> 取回这个 ID。<a href="chapter9.html#remember-me">9.1 节</a>使用的 <code>cookies</code> 方法创建的是持久 cookie，而 <code>session</code> 方法创建的是临时会话，浏览器关闭后立即失效。</p>
+<p>我们想在多个不同的地方使用这个登录方式，所以在 <code>Sessions</code> 辅助模块中定义一个名为 <code>log_in</code> 的方法，如<a href="#listing-log-in-function">代码清单 8.13</a> 所示。</p>
+<div id="listing-log-in-function" data-type="listing">
+<h5><span class="title-label">代码清单 8.13</span>：<code>log_in</code> 方法</h5>
+
+<div class="source-file">app/helpers/sessions_helper.rb</div>
+
+<div class="highlight language-ruby"><pre><code><span class="k">module</span> <span class="nn">SessionsHelper</span>
+
+  <span class="c1"># 登入指定的用户</span>
+  <span class="k">def</span> <span class="nf">log_in</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+<span class="hll">    <span class="n">session</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="nf">id</span></span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+</div>
+<p><code>session</code> 方法创建的临时 cookie 会自动加密，所以<a href="#listing-log-in-function">代码清单 8.13</a> 中的代码是安全的，攻击者无法使用会话中的信息以该用户的身份登录。不过，只有 <code>session</code> 方法创建的临时 cookie 是这样，<code>cookies</code> 方法创建的持久 cookie 则有可能会受到会话劫持（session hijacking）攻击。所以在 <a href="chapter9.html#remember-me">9.1 节</a>我们会小心处理存入用户浏览器中的信息。</p>
+<p>定义好 <code>log_in</code> 方法后，我们可以完成 <code>Sessions</code> 控制器中的 <code>create</code> 动作，登入用户，然后重定向到用户的资料页面，如<a href="#listing-log-in-success">代码清单 8.14</a> 所示。<sup>[<a id="fn-ref-3" href="#fn-3">3</a>]</sup></p>
+<div id="listing-log-in-success" data-type="listing">
+<h5><span class="title-label">代码清单 8.14</span>：登入用户</h5>
+
+<div class="source-file">app/controllers/sessions_controller.rb</div>
+
+<div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">SessionsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+
+  <span class="k">def</span> <span class="nf">new</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">create</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">email: </span><span class="n">params</span><span class="p">[</span><span class="ss">:session</span><span class="p">][</span><span class="ss">:email</span><span class="p">].</span><span class="nf">downcase</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">user</span> <span class="o">&amp;&amp;</span> <span class="n">user</span><span class="p">.</span><span class="nf">authenticate</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:session</span><span class="p">][</span><span class="ss">:password</span><span class="p">])</span>
+<span class="hll">      <span class="n">log_in</span> <span class="n">user</span></span>
+<span class="hll">      <span class="n">redirect_to</span> <span class="n">user</span></span>
+    <span class="k">else</span>
+      <span class="n">flash</span><span class="p">.</span><span class="nf">now</span><span class="p">[</span><span class="ss">:danger</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Invalid email/password combination'</span>
+      <span class="n">render</span> <span class="s1">'new'</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">destroy</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+</div>
+<p>注意简洁的重定向代码</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><code><span class="n">redirect_to</span> <span class="n">user</span>
+</code></pre></div>
+</div>
+<p>我们在 <a href="chapter7.html#the-finished-signup-form">7.4.1 节</a>见过。Rails 会自动转换成用户资料页的地址：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><code><span class="n">user_url</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<p>定义好 <code>create</code> 动作后，<a href="#listing-login-form">代码清单 8.3</a> 中的登录表单就可以使用了。不过从应用的外观上看不出什么区别，除非直接查看浏览器中的会话，否则没有方法判断用户是否已经登录。<a href="#current-user">8.2.2 节</a>会使用会话中的用户 ID 从数据库中取回当前用户，做些视觉上的变化。<a href="#changing-the-layout-links">8.2.3 节</a>会修改网站布局中的链接，添加一个指向当前用户资料页面的链接。</p>
+<h5 id="exercises-the-log-in-method" class="discrete">练习</h5>
+<ol class="arabic">
+<li>
+<p>使用有效的信息登录，然后查看浏览器中的 cookies。会话的内容是什么？提示：如果不知道怎么在浏览器中查看 cookies，使用 Google 搜索。</p>
+</li>
+<li>
+<p>cookies 中 <code>Expires</code> 字段的值是什么？</p>
+</li>
+</ol>
+</section>
+<section data-type="sect2" id="current-user">
+<h2><span class="title-label">8.2.2</span> 当前用户</h2>
+<p>把用户 ID 安全地存储在临时会话中之后，在后续的请求中可以将其读取出来。我们要定义一个名为 <code>current_user</code> 的方法，从数据库中取出用户 ID 对应的用户。<code>current_user</code> 方法可用于编写类似下面的代码：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-erb"><pre><code><span class="cp">&lt;%=</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">name</span> <span class="cp">%&gt;</span>
+</code></pre></div>
+</div>
+<p>或是：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><code><span class="n">redirect_to</span> <span class="n">current_user</span>
+</code></pre></div>
+</div>
+<p>查找用户的方法之一是使用 <code>find</code> 方法，在用户资料页面就是这么做的（<a href="chapter7.html#listing-user-show-action">代码清单 7.5</a>）：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><code><span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">session</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">])</span>
+</code></pre></div>
+</div>
+<p><a href="chapter6.html#finding-user-objects">6.1.4 节</a>说过，如果用户 ID 不存在，<code>find</code> 方法会抛出异常。在用户的资料页面可以使用这种行为，因为必须有相应的用户才能显示他的信息。但 <code>session[:user_id]</code> 的值经常是 <code>nil</code>（表示用户未登录），所以我们要使用 <code>create</code> 动作中通过电子邮件地址查找用户的 <code>find_by</code> 方法，通过 <code>id</code> 查找用户：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><code><span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">id: </span><span class="n">session</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">])</span>
+</code></pre></div>
+</div>
+<p>如果 ID 无效，<code>find_by</code> 方法返回 <code>nil</code>，而不会抛出异常。</p>
+<p>因此，我们可以按照下面的方式定义 <code>current_user</code> 方法：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><code><span class="k">def</span> <span class="nf">current_user</span>
+  <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">id: </span><span class="n">session</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">])</span>
+<span class="k">end</span>
+</code></pre></div>
+</div>
+<p>这样定义应该可以，不过如果在一个页面中多次调用 <code>current_user</code> 方法，会多次查询数据库。所以，我们要使用一种 Ruby 习惯写法，把 <code>User.find_by</code> 的结果存储在实例变量中，只在第一次调用时查询数据库，后续再调用直接返回实例变量中存储的值：<sup>[<a id="fn-ref-4" href="#fn-4">4</a>]</sup></p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><code><span class="k">if</span> <span class="vi">@current_user</span><span class="p">.</span><span class="nf">nil?</span>
+  <span class="vi">@current_user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">id: </span><span class="n">session</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">])</span>
+<span class="k">else</span>
+  <span class="vi">@current_user</span>
+<span class="k">end</span>
+</code></pre></div>
+</div>
+<p>使用 <a href="chapter4.html#objects-and-message-passing">4.2.3 节</a>中介绍的“或”运算符 <code>||</code>，可以把这段代码改写成：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><code><span class="vi">@current_user</span> <span class="o">=</span> <span class="vi">@current_user</span> <span class="o">||</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">id: </span><span class="n">session</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">])</span>
+</code></pre></div>
+</div>
+<p><code>User</code> 对象是真值，所以仅当 <code>@current_user</code> 没有赋值时才会执行 <code>find_by</code> 方法。</p>
+<p>上述代码虽然可以使用，但并不符合 Ruby 的习惯。<code>@current_user</code> 赋值语句的正确写法是这样：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><code><span class="vi">@current_user</span> <span class="o">||=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">id: </span><span class="n">session</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">])</span>
+</code></pre></div>
+</div>
+<p>这种写法用到了容易让人困惑的 <code>||=</code>（或等）运算符，参见<a href="#aside-or-equals">旁注 8.1</a> 中的说明。</p>
+<div data-type="sidebar" id="aside-or-equals" class="sidebar">
+<h5><span class="title-label">旁注 8.1</span>：<code>||=</code> 操作符简介</h5>
+<p><code>||=</code>（或等）赋值运算符在 Ruby 中常用，因此有追求的 Rails 开发者要学会使用。初学时可能觉得 <code>||=</code> 很神秘，不过与其他运算符对比之后，你会发现也不难理解。</p>
+<p>我们先来看一下常见的变量自增一赋值：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><code><span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span>
+</code></pre></div>
+</div>
+<p>很多编程语言都为这种操作提供了简化的运算符，在 Ruby 中（以及 C、C++、Perl、Python、Java 等），可以写成下面这样：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><code><span class="n">x</span> <span class="o">+=</span> <span class="mi">1</span>
+</code></pre></div>
+</div>
+<p>其他运算符也有类似的简化形式：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><code>$ rails console
+&gt;&gt; x = 1
+=&gt; 1
+&gt;&gt; x += 1
+=&gt; 2
+&gt;&gt; x *= 3
+=&gt; 6
+&gt;&gt; x -= 8
+=&gt; -2
+&gt;&gt; x /= 2
+=&gt; -1
+</code></pre></div>
+</div>
+<p>通过上面的例子可以得知，<code>x = x O y</code> 和 <code>x O=y</code> 是等效的，其中 <code>O</code> 表示运算符。</p>
+<p>在 Ruby 中还经常会遇到这种情况：如果变量的值为 <code>nil</code> 给它赋值，否则不改变变量的值。我们可以使用 <a href="chapter4.html#objects-and-message-passing">4.2.3 节</a>介绍的或运算符（<code>||</code>）编写下面的代码：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-irb"><pre><code>&gt;&gt; @foo
+=&gt; nil
+&gt;&gt; @foo = @foo || "bar"
+=&gt; "bar"
+&gt;&gt; @foo = @foo || "baz"
+=&gt; "bar"
+</code></pre></div>
+</div>
+<p>因为 <code>nil</code> 是假值，所以第一个赋值语句等同于 <code>nil || "bar"</code>，得到的结果是 <code>"bar"</code>。同样，第二个赋值操作等同于 <code>"bar" || "baz"</code>，得到的结果还是 <code>"bar"</code>。这是因为除了 <code>nil</code> 和 <code>false</code> 之外，其他值都是真值；而如果第一个表达式的值是真值，<code>||</code> 会终止执行。（或运算符的执行顺序从左至右，只要出现真值就终止语句的执行，这种方式叫短路计算（short-circuit evaluation）。）</p>
+<p>与前面的控制台会话对比之后，我们发现 <code>@foo = @foo || "bar"</code> 符合 <code>x = x O y</code> 形式，其中 <code>||</code> 就是 <code>O</code>：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-text"><pre><code>x    =   x   +   1      -&gt;     x     +=   1
+x    =   x   *   3      -&gt;     x     *=   3
+x    =   x   -   8      -&gt;     x     -=   8
+x    =   x   /   2      -&gt;     x     /=   2
+@foo = @foo || "bar"    -&gt;     @foo ||= "bar"
+</code></pre></div>
+</div>
+<p>因此，<code>@foo = @foo || "bar"</code> 和 <code>@foo ||= "bar"</code> 两种写法是等效的。在获取当前用户时，建议使用下面的写法：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><code><span class="vi">@current_user</span> <span class="o">||=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">id: </span><span class="n">session</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">])</span>
+</code></pre></div>
+</div>
+<p>不难理解吧！</p>
+<p>（严格来说，Ruby 执行的表达式是 <code>@foo || @foo = "bar"</code>，这样能避免 <code>@foo</code> 为 <code>nil</code> 或 <code>false</code> 时执行不必要的赋值。但是这个表达式没有很好地解释 <code>||=</code> 运算符，所以上述内容使用几乎等效的 <code>@foo = @foo || "bar"</code> 表达式。）</p>
+</div>
+<p>综上所述，<code>current_user</code> 方法更简洁的定义方式如<a href="#listing-current-user">代码清单 8.15</a> 所示。</p>
+<div id="listing-current-user" data-type="listing">
+<h5><span class="title-label">代码清单 8.15</span>：在会话中查找当前用户</h5>
+
+<div class="source-file">app/helpers/sessions_helper.rb</div>
+
+<div class="highlight language-ruby"><pre><code><span class="k">module</span> <span class="nn">SessionsHelper</span>
+
+  <span class="c1"># 登入指定的用户</span>
+  <span class="k">def</span> <span class="nf">log_in</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="n">session</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="nf">id</span>
+  <span class="k">end</span>
+
+  <span class="c1"># 返回当前登录的用户（如果有的话）</span>
+  <span class="k">def</span> <span class="nf">current_user</span>
+<span class="hll">    <span class="vi">@current_user</span> <span class="o">||=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">id: </span><span class="n">session</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">])</span></span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+</div>
+<p>定义好 <code>current_user</code> 方法之后，可以根据用户的登录状态修改应用的布局了。</p>
+<h5 id="exercises-current-user" class="discrete">练习</h5>
+<ol class="arabic">
+<li>
+<p>打开 Rails 控制台，确认用户不存在时 <code>User.find_by(id: …​)</code> 返回 <code>nil</code>。</p>
+</li>
+<li>
+<p>在 Rails 控制台中创建 <code>session</code> 哈希，有个键为 <code>:user_id</code>。按照<a href="#listing-console-session-simulation">代码清单 8.16</a> 中的步骤，确认 <code>||=</code> 运算符的行为符合预期。</p>
+</li>
+</ol>
+<div id="listing-console-session-simulation" data-type="listing">
+<h5><span class="title-label">代码清单 8.16</span>：在控制台中模拟 <code>session</code></h5>
+
+
+<div class="highlight language-irb"><pre><code>&gt;&gt; session = {}
+&gt;&gt; session[:user_id] = nil
+&gt;&gt; @current_user ||= User.find_by(id: session[:user_id])
+<span class="hll">&lt;What happens here?&gt;</span>
+&gt;&gt; session[:user_id]= User.first.id
+&gt;&gt; @current_user ||= User.find_by(id: session[:user_id])
+<span class="hll">&lt;What happens here?&gt;</span>
+&gt;&gt; @current_user ||= User.find_by(id: session[:user_id])
+<span class="hll">&lt;What happens here?&gt;</span>
+</code></pre></div>
+</div>
+</section>
+<section data-type="sect2" id="changing-the-layout-links">
+<h2><span class="title-label">8.2.3</span> 修改布局中的链接</h2>
+<p>实现登录功能后，我们要根据登录状态修改布局中的链接。具体而言，我们要添加退出链接、用户设置页面的链接、用户列表页面的链接和当前用户的资料页面链接，构思图如<a href="#fig-login-success-mockup">图 8.7</a> 所示。<sup>[<a id="fn-ref-5" href="#fn-5">5</a>]</sup>注意，退出链接和资料页面的链接在“Account”（账户）下拉菜单中。使用 Bootstrap 实现下拉菜单的方法参见<a href="#listing-layout-login-logout-links">代码清单 8.18</a>。</p>
+<div id="fig-login-success-mockup" class="figure has-border"><img src="images/chapter8/login_success_mockup.png" alt="login success mockup" /><div class="figcaption"><span class="title-label">图 8.7</span>：成功登录后显示的用户资料页面构思图</div></div>
+<p>此时，在现实开发中，我会考虑编写集成测试检测上面规划的行为。我在<a href="chapter3.html#aside-when-to-test">旁注 3.3</a> 中说过，当你熟练掌握 Rails 的测试工具后，会倾向于先写测试。但这个测试涉及到一些新知识，所以最好在专门的一节中编写（<a href="#testing-layout-changes">8.2.4 节</a>）。</p>
+<p>修改网站布局中的链接时要在 ERb 中使用 <code>if-else</code> 语句，用户登录时显示一组链接，未登录时显示另一组链接：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-erb"><pre><code><span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">logged_in?</span> <span class="cp">%&gt;</span>
+  # 登录用户看到的链接
+<span class="cp">&lt;%</span> <span class="k">else</span> <span class="cp">%&gt;</span>
+  # 未登录用户看到的链接
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+</code></pre></div>
+</div>
+<p>为了编写这种代码，我们要定义 <code>logged_in?</code> 方法，返回布尔值。</p>
+<p>用户登录后，当前用户存储在会话中，即 <code>current_user</code> 不是 <code>nil</code>。检测会话中有没有当前用户要使用“非”运算符（<a href="chapter4.html#objects-and-message-passing">4.2.3 节</a>）。“非”运算符写做 <code>!</code>，经常读作“bang”。<code>logged_in?</code> 方法的定义如<a href="#listing-logged-in-p">代码清单 8.17</a> 所示。</p>
+<div id="listing-logged-in-p" data-type="listing">
+<h5><span class="title-label">代码清单 8.17</span>：<code>logged_in?</code> 辅助方法</h5>
+
+<div class="source-file">app/helpers/sessions_helper.rb</div>
+
+<div class="highlight language-ruby"><pre><code><span class="k">module</span> <span class="nn">SessionsHelper</span>
+
+  <span class="c1"># 登入指定的用户</span>
+  <span class="k">def</span> <span class="nf">log_in</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="n">session</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="nf">id</span>
+  <span class="k">end</span>
+
+  <span class="c1"># 返回当前登录的用户（如果有的话）</span>
+  <span class="k">def</span> <span class="nf">current_user</span>
+    <span class="vi">@current_user</span> <span class="o">||=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">id: </span><span class="n">session</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">])</span>
+  <span class="k">end</span>
+
+  <span class="c1"># 如果用户已登录，返回 true，否则返回 false</span>
+  <span class="k">def</span> <span class="nf">logged_in?</span>
+<span class="hll">    <span class="o">!</span><span class="n">current_user</span><span class="p">.</span><span class="nf">nil?</span></span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+</div>
+<p>定义好 <code>logged_in?</code> 方法之后，可以修改用户登录后显示的链接了。我们要添加四个新链接，其中两个链接的地址先使用占位符，<a href="chapter10.html#updating-showing-and-deleting-users">第 10 章</a>会换成真正的地址：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-erb"><pre><code><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Users"</span><span class="p">,</span>    <span class="s1">'#'</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Settings"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span>
+</code></pre></div>
+</div>
+<p>退出链接使用<a href="#listing-sessions-resource">代码清单 8.2</a> 中定义的退出页面地址：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-erb"><pre><code><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Log out"</span><span class="p">,</span> <span class="n">logout_path</span><span class="p">,</span> <span class="ss">method: :delete</span> <span class="cp">%&gt;</span>
+</code></pre></div>
+</div>
+<p>注意，退出链接中指定了哈希参数，指明这个链接发送的是 HTTP <code>DELETE</code> 请求。<sup>[<a id="fn-ref-6" href="#fn-6">6</a>]</sup>我们还要添加资料页面的链接：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-erb"><pre><code><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Profile"</span><span class="p">,</span> <span class="n">current_user</span> <span class="cp">%&gt;</span>
+</code></pre></div>
+</div>
+<p>这个链接可以写成：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-erb"><pre><code><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Profile"</span><span class="p">,</span> <span class="n">user_path</span><span class="p">(</span><span class="n">current_user</span><span class="p">)</span> <span class="cp">%&gt;</span>
+</code></pre></div>
+</div>
+<p>与之前一样，我们可以直接链接到用户对象，Rails 会自动把 <code>current_user</code> 转换成 <code>user_path(current_user)</code>。最后，如果用户未登录，我们要添加一个链接，使用<a href="#listing-sessions-resource">代码清单 8.2</a> 中定义的登录地址，链接到登录页面：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-erb"><pre><code><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Log in"</span><span class="p">,</span> <span class="n">login_path</span> <span class="cp">%&gt;</span>
+</code></pre></div>
+</div>
+<p>综上，得到的视图如<a href="#listing-layout-login-logout-links">代码清单 8.18</a> 所示。</p>
+<div id="listing-layout-login-logout-links" data-type="listing">
+<h5><span class="title-label">代码清单 8.18</span>：修改布局中的链接</h5>
+
+<div class="source-file">app/views/layouts/_header.html.erb</div>
+
+<div class="highlight language-erb"><pre><code><span class="nt">&lt;header</span> <span class="na">class=</span><span class="s">"navbar navbar-fixed-top navbar-inverse"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"container"</span><span class="nt">&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"sample app"</span><span class="p">,</span> <span class="n">root_path</span><span class="p">,</span> <span class="ss">id: </span><span class="s2">"logo"</span> <span class="cp">%&gt;</span>
+    <span class="nt">&lt;nav&gt;</span>
+      <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"nav navbar-nav navbar-right"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Home"</span><span class="p">,</span> <span class="n">root_path</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+        <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Help"</span><span class="p">,</span> <span class="n">help_path</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+<span class="hll">        <span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">logged_in?</span> <span class="cp">%&gt;</span></span>
+<span class="hll">          <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Users"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span></span>
+          <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"dropdown"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"#"</span> <span class="na">class=</span><span class="s">"dropdown-toggle"</span> <span class="na">data-toggle=</span><span class="s">"dropdown"</span><span class="nt">&gt;</span>
+              Account <span class="nt">&lt;b</span> <span class="na">class=</span><span class="s">"caret"</span><span class="nt">&gt;&lt;/b&gt;</span>
+            <span class="nt">&lt;/a&gt;</span>
+            <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"dropdown-menu"</span><span class="nt">&gt;</span>
+<span class="hll">              <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Profile"</span><span class="p">,</span> <span class="n">current_user</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span></span>
+<span class="hll">              <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Settings"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span></span>
+              <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"divider"</span><span class="nt">&gt;&lt;/li&gt;</span>
+              <span class="nt">&lt;li&gt;</span>
+<span class="hll">                <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Log out"</span><span class="p">,</span> <span class="n">logout_path</span><span class="p">,</span> <span class="ss">method: </span><span class="s2">"delete"</span> <span class="cp">%&gt;</span></span>
+              <span class="nt">&lt;/li&gt;</span>
+            <span class="nt">&lt;/ul&gt;</span>
+          <span class="nt">&lt;/li&gt;</span>
+<span class="hll">        <span class="cp">&lt;%</span> <span class="k">else</span> <span class="cp">%&gt;</span></span>
+<span class="hll">          <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Log in"</span><span class="p">,</span> <span class="n">login_path</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span></span>
+<span class="hll">        <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span></span>
+      <span class="nt">&lt;/ul&gt;</span>
+    <span class="nt">&lt;/nav&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/header&gt;</span>
+</code></pre></div>
+</div>
+<p>除了在布局中添加新链接之外，<a href="#listing-layout-login-logout-links">代码清单 8.18</a> 还借助 Bootstrap 实现了下拉菜单。<sup>[<a id="fn-ref-7" href="#fn-7">7</a>]</sup>注意这段代码中使用的几个 Bootstrap CSS 类：<code>dropdown</code>，<code>dropdown-menu</code> 等。为了让下拉菜单生效，我们要在 <code>application.js</code>（Asset Pipeline 的一部分）中引入 Bootstrap 提供的 JavaScript 库，如<a href="#listing-bootstrap-js">代码清单 8.19</a> 所示。</p>
+<div id="listing-bootstrap-js" data-type="listing">
+<h5><span class="title-label">代码清单 8.19</span>：在 <code>application.js</code> 中引入 Bootstrap JavaScript 库</h5>
+
+<div class="source-file">app/assets/javascripts/application.js</div>
+
+<div class="highlight language-javascript"><pre><code><span class="c1">//= require jquery</span>
+<span class="c1">//= require jquery_ujs</span>
+<span class="hll"><span class="c1">//= require bootstrap</span></span>
+<span class="c1">//= require turbolinks</span>
+<span class="c1">//= require_tree .</span>
+</code></pre></div>
+</div>
+<p>现在，你应该访问登录页面，然后使用有效账户登录（用户名：<code>example@railstutorial.org</code>，密码：<code>foobar</code>），这样足以测试前三节编写的代码是否正确。<sup>[<a id="fn-ref-8" href="#fn-8">8</a>]</sup>添加<a href="#listing-layout-login-logout-links">代码清单 8.18</a> 和<a href="#listing-bootstrap-js">代码清单 8.19</a> 中的代码后，应该能看到下拉菜单和只有已登录用户才能看到的链接，如<a href="#fig-profile-with-logout-link">图 8.8</a> 所示。</p>
+<p>如果关闭浏览器，还能确认应用确实清除了登录状态，必须再次登录才能看到上述改动。<sup>[<a id="fn-ref-9" href="#fn-9">9</a>]</sup></p>
+<div id="fig-profile-with-logout-link" class="figure"><img src="images/chapter8/profile_with_logout_link_3rd_edition.png" alt="profile with logout link 3rd edition" /><div class="figcaption"><span class="title-label">图 8.8</span>：用户登录后看到了新添加的链接和下拉菜单</div></div>
+<h5 id="exercises-changing-the-layout-links" class="discrete">练习</h5>
+<ol class="arabic">
+<li>
+<p>使用浏览器中的 cookie 审查工具删除会话，确认布局中显示的是未登录用户能看到的链接。</p>
+</li>
+<li>
+<p>登录，确认布局中的链接变了。然后关闭浏览器，重启后确认布局中显示的是未登录用户能看到的链接。（如果浏览器启用了“离开时记住登录状态”功能，要将其禁用。）</p>
+</li>
+</ol>
+</section>
+<section data-type="sect2" id="testing-layout-changes">
+<h2><span class="title-label">8.2.4</span> 测试布局中的变化</h2>
+<p>我们自己动手验证了成功登录后应用的表现正常，在继续之前，还要编写集成测试检查这些行为，以及捕获回归。我们要在<a href="#listing-flash-persistence-test">代码清单 8.8</a> 的基础上，再添加一些测试，检查下面的操作步骤：</p>
+<ol class="arabic">
+<li>
+<p>访问登录页面；</p>
+</li>
+<li>
+<p>通过 <code>post</code> 请求发送有效的登录信息；</p>
+</li>
+<li>
+<p>确认登录链接消失了；</p>
+</li>
+<li>
+<p>确认出现了退出链接；</p>
+</li>
+<li>
+<p>确认出现了资料页面链接。</p>
+</li>
+</ol>
+<p>为了检查这些变化，在测试中要登入已经注册的用户，也就是说数据库中必须有一个用户。Rails 默认使用固件实现这种需求。固件是一种组织数据的方式，这些数据会载入测试数据库。<a href="chapter6.html#uniqueness-validation">6.2.5 节</a>删除了默认生成的固件（<a href="chapter6.html#listing-empty-fixtures">代码清单 6.31</a>），目的是让检查电子邮件地址的测试通过。现在，我们要在这个空文件中加入自定义的固件。</p>
+<p>目前，我们只需要一个用户，它的名字和电子邮件地址应该是有效的。因为我们要登入这个用户，所以还要提供正确的密码，与提交给 <code>Sessions</code> 控制器中 <code>create</code> 动作的密码比较。参照<a href="chapter6.html#fig-user-model-password-digest">图 6.8</a> 中的数据模型，可以看出，我们要在用户固件中定义 <code>password_digest</code> 属性。我们会定义 <code>digest</code> 方法计算这个属性的值。</p>
+<p><a href="chapter6.html#a-hashed-password">6.3.1 节</a>说过，密码摘要使用 bcrypt 生成（通过 <code>has_secure_password</code> 方法），所以固件中的密码摘要也要使用这种方式生成。查看<a href="https://github.com/rails/rails/blob/master/activemodel/lib/active_model/secure_password.rb">安全密码的源码</a>后，我们发现生成摘要的方法是：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><code><span class="no">BCrypt</span><span class="o">::</span><span class="no">Password</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="ss">cost: </span><span class="n">cost</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<p>其中，<code>string</code> 是要计算哈希值的字符串；<code>cost</code> 是耗时因子，决定计算哈希值时消耗的资源。耗时因子的值越大，由哈希值破解出原密码的难度越大。这个值对生产环境的安全防护很重要，但在测试中我们希望 <code>digest</code> 方法的执行速度越快越好。安全密码的源码中还有这么一行：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><code><span class="n">cost</span> <span class="o">=</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">SecurePassword</span><span class="p">.</span><span class="nf">min_cost</span> <span class="p">?</span> <span class="no">BCrypt</span><span class="o">::</span><span class="no">Engine</span><span class="o">::</span><span class="no">MIN_COST</span> <span class="p">:</span>
+                                              <span class="no">BCrypt</span><span class="o">::</span><span class="no">Engine</span><span class="p">.</span><span class="nf">cost</span>
+</code></pre></div>
+</div>
+<p>这行代码相当难懂，你无须完全理解；它的作用是严格实现前面的分析：在测试中耗时因子使用最小值，在生产环境则使用普通（最大）值。（<a href="chapter9.html#remember-me-checkbox">9.2 节</a>会深入介绍奇怪的 <code>?-:</code> 句法。）</p>
+<p><code>digest</code> 方法可以放在几个不同的地方，但 <a href="chapter9.html#remember-token-and-digest">9.1.1 节</a>会在 <code>User</code> 模型中使用，所以建议放在 <code>user.rb</code> 文件中。因为计算摘要时不用获取用户对象，所以我们要把 <code>digest</code> 方法附在 <code>User</code> 类上，也就是定义为类方法（<a href="chapter4.html#constructors">4.4.1 节</a>简要介绍过）。结果如<a href="#listing-digest-method">代码清单 8.20</a> 所示。</p>
+<div id="listing-digest-method" data-type="listing">
+<h5><span class="title-label">代码清单 8.20</span>：定义固件中要使用的 <code>digest</code> 方法</h5>
+
+<div class="source-file">app/models/user.rb</div>
+
+<div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">before_save</span> <span class="p">{</span> <span class="nb">self</span><span class="p">.</span><span class="nf">email</span> <span class="o">=</span> <span class="n">email</span><span class="p">.</span><span class="nf">downcase</span> <span class="p">}</span>
+  <span class="n">validates</span> <span class="ss">:name</span><span class="p">,</span>  <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">length: </span><span class="p">{</span> <span class="ss">maximum: </span><span class="mi">50</span> <span class="p">}</span>
+  <span class="no">VALID_EMAIL_REGEX</span> <span class="o">=</span> <span class="sr">/\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i</span>
+  <span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">length: </span><span class="p">{</span> <span class="ss">maximum: </span><span class="mi">255</span> <span class="p">},</span>
+                    <span class="ss">format: </span><span class="p">{</span> <span class="ss">with: </span><span class="no">VALID_EMAIL_REGEX</span> <span class="p">},</span>
+                    <span class="ss">uniqueness: </span><span class="p">{</span> <span class="ss">case_sensitive: </span><span class="kp">false</span> <span class="p">}</span>
+  <span class="n">has_secure_password</span>
+  <span class="n">validates</span> <span class="ss">:password</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">length: </span><span class="p">{</span> <span class="ss">minimum: </span><span class="mi">6</span> <span class="p">}</span>
+
+  <span class="c1"># 返回指定字符串的哈希摘要</span>
+  <span class="k">def</span> <span class="nc">User</span><span class="o">.</span><span class="nf">digest</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+<span class="hll">    <span class="n">cost</span> <span class="o">=</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">SecurePassword</span><span class="p">.</span><span class="nf">min_cost</span> <span class="p">?</span> <span class="no">BCrypt</span><span class="o">::</span><span class="no">Engine</span><span class="o">::</span><span class="no">MIN_COST</span> <span class="p">:</span></span>
+<span class="hll">                                                  <span class="no">BCrypt</span><span class="o">::</span><span class="no">Engine</span><span class="p">.</span><span class="nf">cost</span></span>
+<span class="hll">    <span class="no">BCrypt</span><span class="o">::</span><span class="no">Password</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="ss">cost: </span><span class="n">cost</span><span class="p">)</span></span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+</div>
+<p>定义好 <code>digest</code> 方法后，我们可以创建一个有效的用户固件了，如<a href="#listing-real-user-fixture">代码清单 8.21</a> 所示。<sup>[<a id="fn-ref-10" href="#fn-10">10</a>]</sup></p>
+<div id="listing-real-user-fixture" data-type="listing">
+<h5><span class="title-label">代码清单 8.21</span>：测试用户登录所需的固件</h5>
+
+<div class="source-file">test/fixtures/users.yml</div>
+
+<div class="highlight language-yaml"><pre><code><span class="s">michael</span><span class="pi">:</span>
+  <span class="s">name</span><span class="pi">:</span> <span class="s">Michael Example</span>
+  <span class="s">email</span><span class="pi">:</span> <span class="s">michael@example.com</span>
+  <span class="s">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
+</code></pre></div>
+</div>
+<p>特别注意一下，固件中可以使用嵌入式 Ruby。因此，我们可以使用</p>
+<div data-type="listing">
+
+
+<div class="highlight language-erb"><pre><code><span class="cp">&lt;%=</span> <span class="no">User</span><span class="p">.</span><span class="nf">digest</span><span class="p">(</span><span class="s1">'password'</span><span class="p">)</span> <span class="cp">%&gt;</span>
+</code></pre></div>
+</div>
+<p>生成测试用户正确的密码摘要。</p>
+<p>我们虽然定义了 <code>has_secure_password</code> 所需的 <code>password_digest</code> 属性，但有时也需要使用密码的原始值。可是，在固件中无法实现，如果在<a href="#listing-real-user-fixture">代码清单 8.21</a> 中添加 <code>password</code> 属性，Rails 会提示数据库中没有这个列（确实没有）。所以，我们约定固件中所有用户的密码都一样，即 <code>'password'</code>。</p>
+<p>创建了一个有效用户固件后，在测试中可以使用下面的方式获取这个用户：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><code><span class="n">user</span> <span class="o">=</span> <span class="n">users</span><span class="p">(</span><span class="ss">:michael</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<p>其中，<code>users</code> 对应固件文件 <code>users.yml</code> 的文件名，<code>:michael</code> 是<a href="#listing-real-user-fixture">代码清单 8.21</a> 中定义的用户。</p>
+<p>定义好用户固件之后，现在可以把本节开头列出的操作步骤转换成代码了，如<a href="#listing-user-login-test-valid-information">代码清单 8.22</a> 所示。</p>
+<div id="listing-user-login-test-valid-information" data-type="listing">
+<h5><span class="title-label">代码清单 8.22</span>：测试使用有效信息登录的情况 <span class="green">GREEN</span></h5>
+
+<div class="source-file">test/integration/users_login_test.rb</div>
+
+<div class="highlight language-ruby"><pre><code><span class="nb">require</span> <span class="s1">'test_helper'</span>
+
+<span class="k">class</span> <span class="nc">UsersLoginTest</span> <span class="o">&lt;</span> <span class="no">ActionDispatch</span><span class="o">::</span><span class="no">IntegrationTest</span>
+
+<span class="hll">  <span class="k">def</span> <span class="nf">setup</span></span>
+<span class="hll">    <span class="vi">@user</span> <span class="o">=</span> <span class="n">users</span><span class="p">(</span><span class="ss">:michael</span><span class="p">)</span></span>
+<span class="hll">  <span class="k">end</span></span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+  <span class="nf">test</span> <span class="s2">"login with valid information"</span> <span class="k">do</span>
+    <span class="n">get</span> <span class="n">login_path</span>
+    <span class="n">post</span> <span class="n">login_path</span><span class="p">,</span> <span class="ss">params: </span><span class="p">{</span> <span class="ss">session: </span><span class="p">{</span> <span class="ss">email:    </span><span class="vi">@user</span><span class="p">.</span><span class="nf">email</span><span class="p">,</span>
+                                          <span class="ss">password: </span><span class="s1">'password'</span> <span class="p">}</span> <span class="p">}</span>
+    <span class="n">assert_redirected_to</span> <span class="vi">@user</span>
+    <span class="n">follow_redirect!</span>
+    <span class="n">assert_template</span> <span class="s1">'users/show'</span>
+    <span class="n">assert_select</span> <span class="s2">"a[href=?]"</span><span class="p">,</span> <span class="n">login_path</span><span class="p">,</span> <span class="ss">count: </span><span class="mi">0</span>
+    <span class="n">assert_select</span> <span class="s2">"a[href=?]"</span><span class="p">,</span> <span class="n">logout_path</span>
+    <span class="n">assert_select</span> <span class="s2">"a[href=?]"</span><span class="p">,</span> <span class="n">user_path</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+</div>
+<p>在这段代码中，我们使用 <code>assert_redirected_to @user</code> 检查重定向的地址是否正确；使用 <code>follow_redirect!</code> 访问重定向的目标地址。还确认页面中有零个登录链接，从而确认登录链接消失了：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><code><span class="n">assert_select</span> <span class="s2">"a[href=?]"</span><span class="p">,</span> <span class="n">login_path</span><span class="p">,</span> <span class="ss">count: </span><span class="mi">0</span>
+</code></pre></div>
+</div>
+<p><code>count: 0</code> 参数的目的是，告诉 <code>assert_select</code>，我们期望页面中有零个匹配指定模式的链接。（<a href="chapter5.html#listing-layout-links-test">代码清单 5.32</a>中使用的是 <code>count: 2</code>，指定必须有两个匹配模式的链接。）</p>
+<p>因为应用代码已经能正常运行，所以这个测试应该可以通过：</p>
+<div data-type="listing">
+<h5><span class="title-label">代码清单 8.23</span>：<strong class="green">GREEN</strong></h5>
+
+
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test test</span>/integration/users_login_test.rb <span class="se">\</span>
+<span class="gp">&gt;            </span>--name test_login_with_valid_information
+</code></pre></div>
+</div>
+<p>上述命令说明了如何运行一个测试文件中的某个测试——使用如下参数，并指定测试的名字：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-sh"><pre><code>--name test_login_with_valid_information
+</code></pre></div>
+</div>
+<p>（测试的名字是使用下划线把“test”和测试说明连接在一起。）注意，第二行开头的 <code>&gt;</code> 是行接续符号，由 shell 自动插入，不要输入。</p>
+<h5 id="exercises-layout-link-tests" class="discrete">练习</h5>
+<ol class="arabic">
+<li>
+<p>删除 <code>Sessions</code> 辅助模块里 <code>logged_in?</code> 方法中的 <code>!</code>，确认<a href="#listing-user-login-test-valid-information">代码清单 8.22</a> 中的测试无法通过。</p>
+</li>
+<li>
+<p>把 <code>!</code> 添加回去，让测试通过。</p>
+</li>
+</ol>
+</section>
+<section data-type="sect2" id="login-upon-signup">
+<h2><span class="title-label">8.2.5</span> 注册后直接登录</h2>
+<p>虽然现在基本完成了身份验证功能，但是新注册的用户可能还是会困惑，为什么注册后没有登录呢？注册后立即要求用户登录是很奇怪的，所以我们要在注册的过程中自动登入用户。为了实现这一功能，我们只需在 <code>User</code> 控制器的 <code>create</code> 动作中调用 <code>log_in</code> 方法，如<a href="#listing-login-upon-signup">代码清单 8.24</a> 所示。<sup>[<a id="fn-ref-11" href="#fn-11">11</a>]</sup></p>
+<div id="listing-login-upon-signup" data-type="listing">
+<h5><span class="title-label">代码清单 8.24</span>：注册后登入用户</h5>
+
+<div class="source-file">app/controllers/users_controller.rb</div>
+
+<div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+
+  <span class="k">def</span> <span class="nf">show</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">new</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">create</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">user_params</span><span class="p">)</span>
+    <span class="k">if</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">save</span>
+<span class="hll">      <span class="n">log_in</span> <span class="vi">@user</span></span>
+      <span class="n">flash</span><span class="p">[</span><span class="ss">:success</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"Welcome to the Sample App!"</span>
+      <span class="n">redirect_to</span> <span class="vi">@user</span>
+    <span class="k">else</span>
+      <span class="n">render</span> <span class="s1">'new'</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="kp">private</span>
+
+    <span class="k">def</span> <span class="nf">user_params</span>
+      <span class="n">params</span><span class="p">.</span><span class="nf">require</span><span class="p">(</span><span class="ss">:user</span><span class="p">).</span><span class="nf">permit</span><span class="p">(</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">:password</span><span class="p">,</span>
+                                   <span class="ss">:password_confirmation</span><span class="p">)</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+</div>
+<p>为了测试这个功能，我们可以在<a href="chapter7.html#listing-a-test-for-valid-submission">代码清单 7.33</a> 中添加一行代码，检查用户是否已经登录。我们可以定义一个 <code>is_logged_in?</code> 辅助方法，功能和<a href="#listing-logged-in-p">代码清单 8.17</a> 中的 <code>logged_in?</code> 方法一样，如果（测试环境的）会话中有用户的 ID 就返回 <code>true</code>，否则返回 <code>false</code>，如<a href="#listing-test-helper-sessions">代码清单 8.25</a> 所示。（我们不能像<a href="#listing-logged-in-p">代码清单 8.17</a> 那样使用 <code>current_user</code>，因为在测试中不能使用 <code>current_user</code> 方法，但是可以使用 <code>session</code> 方法。）我们定义的方法不是 <code>logged_in?</code>，而是 <code>is_logged_in?</code>，以免混淆。<sup>[<a id="fn-ref-12" href="#fn-12">12</a>]</sup></p>
+<div id="listing-test-helper-sessions" data-type="listing">
+<h5><span class="title-label">代码清单 8.25</span>：在测试中定义检查登录状态的方法，返回布尔值</h5>
+
+<div class="source-file">test/test_helper.rb</div>
+
+<div class="highlight language-ruby"><pre><code><span class="no">ENV</span><span class="p">[</span><span class="s1">'RAILS_ENV'</span><span class="p">]</span> <span class="o">||=</span> <span class="s1">'test'</span>
+<span class="p">.</span>
+<span class="nf">.</span>
+<span class="p">.</span>
+<span class="nf">class</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">fixtures</span> <span class="ss">:all</span>
+
+  <span class="c1"># 如果用户已登录，返回 true</span>
+<span class="hll">  <span class="k">def</span> <span class="nf">is_logged_in?</span></span>
+<span class="hll">    <span class="o">!</span><span class="n">session</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">].</span><span class="nf">nil?</span></span>
+<span class="hll">  <span class="k">end</span></span>
+<span class="k">end</span>
+</code></pre></div>
+</div>
+<p>然后，我们可以使用<a href="#listing-login-after-signup-test">代码清单 8.26</a> 中的测试检查注册后用户有没有登录。</p>
+<div id="listing-login-after-signup-test" data-type="listing">
+<h5><span class="title-label">代码清单 8.26</span>：测试注册后有没有登入用户 <span class="green">GREEN</span></h5>
+
+<div class="source-file">test/integration/users_signup_test.rb</div>
+
+<div class="highlight language-ruby"><pre><code><span class="nb">require</span> <span class="s1">'test_helper'</span>
+
+<span class="k">class</span> <span class="nc">UsersSignupTest</span> <span class="o">&lt;</span> <span class="no">ActionDispatch</span><span class="o">::</span><span class="no">IntegrationTest</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+  <span class="nf">test</span> <span class="s2">"valid signup information"</span> <span class="k">do</span>
+    <span class="n">get</span> <span class="n">signup_path</span>
+    <span class="n">assert_difference</span> <span class="s1">'User.count'</span><span class="p">,</span> <span class="mi">1</span> <span class="k">do</span>
+      <span class="n">post</span> <span class="n">users_path</span><span class="p">,</span> <span class="ss">params: </span><span class="p">{</span> <span class="ss">user: </span><span class="p">{</span> <span class="ss">name:  </span><span class="s2">"Example User"</span><span class="p">,</span>
+                                         <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">,</span>
+                                         <span class="ss">password:              </span><span class="s2">"password"</span><span class="p">,</span>
+                                         <span class="ss">password_confirmation: </span><span class="s2">"password"</span> <span class="p">}</span> <span class="p">}</span>
+    <span class="k">end</span>
+    <span class="n">follow_redirect!</span>
+    <span class="n">assert_template</span> <span class="s1">'users/show'</span>
+<span class="hll">    <span class="n">assert</span> <span class="n">is_logged_in?</span></span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+</div>
+<p>现在，测试组件应该可以通过：</p>
+<div data-type="listing">
+<h5><span class="title-label">代码清单 8.27</span>：<strong class="green">GREEN</strong></h5>
+
+
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+</code></pre></div>
+</div>
+<h5 id="exercises-login-upon-signup" class="discrete">练习</h5>
+<ol class="arabic">
+<li>
+<p>如果把<a href="#listing-login-upon-signup">代码清单 8.24</a> 中高亮的 <code>log_in</code> 那行注释掉，测试组件能通过吗？</p>
+</li>
+</ol>
+</section>
+</section>
+<section data-type="sect1" id="logging-out">
+<h1><span class="title-label">8.3</span> 退出</h1>
+<p><a href="#sessions">8.1 节</a>说过，我们要实现的身份验证系统会记住用户的登录状态，直到用户自行退出为止。本节，我们就要实现退出功能。退出链接已经定义好了（<a href="#listing-layout-login-logout-links">代码清单 8.18</a>），所以我们只需编写一个正确的控制器动作，销毁用户会话。</p>
+<p>目前为止，<code>Sessions</code> 控制器的动作都遵从 REST 架构，<code>new</code> 动作用于登录页面，<code>create</code> 动作完成登录操作。我们要继续使用 REST 架构，添加一个 <code>destroy</code> 动作，删除会话，实现退出功能。登录功能在<a href="#listing-log-in-success">代码清单 8.14</a> 和<a href="#listing-login-upon-signup">代码清单 8.24</a> 中都用到了，但退出功能不同，只在一处使用，所以我们会直接把相关的代码写在 <code>destroy</code> 动作中。<a href="chapter9.html#remember-tests">9.3 节</a>会看到，这么做（稍微重构后）易于测试身份验证系统。</p>
+<p>退出要撤销 <code>log_in</code>（<a href="#listing-log-in-function">代码清单 8.13</a>）完成的操作，即从会话中删除用户的 ID。为此，我们要使用 <code>delete</code> 方法，如下所示：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><code><span class="n">session</span><span class="p">.</span><span class="nf">delete</span><span class="p">(</span><span class="ss">:user_id</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<p>我们还要把当前用户设为 <code>nil</code>。不过现在这种情况下做不做这一步都没关系，因为退出后会立即转向根地址。<sup>[<a id="fn-ref-13" href="#fn-13">13</a>]</sup>与 <code>log_in</code> 及相关的方法一样，我们要把 <code>log_out</code> 方法放在 <code>Sessions</code> 辅助模块中，如<a href="#listing-log-out-method">代码清单 8.28</a> 所示。</p>
+<div id="listing-log-out-method" data-type="listing">
+<h5><span class="title-label">代码清单 8.28</span>：<code>log_out</code> 方法</h5>
+
+<div class="source-file">app/helpers/sessions_helper.rb</div>
+
+<div class="highlight language-ruby"><pre><code><span class="k">module</span> <span class="nn">SessionsHelper</span>
+
+  <span class="c1"># 登入指定的用户</span>
+  <span class="k">def</span> <span class="nf">log_in</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="n">session</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="nf">id</span>
+  <span class="k">end</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="o">.</span>
+  <span class="c1"># 退出当前用户</span>
+  <span class="k">def</span> <span class="nf">log_out</span>
+<span class="hll">    <span class="n">session</span><span class="p">.</span><span class="nf">delete</span><span class="p">(</span><span class="ss">:user_id</span><span class="p">)</span></span>
+<span class="hll">    <span class="vi">@current_user</span> <span class="o">=</span> <span class="kp">nil</span></span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+</div>
+<p>然后，在 <code>Sessions</code> 控制器的 <code>destroy</code> 动作中调用 <code>log_out</code> 方法，如<a href="#listing-destroy-session">代码清单 8.29</a> 所示。</p>
+<div id="listing-destroy-session" data-type="listing">
+<h5><span class="title-label">代码清单 8.29</span>：销毁会话（退出用户）</h5>
+
+<div class="source-file">app/controllers/sessions_controller.rb</div>
+
+<div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">SessionsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+
+  <span class="k">def</span> <span class="nf">new</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">create</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">email: </span><span class="n">params</span><span class="p">[</span><span class="ss">:session</span><span class="p">][</span><span class="ss">:email</span><span class="p">].</span><span class="nf">downcase</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">user</span> <span class="o">&amp;&amp;</span> <span class="n">user</span><span class="p">.</span><span class="nf">authenticate</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:session</span><span class="p">][</span><span class="ss">:password</span><span class="p">])</span>
+      <span class="n">log_in</span> <span class="n">user</span>
+      <span class="n">redirect_to</span> <span class="n">user</span>
+    <span class="k">else</span>
+      <span class="n">flash</span><span class="p">.</span><span class="nf">now</span><span class="p">[</span><span class="ss">:danger</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Invalid email/password combination'</span>
+      <span class="n">render</span> <span class="s1">'new'</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">destroy</span>
+<span class="hll">    <span class="n">log_out</span></span>
+<span class="hll">    <span class="n">redirect_to</span> <span class="n">root_url</span></span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+</div>
+<p>我们可以在<a href="#listing-user-login-test-valid-information">代码清单 8.22</a> 中的用户登录测试中添加一些步骤，测试退出功能。登录后，使用 <code>delete</code> 方法向退出地址（<a href="#table-restful-sessions">表 8.1</a>）发起 <code>DELETE</code> 请求，然后确认用户已经退出，而且重定向到了根地址。我们还要确认出现了登录链接，而且退出和资料页面的链接消失了。测试中新加入的步骤如<a href="#listing-user-logout-test">代码清单 8.30</a> 所示。</p>
+<div id="listing-user-logout-test" data-type="listing">
+<h5><span class="title-label">代码清单 8.30</span>：测试用户退出功能 <span class="green">GREEN</span></h5>
+
+<div class="source-file">test/integration/users_login_test.rb</div>
+
+<div class="highlight language-ruby"><pre><code><span class="nb">require</span> <span class="s1">'test_helper'</span>
+
+<span class="k">class</span> <span class="nc">UsersLoginTest</span> <span class="o">&lt;</span> <span class="no">ActionDispatch</span><span class="o">::</span><span class="no">IntegrationTest</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+<span class="hll">  <span class="nf">test</span> <span class="s2">"login with valid information followed by logout"</span> <span class="k">do</span></span>
+    <span class="n">get</span> <span class="n">login_path</span>
+    <span class="n">post</span> <span class="n">login_path</span><span class="p">,</span> <span class="ss">params: </span><span class="p">{</span> <span class="ss">session: </span><span class="p">{</span> <span class="ss">email:    </span><span class="vi">@user</span><span class="p">.</span><span class="nf">email</span><span class="p">,</span>
+                                          <span class="ss">password: </span><span class="s1">'password'</span> <span class="p">}</span> <span class="p">}</span>
+<span class="hll">    <span class="n">assert</span> <span class="n">is_logged_in?</span></span>
+    <span class="n">assert_redirected_to</span> <span class="vi">@user</span>
+    <span class="n">follow_redirect!</span>
+    <span class="n">assert_template</span> <span class="s1">'users/show'</span>
+    <span class="n">assert_select</span> <span class="s2">"a[href=?]"</span><span class="p">,</span> <span class="n">login_path</span><span class="p">,</span> <span class="ss">count: </span><span class="mi">0</span>
+    <span class="n">assert_select</span> <span class="s2">"a[href=?]"</span><span class="p">,</span> <span class="n">logout_path</span>
+    <span class="n">assert_select</span> <span class="s2">"a[href=?]"</span><span class="p">,</span> <span class="n">user_path</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span>
+<span class="hll">    <span class="n">delete</span> <span class="n">logout_path</span></span>
+<span class="hll">    <span class="n">assert_not</span> <span class="n">is_logged_in?</span></span>
+<span class="hll">    <span class="n">assert_redirected_to</span> <span class="n">root_url</span></span>
+<span class="hll">    <span class="n">follow_redirect!</span></span>
+<span class="hll">    <span class="n">assert_select</span> <span class="s2">"a[href=?]"</span><span class="p">,</span> <span class="n">login_path</span></span>
+<span class="hll">    <span class="n">assert_select</span> <span class="s2">"a[href=?]"</span><span class="p">,</span> <span class="n">logout_path</span><span class="p">,</span>      <span class="ss">count: </span><span class="mi">0</span></span>
+<span class="hll">    <span class="n">assert_select</span> <span class="s2">"a[href=?]"</span><span class="p">,</span> <span class="n">user_path</span><span class="p">(</span><span class="vi">@user</span><span class="p">),</span> <span class="ss">count: </span><span class="mi">0</span></span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+</div>
+<p>（现在可以在测试中使用 <code>is_logged_in?</code> 了，所以向登录地址发送有效信息之后，我们添加了 <code>assert is_logged_in?</code>。）</p>
+<p>定义并测试了 <code>destroy</code> 动作之后，注册、登录和退出三大功能就都实现了。现在测试组件应该可以通过：</p>
+<div data-type="listing">
+<h5><span class="title-label">代码清单 8.31</span>：<strong class="green">GREEN</strong></h5>
+
+
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+</code></pre></div>
+</div>
+<h4 id="exercises-logging-out" class="discrete">练习</h4>
+<ol class="arabic">
+<li>
+<p>在浏览器中确认点击“Log out”（退出）链接后网站布局能正确地变化。这些变化与<a href="#listing-user-logout-test">代码清单 8.30</a> 中最后三步有什么关系？</p>
+</li>
+<li>
+<p>用户退出后查看网站的 cookie，确认会话被删除了。</p>
+</li>
+</ol>
+</section>
+<section data-type="sect1" id="basic-login-conclusion">
+<h1><span class="title-label">8.4</span> 小结</h1>
+<p>本章为演示应用实现了完整的登录和身份验证系统。下一章将更进一步，添加记住用户功能，让会话持久一些，关闭浏览器后不会被清除。</p>
+<p>在继续之前，先把本章的改动合并到主分支：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<span class="gp">$ </span>git add -A
+<span class="gp">$ </span>git commit -m <span class="s2">"Implement basic login"</span>
+<span class="gp">$ </span>git checkout master
+<span class="gp">$ </span>git merge basic-login
+</code></pre></div>
+</div>
+<p>然后推送到远程仓库：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<span class="gp">$ </span>git push
+</code></pre></div>
+</div>
+<p>最后，像往常一样部署到 Heroku 中：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-sh"><pre><code>git push heroku
+</code></pre></div>
+</div>
+<section data-type="sect2" id="basic-login-learned">
+<h2><span class="title-label">8.4.1</span> 本章所学</h2>
+<ul>
+<li>
+<p>Rails 使用 <code>session</code> 方法在临时 cookie 中维护页面之间的状态；</p>
+</li>
+<li>
+<p>登录表单的目的是创建新会话，登入用户；</p>
+</li>
+<li>
+<p><code>flash.now</code> 方法用于在重新渲染的页面中显示闪现消息；</p>
+</li>
+<li>
+<p>在测试中重现问题时可以使用测试驱动开发；</p>
+</li>
+<li>
+<p>使用 <code>session</code> 方法可以安全地在浏览器中存储用户 ID，创建临时会话；</p>
+</li>
+<li>
+<p>可以根据登录状态修改功能，例如布局中显示的链接；</p>
+</li>
+<li>
+<p>集成测试可以检查路由、数据库更新和对布局的修改；</p>
+</li>
+</ul>
+</section>
+</section>
+</section>
+          </article>
+
+          <nav class="pagination">
+            <ul class="pager">
+              
+              <li class="pager-prev"><a class="prev" href="chapter7.html" title="第 7 章 注册">&laquo; 第 7 章 注册</a></li>
+              
+
+              
+              <li class="pager-next"><a class="next" href="chapter9.html" title="第 9 章 高级登录功能">第 9 章 高级登录功能 &raquo;</a></li>
+              
+            </ul>
+          </nav>
+
+          <div class="footnotes">
+<ol>
+<li id="fn-1">有些浏览器提供了恢复这种会话的功能，可以继续使用离开时的状态。当然，Rails 不会禁止这种行为。 <a href="#fn-ref-1" class="symbol">&#8617;</a></li>
+<li id="fn-2">另一种方法是不用 <code>form_for</code>，换用 <code>form_tag</code>，这样更符合 Rails 的习惯做法。不过，换用 <code>form_tag</code> 后，登录表单和注册表单的共同点就少了，现阶段我想强调二者之间的共通结构。 <a href="#fn-ref-2" class="symbol">&#8617;</a></li>
+<li id="fn-3">因为<a href="#listing-sessions-helper-include">代码清单 8.12</a> 引入了辅助方法模块，所以在 <code>Sessions</code> 控制器中可以使用 <code>log_in</code> 方法。 <a href="#fn-ref-3" class="symbol">&#8617;</a></li>
+<li id="fn-4">在多次方法调用之间记住返回值的方式叫<a href="http://en.wikipedia.org/wiki/Memoization">备忘</a>（memoization）。（注意，这是一个技术术语，不是“memorization”的错误拼写。） <a href="#fn-ref-4" class="symbol">&#8617;</a></li>
+<li id="fn-5">头像出处：https://www.flickr.com/photos/elevy/14730820387。Copyright © 2014 by Elias Levy。未经改动，基于“<a href="https://creativecommons.org/licenses/by/2.0/deed.zh">知识共享 署名 2.0 通用</a>”许可证使用。 <a href="#fn-ref-5" class="symbol">&#8617;</a></li>
+<li id="fn-6">Web 浏览器其实不能发送 <code>DELETE</code> 请求，Rails 使用 JavaScript 模拟实现。 <a href="#fn-ref-6" class="symbol">&#8617;</a></li>
+<li id="fn-7">详情参见 <a href="http://getbootstrap.com/components/">Bootstrap 组件文档</a>。 <a href="#fn-ref-7" class="symbol">&#8617;</a></li>
+<li id="fn-8">可能要重启 Web 服务器。 <a href="#fn-ref-8" class="symbol">&#8617;</a></li>
+<li id="fn-9">如果使用云端 IDE，建议你使用另一个浏览器测试登录，这样就不用关闭运行云端 IDE 的浏览器了。 <a href="#fn-ref-9" class="symbol">&#8617;</a></li>
+<li id="fn-10">注意，固件文件中的缩进必须使用空格，不能使用制表符。复制代码（如<a href="#listing-real-user-fixture">代码清单 8.21</a>）时要留意这一点。 <a href="#fn-ref-10" class="symbol">&#8617;</a></li>
+<li id="fn-11">因为在<a href="#listing-sessions-helper-include">代码清单 8.12</a> 中引入了辅助模块，所以 <code>User</code> 控制器和 <code>Sessions</code> 控制器一样，也可以调用 <code>log_in</code> 方法。 <a href="#fn-ref-11" class="symbol">&#8617;</a></li>
+<li id="fn-12">有一次我不小心把 <code>Sessions</code> 辅助模块中的 <code>log_in</code> 方法删掉了，但是测试组件仍能通过，因为测试使用了同名辅助方法，就算应用完全不能运行，测试还是可以通过。与 <code>is_logged_in?</code> 一样，为了避免这种问题，<a href="chapter9.html#listing-test-helper-log-in">代码清单 9.24</a> 中还会定义一个名为 <code>log_in_as</code> 的测试辅助方法。 <a href="#fn-ref-12" class="symbol">&#8617;</a></li>
+<li id="fn-13">如果在执行 <code>destroy</code> 动作之前创建了 <code>@current_user</code>（这里没有创建），或者没有立即重定向，就要把 <code>@current_user</code> 设为 <code>nil</code>（这里立即重定向了）。这两种情况不可能同时发生，而且根据这个应用目前的架构，也没必要这么做。不过这涉及到安全问题，所以以防万一，我在这里把当前用户设为了 <code>nil</code>。 <a href="#fn-ref-13" class="symbol">&#8617;</a></li>
+</ol>
+</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy;2013-2016 <a href="http://about.ac" title="安道的个人网站" target="_blank">安道</a></p>
+      <p>
+        <a href="https://twitter.com/andor_chen" title="在 Twitter 中关注 @andor_chen"  target="_blank"><i class="icon-twitter"></i></a>
+        <a href="http://weibo.com/andor27" title="在微博中关注 @andor_chen"  target="_blank"><i class="icon-weibo"></i></a>
+      </p>
+      <p>保留部分权利</p>
+    </div>
+  </footer>
+
+</body>
+</html>

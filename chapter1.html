@@ -294,7 +294,7 @@ hello, world!
 <h5><span class="title-label">代码清单 1.1</span>：安装指定版本的 Rails</h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>gem install rails -v 5.0.0
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>gem install rails -v 5.0.0.1
 </code></pre></div>
 </div>
 <p><code>-v</code> 旗标的作用是指定安装哪个 Rails 版本。你使用的版本必须和我一样，这样学习的过程中，你我得到的结果才相同。</p>
@@ -402,7 +402,7 @@ hello, world!
 
 
 <div class="highlight language-sh"><pre><code><span class="hll"><span class="gp">$ </span><span class="nb">cd</span> ~/workspace</span>
-<span class="hll"><span class="gp">$ </span>rails _5.0.0_ new hello_app</span>
+<span class="hll"><span class="gp">$ </span>rails _5.0.0.1_ new hello_app</span>
       create
       create  README.md
       create  Rakefile
@@ -556,7 +556,7 @@ Use <span class="sb">`</span>bundle show <span class="o">[</span>gemname]<span c
 
 
 <span class="c1"># Bundle edge Rails instead: gem 'rails', github: 'rails/rails'</span>
-<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span> <span class="s1">'~&gt; 5.0.0'</span>
+<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span> <span class="s1">'~&gt; 5.0.0.1'</span>
 <span class="c1"># Use sqlite3 as the database for Active Record</span>
 <span class="n">gem</span> <span class="s1">'sqlite3'</span>
 <span class="c1"># Use Puma as the app server</span>
@@ -636,13 +636,13 @@ Use <span class="sb">`</span>bundle show <span class="o">[</span>gemname]<span c
 
 <div class="highlight language-ruby"><pre><code><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
 
-<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>        <span class="s1">'5.0.0'</span>
+<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>        <span class="s1">'5.0.0.1'</span>
 <span class="n">gem</span> <span class="s1">'puma'</span><span class="p">,</span>         <span class="s1">'3.4.0'</span>
-<span class="n">gem</span> <span class="s1">'sass-rails'</span><span class="p">,</span>   <span class="s1">'5.0.5'</span>
+<span class="n">gem</span> <span class="s1">'sass-rails'</span><span class="p">,</span>   <span class="s1">'5.0.6'</span>
 <span class="n">gem</span> <span class="s1">'uglifier'</span><span class="p">,</span>     <span class="s1">'3.0.0'</span>
 <span class="n">gem</span> <span class="s1">'coffee-rails'</span><span class="p">,</span> <span class="s1">'4.2.1'</span>
 <span class="n">gem</span> <span class="s1">'jquery-rails'</span><span class="p">,</span> <span class="s1">'4.1.1'</span>
-<span class="n">gem</span> <span class="s1">'turbolinks'</span><span class="p">,</span>   <span class="s1">'5.0.0'</span>
+<span class="n">gem</span> <span class="s1">'turbolinks'</span><span class="p">,</span>   <span class="s1">'5.0.1'</span>
 <span class="n">gem</span> <span class="s1">'jbuilder'</span><span class="p">,</span>     <span class="s1">'2.4.1'</span>
 
 <span class="n">group</span> <span class="ss">:development</span><span class="p">,</span> <span class="ss">:test</span> <span class="k">do</span>
@@ -1139,13 +1139,13 @@ Deleted branch modify-README <span class="o">(</span>was 9dc4f64<span class="o">
 
 <div class="highlight language-ruby"><pre><code><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
 
-<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>        <span class="s1">'5.0.0'</span>
+<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>        <span class="s1">'5.0.0.1'</span>
 <span class="n">gem</span> <span class="s1">'puma'</span><span class="p">,</span>         <span class="s1">'3.4.0'</span>
-<span class="n">gem</span> <span class="s1">'sass-rails'</span><span class="p">,</span>   <span class="s1">'5.0.5'</span>
+<span class="n">gem</span> <span class="s1">'sass-rails'</span><span class="p">,</span>   <span class="s1">'5.0.6'</span>
 <span class="n">gem</span> <span class="s1">'uglifier'</span><span class="p">,</span>     <span class="s1">'3.0.0'</span>
 <span class="n">gem</span> <span class="s1">'coffee-rails'</span><span class="p">,</span> <span class="s1">'4.2.1'</span>
 <span class="n">gem</span> <span class="s1">'jquery-rails'</span><span class="p">,</span> <span class="s1">'4.1.1'</span>
-<span class="n">gem</span> <span class="s1">'turbolinks'</span><span class="p">,</span>   <span class="s1">'5.0.0'</span>
+<span class="n">gem</span> <span class="s1">'turbolinks'</span><span class="p">,</span>   <span class="s1">'5.0.1'</span>
 <span class="n">gem</span> <span class="s1">'jbuilder'</span><span class="p">,</span>     <span class="s1">'2.4.1'</span>
 
 <span class="n">group</span> <span class="ss">:development</span><span class="p">,</span> <span class="ss">:test</span> <span class="k">do</span>
