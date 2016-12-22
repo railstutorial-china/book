@@ -14,7 +14,6 @@
   <link rel="stylesheet" type="text/css" href="book.css"/>
   <script type="text/javascript" src="//railstutorial-china.org/assets/js/global.js"></script>
 </head>
-<body>
 
 <body class="book-page">
 
@@ -60,17 +59,17 @@
           <article class="article">
             <section data-type="chapter" id="following-users">
 <h1><span class="title-label">第 14 章</span> 关注用户</h1>
-<p>这一章，我们要为演示应用添加社交功能，允许用户关注（及取消关注）其他人，并在主页显示被关注用户发布的微博。我们会在 <a href="#the-relationship-model">14.1 节</a>学习如何建立用户之间的关系，然后在 <a href="#a-web-interface-for-following-users">14.2 节</a>编写相应的网页界面（还会介绍 Ajax）。最后，在 <a href="#the-status-feed">14.3 节</a>实现功能完善的动态流。</p>
-<p>这是本书最后一章，有些内容具有挑战性。比如说，为了实现动态流，我们会使用一些 Ruby 和 SQL 技巧。 通过这些示例，你会了解到 Rails 是如何处理更加复杂的数据模型的，这些知识也会在你日后开发其他应用时发挥作用。 为了帮助你平稳地从学习过渡到独立开发，<a href="#following-users-conclusion">14.4 节</a>会列出一些进阶学习资源。</p>
-<p>因为本章的内容比较有挑战性，所以在开始编写代码之前，我们先来讨论一下界面。 和之前的章节一样，在开发之前，我们要使用构思图。<sup>[<a id="fn-ref-1" href="#fn-1">1</a>]</sup>完整的页面流程是这样的：一个用户 (John Calvin) 从他的资料页面（<a href="#fig-page-flow-profile-mockup">图 14.1</a>）浏览到用户列表页面（<a href="#fig-page-flow-user-index-mockup">图 14.2</a>），寻找想关注的用户；然后他打开另一个用户 Thomas Hobbes 的资料页面（<a href="#fig-page-flow-other-profile-follow-button">图 14.3</a>），点击“Follow”（关注）按钮关注了他，这时“Follow”按钮会变为“Unfollow”（取消关注），而且关注 Hobbes 的人数增加了一个（<a href="#fig-page-flow-other-profile-unfollow-button-mockup">图 14.4</a>）；接着，Calvin 回到主页，看到他关注的人数也增加了一个，而且在动态流中能看到 Hobbes 发布的微博（<a href="#fig-page-flow-home-page-feed-mockup">图 14.5</a>）。本章接下来的内容就是要实现这样的页面流程。</p>
-<div id="fig-page-flow-profile-mockup" class="figure"><img src="images/chapter14/page_flow_profile_mockup_3rd_edition.png" alt="page flow profile mockup 3rd edition" /><div class="figcaption"><span class="title-label">图 14.1</span>：一个用户的资料页面</div></div>
+<p>这一章，我们要为演示应用添加社交功能，允许用户关注（及取消关注）其他人，并在主页显示被关注用户发布的微博（动态流）。我们将在 <a href="#the-relationship-model">14.1 节</a>学习如何建立用户之间的关系，然后在 <a href="#a-web-interface-for-following-users">14.2 节</a>编写相应的 Web 界面（还会介绍 Ajax）。最后，在 <a href="#the-status-feed">14.3 节</a>实现功能完善的动态流。</p>
+<p>这是本书最后一章，有些内容具有挑战性。比如说，为了实现动态流，我们会使用一些 Ruby 和 SQL 技巧。通过这些示例，你将了解到 Rails 是如何处理更加复杂的数据模型的，这些知识也会在你日后开发其他应用时发挥作用。 为了帮助你平稳地从学习过渡到独立开发，<a href="#following-users-conclusion">14.4 节</a>会列出一些进阶学习资源。</p>
+<p>因为本章的内容比较有挑战性，所以在开始编写代码之前，我们先来讨论一下界面。和之前的章节一样，在开发之前，我们将使用构思图。<sup>[<a id="fn-ref-1" href="#fn-1">1</a>]</sup>完整的页面流程是这样的：一个用户 (John Calvin) 从他的资料页面（<a href="#fig-page-flow-profile-mockup">图 14.1</a>）浏览到用户列表页面（<a href="#fig-page-flow-user-index-mockup">图 14.2</a>），寻找想关注的用户；然后他打开另一个用户 Thomas Hobbes 的资料页面（<a href="#fig-page-flow-other-profile-follow-button">图 14.3</a>），点击“Follow”（关注）按钮关注了他，这时“Follow”按钮会变为“Unfollow”（取消关注），而且关注 Hobbes 的人数增加了一个（<a href="#fig-page-flow-other-profile-unfollow-button-mockup">图 14.4</a>）；接着，Calvin 回到主页，看到他关注的人数也增加了一个，而且在动态流中能看到 Hobbes 发布的微博（<a href="#fig-page-flow-home-page-feed-mockup">图 14.5</a>）。本章接下来的内容就是要实现这样的页面流程。</p>
+<div id="fig-page-flow-profile-mockup" class="figure"><img src="images/chapter14/page_flow_profile_mockup_3rd_edition.png" alt="page flow profile mockup 3rd edition" /><div class="figcaption"><span class="title-label">图 14.1</span>：当前用户的资料页面</div></div>
 <div id="fig-page-flow-user-index-mockup" class="figure"><img src="images/chapter14/page_flow_user_index_mockup_bootstrap.png" alt="page flow user index mockup bootstrap" /><div class="figcaption"><span class="title-label">图 14.2</span>：找一个想关注的用户</div></div>
 <div id="fig-page-flow-other-profile-follow-button" class="figure"><img src="images/chapter14/page_flow_other_profile_follow_button_mockup_3rd_edition.png" alt="page flow other profile follow button mockup 3rd edition" /><div class="figcaption"><span class="title-label">图 14.3</span>：想关注的那个用户的资料页面，有一个“Follow”（关注）按钮</div></div>
 <div id="fig-page-flow-other-profile-unfollow-button-mockup" class="figure"><img src="images/chapter14/page_flow_other_profile_unfollow_button_mockup_3rd_edition.png" alt="page flow other profile unfollow button mockup 3rd edition" /><div class="figcaption"><span class="title-label">图 14.4</span>：资料页面中显示了“Unfollow”（取消关注）按钮，而且关注他的人数增加了一个</div></div>
 <div id="fig-page-flow-home-page-feed-mockup" class="figure"><img src="images/chapter14/page_flow_home_page_feed_mockup_3rd_edition.png" alt="page flow home page feed mockup 3rd edition" /><div class="figcaption"><span class="title-label">图 14.5</span>：首页，显示了动态流，而且关注的人数增加了一个</div></div>
 <section data-type="sect1" id="the-relationship-model">
 <h1><span class="title-label">14.1</span> <code>Relationship</code> 模型</h1>
-<p>为了实现用户关注功能，首先要创建一个看上去并不是那么直观的数据模型。一开始我们可能会认为 <code>has_many</code> 关联能满足我们的要求：一个用户关注多个用户，而且也被多个用户关注。但实际上这种实现方式有问题，下面我们会学习如何使用 <code>has_many :through</code> 解决。</p>
+<p>为了实现用户关注功能，首先要创建一个看上去并不是那么直观的数据模型。一开始我们可能以为 <code>has_many</code> 关联能满足我们的要求：一个用户关注多个用户，而且也被多个用户关注。但实际上这种实现方式有问题，下面我们将学习如何使用 <code>has_many :through</code> 解决。</p>
 <p>和之前一样，如果使用 Git，现在应该新建一个主题分支：</p>
 <div data-type="listing">
 
@@ -79,25 +78,25 @@
 </code></pre></div>
 </div>
 <section data-type="sect2" id="a-problem-with-the-data-model-and-a-solution">
-<h2><span class="title-label">14.1.1</span> 数据模型带来的问题以及解决方法</h2>
-<p>在构建关注用户所需的数据模型之前，我们先来分析一个典型的案例。假如一个用户关注了另外一个用户，比如 Calvin 关注了 Hobbes，也就是 Hobbes 被 Calvin 关注了，那么 Calvin 就是“关注人”（follower），Hobbes 则是“被关注人”（followed）。按照 Rails 默认的复数命名习惯， 我们称关注了某个用户的所有用户为这个用户的“followers”，因此，<code>hobbes.followers</code> 是一个数组，包含所有关注了 Hobbes 的用户。不过，如果顺序颠倒，这种表述就说不通了：默认情况下，所有被关注的用户应该叫“followeds”，但是这样说并不符合英语语法。所以，参照 Twitter 的叫法，我们把被关注的用户叫做“following”（例如，“50 following, 75 followers”）。因此，Calvin 关注的人可以通过 <code>calvin.following</code> 数组获取。</p>
+<h2><span class="title-label">14.1.1</span> 数据模型带来的问题（以及解决方法）</h2>
+<p>在构建关注用户所需的数据模型之前，我们先来分析一个典型的案例。假如一个用户关注了另外一个用户，比如 Calvin 关注了 Hobbes，也就是 Hobbes 被 Calvin 关注了，那么 Calvin 就是“关注人”（follower），Hobbes 则是“被关注人”（followed）。按照 Rails 默认的复数命名约定， 我们称关注了某个用户的所有用户为这个用户的“followers”，因此，<code>hobbes.followers</code> 是一个数组，包含所有关注了 Hobbes 的用户。不过，如果反过来，这种表述就说不通了：默认情况下，所有被关注的用户应该叫“followeds”，但是这样说并不符合英语语法。所以，参照 Twitter 的叫法，我们把被关注的用户叫做“following”（例如，“50 following, 75 followers”）。因此，Calvin 关注的人可以通过 <code>calvin.following</code> 数组获取。</p>
 <p>经过上述讨论，我们可以按照<a href="#fig-naive-user-has-many-following">图 14.6</a> 中的方式构建被关注用户的模型——一个 <code>following</code> 表和 <code>has_many</code> 关联。由于 <code>user.following</code> 应该是一个用户对象组成的数组，所以 <code>following</code> 表中的每一行都应该是一个用户，通过 <code>followed_id</code> 列标识，然后再通过 <code>follower_id</code> 列建立关联。<sup>[<a id="fn-ref-2" href="#fn-2">2</a>]</sup>除此之外，由于每一行都是一个用户，所以还要在表中加入用户的其他属性，例如名字、电子邮件地址和密码等。</p>
 <div id="fig-naive-user-has-many-following" class="figure"><img src="images/chapter14/naive_user_has_many_following.png" alt="naive user has many following" /><div class="figcaption"><span class="title-label">图 14.6</span>：一个用户关注的人（天真方式）</div></div>
-<p><a href="#fig-naive-user-has-many-following">图 14.6</a> 中的数据模型有个问题：存在非常多的冗余，每一行不仅包括了被关注用户的 ID，还包括了他们的其他信息，而这些信息在 <code>users</code> 表中都有。 更糟的是，为了保存关注我的人，还需要另一个同样冗余的 <code>followers</code> 表。这么做会导致数据模型极难维护：用户修改名字时，不仅要修改 <code>users</code> 表中的数据，还要修改 <code>following</code> 和 <code>followers</code> 表中包含这个用户的每一条记录。</p>
-<p>造成这个问题的原因是缺少一层抽象。找到合适的抽象有一种方法：思考在应用中如何实现关注用户的操作。<a href="chapter7.html#a-users-resource">7.1.2 节</a>介绍过，REST 架构涉及到资源的创建和销毁两个操作。由此引出了两个问题：用户关注另一个用户时，创建了什么？用户取消关注另一个用户时，销毁了什么？按照这样的方式思考，我们会发现，在关注用户的过程中，创建和销毁的是两个用户之间的“关系”。因此，一个用户有多个“关系”，从而通过这个“关系”得到很多我关注的人（<code>following</code>）和关注我的人（<code>followers</code>）。</p>
-<p>在实现应用的数据模型时还有一个细节要注意：Facebook 实现的关系是对称的，A 关注 B 时，B 也就关注了 A；而我们要实现的关系和 Twitter 类似，是不对称的，Calvin 可以关注 Hobbes，但 Hobbes 并不需要关注 Calvin。为了区分这两种情况，我们要使用专业的术语：如果 Calvin 关注了 Hobbes，但 Hobbes 没有关注 Calvin，那么 Calvin 和 Hobbes 之间建立的是“主动关系”（Active Relationship），而 Hobbes 和 Calvin 之间是“被动关系”（Positive Relationship）。<sup>[<a id="fn-ref-3" href="#fn-3">3</a>]</sup></p>
-<p>现在我们集中精力实现主动关系，即获取我关注的用户。<a href="#followers">14.1.5 节</a>会实现被动关系。从<a href="#fig-naive-user-has-many-following">图 14.6</a> 中可以看出实现的方式：既然我关注的每一个用户都由 <code>followed_id</code> 独一无二的标识出来了，我们就可以把 <code>following</code> 表转化成 <code>active_relationships</code> 表，删掉用户的属性，然后使用 <code>followed_id</code> 从 <code>users</code> 表中获取我关注的用户的信息。这个数据模型如<a href="#fig-user-has-many-following">图 14.7</a> 所示。</p>
+<p><a href="#fig-naive-user-has-many-following">图 14.6</a> 中的数据模型有个问题：存在非常多的冗余，每一行不仅包括被关注用户的 ID，还包括他们的其他信息，而这些信息在 <code>users</code> 表中都有。 更糟的是，为了保存关注我的人，还需要另一个同样冗余的 <code>followers</code> 表。这么做会导致数据模型极难维护：用户修改名字时，不仅要修改 <code>users</code> 表中的数据，还要修改 <code>following</code> 和 <code>followers</code> 表中包含这个用户的每一条记录。</p>
+<p>造成这个问题的原因是缺少底层抽象。找到合适的抽象有一种方法：思考在 Web 应用中如何实现关注用户的操作。<a href="chapter7.html#a-users-resource">7.1.2 节</a>介绍过，REST 架构涉及到资源的创建和销毁两个操作。由此引出了两个问题：用户关注另一个用户时，创建的是什么？用户取消关注另一个用户时，销毁的是什么？按照这样的方式思考，我们会发现，在关注用户的过程中，创建和销毁的是两个用户之间的“关系”。因此，一个用户有多个“关系”，从而通过这个“关系”得到很多我关注的人（<code>following</code>）和关注我的人（<code>followers</code>）。</p>
+<p>在实现应用的数据模型时还有一个细节要注意：Facebook 实现的关系是对称的（至少在数据模型层是），而我们要实现的关系和 Twitter 类似，是不对称的，Calvin 可以关注 Hobbes，但 Hobbes 并不需要关注 Calvin。为了区分这两种情况，我们要使用专业的术语：如果 Calvin 关注了 Hobbes，但 Hobbes 没有关注 Calvin，那么 Calvin 和 Hobbes 之间建立的是主动关系（active relationship），而 Hobbes 和 Calvin 之间是被动关系（passive relationship）。<sup>[<a id="fn-ref-3" href="#fn-3">3</a>]</sup></p>
+<p>现在我们集中精力实现主动关系，即获取我关注的用户。<a href="#followers">14.1.5 节</a>再实现被动关系。从<a href="#fig-naive-user-has-many-following">图 14.6</a> 中可以看出实现的方式：既然我关注的每一个用户都由 <code>followed_id</code> 独一无二地标识出来了，我们就可以把 <code>following</code> 表转化成 <code>active_relationships</code> 表，删掉用户的属性，然后使用 <code>followed_id</code> 从 <code>users</code> 表中检索我关注的用户的信息。这个数据模型如<a href="#fig-user-has-many-following">图 14.7</a> 所示。</p>
 <div id="fig-user-has-many-following" class="figure"><img src="images/chapter14/user_has_many_following_3rd_edition.png" alt="user has many following 3rd edition" /><div class="figcaption"><span class="title-label">图 14.7</span>：通过主动关系获取我关注的用户</div></div>
-<p>因为主动关系和被动关系最终会存储在同一个表中，所以我们把这个表命名为“relationships”。这个表对应的模型是 <code>Relationship</code>，如<a href="#fig-relationship-model">图 14.8</a> 所示。从 <a href="#followed-users">14.1.4 节</a>开始，我们会介绍如何使用这个模型同时实现主动关系和被动关系。</p>
+<p>因为主动关系和被动关系最终会存储在同一个表中，所以我们把这个表命名为“relationships”。这个表对应的模型是 <code>Relationship</code>，如<a href="#fig-relationship-model">图 14.8</a> 所示。从 <a href="#followed-users">14.1.4 节</a>开始，我们将介绍如何使用这个模型同时实现主动关系和被动关系。</p>
 <div id="fig-relationship-model" class="figure"><img src="images/chapter14/relationship_model.png" alt="relationship model" /><div class="figcaption"><span class="title-label">图 14.8</span>：<code>Relationship</code> 数据模型</div></div>
-<p>为此，我们要生成所需的模型：</p>
+<p>为此，我们要生成一个迁移，对应于<a href="#fig-relationship-model">图 14.8</a> 中的模型：</p>
 <div data-type="listing">
 
 
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate model Relationship follower_id:integer followed_id:integer
 </code></pre></div>
 </div>
-<p>因为我们会通过 <code>follower_id</code> 和 <code>followed_id</code> 查找关系，所以还要为这两个列建立索引，提高查询的效率，如<a href="#listing-relationships-migration">代码清单 14.1</a> 所示。</p>
+<p>因为我们将通过 <code>follower_id</code> 和 <code>followed_id</code> 查找关系，所以还要为这两个列建立索引，提高查询的效率，如<a href="#listing-relationships-migration">代码清单 14.1</a> 所示。</p>
 <div id="listing-relationships-migration" data-type="listing">
 <h5><span class="title-label">代码清单 14.1</span>：在 <code>relationships</code> 表中添加索引</h5>
 
@@ -118,8 +117,8 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>在<a href="#listing-relationships-migration">代码清单 14.1</a> 中，我们还设置了一个多键索引，确保 (<code>follower_id, followed_id</code>) 组合是唯一的，避免多次关注同一个用户。（可以和<a href="chapter6.html#listing-email-uniqueness-index">代码清单 6.29</a> 中保持电子邮件地址唯一的索引比较一下。）从 <a href="#followed-users">14.1.4 节</a>起会看到，用户界面不会允许这样的事发生，但添加索引后，如果用户试图创建重复的关系（例如使用 <code>curl</code> 这样的命令行工具），应用会抛出异常。</p>
-<p>为了创建 <code>relationships</code> 表，和之前一样，我们要执行迁移：</p>
+<p>在<a href="#listing-relationships-migration">代码清单 14.1</a> 中，我们还设置了一个多键索引，确保 (<code>follower_id, followed_id</code>) 组合是唯一的，避免多次关注同一个用户。（可以和<a href="chapter6.html#listing-email-uniqueness-index">代码清单 6.29</a> 中保持电子邮件地址唯一的索引，以及<a href="chapter13.html#listing-micropost-migration">代码清单 13.3</a> 中的多键索引比较一下。）从 <a href="#followed-users">14.1.4 节</a>起会看到，用户界面不会允许这样的事发生，但添加索引后，如果用户试图创建重复的关系（例如使用 <code>curl</code> 这样的命令行工具），应用会抛出异常。</p>
+<p>为了创建 <code>relationships</code> 表，和之前一样，我们要迁移数据库：</p>
 <div data-type="listing">
 
 
@@ -129,16 +128,16 @@
 <h5 id="exercises-a-problem-with-the-data-model-and-a-solution" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>对<a href="#fig-user-has-many-following">图 14.7</a> 中 ID 为 1 的用户来说，<code>user.following.map(:id)</code> 的值是什么？（<a href="chapter4.html#blocks">4.3.2 节</a> 介绍过 <code>map(:method_name)</code> 这种句法；<code>user.following.map(:id)</code> 返回的是 ID 组成的数组。）</p>
+<p>对<a href="#fig-user-has-many-following">图 14.7</a> 中 ID 为 1 的用户来说，<code>user.following.map(&amp;:id)</code> 的值是什么？（<a href="chapter4.html#blocks">4.3.2 节</a> 介绍过 <code>map(&amp;:method_name)</code> 这种句法；<code>user.following.map(&amp;:id)</code> 返回的是 ID 组成的数组。）</p>
 </li>
 <li>
-<p>查看<a href="#fig-user-has-many-following">图 14.7</a>，对 ID 为 2 的用户来说，<code>user.following</code> 的值是什么？<code>user.following.map(:id)</code> 呢？</p>
+<p>查看<a href="#fig-user-has-many-following">图 14.7</a>，对 ID 为 2 的用户来说，<code>user.following</code> 的值是什么？<code>user.following.map(&amp;:id)</code> 呢？</p>
 </li>
 </ol>
 </section>
 <section data-type="sect2" id="user-relationship-associations">
 <h2><span class="title-label">14.1.2</span> <code>User</code> 模型和 <code>Relationship</code> 模型之间的关联</h2>
-<p>在获取我关注的人和关注我的人之前，我们要先建立 <code>User</code> 模型和 <code>Relationship</code> 模型之间的关联。一个用户有多个“关系”（<code>has_many</code>）, 因为一个“关系”涉及到两个用户，所以“关系”同时属于（<code>belongs_to</code>）该用户和被关注的用户。</p>
+<p>在获取我关注的人和关注我的人之前，我们要先建立 <code>User</code> 模型和 <code>Relationship</code> 模型之间的关联。一个用户有多个“关系”（<code>has_many</code>），因为一个“关系”涉及到两个用户，所以“关系”同时属于（<code>belongs_to</code>）该用户和被关注的用户。</p>
 <p>和 <a href="chapter13.html#user-micropost-associations">13.1.3 节</a>创建微博的方式一样，我们要通过关联创建“关系”，如下面的代码所示：</p>
 <div data-type="listing">
 
@@ -922,7 +921,7 @@
 </div>
 <div id="fig-profile-follow-button" class="figure"><img src="images/chapter14/profile_follow_button_3rd_edition.png" alt="profile follow button 3rd edition" /><div class="figcaption"><span class="title-label">图 14.12</span>：某个用户的资料页面（/users/2），显示有关注按钮</div></div>
 <div id="fig-profile-unfollow-button" class="figure"><img src="images/chapter14/profile_unfollow_button_3rd_edition.png" alt="profile unfollow button 3rd edition" /><div class="figcaption"><span class="title-label">图 14.13</span>：某个用户的资料页面（/users/5），显示有取消关注按钮</div></div>
-<p>稍后我们会让这些按钮起作用，而且要使用两种方式实现，一种是常规方式（<a href="#a-working-follow-button-the-standard-way">14.2.4 节</a>），另一种使用 Ajax（<a href="#a-working-follow-button-with-ajax">14.2.5 节</a>）。不过在此之前，我们要创建剩下的页面——我关注的用户列表页面和关注我的用户列表页面。</p>
+<p>稍后我们会让这些按钮起作用，而且将使用两种方式实现，一种是常规方式（<a href="#a-working-follow-button-the-standard-way">14.2.4 节</a>），另一种使用 Ajax（<a href="#a-working-follow-button-with-ajax">14.2.5 节</a>）。不过在此之前，我们要创建剩下的页面——我关注的用户列表页面和关注我的用户列表页面。</p>
 <h5 id="exercises-stats-and-a-follow-form" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
@@ -972,7 +971,7 @@
 </div>
 <p>在实现这两个页面的过程中，唯一很难想到的是，我们要在 <code>Users</code> 控制器中添加相应的两个动作。按照<a href="#listing-following-followers-actions-routes">代码清单 14.15</a> 中的路由规则，这两个动作应该命名为 <code>following</code> 和 <code>followers</code>。在这两个动作中，需要设置页面的标题、查找用户，获取 <code>@user.followed_users</code> 或 <code>@user.followers</code>（要分页显示），然后再渲染页面，如<a href="#listing-following-followers-actions">代码清单 14.25</a> 所示。</p>
 <div id="listing-following-followers-actions" data-type="listing">
-<h5><span class="title-label">代码清单 14.25</span>：<code>following</code> 和 <code>followers</code> 动作 <span class="green">GREEN</span></h5>
+<h5><span class="title-label">代码清单 14.25</span>：<code>following</code> 和 <code>followers</code> 动作 <span class="red">RED</span></h5>
 
 <div class="source-file">app/controllers/users_controller.rb</div>
 
@@ -1178,7 +1177,7 @@
 </div>
 <p>在<a href="#listing-relationships-controller">代码清单 14.32</a> 中会看到，限制访问这个控制器中的动作没有太大的意义，但我们还是要加入安全机制。我们要在测试中确认，访问这个控制器中的动作之前要先登录（没登录就重定向到登录页面），而且数据库中的“关系”数量没有变化，如<a href="#listing-relationships-access-control">代码清单 14.31</a> 所示。</p>
 <div id="listing-relationships-access-control" data-type="listing">
-<h5><span class="title-label">代码清单 14.31</span>：测试 <code>Relationships</code> 控制器的基本的访问限制 <span class="red">RED</span></h5>
+<h5><span class="title-label">代码清单 14.31</span>：测试 <code>Relationships</code> 控制器的基本访问限制 <span class="red">RED</span></h5>
 
 <div class="source-file">test/controllers/relationships_controller_test.rb</div>
 
@@ -1592,7 +1591,7 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
 <div class="highlight language-ruby"><pre><code><span class="no">Micropost</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="s2">"user_id IN (?) OR user_id = ?"</span><span class="p">,</span> <span class="n">following_ids</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
 </code></pre></div>
 </div>
-<p>从上面的查询条件可以看出，我们需要生成一个数组，其元素是关注的用户的 ID。生成这个数组的方式之一是，使用 Ruby 中的 <code>map</code> 方法，这个方法可以在任意可枚举的对象（enumerable）上调用，<sup>[<a id="fn-ref-9" href="#fn-9">9</a>]</sup>例如由一组元素组成的集合（数组或哈希）。我们在 <a href="chapter4.html#blocks">4.3.2 节</a>举例介绍过这个方法，下面再举个例子，把整数数组中的元素都转换成字符串：</p>
+<p>从上面的查询条件可以看出，我们需要生成一个数组，其元素是关注的用户的 ID。生成这个数组的方式之一是，使用 Ruby 中的 <code>map</code> 方法，这个方法可以在任意可枚举的对象（enumerable）上调用，<sup>[<a id="fn-ref-9" href="#fn-9">9</a>]</sup>例如由一组元素组成的集合（数组或散列）。我们在 <a href="chapter4.html#blocks">4.3.2 节</a>举例介绍过这个方法，下面再举个例子，把整数数组中的元素都转换成字符串：</p>
 <div data-type="listing">
 
 
@@ -1709,7 +1708,7 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
 <section data-type="sect2" id="subselects">
 <h2><span class="title-label">14.3.3</span> 子查询</h2>
 <p>如前一节末尾所说，对 <a href="#a-first-feed-implementation">14.3.2 节</a>的实现方式来说，如果用户关注了 5000 个人，动态流中的微博数量会变多，性能就会下降。本节，我们将重新实现动态流，在关注的用户数量很多时，性能也很好。</p>
-<p><a href="#a-first-feed-implementation">14.3.2 节</a>中存在问题的是 <code>following_ids</code> 这行代码，它会把关注的所有用户 ID 取出，加载到内存中，还会创建一个元素数量和关注的用户数量相同的数组。既然<a href="#listing-initial-working-feed">代码清单 14.44</a> 的目的只是为了检查集合中是否包含了指定的元素，那么就一定有一种更高效的方式。其实 SQL 真的提供了针对这种问题的优化措施：使用子查询（subselect），在数据库层查找关注的用户 ID。</p>
+<p><a href="#a-first-feed-implementation">14.3.2 节</a>中存在问题的是 <code>following_ids</code> 这行代码，它会把关注的所有用户 ID 取出，加载到内存中，还会创建一个元素数量和关注的用户数量相同的数组。既然<a href="#listing-initial-working-feed">代码清单 14.44</a> 的目的只是为了检查集合中是否包含指定的元素，那么就一定有一种更高效的方式。其实 SQL 真的提供了针对这种问题的优化措施：使用子查询（subselect），在数据库层查找关注的用户 ID。</p>
 <p>针对动态流的重构，先从<a href="#listing-feed-second-cut">代码清单 14.46</a> 中的小改动开始。</p>
 <div id="listing-feed-second-cut" data-type="listing">
 <h5><span class="title-label">代码清单 14.46</span>：在获取动态流的 <code>where</code> 方法中使用键值对 <span class="green">GREEN</span></h5>
@@ -1899,9 +1898,6 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
 <li>
 <p><a href="http://mbsy.co/6VQ8l">Code School</a>：很多交互式编程课程。</p>
 </li>
-<li>
-<p><a href="https://www.udemy.com/learn-test-driven-development-in-ruby/couponCode=hartl">Bala Paranj 的 Test Driven Development in Ruby 课程</a>：一门高级在线课程，主讲纯粹的 Ruby 测试驱动开发。</p>
-</li>
 </ul>
 </section>
 <section data-type="sect2" id="following-users-learned">
@@ -1946,9 +1942,9 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
 
           <div class="footnotes">
 <ol>
-<li id="fn-1">构思图中头像的来源：http://www.flickr.com/photos/john_lustig/2518452221/ 和 <a href="https://www.flickr.com/photos/renemensen/9187111340%E3%80%82" class="bare">https://www.flickr.com/photos/renemensen/9187111340。</a> <a href="#fn-ref-1" class="symbol">&#8617;</a></li>
-<li id="fn-2">简单起见，<a href="#fig-naive-user-has-many-following">图 14.6</a> 省略了 <code>following</code> 表的 id 列。 <a href="#fn-ref-2" class="symbol">&#8617;</a></li>
-<li id="fn-3">感谢读者 Paul Fioravanti 建议使用这两个术语。 <a href="#fn-ref-3" class="symbol">&#8617;</a></li>
+<li id="fn-1">儿童图像的来源：http://www.flickr.com/photos/john_lustig/2518452221/，发布于 2013 年 12 月 16 日。Copyright © 2008 by John Lustig。未经改动，基于“知识共享 署名 2.0 通用”许可证使用。老虎图像来源：https://www.flickr.com/photos/renemensen/9187111340，发布于 2014 年 8 月 15 日。Copyright © 2013 by Rene Mesen。未经改动，基于“知识共享 署名 2.0 通用”许可证使用。 <a href="#fn-ref-1" class="symbol">&#8617;</a></li>
+<li id="fn-2">简单起见，<a href="#fig-naive-user-has-many-following">图 14.6</a> 省略了 <code>following</code> 表的 <code>id</code> 列。 <a href="#fn-ref-2" class="symbol">&#8617;</a></li>
+<li id="fn-3">感谢读者 Paul Fioravanti 建议我使用这两个术语。 <a href="#fn-ref-3" class="symbol">&#8617;</a></li>
 <li id="fn-4">严格来说，Rails 使用 <code>classify</code> 方法把 <code>has_many</code> 的参数转换成类名，例如 <code>"foo_bars"</code> 会转换成 <code>"FooBar"</code>。 <a href="#fn-ref-4" class="symbol">&#8617;</a></li>
 <li id="fn-5">严格来说，Rails 使用 <code>underscore</code> 方法把类名转换为 id 列的名字。例如，<code>"FooBar".underscore</code> 的返回值是 <code>"foo_bar"</code>，所以 <code>FooBar</code> 模型的外键是 <code>foo_bar_id</code>。 <a href="#fn-ref-5" class="symbol">&#8617;</a></li>
 <li id="fn-6">当你拥有某个领域大量建模的经验后，总能提前猜到这样的辅助方法。如果没有猜到的话，也经常能发现自己动手写这样的方法可以使测试代码更加整洁。此时，如果你没有猜到的话也很正常。软件开发往往是一个循序渐进的过程，你先埋头编写代码，发现代码很乱时，再重构。为了行文简洁，本书采取的是直捣黄龙的方法。 <a href="#fn-ref-6" class="symbol">&#8617;</a></li>

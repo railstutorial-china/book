@@ -14,7 +14,6 @@
   <link rel="stylesheet" type="text/css" href="book.css"/>
   <script type="text/javascript" src="//railstutorial-china.org/assets/js/global.js"></script>
 </head>
-<body>
 
 <body class="book-page">
 
@@ -60,10 +59,10 @@
           <article class="article">
             <section data-type="chapter" id="user-microposts">
 <h1><span class="title-label">第 13 章</span> 用户的微博</h1>
-<p>在开发这个演示应用的过程中，我们用到了四个资源：<code>Users</code>，<code>Sessions</code>，<code>AccountActivations</code> 和 <code>PasswordResets</code>。但只有第一个资源通过 Active Record 模型对应了数据库中的表。本章，我们要再实现一个这样的资源——用户的微博（<code>Microposts</code>），即用户发布的短消息。<a href="chapter2.html#a-toy-app">第 2 章</a>实现了微博的雏形，本章则会在 <a href="chapter2.html#demo-microposts-resource">2.3 节</a>的基础上，实现一个功能完整的 <code>Microposts</code> 资源。首先，我们要创建 <code>Micropost</code> 数据模型，通过  <code>has_many</code> 和 <code>belongs_to</code> 方法把微博和用户关联起来，然后再创建处理和显示微博所需的表单及局部视图（<a href="#micropost-images">13.4 节</a>还要实现图像上传功能）。<a href="chapter14.html#following-users">第 14 章</a>还要加入关注其他用户的功能，届时，我们这个山寨版 Twitter 才算完成。</p>
+<p>在开发这个演示应用的过程中，我们用到了四个资源：<code>Users</code>，<code>Sessions</code>，<code>AccountActivations</code> 和 <code>PasswordResets</code>。但只有第一个资源通过 Active Record 模型对应了数据库中的表。本章，我们将再实现一个这样的资源——用户的微博（<code>Microposts</code>），即用户发布的短消息。<a href="chapter2.html#a-toy-app">第 2 章</a>实现了微博的雏形，本章则会在 <a href="chapter2.html#demo-microposts-resource">2.3 节</a>的基础上，实现一个功能完整的 <code>Microposts</code> 资源。首先，我们要创建 <code>Micropost</code> 数据模型，通过 <code>has_many</code> 和 <code>belongs_to</code> 方法把微博和用户关联起来，然后再创建处理和显示微博所需的表单及局部视图（<a href="#micropost-images">13.4 节</a>还要实现图像上传功能）。<a href="chapter14.html#following-users">第 14 章</a>还要加入关注其他用户的功能，届时，我们这个小型 Twitter 克隆版才算完成。</p>
 <section data-type="sect1" id="a-micropost-model">
 <h1><span class="title-label">13.1</span> <code>Micropost</code> 模型</h1>
-<p>实现 <code>Microposts</code> 资源的第一步是创建 <code>Micropost</code> 数据模型，在模型中设定微博的基本特征。与 <a href="chapter2.html#demo-microposts-resource">2.3 节</a>创建的模型类似，我们要实现的 <code>Micropost</code> 模型要包含数据验证，以及与 <code>User</code> 模型之间的关联。除此之外，我们还会做充分的测试，指定默认的排序方式，以及自动删除已注销用户的微博。</p>
+<p>实现 <code>Microposts</code> 资源的第一步是创建 <code>Micropost</code> 数据模型，在模型中设定微博的基本特征。与 <a href="chapter2.html#demo-microposts-resource">2.3 节</a>创建的模型类似，我们要实现的 <code>Micropost</code> 模型包含数据验证，以及与 <code>User</code> 模型之间的关联。除此之外，我们还会做充分的测试，指定默认的排序方式，以及自动删除已注销用户的微博。</p>
 <p>如果使用 Git 做版本控制的话，和之前一样，建议你新建一个主题分支：</p>
 <div data-type="listing">
 
@@ -76,7 +75,7 @@
 <p><code>Micropost</code> 模型只需要两个属性：一个是 <code>content</code>，保存微博的内容；另一个是 <code>user_id</code>，把微博和用户关联起来。<code>Micropost</code> 模型的结构如<a href="#fig-micropost-model">图 13.1</a> 所示。</p>
 <div id="fig-micropost-model" class="figure"><img src="images/chapter13/micropost_model_3rd_edition.png" alt="micropost model 3rd edition" /><div class="figcaption"><span class="title-label">图 13.1</span>：<code>Micropost</code> 数据模型</div></div>
 <p>注意，在这个模型中，<code>content</code> 属性的类型为 <code>text</code>，而不是 <code>string</code>，目的是存储任意长度的文本。虽然我们会限制微博内容的长度不超过 140 个字符（<a href="#micropost-validations">13.1.2 节</a>），也就是说在 <code>string</code> 类型的 255 个字符长度的限制内，但使用 <code>text</code> 能更好地表达微博的特性，即把微博看成一段文本更符合常理。在 <a href="#creating-microposts">13.3.2 节</a>，我们会把文本字段换成多行文本字段，用于提交微博。而且，如果以后想让微博的内容更长一些（例如包含多国文字），使用 <code>text</code> 类型处理起来更灵活。何况，在生产环境中使用 <code>text</code> 类型并<a href="http://www.postgresql.org/docs/9.1/static/datatype-character.html">没有什么性能差异</a>，所以不会有什么额外消耗。</p>
-<p>与 <code>User</code> 模型一样（<a href="chapter6.html#listing-generate-user-model">代码清单 6.1</a>），我们要使用 <code>generate model</code> 命令生成 <code>Micropost</code> 模型：</p>
+<p>与 <code>User</code> 模型（<a href="chapter6.html#listing-generate-user-model">代码清单 6.1</a>）一样，我们要使用 <code>generate model</code> 命令生成 <code>Micropost</code> 模型：</p>
 <div id="listing-generate-micropost-model" data-type="listing">
 <h5><span class="title-label">代码清单 13.1</span>：生成 <code>Micropost</code> 模型</h5>
 
@@ -84,7 +83,7 @@
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate model Micropost content:text user:references
 </code></pre></div>
 </div>
-<p>上述命令生成的模型如<a href="#listing-micropost-model">代码清单 13.2</a> 所示。这个模型与其他模型一样，继承自 <code>ApplicationRecord</code> 类，不过生成的模型中有一行用于指定一篇微博属于（<code>belongs_to</code>）一个用户，这是因为我们在 <code>generate model</code> 命令中指定了 <code>user:references</code> 参数。那一行代码的作用在 <a href="#user-micropost-associations">13.1.3 节</a>说明。</p>
+<p>上述命令生成的迁移用于创建 <code>Micropost</code> 模型，如<a href="#listing-micropost-model">代码清单 13.2</a> 所示。这个模型与其他模型一样，继承自 <code>ApplicationRecord</code> 类，不过生成的模型中有一行用于指定一篇微博属于（<code>belongs_to</code>）一个用户，这是因为我们在 <code>generate model</code> 命令中指定了 <code>user:references</code> 参数。那一行代码的作用在 <a href="#user-micropost-associations">13.1.3 节</a>说明。</p>
 <div id="listing-micropost-model" data-type="listing">
 <h5><span class="title-label">代码清单 13.2</span>：生成的 <code>Micropost</code> 模型</h5>
 
@@ -95,7 +94,7 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p><a href="#listing-generate-micropost-model">代码清单 13.1</a> 中的 <code>generate</code> 命令会生成一个迁移文件，用于在数据库中生成一个名为 <code>microposts</code> 的表，如<a href="#listing-micropost-migration">代码清单 13.3</a> 所示。可以和生成 <code>users</code> 表的迁移对照一下，参见<a href="chapter6.html#listing-users-migration">代码清单 6.2</a>。二者之间最大的区别是，前者用到了 <code>references</code> 类型。<code>references</code> 会自动添加 <code>user_id</code> 列（以及索引），把用户和微博关联起来。与 <code>User</code> 模型一样，<code>Micropost</code> 模型的迁移中也自动生成了 <code>t.timestamps</code>。<a href="chapter6.html#database-migrations">6.1.1 节</a>说过，这行代码的作用是添加 <code>created_at</code> 和 <code>updated_at</code> 两列。（<a href="#micropost-refinements">13.1.4 节</a>和 <a href="#rendering-microposts">13.2.1 节</a>会使用 <code>created_at</code> 列。）</p>
+<p><a href="#listing-generate-micropost-model">代码清单 13.1</a> 中的 <code>generate</code> 命令会生成一个迁移文件，用于在数据库中生成一个名为 <code>microposts</code> 的表，如<a href="#listing-micropost-migration">代码清单 13.3</a> 所示。可以<a href="chapter6.html#listing-users-migration">代码清单 6.2</a> 和生成 <code>users</code> 表的迁移对照一下。二者之间最大的区别是，前者用到了 <code>references</code> 类型。<code>references</code> 会自动添加 <code>user_id</code> 列（以及索引和外键引用）<sup>[<a id="fn-ref-1" href="#fn-1">1</a>]</sup>，把用户和微博关联起来。与 <code>User</code> 模型一样，<code>Micropost</code> 模型的迁移中也自动生成了 <code>t.timestamps</code>。<a href="chapter6.html#database-migrations">6.1.1 节</a>说过，这行代码的作用是添加 <code>created_at</code> 和 <code>updated_at</code> 两列。（<a href="#micropost-refinements">13.1.4 节</a>将使用 <code>created_at</code> 列。）</p>
 <div id="listing-micropost-migration" data-type="listing">
 <h5><span class="title-label">代码清单 13.3</span>：创建 <code>Micropost</code> 模型的迁移文件，还会创建索引</h5>
 
@@ -114,7 +113,7 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>因为我们会按照发布时间的倒序查询某个用户发布的所有微博，所以在上述代码中为 <code>user_id</code> 和 <code>created_at</code> 列创建了索引（参见<a href="chapter6.html#aside-database-indices">旁注 6.2</a>）：</p>
+<p>因为我们会按照发布时间的倒序检索某个用户发布的所有微博，所以在上述代码中为 <code>user_id</code> 和 <code>created_at</code> 列创建了索引（参见<a href="chapter6.html#aside-database-indices">旁注 6.2</a>）：</p>
 <div data-type="listing">
 
 
@@ -135,7 +134,7 @@
 <p>在 Rails 控制台中使用 <code>Micropost.new</code> 实例化一个 <code>Micropost</code> 对象，将其赋值给 <code>micropost</code> 变量，然后把内容设为 <code>"Lorem ipsum"</code>，把用户 ID 设为数据库中第一个用户的 ID。自动创建的 <code>created_at</code> 和 <code>updated_at</code> 两列的值分别是什么？</p>
 </li>
 <li>
-<p><code>micropost.user</code> 的值是多少？<code>micropost.user.name</code> 呢？</p>
+<p>前一题中`micropost.user` 的值是什么？<code>micropost.user.name</code> 呢？</p>
 </li>
 <li>
 <p>把 <code>micropost</code> 存入数据库，那两个自动创建的列的值是什么？</p>
@@ -144,8 +143,8 @@
 </section>
 <section data-type="sect2" id="micropost-validations">
 <h2><span class="title-label">13.1.2</span> <code>Micropost</code> 模型的数据验证</h2>
-<p>我们已经创建了基本的数据模型，下面要添加一些验证，实现符合需求的约束。<code>Micropost</code> 模型必须要有一个属性表示用户的 ID，这样才能知道某篇微博是由哪个用户发布的。实现这样的属性，最好的方法是使用 Active Record 关联。<a href="#user-micropost-associations">13.1.3 节</a>会实现关联，现在直接处理 <code>Micropost</code> 模型。</p>
-<p>我们可以参照 <code>User</code> 模型的测试（<a href="chapter6.html#listing-name-presence-test">代码清单 6.7</a>），在 <code>setup</code> 方法中新建一个微博对象，并把它和固件中的一个有效用户关联起来，然后在测试中检查这个微博对象是否有效。因为每篇微博都要和用户关联起来，所以我们还要为 <code>user_id</code> 属性的存在性验证编写一个测试。综上所述，测试如<a href="#listing-micropost-validity-test">代码清单 13.4</a> 所示。</p>
+<p>我们已经创建了基本的数据模型，下面要添加一些验证，实现符合需求的约束。<code>Micropost</code> 模型必须要有一个属性表示用户的 ID，这样才能知道某篇微博是由哪个用户发布的。实现这样的属性，最好的方法是使用 Active Record 关联。关联在 <a href="#user-micropost-associations">13.1.3 节</a>实现，现在直接处理 <code>Micropost</code> 模型。</p>
+<p>我们可以参照 <code>User</code> 模型的测试（<a href="chapter6.html#listing-name-presence-test">代码清单 6.7</a>），在 <code>setup</code> 方法中新建一个微博对象，并把它和固件中的一个有效用户关联起来，然后在测试中检查这个微博对象是否有效。因为每篇微博都有一个用户 ID，所以我们还要为 <code>user_id</code> 属性的存在性验证编写一个测试。综上所述，测试如<a href="#listing-micropost-validity-test">代码清单 13.4</a> 所示。</p>
 <div id="listing-micropost-validity-test" data-type="listing">
 <h5><span class="title-label">代码清单 13.4</span>：测试微博是否有效 <span class="green">GREEN</span></h5>
 
@@ -185,8 +184,8 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>顺便说一下，在 Rails 5 中，即便没有<a href="#listing-micropost-user-id-validation">代码清单 13.5</a> 中的那个验证，<a href="#listing-micropost-validity-test">代码清单 13.4</a> 中的测试也能通过，不过必须使用<a href="#listing-micropost-validity-test">代码清单 13.4</a> 中高亮那行不符合习惯的写法。换成<a href="#listing-micropost-validity-test-idiomatic">代码清单 13.12</a> 中符合习惯的写法之后，必须添加用户 ID 存在性验证，所以我们在这里添加了验证。</p>
-<p>现在测试依然能通过：</p>
+<p>顺便说一下，在 Rails 5 中，即便没有<a href="#listing-micropost-user-id-validation">代码清单 13.5</a> 中的那个验证，<a href="#listing-micropost-validity-test">代码清单 13.4</a> 中的测试也能通过，不过必须使用<a href="#listing-micropost-validity-test">代码清单 13.4</a> 中高亮那行不符合习惯的写法。换成<a href="#listing-micropost-validity-test-idiomatic">代码清单 13.12</a> 中符合习惯的写法之后，必须为用户 ID 添加存在性验证，所以我们在这里添加了验证。</p>
+<p>现在测试应该（依然）能通过：</p>
 <div data-type="listing">
 <h5><span class="title-label">代码清单 13.6</span>：<strong class="green">GREEN</strong></h5>
 
@@ -314,7 +313,7 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 <span class="vi">@micropost</span> <span class="o">=</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">microposts</span><span class="p">.</span><span class="nf">build</span><span class="p">(</span><span class="ss">content: </span><span class="s2">"Lorem ipsum"</span><span class="p">)</span>
 </code></pre></div>
 </div>
-<p>（与 <code>new</code> 方法一样，<code>build</code> 方法返回一个存储在内存中的对象，不会修改数据库。）只要关联定义的正确，<code>@micropost</code> 变量的 <code>user_id</code> 属性就会自动设为所关联用户的 ID。</p>
+<p>（与 <code>new</code> 方法一样，<code>build</code> 方法返回一个存储在内存中的对象，不会修改数据库。）只要关联定义正确，<code>@micropost</code> 变量的 <code>user_id</code> 属性就会自动设为所关联用户的 ID。</p>
 <table id="table-association-methods" class="tableblock frame-all grid-all" style="width: 100%;">
 <caption><span class="title-label">表 13.1</span>：用户和微博之间建立关联后得到的方法简介</caption>
 <colgroup>
@@ -354,7 +353,7 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 </tr>
 </tbody>
 </table>
-<p>为了让 <code>@user.microposts.build</code> 这样的代码能使用，我们要修改 <code>User</code> 模型和 <code>Micropost</code> 模型，添加一些代码，把这两个模型关联起来。<a href="#listing-micropost-migration">代码清单 13.3</a> 中的迁移已经自动添加了 <code>belongs_to :user</code>，如<a href="#listing-micropost-belongs-to-user">代码清单 13.10</a> 所示。关联的另一头，<code>has_many :microposts</code>，要自己动手添加，如<a href="#listing-user-has-many-microposts">代码清单 13.11</a> 所示。</p>
+<p>为了让 <code>@user.microposts.build</code> 这样的代码能使用，我们要修改 <code>User</code> 模型和 <code>Micropost</code> 模型，添加一些代码，把这两个模型关联起来。<a href="#listing-micropost-migration">代码清单 13.3</a> 中的迁移已经自动添加了 <code>belongs_to :user</code>，如<a href="#listing-micropost-belongs-to-user">代码清单 13.10</a> 所示。关联的另一端，<code>has_many :microposts</code>，要自己动手添加，如<a href="#listing-user-has-many-microposts">代码清单 13.11</a> 所示。</p>
 <div id="listing-micropost-belongs-to-user" data-type="listing">
 <h5><span class="title-label">代码清单 13.10</span>：一篇微博属于（<code>belongs_to</code>）一个用户 <span class="green">GREEN</span></h5>
 
@@ -368,7 +367,7 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 </code></pre></div>
 </div>
 <div id="listing-user-has-many-microposts" data-type="listing">
-<h5><span class="title-label">代码清单 13.11</span>：一个用户有多篇（<code>has_many</code>）微博 <span class="green">GREEN</span></h5>
+<h5><span class="title-label">代码清单 13.11</span>：一个用户拥有多篇（<code>has_many</code>）微博 <span class="green">GREEN</span></h5>
 
 <div class="source-file">app/models/user.rb</div>
 
@@ -426,7 +425,7 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 <p>前一题应该会在数据库中创建一篇微博。使用 <code>user.microposts.find(micropost.id)</code> 确认这一点。如果传入的是 <code>micropost</code> 而不是 <code>micropost.id</code>，会怎样？</p>
 </li>
 <li>
-<p><code>user == micropost.user</code> 的结果什么？<code>user.microposts.first == micropost</code> 呢？</p>
+<p><code>user == micropost.user</code> 的结果是什么？<code>user.microposts.first == micropost</code> 呢？</p>
 </li>
 </ol>
 </section>
@@ -435,10 +434,10 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 <p>本节，我们要改进一下用户和微博之间的关联：按照特定的顺序取回用户的微博，并且让微博依属于用户，如果用户注销了，就自动删除这个用户发布的所有微博。</p>
 <section data-type="sect3" id="default-scope">
 <h3>默认作用域</h3>
-<p>默认情况下，<code>user.microposts</code> 不能确保微博的顺序，但是按照博客和 Twitter 的习惯，我们希望微博按照创建的时间倒序排列，也就是最新发布的微博在前面。为此，我们要使用默认作用域（default scope）。</p>
+<p>默认情况下，<code>user.microposts</code> 不能确保微博的顺序，但是（按照博客和 Twitter 的习惯）我们希望微博按照创建的时间倒序排列，也就是最新发布的微博在前面。为此，我们要使用默认作用域（default scope）。</p>
 <p>这样的功能很容易让测试意外通过（就算应用代码不对，测试也能通过），所以我们要使用测试驱动开发技术，确保实现的方式是正确的。首先，我们编写一个测试，检查数据库中的第一篇微博和微博固件中名为 <code>most_recent</code> 的微博相同，如<a href="#listing-micropost-order-test">代码清单 13.14</a> 所示。</p>
 <div id="listing-micropost-order-test" data-type="listing">
-<h5><span class="title-label">代码清单 13.14</span>：测试微博的排序 <span class="red">RED</span></h5>
+<h5><span class="title-label">代码清单 13.14</span>：测试微博的顺序 <span class="red">RED</span></h5>
 
 <div class="source-file">test/models/micropost_test.rb</div>
 
@@ -478,16 +477,15 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 </code></pre></div>
 </div>
 <p>注意，我们使用嵌入式 Ruby 明确设置了 <code>created_at</code> 属性的值。这个属性由 Rails 自动更新，一般无法手动设置，但在固件中可以这么做。实际上可能不用自己设置这些属性，因为在某些系统中固件会按照定义的顺序创建。在这个文件中，最后一个固件最后创建（因此是最新的一篇微博）。但是绝不要依赖这种行为，因为并不可靠，而且在不同的系统中有差异。</p>
-<p>现在，测试应该无法通过：</p>
+<p>现在，测试组件应该无法通过：</p>
 <div data-type="listing">
 <h5><span class="title-label">代码清单 13.16</span>：<strong class="red">RED</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test test</span>/models/micropost_test.rb <span class="se">\</span>
-<span class="gp">&gt;            </span>--name test_order_should_be_most_recent_first
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test test</span>/models/micropost_test.rb
 </code></pre></div>
 </div>
-<p>我们要使用 Rails 提供的 <code>default_scope</code> 方法让测试通过。这个方法的作用很多，这里我们要用它设定从数据库中读取数据的默认顺序。为了得到特定的顺序，我们要在 <code>default_scope</code> 方法中指定 <code>order</code> 参数，按 <code>created_at</code> 列的值排序，如下所示：</p>
+<p>我们要使用 Rails 提供的 <code>default_scope</code> 方法让测试通过。这个方法的作用很多，这里我们要用它设定从数据库中检索数据的默认顺序。为了得到特定的顺序，我们要在 <code>default_scope</code> 方法中指定 <code>order</code> 参数，按 <code>created_at</code> 列的值排序，如下所示：</p>
 <div data-type="listing">
 
 
@@ -501,7 +499,7 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 <div class="highlight language-ruby"><pre><code><span class="n">order</span><span class="p">(</span><span class="s1">'created_at DESC'</span><span class="p">)</span>
 </code></pre></div>
 </div>
-<p>在 SQL 中，<code>DESC</code> 表示“降序”，即新发布的微博在前面。在以前的 Rails 版本中，必须使用纯 SQL 语句才能实现这个需求，但从 Rails 4.0 起，可以使用纯 Ruby 句法实现：</p>
+<p>在 SQL 中，<code>DESC</code> 表示“降序”（descending），即新发布的微博在前面。<sup>[<a id="fn-ref-2" href="#fn-2">2</a>]</sup>在以前的 Rails 版本中，必须使用纯 SQL 语句才能实现这个需求，但从 Rails 4.0 起，可以使用纯 Ruby 句法实现：</p>
 <div data-type="listing">
 
 
@@ -522,7 +520,7 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p><a href="#listing-micropost-ordering">代码清单 13.17</a> 中使用了“箭头”句法，这表示一种对象，叫 Proc（procedure）或 lambda，即匿名函数（没有名字的函数）。<code>-&gt;</code> 接受一个代码块（<a href="chapter4.html#blocks">4.3.2 节</a>），返回一个 Proc，然后在这个 Proc 上调用 <code>call</code> 方法执行其中的代码。我们可以在控制台中看一下怎么使用 Proc：</p>
+<p><a href="#listing-micropost-ordering">代码清单 13.17</a> 中使用了“箭头”句法，这表示一种对象，叫 Proc（procedure）或 lambda，即匿名函数（anonymous function，没有名称的函数）。<code>-&gt;</code> 接受一个代码块（<a href="chapter4.html#blocks">4.3.2 节</a>），返回一个 Proc，然后在这个 Proc 上调用 <code>call</code> 方法执行其中的代码。我们可以在控制台中看一下怎么使用 Proc：</p>
 <div data-type="listing">
 
 
@@ -533,8 +531,8 @@ foo
 =&gt; nil
 </code></pre></div>
 </div>
-<p>（Proc 是高级 Ruby 知识，如果现在不理解也不用担心。）</p>
-<p>按照<a href="#listing-micropost-ordering">代码清单 13.17</a> 修改后，测试应该可以通过了：</p>
+<p>（Proc 是相对高级的 Ruby 知识，如果现在不理解也不用担心。）</p>
+<p>按照<a href="#listing-micropost-ordering">代码清单 13.17</a> 修改之后，测试应该可以通过了：</p>
 <div data-type="listing">
 <h5><span class="title-label">代码清单 13.18</span>：<strong class="green">GREEN</strong></h5>
 
@@ -546,7 +544,7 @@ foo
 <section data-type="sect3" id="dependent-destroy">
 <h3>依属关系：destroy</h3>
 <p>除了设定恰当的顺序外，我们还要对 <code>Micropost</code> 模型做一项改进。我们在 <a href="chapter10.html#deleting-users">10.4 节</a>讲过，管理员有删除用户的权限。那么，在删除用户的同时，有必要把该用户发布的微博也删除。</p>
-<p>为此，我们可以把一个参数传给 <code>has_many</code> 关联方法，如<a href="#listing-micropost-dependency">代码清单 13.19</a> 所示。</p>
+<p>为此，我们可以把一个选项传给 <code>has_many</code> 关联方法，如<a href="#listing-micropost-dependency">代码清单 13.19</a> 所示。</p>
 <div id="listing-micropost-dependency" data-type="listing">
 <h5><span class="title-label">代码清单 13.19</span>：确保用户的微博在删除用户的同时也被删除</h5>
 
@@ -588,7 +586,7 @@ foo
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>如果<a href="#listing-micropost-dependency">代码清单 13.19</a> 正确，测试组件就应该能通过：</p>
+<p>如果<a href="#listing-micropost-dependency">代码清单 13.19</a> 中的代码正确，测试组件应该依旧能通过：</p>
 <div data-type="listing">
 <h5><span class="title-label">代码清单 13.21</span>：<strong class="green">GREEN</strong></h5>
 
@@ -613,7 +611,7 @@ foo
 </section>
 <section data-type="sect1" id="showing-microposts">
 <h1><span class="title-label">13.2</span> 显示微博</h1>
-<p>尽管我们还没实现直接在网页中发布微博的功能（将在 <a href="#creating-microposts">13.3.2 节</a>实现），不过还是有办法显示微博，并对显示的内容进行测试。我们将按照 Twitter 的方式，不在 <code>Microposts</code> 控制器的 <code>index</code> 页面显示用户的微博，而在 <code>Users</code> 控制器的 <code>show</code> 页面显示，构思图如<a href="#fig-user-microposts-mockup">图 13.4</a> 所示。我们会先使用一些简单的 ERb 代码，在用户的资料页面显示微博，然后在 <a href="chapter10.html#sample-users">10.3.2 节</a>创建的种子数据中添加一些微博，这样才有内容可以显示。</p>
+<p>尽管我们还没实现直接在网页中发布微博的功能（将在 <a href="#creating-microposts">13.3.2 节</a>实现），不过还是有办法显示微博（并对显示的内容进行测试）。我们将按照 Twitter 的方式，不在 <code>Microposts</code> 控制器的 <code>index</code> 页面显示用户的微博，而在 <code>Users</code> 控制器的 <code>show</code> 页面显示，构思图如<a href="#fig-user-microposts-mockup">图 13.4</a> 所示。我们将先使用一些简单的 ERb 代码，在用户的资料页面显示微博，然后在 <a href="chapter10.html#sample-users">10.3.2 节</a>创建的种子数据中添加一些微博，这样才有内容可以显示。</p>
 <div id="fig-user-microposts-mockup" class="figure"><img src="images/chapter13/user_microposts_mockup_3rd_edition.png" alt="user microposts mockup 3rd edition" /><div class="figcaption"><span class="title-label">图 13.4</span>：显示有微博的资料页面构思图</div></div>
 <section data-type="sect2" id="rendering-microposts">
 <h2><span class="title-label">13.2.1</span> 渲染微博</h2>
@@ -653,7 +651,7 @@ foo
 </div>
 <p>注意，我们使用的是有序列表标签 <code>ol</code>（而不是无需列表 <code>ul</code>），因为微博是按照一定顺序显示的（按时间倒序）。相应的局部视图如<a href="#listing-micropost-partial">代码清单 13.22</a> 所示。</p>
 <div id="listing-micropost-partial" data-type="listing">
-<h5><span class="title-label">代码清单 13.22</span>：渲染单篇微博的局部视图</h5>
+<h5><span class="title-label">代码清单 13.22</span>：显示单篇微博的局部视图</h5>
 
 <div class="source-file">app/views/microposts/_micropost.html.erb</div>
 
@@ -682,7 +680,7 @@ foo
 <div class="highlight language-erb"><pre><code><span class="cp">&lt;%=</span> <span class="n">will_paginate</span> <span class="vi">@microposts</span> <span class="cp">%&gt;</span>
 </code></pre></div>
 </div>
-<p>如果和用户列表页面的代码（<a href="chapter10.html#listing-will-paginate-index-view">代码清单 10.45</a>）比较的话，会发现之前使用的代码是：</p>
+<p>如果和用户列表页面的代码（<a href="chapter10.html#listing-will-paginate-index-view">代码清单 10.45</a>）比较的话，你会发现之前使用的代码是：</p>
 <div data-type="listing">
 
 
@@ -691,7 +689,7 @@ foo
 </div>
 <p>前面之所以可以直接调用，是因为在 <code>Users</code> 控制器中，<code>will_paginate</code> 假定有一个名为 <code>@users</code> 的实例变量（<a href="chapter10.html#pagination">10.3.3 节</a>说过，这个变量所属的类应该是 <code>AvtiveRecord::Relation</code>）。现在，还在 <code>Users</code> 控制器中，但是我们要分页显示微博，所以必须明确地把 <code>@microposts</code> 变量传给 <code>will_paginate</code> 方法。当然了，我们还要在 <code>show</code> 动作中定义 <code>@microposts</code> 变量，如<a href="#listing-user-show-microposts-instance">代码清单 13.23</a> 所示。</p>
 <div id="listing-user-show-microposts-instance" data-type="listing">
-<h5><span class="title-label">代码清单 13.23</span>：在 <code>Users</code> 控制器的 <code>show</code> 动作中定义 <code>@microposts</code> 变量</h5>
+<h5><span class="title-label">代码清单 13.23</span>：在 <code>Users</code> 控制器的 <code>show</code> 动作中定义 <code>@microposts</code> 实例变量</h5>
 
 <div class="source-file">app/controllers/users_controller.rb</div>
 
@@ -709,7 +707,7 @@ foo
 <span class="nf">end</span>
 </code></pre></div>
 </div>
-<p>注意 <code>paginate</code> 方法是多么智能，甚至可以在关联上使用，从 <code>microposts</code> 表中取出每一页要显示的微博。</p>
+<p>注意 <code>paginate</code> 方法是多么智能，它甚至可以在关联上使用，从 <code>microposts</code> 表中取出每一页要显示的微博。</p>
 <p>最后，还要显示用户发布的微博数量。我们可以使用 <code>count</code> 方法获得：</p>
 <div data-type="listing">
 
@@ -717,8 +715,8 @@ foo
 <div class="highlight language-ruby"><pre><code><span class="n">user</span><span class="p">.</span><span class="nf">microposts</span><span class="p">.</span><span class="nf">count</span>
 </code></pre></div>
 </div>
-<p>和 <code>paginate</code> 方法一样，<code>count</code> 方法也可以在关联上使用。<code>count</code> 的计数过程不是把所有微博都从数据库中读取出来，然后再在所得的数组上调用 <code>length</code> 方法。如果这样做的话，微博数量一旦很多，效率就会降低。其实，<code>count</code> 方法直接在数据库层计算，让数据库统计指定的 <code>user_id</code> 拥有多少微博。（所有数据库都会对这种操作做性能优化。如果统计数量仍然是应用的性能瓶颈，可以使用<a href="http://railscasts.com/episodes/23-counter-cache-column">计数缓存</a>进一步提速。）</p>
-<p>综上所述，现在可以把微博添加到资料页面了，如<a href="#listing-user-show-microposts">代码清单 13.24</a> 所示。注意，<code>if @user.microposts.any?</code>（在<a href="chapter7.html#listing-errors-partial">代码清单 7.21</a> 中见过类似的用法）的作用是，当用户没有发布微博时，不显示空列表。</p>
+<p>和 <code>paginate</code> 方法一样，<code>count</code> 方法也可以在关联上使用。<code>count</code> 的计数过程不是把所有微博都从数据库中读取出来，然后再在所得的数组上调用 <code>length</code> 方法。如果这样做的话，微博数量一旦很多，效率就会降低。其实，<code>count</code> 方法直接在数据库层计算，让数据库统计指定的 <code>user_id</code> 拥有多少微博。（所有数据库都会对这种操作做性能优化。如果统计数量仍然是应用的性能瓶颈，可以使用<a href="http://railscasts.com/episodes/23-counter-cache-column">计数器缓存</a>（counter cache）进一步提速。）</p>
+<p>综上所述，现在可以把微博添加到资料页面中了，如<a href="#listing-user-show-microposts">代码清单 13.24</a> 所示。注意，<code>if @user.microposts.any?</code>（在<a href="chapter7.html#listing-errors-partial">代码清单 7.21</a> 中见过类似的用法）的作用是，当用户没有发布微博时，不显示空列表。</p>
 <div id="listing-user-show-microposts" data-type="listing">
 <h5><span class="title-label">代码清单 13.24</span>：在用户资料页面中加入微博</h5>
 
@@ -758,7 +756,7 @@ foo
 <p><code>helper.time_ago_in_words(1.year.ago)</code> 得到的结果是什么？</p>
 </li>
 <li>
-<p>一页微博属于哪个 Ruby 类？提示：参照<a href="#listing-micropost-instance-variable">代码清单 13.40</a>，把 <code>paginate</code> 方法的参数设为 <code>page: nil</code>，然后调用 <code>class</code> 方法。</p>
+<p>一页微博属于哪个 Ruby 类？提示：参照<a href="#listing-user-show-microposts-instance">代码清单 13.23</a>，把 <code>paginate</code> 方法的参数设为 <code>page: nil</code>，然后调用 <code>class</code> 方法。</p>
 </li>
 </ol>
 </section>
@@ -766,7 +764,7 @@ foo
 <section data-type="sect2" id="sample-microposts">
 <h2><span class="title-label">13.2.2</span> 示例微博</h2>
 <p>在 <a href="#rendering-microposts">13.2.1 节</a>，为了显示用户的微博，我们创建或修改了几个模板，但是结果有点不给力。为了改变这种状况，我们要在 <a href="chapter10.html#sample-users">10.3.2 节</a>用到的种子数据中加入一些微博。</p>
-<p>为所有用户添加示例微博要花很长时间，所以我们决定只为前六个用户添加。为此，要使用 <code>take</code> 方法：</p>
+<p>为所有用户添加示例微博要花很长时间，所以我们决定只为前六个用户（即自定义了Gravatar的那五个用户，外加一个使用默认Gravatar的用户）添加。为此，要使用 <code>take</code> 方法：</p>
 <div data-type="listing">
 
 
@@ -774,7 +772,7 @@ foo
 </code></pre></div>
 </div>
 <p>调用 <code>order</code> 方法的作用是按照创建用户的顺序查找六个用户。</p>
-<p>我们要分别为这六个用户创建 50 篇微博（数量要多于 30 个才能分页）。为了生成微博的内容，我们将使用 Faker 提供的 <a href="http://rubydoc.info/gems/faker/1.3.0/Faker/Lorem"><code>Lorem.sentence</code></a> 方法。<sup>[<a id="fn-ref-1" href="#fn-1">1</a>]</sup>添加示例微博后的种子数据如<a href="#listing-sample-microposts">代码清单 13.25</a> 所示。</p>
+<p>我们要分别为这六个用户创建 50 篇微博（数量要多于 30 个才能分页）。为了生成微博的内容，我们将使用 Faker gem 提供的 <a href="http://rubydoc.info/gems/faker/1.3.0/Faker/Lorem"><code>Lorem.sentence</code></a> 方法。<sup>[<a id="fn-ref-3" href="#fn-3">3</a>]</sup>添加示例微博后的种子数据如<a href="#listing-sample-microposts">代码清单 13.25</a> 所示。（<a href="#listing-sample-microposts">代码清单 13.25</a> 之所以采用那种顺序循环，是为了打乱动态流中的微博（<a href="chapter14.html#the-status-feed">14.3 节</a>）。如果先迭代用户，动态流中会批量出现同一个用户发布的微博，视觉效果不好。）</p>
 <div id="listing-sample-microposts" data-type="listing">
 <h5><span class="title-label">代码清单 13.25</span>：添加示例微博</h5>
 
@@ -799,9 +797,9 @@ foo
 </code></pre></div>
 </div>
 <p>完成后还要重启 Rails 开发服务器。</p>
-<p>现在，我们能看到 <a href="#rendering-microposts">13.2.1 节</a>的劳动成果了——用户资料页面显示了微博。<sup>[<a id="fn-ref-2" href="#fn-2">2</a>]</sup>初步结果如<a href="#fig-user-profile-microposts-no-styling">图 13.6</a> 所示。</p>
+<p>现在，我们能看到 <a href="#rendering-microposts">13.2.1 节</a>的劳动成果了——用户资料页面显示了微博。<sup>[<a id="fn-ref-4" href="#fn-4">4</a>]</sup>初步结果如<a href="#fig-user-profile-microposts-no-styling">图 13.6</a> 所示。</p>
 <div id="fig-user-profile-microposts-no-styling" class="figure"><img src="images/chapter13/user_profile_microposts_no_styling_3rd_edition.png" alt="user profile microposts no styling 3rd edition" /><div class="figcaption"><span class="title-label">图 13.6</span>：用户资料页面显示的微博，还没添加样式</div></div>
-<p><a href="#fig-user-profile-microposts-no-styling">图 13.6</a> 中显示的微博还没有样式，那我们就加入一些，如<a href="#listing-micropost-css">代码清单 13.26</a> 所示，<sup>[<a id="fn-ref-3" href="#fn-3">3</a>]</sup>然后再看一下页面显示的效果。</p>
+<p><a href="#fig-user-profile-microposts-no-styling">图 13.6</a> 中显示的微博还没有样式，那我们就加入一些，如<a href="#listing-micropost-css">代码清单 13.26</a> 所示，<sup>[<a id="fn-ref-5" href="#fn-5">5</a>]</sup>然后再看一下页面显示的效果。</p>
 <div id="listing-micropost-css" data-type="listing">
 <h5><span class="title-label">代码清单 13.26</span>：微博的样式（包含本章要使用的所有 CSS）</h5>
 
@@ -865,13 +863,13 @@ foo
 <h5 id="exercises-sample-microposts" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>能不能想出 <code>(1..10).to_a.take(6)</code> 的结果是什么？在 Rails 控制台确认是否正确。</p>
+<p>能不能想出 <code>(1..10).to_a.take(6)</code> 的结果是什么？在 Rails 控制台中确认你想的是否正确。</p>
 </li>
 <li>
-<p>前一题有必要使用 <code>to_a</code> 方法吗？</p>
+<p>前一题有必要调用 <code>to_a</code> 方法吗？</p>
 </li>
 <li>
-<p>Faker 提供了众多有趣的随机数据，参阅 <a href="https://github.com/stympy/faker">Faker 的文档</a>，学习如何生成<a href="https://github.com/stympy/faker#fakeruniversity">虚拟的大学名称</a>、<a href="https://github.com/stympy/faker#fakerphonenumber">虚拟的电话号码</a>、<a href="https://github.com/stympy/faker#fakerhipster">虚拟的 Hipster Ipsum 句子</a>和<a href="https://github.com/stympy/faker#fakerchucknorris">虚拟的 Chuck Norris 语录</a>，然后在 Rails 控制台中打印出来。</p>
+<p>Faker 提供了众多有趣的随机数据，参阅 <a href="https://github.com/stympy/faker">Faker 的文档</a>，学习如何生成<a href="https://github.com/stympy/faker#fakeruniversity">虚拟的大学名称</a>、<a href="https://github.com/stympy/faker#fakerphonenumber">虚拟的电话号码</a>、<a href="https://github.com/stympy/faker#fakerhipster">虚拟的 Hipster Ipsum 句子</a>和<a href="https://github.com/stympy/faker#fakerchucknorris">虚拟的 Chuck Norris 语录</a>。</p>
 </li>
 </ol>
 </section>
@@ -922,7 +920,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 </div>
 <p>综上，修改后的微博固件如<a href="#listing-updated-micropost-fixtures">代码清单 13.27</a> 所示。</p>
 <div id="listing-updated-micropost-fixtures" data-type="listing">
-<h5><span class="title-label">代码清单 13.27</span>：添加关联用户后的微博固件</h5>
+<h5><span class="title-label">代码清单 13.27</span>：关联用户后的微博固件</h5>
 
 <div class="source-file">test/fixtures/microposts.yml</div>
 
@@ -954,7 +952,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <span class="s">&lt;% end %&gt;</span>
 </code></pre></div>
 </div>
-<p>测试数据准备好了，测试本身也很简单：访问资料页面，检查页面的标题、用户的名字、Gravatar 头像、微博数量和分页显示的微博，如<a href="#listing-user-profile-test">代码清单 13.28</a> 所示。注意，为了使用<a href="chapter4.html#listing-title-helper">代码清单 4.2</a> 中的 <code>full_title</code> 辅助方法测试页面的标题，我们要把 <code>ApplicationHelper</code> 模块引入测试。<sup>[<a id="fn-ref-4" href="#fn-4">4</a>]</sup></p>
+<p>测试数据准备好了，测试本身也很简单：访问资料页面，检查页面的标题、用户的名字、Gravatar 头像、微博数量和分页显示的微博，如<a href="#listing-user-profile-test">代码清单 13.28</a> 所示。注意，为了使用<a href="chapter4.html#listing-title-helper">代码清单 4.2</a> 中的 <code>full_title</code> 辅助方法测试页面的标题，我们要把 <code>ApplicationHelper</code> 模块引入测试。<sup>[<a id="fn-ref-6" href="#fn-6">6</a>]</sup></p>
 <div id="listing-user-profile-test" data-type="listing">
 <h5><span class="title-label">代码清单 13.28</span>：用户资料页面的测试 <span class="green">GREEN</span></h5>
 
@@ -992,14 +990,14 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 </code></pre></div>
 </div>
 <p><code>assert_match</code> 没有 <code>assert_select</code> 的针对性强，无需指定要查找哪个 HTML 标签。</p>
-<p><a href="#listing-user-profile-test">代码清单 13.28</a> 还在 <code>assert_select</code> 中使用了嵌套式句法：</p>
+<p><a href="#listing-user-profile-test">代码清单 13.28</a> 还在 <code>assert_select</code> 中使用了嵌套句法：</p>
 <div data-type="listing">
 
 
 <div class="highlight language-ruby"><pre><code><span class="n">assert_select</span> <span class="s1">'h1&gt;img.gravatar'</span>
 </code></pre></div>
 </div>
-<p>这行代码的意思是，在 <code>h1</code> 标签中查找类为 <code>gravatar</code> 的 <code>img</code> 标签。</p>
+<p>这行代码的意思是，在顶级标题标签（<code>h1</code>）中查找类为 <code>gravatar</code> 的 <code>img</code> 标签。</p>
 <p>因为应用能正常运行，所以测试组件应该也能通过：</p>
 <div data-type="listing">
 <h5><span class="title-label">代码清单 13.29</span>：<strong class="green">GREEN</strong></h5>
@@ -1014,17 +1012,17 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <p>把<a href="#listing-user-profile-test">代码清单 13.28</a> 中包含 <code>'h1'</code> 的那两行对应的应用代码注释掉，确认测试会失败。</p>
 </li>
 <li>
-<p>修改<a href="#listing-user-profile-test">代码清单 13.28</a>，测试分页只出现一次。提示：参阅<a href="chapter5.html#table-assert-select">表 5.2</a>。</p>
+<p>修改<a href="#listing-user-profile-test">代码清单 13.28</a>，测试分页导航只出现一次。提示：参阅<a href="chapter5.html#table-assert-select">表 5.2</a>。</p>
 </li>
 </ol>
 </section>
 </section>
 <section data-type="sect1" id="manipulating-microposts">
 <h1><span class="title-label">13.3</span> 微博相关的操作</h1>
-<p>微博的数据模型构建好了，也编写了相关的视图文件，接下来我们的开发重点是，通过网页发布微博。本节，我们会初步实现动态流，<a href="chapter14.html#following-users">第 14 章</a>再完善。最后，和 <code>Users</code> 资源一样，我们还要实现在网页中删除微博的功能。</p>
-<p>上述功能的实现和之前的方式有点不同，需要特别注意：<code>Microposts</code> 资源相关的页面不通过 <code>Microposts</code> 控制器实现，而是通过资料页面和首页实现。因此 <code>Microposts</code> 控制器不需要 <code>new</code> 和 <code>edit</code> 动作，只需要 <code>create</code> 和 <code>destroy</code> 动作。所以，<code>Microposts</code> 资源的路由如<a href="#listing-microposts-resource">代码清单 13.30</a> 所示。 <a href="#listing-microposts-resource">代码清单 13.30</a> 中的代码对应的 REST 路由如<a href="#table-restful-microposts">表 13.2</a> 所示，这张表中的路由只是<a href="chapter2.html#table-demo-restful-microposts">表 2.3</a> 的一部分。不过，路由虽然简化了，但预示着实现的过程需要用到更高级的技术，而不会降低代码的复杂度。从<a href="chapter2.html#a-toy-app">第 2 章</a>起我们就十分依赖脚手架，不过现在我们将舍弃脚手架的大部分功能。</p>
+<p>微博的数据模型构建好了，也编写了相关的视图文件，接下来我们的开发重点是，通过网页发布微博。本节，我们将初步实现动态流，<a href="chapter14.html#following-users">第 14 章</a>再完善。最后，和 <code>Users</code> 资源一样，我们还要实现在网页中删除微博的功能。</p>
+<p>上述功能的实现和之前的方式有点不同，需要特别注意：<code>Microposts</code> 资源相关的页面不通过 <code>Microposts</code> 控制器实现，而是通过资料页面和首页实现。因此 <code>Microposts</code> 控制器不需要 <code>new</code> 和 <code>edit</code> 动作，只需要 <code>create</code> 和 <code>destroy</code> 动作。所以，<code>Microposts</code> 资源的路由如<a href="#listing-microposts-resource">代码清单 13.30</a> 所示。<a href="#listing-microposts-resource">代码清单 13.30</a> 中的代码对应的 REST 式路由如<a href="#table-restful-microposts">表 13.2</a> 所示，这张表中的路由只是<a href="chapter2.html#table-demo-restful-microposts">表 2.3</a> 的一部分。不过，路由虽然简化了，但预示着实现的过程需要用到更高级的技术，而不会降低代码的复杂度。从<a href="chapter2.html#a-toy-app">第 2 章</a>起我们就十分依赖脚手架，不过现在我们将舍弃脚手架的大部分功能。</p>
 <div id="listing-microposts-resource" data-type="listing">
-<h5><span class="title-label">代码清单 13.30</span>：<code>Microposts</code> 资源的路由设置</h5>
+<h5><span class="title-label">代码清单 13.30</span>：<code>Microposts</code> 资源的路由</h5>
 
 <div class="source-file">config/routes.rb</div>
 
@@ -1045,7 +1043,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 </code></pre></div>
 </div>
 <table id="table-restful-microposts" class="tableblock frame-all grid-all" style="width: 100%;">
-<caption><span class="title-label">表 13.2</span>：<a href="#listing-microposts-resource">代码清单 13.30</a> 设置的 <code>Microposts</code> 资源路由</caption>
+<caption><span class="title-label">表 13.2</span>：<a href="#listing-microposts-resource">代码清单 13.30</a> 设置 <code>Microposts</code> 资源后得到的 REST 式路由</caption>
 <colgroup>
 <col style="width: 25%;" />
 <col style="width: 25%;" />
@@ -1077,7 +1075,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 </table>
 <section data-type="sect2" id="access-control">
 <h2><span class="title-label">13.3.1</span> 访问限制</h2>
-<p>开发 <code>Microposts</code> 资源的第一步是在 <code>Microposts</code> 控制器中实现访问限制：若想访问 <code>create</code> 和 <code>destroy</code> 动作，用户要先登录。</p>
+<p>开发 <code>Microposts</code> 资源的第一步是在 <code>Microposts</code> 控制器中实现访问限制：若想访问 <code>create</code> 和 <code>destroy</code> 动作，用户必须先登录。</p>
 <p>针对这个要求的测试与 <code>Users</code> 控制器中相应的测试类似（<a href="chapter10.html#listing-edit-update-redirect-tests">代码清单 10.20</a> 和<a href="chapter10.html#listing-action-tests-admin">代码清单 10.61</a>），我们要使用正确的请求类型访问这两个动作，然后确认微博的数量没有变化，而且会重定向到登录页面，如<a href="#listing-create-destroy-micropost-tests">代码清单 13.31</a> 所示。</p>
 <div id="listing-create-destroy-micropost-tests" data-type="listing">
 <h5><span class="title-label">代码清单 13.31</span>：<code>Microposts</code> 控制器的访问限制测试 <span class="red">RED</span></h5>
@@ -1110,7 +1108,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 </div>
 <p>在编写让这个测试通过的应用代码之前，先要做些重构。在 <a href="chapter10.html#requiring-logged-in-users">10.2.1 节</a>，我们定义了一个前置过滤器 <code>logged_in_user</code>（<a href="chapter10.html#listing-authorize-before-filter">代码清单 10.15</a>），要求访问相关的动作之前用户要先登录。那时，我们只需要在 <code>Users</code> 控制器中使用这个前置过滤器，但是现在也要在 <code>Microposts</code> 控制器中使用，所以要把它移到 <code>Application</code> 控制器中（所有控制器的基类），如<a href="#listing-sessions-helper-authenticate">代码清单 13.32</a> 所示。</p>
 <div id="listing-sessions-helper-authenticate" data-type="listing">
-<h5><span class="title-label">代码清单 13.32</span>：把 <code>logged_in_user</code> 方法移到 <code>Application</code> 控制器中</h5>
+<h5><span class="title-label">代码清单 13.32</span>：把 <code>logged_in_user</code> 方法移到 <code>Application</code> 控制器中 <span class="red">RED</span></h5>
 
 <div class="source-file">app/controllers/application_controller.rb</div>
 
@@ -1166,7 +1164,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 </div>
 <p>现在，我们可以在 <code>Microposts</code> 控制器中使用 <code>logged_in_user</code> 方法了。在 <code>Microposts</code> 控制器中添加 <code>create</code> 和 <code>destroy</code> 动作，并使用前置过滤器限制访问，如<a href="#listing-microposts-controller-access-control">代码清单 13.34</a> 所示。</p>
 <div id="listing-microposts-controller-access-control" data-type="listing">
-<h5><span class="title-label">代码清单 13.34</span>：限制访问微博控制器的动作 <span class="green">GREEN</span></h5>
+<h5><span class="title-label">代码清单 13.34</span>：限制访问 <code>Microposts</code> 控制器的动作 <span class="green">GREEN</span></h5>
 
 <div class="source-file">app/controllers/microposts_controller.rb</div>
 
@@ -1199,7 +1197,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <section data-type="sect2" id="creating-microposts">
 <h2><span class="title-label">13.3.2</span> 创建微博</h2>
 <p>在<a href="chapter7.html#sign-up">第 7 章</a>，我们实现了用户注册功能，方法是使用 HTML 表单向 <code>Users</code> 控制器的 <code>create</code> 动作发送 <code>POST</code> 请求。创建微博的功能实现起来类似，主要的不同点是，表单不放在单独的页面 /microposts/new 中，而是在网站的首页（即根地址 /），构思图如<a href="#fig-home-page-with-micropost-form-mockup">图 13.10</a> 所示。</p>
-<p>上一次离开首页时，是<a href="chapter5.html#fig-sample-app-logo">图 5.8</a> 那个样子，页面中部有个“Sign up now!”按钮。因为创建微博的表单只对登录后的用户有用，所以本节的目标之一是根据用户的登录状态显示不同的首页内容，如<a href="#listing-microposts-home-page">代码清单 13.37</a> 所示。</p>
+<p>上一次离开首页时，是<a href="chapter5.html#fig-sample-app-logo">图 5.8</a> 那个样子，页面中部有个“Sign up now!”按钮。因为创建微博的表单只对登录后的用户有用，所以本节的目标之一是根据用户的登录状态在首页显示不同的内容，如<a href="#listing-microposts-home-page">代码清单 13.37</a> 所示。</p>
 <p>我们先来编写 <code>Microposts</code> 控制器的 <code>create</code> 动作，它与 <code>Users</code> 控制器的 <code>create</code> 动作类似（<a href="chapter7.html#listing-user-create-action">代码清单 7.28</a>），二者之间主要的区别是，创建微博时，要使用用户和微博的关联关系构建微博对象，如<a href="#listing-microposts-create-action">代码清单 13.36</a> 所示。注意 <code>micropost_params</code> 中的健壮参数，它限制只允许通过 Web 修改微博的 <code>content</code> 属性。</p>
 <div id="fig-home-page-with-micropost-form-mockup" class="figure"><img src="images/chapter13/home_page_with_micropost_form_mockup_bootstrap.png" alt="home page with micropost form mockup bootstrap" /><div class="figcaption"><span class="title-label">图 13.10</span>：包含创建微博表单的首页构思图</div></div>
 <div id="listing-microposts-create-action" data-type="listing">
@@ -1233,7 +1231,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 </div>
 <p>我们使用<a href="#listing-microposts-home-page">代码清单 13.37</a> 中的代码编写创建微博所需的表单，这个视图会根据用户的登录状态显示不同的 HTML。</p>
 <div id="listing-microposts-home-page" data-type="listing">
-<h5><span class="title-label">代码清单 13.37</span>：在首页加入创建微博的表单</h5>
+<h5><span class="title-label">代码清单 13.37</span>：在首页（/）加入创建微博的表单</h5>
 
 <div class="source-file">app/views/static_pages/home.html.erb</div>
 
@@ -1279,7 +1277,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <span class="nt">&lt;span&gt;</span><span class="cp">&lt;%=</span> <span class="n">pluralize</span><span class="p">(</span><span class="n">current_user</span><span class="p">.</span><span class="nf">microposts</span><span class="p">.</span><span class="nf">count</span><span class="p">,</span> <span class="s2">"micropost"</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="nt">&lt;/span&gt;</span>
 </code></pre></div>
 </div>
-<p>注意，与用户资料页面的侧边栏一样（<a href="#listing-user-show-microposts">代码清单 13.24</a>），<a href="#listing-user-info">代码清单 13.38</a> 中的用户信息也显示了用户发布的微博数量。不过显示的内容有细微的差别，在用户资料页面的侧边栏中，“Microposts” 是“标注”（label），所以“Microposts (1)”这样的用法是合理的。而在本例中，如果说“1 microposts”的话就不合语法了，所以我们要调用 <code>pluralize</code> 方法（<a href="chapter7.html#signup-error-messages">7.3.3 节</a>见过），显示成“1 micropost”“2 microposts”等。</p>
+<p>注意，与用户资料页面的侧边栏一样（<a href="#listing-user-show-microposts">代码清单 13.24</a>），<a href="#listing-user-info">代码清单 13.38</a> 中的用户信息也显示了用户发布的微博数量。不过显示的内容有细微的差别，在用户资料页面的侧边栏中，“Microposts” 是标注（label），所以“Microposts (1)”这样的用法是合理的。而在本例中，如果说“1 microposts”的话就不合语法了，所以我们要调用 <code>pluralize</code> 方法（<a href="chapter7.html#signup-error-messages">7.3.3 节</a>见过），显示成“1 micropost”“2 microposts”等。</p>
 <p>下面我们来编写微博创建表单的局部视图，如<a href="#listing-micropost-form">代码清单 13.39</a> 所示。这段代码和<a href="chapter7.html#listing-signup-form">代码清单 7.15</a> 中的注册表单类似。</p>
 <div id="listing-micropost-form" data-type="listing">
 <h5><span class="title-label">代码清单 13.39</span>：微博创建表单局部视图</h5>
@@ -1334,7 +1332,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 </code></pre></div>
 </div>
 <p>你可能还记得，在<a href="chapter7.html#listing-f-error-messages">代码清单 7.20</a> 中，错误消息局部视图直接引用了 <code>@user</code> 变量，但现在我们提供的变量是 <code>@micropost</code>。为了在两个地方都能使用这个错误消息局部视图，我们可以把表单变量 <code>f</code> 传入局部视图，通过 <code>f.object</code> 获取相应的对象。因此，在 <code>form_for(@user) do |f|</code> 中，<code>f.object</code> 是 <code>@user</code>；在 <code>form_for(@micropost) do |f|</code> 中，<code>f.object</code> 是 <code>@micropost</code>。</p>
-<p>我们要通过一个哈希把对象传入局部视图，值是这个对象，键是局部视图中所需的变量名，如<a href="#listing-micropost-form">代码清单 13.39</a> 中的第二行所示。换句话说，<code>object: f.object</code> 会创建一个名为 <code>object</code> 的变量，供 <code>error_messages</code> 局部视图使用。通过这个对象，我们可以定制错误消息，如<a href="#listing-updated-error-messages-partial">代码清单 13.41</a> 所示。</p>
+<p>我们要通过一个散列把对象传入局部视图，值是这个对象，键是局部视图中所需的变量名，如<a href="#listing-micropost-form">代码清单 13.39</a> 中的第二行所示。换句话说，<code>object: f.object</code> 会创建一个名为 <code>object</code> 的变量，供 <code>error_messages</code> 局部视图使用。通过这个对象，我们可以定制错误消息，如<a href="#listing-updated-error-messages-partial">代码清单 13.41</a> 所示。</p>
 <div id="listing-updated-error-messages-partial" data-type="listing">
 <h5><span class="title-label">代码清单 13.41</span>：能使用其他对象的错误消息局部视图 <span class="red">RED</span></h5>
 
@@ -1362,7 +1360,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
-<p>这提醒我们要修改其他使用错误消息局部视图的视图，包括用户注册视图（<a href="chapter7.html#listing-f-error-messages">代码清单 7.20</a>）、重设密码视图（<a href="chapter12.html#listing-password-reset-form">代码清单 12.14</a>）和用户编辑视图（<a href="chapter10.html#listing-user-edit-view">代码清单 10.2</a>）。这三个视图修改后的版本分别如<a href="#listing-signup-errors-updated">代码清单 13.43</a>，<a href="#listing-password-reset-updated">代码清单 13.45</a> 和<a href="#listing-edit-errors-updated">代码清单 13.44</a> 所示。</p>
+<p>这提醒我们要修改其他使用错误消息局部视图的视图，包括用户注册视图（<a href="chapter7.html#listing-f-error-messages">代码清单 7.20</a>）、重设密码视图（<a href="chapter12.html#listing-password-reset-form">代码清单 12.14</a>）和用户编辑视图（<a href="chapter10.html#listing-user-edit-view">代码清单 10.2</a>）。这三个视图修改后的版本分别如<a href="#listing-signup-errors-updated">代码清单 13.43</a>、<a href="#listing-password-reset-updated">代码清单 13.45</a> 和<a href="#listing-edit-errors-updated">代码清单 13.44</a> 所示。</p>
 <div id="listing-signup-errors-updated" data-type="listing">
 <h5><span class="title-label">代码清单 13.43</span>：修改用户注册表单，改变渲染错误消息局部视图的方式</h5>
 
@@ -1476,8 +1474,8 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <section data-type="sect2" id="a-proto-feed">
 <h2><span class="title-label">13.3.3</span> 动态流原型</h2>
 <p>现在创建微博的表单可以使用了，但是用户看不到实际效果，因为首页没有显示微博。如果你愿意的话，可以在<a href="#fig-home-with-form">图 13.11</a> 所示的表单中发表一篇有效的微博，然后打开用户资料页面，验证一下这个表单是否可以正常使用。这样在页面之间来来回回有点麻烦，如果能在首页显示一个含有当前登入用户的微博列表（动态流）就好了，构思图如<a href="#fig-proto-feed-mockup">图 13.13</a> 所示。（在<a href="chapter14.html#following-users">第 14 章</a>，我们会在这个微博列表中加入当前用户所关注用户发表的微博，就像 Twitter 那样。）</p>
-<div id="fig-proto-feed-mockup" class="figure"><img src="images/chapter13/proto_feed_mockup_3rd_edition.png" alt="proto feed mockup 3rd edition" /><div class="figcaption"><span class="title-label">图 13.13</span>：显示有动态流的首页构思图</div></div>
-<p>因为每个用户都有一个动态流，因此我们可以在 <code>User</code> 模型中定义一个名为 <code>feed</code> 的方法，查找当前用户发表的所有微博。我们要在 <code>Micropost</code> 模型上调用 <code>where</code> 方法（<a href="chapter11.html#activation-test-and-refactoring">11.3.3 节</a>的<a href="chapter11.html#exercises-activation-test-and-refactoring">练习</a>提到过）查找微博，如<a href="#listing-proto-status-feed">代码清单 13.46</a> 所示。<sup>[<a id="fn-ref-5" href="#fn-5">5</a>]</sup></p>
+<div id="fig-proto-feed-mockup" class="figure"><img src="images/chapter13/proto_feed_mockup_3rd_edition.png" alt="proto feed mockup 3rd edition" /><div class="figcaption"><span class="title-label">图 13.13</span>：显示有动态流原型的首页构思图</div></div>
+<p>因为每个用户都有一个动态流，因此我们可以在 <code>User</code> 模型中定义一个名为 <code>feed</code> 的方法，查找当前用户发表的所有微博。我们要在 <code>Micropost</code> 模型上调用 <code>where</code> 方法（<a href="chapter11.html#activation-test-and-refactoring">11.3.3 节</a>的<a href="chapter11.html#exercises-activation-test-and-refactoring">练习</a>提到过）查找微博，如<a href="#listing-proto-status-feed">代码清单 13.46</a> 所示。<sup>[<a id="fn-ref-7" href="#fn-7">7</a>]</sup></p>
 <div id="listing-proto-status-feed" data-type="listing">
 <h5><span class="title-label">代码清单 13.46</span>：初步实现微博动态流</h5>
 
@@ -1500,7 +1498,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <span class="nf">end</span>
 </code></pre></div>
 </div>
-<p><code>Micropost.where("user_id = ?", id)</code> 中的问号确保 <code>id</code> 的值在传入底层的 SQL 查询语句之前做了适当的转义，避免<a href="http://en.wikipedia.org/wiki/SQL_injection">SQL 注入</a>（SQL injection）这种严重的安全隐患。这里用到的 <code>id</code> 属性是个整数（即 <code>self.id</code>，用户的唯一 ID），没什么危险，不过在 SQL 语句中引入变量之前做转义是个好习惯。</p>
+<p><code>Micropost.where("user_id = ?", id)</code> 中的问号确保 <code>id</code> 的值在传入底层的 SQL 查询语句之前做了适当的转义，从而避免<a href="http://en.wikipedia.org/wiki/SQL_injection">SQL 注入</a>（SQL injection）这种严重的安全隐患。这里用到的 <code>id</code> 属性是个整数（即 <code>self.id</code>，用户的唯一 ID），没什么危险，不过在 SQL 语句中引入变量之前做转义是个好习惯。</p>
 <p>细心的读者可能已经注意到了，<a href="#listing-proto-status-feed">代码清单 13.46</a> 中的代码和下面的代码是等效的：</p>
 <div data-type="listing">
 
@@ -1567,7 +1565,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
 </code></pre></div>
 </div>
-<p>动态流局部视图使用如下的代码，把单篇微博交给<a href="#listing-micropost-partial">代码清单 13.22</a> 中的局部视图渲染：</p>
+<p>动态流局部视图使用如下的代码，把单篇微博交给<a href="#listing-micropost-partial">代码清单 13.22</a> 中定义的局部视图渲染：</p>
 <div data-type="listing">
 
 
@@ -1609,7 +1607,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
 </code></pre></div>
 </div>
-<p>现在，发布新微博的功能可以按照设想的方式使用了，如<a href="#fig-micropost-created">图 13.15</a> 所示。不过还有个小小的不足：如果发布微博失败，首页还会需要一个名为 <code>@feed_items</code> 的实例变量，所以提交失败时网站无法正常运行。最简单的解决方法是，如果提交失败就把 <code>@feed_items</code> 设为空数组，如<a href="#listing-microposts-create-action-with-feed">代码清单 13.50</a> 所示。（但是这么做分页链接就失效了，你可以点击分页链接，看一下是什么原因。）</p>
+<p>现在，发布新微博的功能可以按预期使用了，如<a href="#fig-micropost-created">图 13.15</a> 所示。不过还有个小小的不足：如果发布微博失败，首页还是需要一个名为 <code>@feed_items</code> 的实例变量，所以提交失败时网站无法正常运行。最简单的解决方法是，如果提交失败就把 <code>@feed_items</code> 设为空数组，如<a href="#listing-microposts-create-action-with-feed">代码清单 13.50</a> 所示。（但是这么做分页链接就失效了，你可以点击分页链接，看一下是什么原因。）</p>
 <div id="fig-home-with-proto-feed" class="figure"><img src="images/chapter13/home_with_proto_feed_3rd_edition.png" alt="home with proto feed 3rd edition" /><div class="figcaption"><span class="title-label">图 13.14</span>：显示有动态流原型的首页</div></div>
 <div id="fig-micropost-created" class="figure"><img src="images/chapter13/micropost_created_3rd_edition.png" alt="micropost created 3rd edition" /><div class="figcaption"><span class="title-label">图 13.15</span>：发布新微博后的首页</div></div>
 <div id="listing-microposts-create-action-with-feed" data-type="listing">
@@ -1645,10 +1643,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <h5 id="exercises-a-proto-feed" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>使用刚添加的 UI 发布第一篇真实的微博。</p>
-</li>
-<li>
-<p>打开服务器日志，查看 <code>INSERT</code> 命令的内容是什么。</p>
+<p>使用刚添加的 UI 发布第一篇真实的微博。打开服务器日志，查看 <code>INSERT</code> 命令的内容是什么。</p>
 </li>
 <li>
 <p>打开 Rails 控制台，把数据库中的第一个用户赋值给 <code>user</code> 变量。确认 <code>Micropost.where("user_id = ?", user.id)</code>、<code>user.microposts</code> 和 <code>user.feed</code> 的结果一样。提示：或许直接使用 <code>==</code> 运算符比较最简单。</p>
@@ -1657,7 +1652,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 </section>
 <section data-type="sect2" id="destroying-microposts">
 <h2><span class="title-label">13.3.4</span> 删除微博</h2>
-<p>我们要为 <code>Microposts</code> 资源实现的最后一个功能是删除。与删除用户类似（<a href="chapter10.html#the-destroy-action">10.4.2 节</a>），删除微博也要通过删除链接实现，构思图如<a href="#fig-micropost-delete-links-mockup">图 13.16</a> 所示。只有管理员才能删除用户，而只有发布人才能删除微博。</p>
+<p>我们要为 <code>Microposts</code> 资源实现的最后一个功能是删除。与删除用户类似（<a href="chapter10.html#the-destroy-action">10.4.2 节</a>），删除微博也要通过“删除”链接实现，构思图如<a href="#fig-micropost-delete-links-mockup">图 13.16</a> 所示。只有管理员才能删除用户，而只有发布人自己才能删除微博。</p>
 <p>首先，我们要在单篇微博局部视图（<a href="#listing-micropost-partial">代码清单 13.22</a>）中加入删除链接，如<a href="#listing-micropost-partial-with-delete">代码清单 13.51</a> 所示。</p>
 <div id="listing-micropost-partial-with-delete" data-type="listing">
 <h5><span class="title-label">代码清单 13.51</span>：在单篇微博局部视图中添加删除链接</h5>
@@ -1717,7 +1712,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <div class="highlight language-ruby"><pre><code><span class="n">request</span><span class="p">.</span><span class="nf">referrer</span> <span class="o">||</span> <span class="n">root_url</span>
 </code></pre></div>
 </div>
-<p><code>request.referrer</code> <sup>[<a id="fn-ref-6" href="#fn-6">6</a>]</sup> 和实现友好转向时使用的 <code>request.original_url</code> 关系紧密，表示前一个 URL（这里是首页）。<sup>[<a id="fn-ref-7" href="#fn-7">7</a>]</sup>因为首页和资料页面都有微博，所以这么做很方便，我们使用 <code>request.referrer</code> 把用户重定向到发起删除请求的页面，如果 <code>request.referrer</code> 为 <code>nil</code>（例如在某些测试中），就转向 <code>root_url</code>。（可以和<a href="chapter9.html#listing-test-helper-log-in">代码清单 9.24</a> 中设置参数默认值的用法对比一下。）</p>
+<p><code>request.referrer</code> <sup>[<a id="fn-ref-8" href="#fn-8">8</a>]</sup> 和实现友好转向时使用的 <code>request.original_url</code> 关系紧密，表示前一个 URL（这里是首页）。<sup>[<a id="fn-ref-9" href="#fn-9">9</a>]</sup>因为首页和资料页面都有微博，所以这么做很方便，我们使用 <code>request.referrer</code> 把用户重定向到发起删除请求的页面，如果 <code>request.referrer</code> 为 <code>nil</code>（例如在某些测试中），就转向 <code>root_url</code>。（可以和<a href="chapter9.html#listing-test-helper-log-in">代码清单 9.24</a> 中设置选项默认值的用法对比一下。）</p>
 <p>添加上述代码后，删除最新发布的第二篇微博后显示的页面如<a href="#fig-home-post-delete">图 13.17</a> 所示。</p>
 <div id="fig-home-post-delete" class="figure"><img src="images/chapter13/home_post_delete_3rd_edition.png" alt="home post delete 3rd edition" /><div class="figcaption"><span class="title-label">图 13.17</span>：删除最新发布的第二篇微博后显示的首页</div></div>
 <h5 id="exercises-destroying-microposts" class="discrete">练习</h5>
@@ -1802,7 +1797,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>最后，编写一个集成测试：登录，检查有没有分页链接，然后分别提交有效和无效的微博，再删除一篇微博，最后访问另一个用户的资料页面，确保没有删除链接。和之前一样，使用下面的命令生成测试文件：</p>
+<p>最后，编写一个集成测试：登录，检查有没有分页链接，然后分别提交有效和无效的微博，再删除一篇微博，最后访问另一个用户的资料页面，确保没有“删除”链接。和之前一样，使用下面的命令生成测试文件：</p>
 <div data-type="listing">
 
 
@@ -1813,7 +1808,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 </div>
 <p>这个测试的代码如<a href="#listing-microposts-interface-test">代码清单 13.55</a> 所示。看看你能否把代码和前面说的步骤对应起来。</p>
 <div id="listing-microposts-interface-test" data-type="listing">
-<h5><span class="title-label">代码清单 13.55</span>：微博资源界面的集成测试 <span class="green">GREEN</span></h5>
+<h5><span class="title-label">代码清单 13.55</span>：微博界面的集成测试 <span class="green">GREEN</span></h5>
 
 <div class="source-file">test/integration/microposts_interface_test.rb</div>
 
@@ -1908,20 +1903,20 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <section data-type="sect1" id="micropost-images">
 <h1><span class="title-label">13.4</span> 微博中的图像</h1>
 <p>我们已经实现了微博相关的所有操作，本节要让微博除了能输入文字之外还能插入图像。我们首先会开发一个基础版本，只能在开发环境中使用，然后再做一系列功能增强，允许在生产环境上传图像。</p>
-<p>添加图像上传功能明显要完成两件事：编写用于上传图像的表单，准备好所需的图像。上传图像按钮和微博中显示的图像构思如<a href="#fig-micropost-image-mockup">图 13.18</a> 所示。<sup>[<a id="fn-ref-8" href="#fn-8">8</a>]</sup></p>
-<div id="fig-micropost-image-mockup" class="figure"><img src="images/chapter13/micropost_image_mockup.png" alt="micropost image mockup" /><div class="figcaption"><span class="title-label">图 13.18</span>：图像上传界面的构思图（上传了一张的图像）</div></div>
+<p>添加图像上传功能明显要完成两件事：编写用于上传图像的表单，准备好所需的图像。上传图像按钮和微博中显示的图像构思如<a href="#fig-micropost-image-mockup">图 13.18</a> 所示。<sup>[<a id="fn-ref-10" href="#fn-10">10</a>]</sup></p>
+<div id="fig-micropost-image-mockup" class="figure"><img src="images/chapter13/micropost_image_mockup.png" alt="micropost image mockup" /><div class="figcaption"><span class="title-label">图 13.18</span>：图像上传界面的构思图（上传了一张图像）</div></div>
 <section data-type="sect2" id="basic-image-upload">
 <h2><span class="title-label">13.4.1</span> 基本的图像上传功能</h2>
-<p>我们要使用 <a href="https://github.com/carrierwaveuploader/carrierwave">CarrierWave</a> 处理图像上传，并把图像与 <code>Micropost</code> 模型关联起来。为此，我们要在 <code>Gemfile</code> 文件中添加 <code>carrierwave</code> gem，如<a href="#listing-gemfile-carrierwave">代码清单 13.58</a> 所示。为了一次安装完所有 gem，<a href="#listing-gemfile-carrierwave">代码清单 13.58</a> 中还添加了用于调整图像尺寸的 <code>mini_magick</code>（<a href="#image-resizing">13.4.3 节</a>）和在生产环境中上传图像的 <code>fog</code>（<a href="#image-upload-in-production">13.4.4 节</a>）。</p>
+<p>我们要使用 <a href="https://github.com/carrierwaveuploader/carrierwave">CarrierWave</a> 处理图像上传，并把图像与 <code>Micropost</code> 模型关联起来。为此，我们要在 <code>Gemfile</code> 文件中添加 <code>carrierwave</code> gem，如<a href="#listing-gemfile-carrierwave">代码清单 13.58</a> 所示。为了一次安装完所有 gem，<a href="#listing-gemfile-carrierwave">代码清单 13.58</a> 还包含用于调整图像尺寸的 <code>mini_magick</code>（<a href="#image-resizing">13.4.3 节</a>）和在生产环境中上传图像的 <code>fog</code>（<a href="#image-upload-in-production">13.4.4 节</a>）。</p>
 <div id="listing-gemfile-carrierwave" data-type="listing">
 <h5><span class="title-label">代码清单 13.58</span>：在 <code>Gemfile</code> 文件中添加 CarrierWave</h5>
 
 
 <div class="highlight language-ruby"><pre><code><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
 
-<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>                   <span class="s1">'5.0.0.1'</span>
+<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>                   <span class="s1">'5.0.1'</span>
 <span class="n">gem</span> <span class="s1">'bcrypt'</span><span class="p">,</span>                  <span class="s1">'3.1.11'</span>
-<span class="n">gem</span> <span class="s1">'faker'</span><span class="p">,</span>                   <span class="s1">'1.6.3'</span>
+<span class="n">gem</span> <span class="s1">'faker'</span><span class="p">,</span>                   <span class="s1">'1.6.6'</span>
 <span class="hll"><span class="n">gem</span> <span class="s1">'carrierwave'</span><span class="p">,</span>             <span class="s1">'0.11.2'</span></span>
 <span class="hll"><span class="n">gem</span> <span class="s1">'mini_magick'</span><span class="p">,</span>             <span class="s1">'4.5.1'</span></span>
 <span class="hll"><span class="n">gem</span> <span class="s1">'fog'</span><span class="p">,</span>                     <span class="s1">'1.38.0'</span></span>
@@ -1939,14 +1934,14 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>bundle install
 </code></pre></div>
 </div>
-<p>CarrierWave 自带了一个 Rails 生成器，用于生成图像上传程序。我们要创建一个名为 <code>picture</code> 的上传程序：</p>
+<p>CarrierWave 自带了一个 Rails 生成器，用于生成图像上传程序。我们要创建一个名为 <code>picture</code> 的上传程序：<sup>[<a id="fn-ref-11" href="#fn-11">11</a>]</sup></p>
 <div data-type="listing">
 
 
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate uploader Picture
 </code></pre></div>
 </div>
-<p>CarrierWave 上传的图像应该对应于 Active Record 模型中的一个属性，这个属性只需存储图像的文件名字符串即可。添加这个属性后的 <code>Micropost</code> 模型如<a href="#fig-micropost-model-picture">图 13.19</a> 所示。<sup>[<a id="fn-ref-9" href="#fn-9">9</a>]</sup></p>
+<p>CarrierWave 上传的图像应该对应于 Active Record 模型中的一个属性，这个属性只需存储图像的文件名字符串即可。添加这个属性后的 <code>Micropost</code> 模型如<a href="#fig-micropost-model-picture">图 13.19</a> 所示。</p>
 <div id="fig-micropost-model-picture" class="figure"><img src="images/chapter13/micropost_model_picture.png" alt="micropost model picture" /><div class="figcaption"><span class="title-label">图 13.19</span>：添加 <code>picture</code> 属性后的 <code>Micropost</code> 数据模型</div></div>
 <p>为了把 <code>picture</code> 属性添加到 <code>Micropost</code> 模型中，我们要生成一个迁移，然后在开发数据库中执行迁移：</p>
 <div data-type="listing">
@@ -1978,7 +1973,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>在某些系统中可能要重启 Rails 服务器，测试组件才能通过。（如果你按照 <a href="chapter3.html#guard">3.6.2 节</a>所讲，使用了 Guard，可能还有重启 Guard。或许，甚至还要退出终端，然后重新启动 Guard。）</p>
+<p>在某些系统中可能要重启 Rails 服务器，测试组件才能通过。（如果你按照 <a href="chapter3.html#guard">3.6.2 节</a>所讲，使用了 Guard，可能还要重启 Guard。或许，甚至还要退出终端，然后重新启动 Guard。）</p>
 <p>如<a href="#fig-micropost-image-mockup">图 13.18</a> 所示，为了在首页添加图像上传功能，我们要在发布微博的表单中添加一个 <code>file_field</code> 标签，如<a href="#listing-micropost-create-image-upload">代码清单 13.60</a> 所示。</p>
 <div id="listing-micropost-create-image-upload" data-type="listing">
 <h5><span class="title-label">代码清单 13.60</span>：在发布微博的表单中添加图像上传按钮</h5>
@@ -2053,7 +2048,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <p>发表一篇包含图像的微博。图像是不是太大了？（如果是，先别急，我们会在 <a href="#image-resizing">13.4.3 节</a>解决这个问题。）</p>
 </li>
 <li>
-<p>以<a href="#listing-image-upload-test">代码清单 13.63</a> 为模板，为 <a href="#micropost-images">13.4 节</a>的图像上传程序编写测试。测试之前，要在固件文件夹中放一个图像（例如，可以执行 <code>cp app/assets/images/rails.png test/fixtures/</code> 命令）。为了避免出现难以理解的错误，还要配置 CarrierWave，在测试中不调整图片的尺寸。<a href="#listing-image-upload-test">代码清单 13.63</a> 中添加的几个断言，检查首页有没有文件上传字段，以及成功提交表单后有没有正确设定 <code>picture</code> 属性的值。注意，在测试中上传固件中的文件使用的是专门的 <code>fixture_file_upload</code> 方法。<sup>[<a id="fn-ref-10" href="#fn-10">10</a>]</sup>提示：为了检查 <code>picture</code> 属性的值，可以使用 <a href="chapter11.html#activation-test-and-refactoring">11.3.3 节</a>提到的 <code>assigns</code> 方法，在提交成功后获取 <code>create</code> 动作中的 <code>@micropost</code> 变量。</p>
+<p>以<a href="#listing-image-upload-test">代码清单 13.63</a> 为模板，为 <a href="#micropost-images">13.4 节</a>的图像上传程序编写测试。测试之前，要在固件文件夹中放一个图像（例如，可以执行 <code>cp app/assets/images/rails.png test/fixtures/</code> 命令）。<a href="#listing-image-upload-test">代码清单 13.63</a> 中添加的几个断言用于检查首页有没有文件上传字段，以及成功提交表单后有没有正确设定 <code>picture</code> 属性的值。注意，在测试中上传固件中的文件使用的是专门的 <code>fixture_file_upload</code> 方法。<sup>[<a id="fn-ref-12" href="#fn-12">12</a>]</sup>提示：为了检查 <code>picture</code> 属性的值，可以使用 <a href="chapter11.html#activation-test-and-refactoring">11.3.3 节</a>提到的 <code>assigns</code> 方法，在提交成功后获取 <code>create</code> 动作中的 <code>@micropost</code> 变量。</p>
 </li>
 </ol>
 <div id="listing-image-upload-test" data-type="listing">
@@ -2106,7 +2101,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <section data-type="sect2" id="image-validation">
 <h2><span class="title-label">13.4.2</span> 验证图像</h2>
 <p><a href="#basic-image-upload">13.4.1 节</a>添加的上传程序是个好的开始，但有一定不足：没对上传的文件做任何限制，如果用户上传的文件很大，或者类型不对，会导致问题。这一节我们要修正这个不足，添加验证，限制图像的大小和类型。我们既会在服务器端添加验证，也会在客户端（即浏览器）添加验证。</p>
-<p>对图片类型的限制在 CarrierWave 的上传程序中设置。我们要限制能使用的图像扩展名（PNG，GIF 和 JPEG 的两个变种），如<a href="#listing-validate-picture-format">代码清单 13.64</a> 所示。（在生成的上传程序中有一段注释说明了该怎么做。）</p>
+<p>对图像类型的限制在 CarrierWave 的上传程序中设置。我们要限制能使用的图像扩展名（PNG、GIF 和 JPEG 的两个变种），如<a href="#listing-validate-picture-format">代码清单 13.64</a> 所示。（在生成的上传程序中有一段注释说明了该怎么做。）</p>
 <div id="listing-validate-picture-format" data-type="listing">
 <h5><span class="title-label">代码清单 13.64</span>：限制可上传图像的类型</h5>
 
@@ -2128,7 +2123,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>图像大小的限制在 <code>Micropost</code> 模型中设定。和前面用过的模型验证不同，Rails 没有为文件大小提供现成的验证方法。所以我们要自己定义一个验证方法，我们把这个方法命名为 <code>picture_size</code>，如<a href="#listing-micropost-model-image-validation">代码清单 13.65</a> 所示。注意，调用自定义的验证时使用的是 <code>validate</code> 方法，而不是 <code>validates</code>。</p>
+<p>图像大小的限制在 <code>Micropost</code> 模型中设定。和前面用过的模型验证不同，Rails 没有为文件大小提供现成的验证方法，所以我们要自己定义。我们把这个方法命名为 <code>picture_size</code>，如<a href="#listing-micropost-model-image-validation">代码清单 13.65</a> 所示。注意，调用自定义的验证时使用的是 <code>validate</code> 方法，而不是 <code>validates</code>。</p>
 <div id="listing-micropost-model-image-validation" data-type="listing">
 <h5><span class="title-label">代码清单 13.65</span>：添加图像大小验证</h5>
 
@@ -2174,8 +2169,8 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <span class="p">});</span>
 </code></pre></div>
 </div>
-<p>本书虽然没有介绍 jQuery，不过你或许能理解这段代码：监视页面中 CSS ID 为 <code>micropost_picture</code> 的元素（如 <code>#</code> 符号所示，这是微博表单的 ID，参见<a href="#listing-micropost-create-image-upload">代码清单 13.60</a>），当这个元素的内容变化时，执行这段代码，如果文件太大，就调用 <code>alert</code> 方法。<sup>[<a id="fn-ref-11" href="#fn-11">11</a>]</sup></p>
-<p>把这两个检查措施添加到微博表单中，如<a href="#listing-format-jquery-file-test">代码清单 13.66</a> 所示。<sup>[<a id="fn-ref-12" href="#fn-12">12</a>]</sup></p>
+<p>本书虽然没有介绍 jQuery，不过你或许能理解这段代码：监视页面中 CSS ID 为 <code>micropost_picture</code> 的元素（如 <code>#</code> 符号所示，这是微博表单的 ID，参见<a href="#listing-micropost-create-image-upload">代码清单 13.60</a>），当这个元素的内容变化时，执行这段代码，如果文件太大，就调用 <code>alert</code> 方法。<sup>[<a id="fn-ref-13" href="#fn-13">13</a>]</sup></p>
+<p>把这两个检查措施添加到微博表单中，如<a href="#listing-format-jquery-file-test">代码清单 13.66</a> 所示。<sup>[<a id="fn-ref-14" href="#fn-14">14</a>]</sup></p>
 <div id="listing-format-jquery-file-test" data-type="listing">
 <h5><span class="title-label">代码清单 13.66</span>：使用 jQuery 检查文件的大小</h5>
 
@@ -2202,22 +2197,22 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <span class="hll"><span class="nt">&lt;/script&gt;</span></span>
 </code></pre></div>
 </div>
-<p>有一点很重要，你要知道，像<a href="#listing-format-jquery-file-test">代码清单 13.66</a> 这样的代码并不能阻止用户上传大文件。我们添加的代码虽然能阻止用户通过 Web 界面上传，但用户可以使用 Web 审查工具修改 JavaScript，或者直接发送 <code>POST</code> 请求（例如，使用 <code>curl</code>）。为了阻止用户上传大文件，必须在服务器端添加验证，如<a href="#listing-micropost-model-image-validation">代码清单 13.65</a> 所示。</p>
+<p>上传一个过大的文件试试你就知道，<a href="#listing-format-jquery-file-test">代码清单 13.66</a> 中的代码并不能清除文件输入字段，用户可以关闭弹出框，继续上传文件。如果这是一本关于 jQuery 的书，我们或许会增强一下，修正这个瑕疵，但是要知道，像<a href="#listing-format-jquery-file-test">代码清单 13.66</a> 这样的代码并不能阻止用户上传大文件。即使我们在 JavaScript 代码中清除了文件输入字段，用户还可以使用 Web 审查工具修改 JavaScript，或者直接发送 <code>POST</code> 请求（例如，使用 <code>curl</code>）。为了阻止用户上传大文件，必须在服务器端添加如<a href="#listing-micropost-model-image-validation">代码清单 13.65</a> 所示的验证。</p>
 <h5 id="exercises-image-validation" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
 <p>如果尝试上传超过 5MB 的图像，会发生什么？</p>
 </li>
 <li>
-<p>如果尝试上传别的图像类型，会发生什么？</p>
+<p>如果尝试上传无效的图像类型，会发生什么？</p>
 </li>
 </ol>
 </section>
 <section data-type="sect2" id="image-resizing">
-<h2><span class="title-label">13.4.3</span> 调整图像的尺寸</h2>
-<p><a href="#image-validation">13.4.2 节</a>对图像大小的限制是个好的开始，不过用户还是可以上传尺寸很大的图像，撑破网站的布局，有时会把网站搞得一团糟，如<a href="#fig-large-uploaded-image">图 13.21</a> 所示。因此，如果允许用户从本地硬盘中上传尺寸很大的图像，最好在显示图像之前调整图像的尺寸。<sup>[<a id="fn-ref-13" href="#fn-13">13</a>]</sup></p>
+<h2><span class="title-label">13.4.3</span> 调整图像尺寸</h2>
+<p><a href="#image-validation">13.4.2 节</a>对图像大小的限制是个好的开始，不过用户还是可以上传尺寸很大的图像，撑破网站的布局，有时会把网站搞得一团糟，如<a href="#fig-large-uploaded-image">图 13.21</a> 所示。因此，如果允许用户从本地磁盘中上传尺寸很大的图像，最好在显示图像之前调整图像的尺寸。<sup>[<a id="fn-ref-15" href="#fn-15">15</a>]</sup></p>
 <div id="fig-large-uploaded-image" class="figure"><img src="images/chapter13/large_uploaded_image_4th_ed.png" alt="large uploaded image 4th ed" /><div class="figcaption"><span class="title-label">图 13.21</span>：上传了一张超级大的图像</div></div>
-<p>我们要使用 <a href="http://www.imagemagick.org/">ImageMagick</a> 调整图像的尺寸，所以在开发环境中要安装这个程序。（如 <a href="#image-upload-in-production">13.4.4 节</a>所示，Heroku 已经预装了 ImageMagick。）在云端 IDE 中可以使用下面的命令安装：<sup>[<a id="fn-ref-14" href="#fn-14">14</a>]</sup></p>
+<p>我们要使用 <a href="http://www.imagemagick.org/">ImageMagick</a> 调整图像的尺寸，所以在开发环境中要安装这个程序。（如 <a href="#image-upload-in-production">13.4.4 节</a>所示，Heroku 在生产环节已经预装了 ImageMagick。）在云端 IDE 中可以使用下面的命令安装：<sup>[<a id="fn-ref-16" href="#fn-16">16</a>]</sup></p>
 <div data-type="listing">
 
 
@@ -2275,7 +2270,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 </section>
 <section data-type="sect2" id="image-upload-in-production">
 <h2><span class="title-label">13.4.4</span> 在生产环境中上传图像</h2>
-<p><a href="#image-resizing">13.4.3 节</a>实现的图像上传程序在开发环境中用起来不错，但图像都存储在本地文件系统中（如<a href="#listing-image-uploader-resizing">代码清单 13.67</a> 中 <code>storage :file</code> 那行所示），在生产环境这么做可不好。<sup>[<a id="fn-ref-15" href="#fn-15">15</a>]</sup>所以，我们要使用云存储服务存储图像，把图像与应用所在的文件系统分开。<sup>[<a id="fn-ref-16" href="#fn-16">16</a>]</sup></p>
+<p><a href="#image-resizing">13.4.3 节</a>实现的图像上传程序在开发环境中用起来不错，但图像都存储在本地文件系统中（如<a href="#listing-image-uploader-resizing">代码清单 13.67</a> 中 <code>storage :file</code> 那行所示），在生产环境这么做可不好。<sup>[<a id="fn-ref-17" href="#fn-17">17</a>]</sup>所以，我们要使用云存储服务存储图像，把图像与应用所在的文件系统分开。<sup>[<a id="fn-ref-18" href="#fn-18">18</a>]</sup></p>
 <p>我们要使用 <code>fog</code> gem 配置应用，在生产环境使用云存储，如<a href="#listing-image-uploader-production">代码清单 13.69</a> 所示。</p>
 <div id="listing-image-uploader-production" data-type="listing">
 <h5><span class="title-label">代码清单 13.69</span>：配置生产环境使用的图像上传程序</h5>
@@ -2316,7 +2311,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>云存储服务很多，我们要使用其中一个最受欢迎并且支持比较好的——Amazon 的 <a href="http://aws.amazon.com/s3/">Simple Storage Service</a>（简称 S3）。<sup>[<a id="fn-ref-17" href="#fn-17">17</a>]</sup>基本步骤如下：</p>
+<p>云存储服务很多，我们要使用其中一个最受欢迎并且支持比较好的——Amazon 的 <a href="http://aws.amazon.com/s3/">Simple Storage Service</a>（简称 S3）。<sup>[<a id="fn-ref-19" href="#fn-19">19</a>]</sup>基本步骤如下：</p>
 <ol class="arabic">
 <li>
 <p>注册一个 <a href="http://aws.amazon.com/">Amazon Web Services</a> 账户；</p>
@@ -2325,12 +2320,12 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <p>通过 <a href="http://aws.amazon.com/iam/">AWS Identity and Access Management</a>（简称 IAM） 创建一个用户，记下访问公钥和密钥；</p>
 </li>
 <li>
-<p>使用 <a href="https://console.aws.amazon.com/s3">AWS Console</a> 创建一个 S3 bucket（名字自己定），然后赋予上一步创建的用户读写权限。</p>
+<p>使用 <a href="https://console.aws.amazon.com/s3">AWS Console</a> 创建一个 S3 bucket（名称自己定），然后赋予上一步创建的用户读写权限。</p>
 </li>
 </ol>
-<p>关于这些步骤的详细说明，参见 <a href="http://aws.amazon.com/documentation/s3/">S3 的文档</a>。（如果需要还可以搜索。）</p>
+<p>关于这些步骤的详细说明，参见 <a href="http://aws.amazon.com/documentation/s3/">S3 的文档</a>。（如果需要可以在 Google 中搜索，或者在 Stack Overflow 中提问。）</p>
 <p>创建并配置好 S3 账户后，创建 CarrierWave 配置文件，写入<a href="#listing-carrier-wave-configuration">代码清单 13.70</a> 中的内容。</p>
-<p>注意：如果做了这些设置之后连不上 S3，可能是区域位置的问题。有些用户可能要在 fog 的配置中添加 <code>:region =&gt; ENV['S3_REGION']</code>，然后在命令行中执行 <code>heroku config:set S3_REGION=&lt;bucket_region&gt;</code>，其中 <code>bucket_region</code> 是你所在的区域，例如 <code>'eu-central-1'</code>。如果想找到你所在的区域，请查看 <a href="http://docs.aws.amazon.com/general/latest/gr/rande.html">Amazon AWS 的文档</a>。</p>
+<p>注意：如果做了这些设置之后连不上 S3，可能是区域位置的问题。有些用户可能要在 fog 的凭据中添加 <code>:region =&gt; ENV['S3_REGION']</code>，然后在命令行中执行 <code>heroku config:set S3_REGION=&lt;bucket_region&gt;</code>，其中 <code>bucket_region</code> 是你所在的区域，例如 <code>'eu-central-1'</code>。如果想找到你所在的区域，请查看 <a href="http://docs.aws.amazon.com/general/latest/gr/rande.html">Amazon AWS 的文档</a>。</p>
 <div id="listing-carrier-wave-configuration" data-type="listing">
 <h5><span class="title-label">代码清单 13.70</span>：配置 CarrierWave 使用 S3</h5>
 
@@ -2370,7 +2365,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 /public/uploads
 </code></pre></div>
 </div>
-<p>我们先提交主题分支中的变动，然后再合并到 <code>master</code> 分支：</p>
+<p>我们先提交主题分支中的变动，然后再合并到主分支：</p>
 <div data-type="listing">
 
 
@@ -2382,7 +2377,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <span class="gp">$ </span>git push
 </code></pre></div>
 </div>
-<p>然后部署，重置数据库，再把种子数据载入数据库：</p>
+<p>然后部署，还原数据库，再把种子数据载入数据库：</p>
 <div data-type="listing">
 
 
@@ -2393,7 +2388,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 </code></pre></div>
 </div>
 <p>Heroku 已经安装了 ImageMagick，所以在生产环境中调整图像尺寸和上传功能都能正常使用，如<a href="#fig-image-upload-production">图 13.23</a> 所示。</p>
-<div id="fig-image-upload-production" class="figure"><img src="images/chapter13/image_upload_production_4th_ed.png" alt="image upload production 4th ed" /><div class="figcaption"><span class="title-label">图 13.23</span>：在生产环境中上传图像</div></div>
+<div id="fig-image-upload-production" class="figure"><img src="images/chapter13/image_upload_production_4th_ed.png" alt="image upload production 4th ed" /><div class="figcaption"><span class="title-label">图 13.23</span>：在生产环境中上传的图像</div></div>
 <h5 id="exercises-image-upload-in-production" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
@@ -2404,8 +2399,8 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 </section>
 <section data-type="sect1" id="user-microposts-conclusion">
 <h1><span class="title-label">13.5</span> 小结</h1>
-<p>实现 <code>Microposts</code> 资源后，我们的演示应用基本上完成了。现在还剩下社交功能没有实现，即让用户之间可以相互关注。在<a href="chapter14.html#following-users">第 14 章</a>，我们会学习如何实现用户之间的这种关系，届时还将实现一个真正的动态流。</p>
-<p>如果你跳过了 <a href="#image-upload-in-production">13.4.4 节</a>，在继续之前，先提交改动，然后再合并到 <code>master</code> 分支：</p>
+<p>实现 <code>Microposts</code> 资源后，我们的演示应用基本上完成了。现在还剩下社交功能没有实现，即让用户之间可以相互关注。在<a href="chapter14.html#following-users">第 14 章</a>，我们将学习如何实现用户之间的这种关系，届时还将实现一个真正的动态流。</p>
+<p>如果你跳过了 <a href="#image-upload-in-production">13.4.4 节</a>，在继续之前，先提交改动，然后再合并：</p>
 <div data-type="listing">
 
 
@@ -2434,9 +2429,9 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 
 <div class="highlight language-ruby"><pre><code><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
 
-<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>                   <span class="s1">'5.0.0.1'</span>
+<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>                   <span class="s1">'5.0.1'</span>
 <span class="n">gem</span> <span class="s1">'bcrypt'</span><span class="p">,</span>                  <span class="s1">'3.1.11'</span>
-<span class="n">gem</span> <span class="s1">'faker'</span><span class="p">,</span>                   <span class="s1">'1.6.3'</span>
+<span class="n">gem</span> <span class="s1">'faker'</span><span class="p">,</span>                   <span class="s1">'1.6.6'</span>
 <span class="n">gem</span> <span class="s1">'carrierwave'</span><span class="p">,</span>             <span class="s1">'0.11.2'</span>
 <span class="n">gem</span> <span class="s1">'mini_magick'</span><span class="p">,</span>             <span class="s1">'4.5.1'</span>
 <span class="n">gem</span> <span class="s1">'fog'</span><span class="p">,</span>                     <span class="s1">'1.38.0'</span>
@@ -2452,7 +2447,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <span class="n">gem</span> <span class="s1">'jbuilder'</span><span class="p">,</span>                <span class="s1">'2.4.1'</span>
 
 <span class="n">group</span> <span class="ss">:development</span><span class="p">,</span> <span class="ss">:test</span> <span class="k">do</span>
-  <span class="n">gem</span> <span class="s1">'sqlite3'</span><span class="p">,</span> <span class="s1">'1.3.11'</span>
+  <span class="n">gem</span> <span class="s1">'sqlite3'</span><span class="p">,</span> <span class="s1">'1.3.12'</span>
   <span class="n">gem</span> <span class="s1">'byebug'</span><span class="p">,</span>  <span class="s1">'9.0.0'</span><span class="p">,</span> <span class="ss">platform: :mri</span>
 <span class="k">end</span>
 
@@ -2494,7 +2489,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <p><code>has_many</code>/<code>belongs_to</code> 会创建很多方法，能通过关联创建对象；</p>
 </li>
 <li>
-<p><code>user.microposts.build(…​)</code> 创建一个微博对象，并自动把这个微博与用户关联起来；</p>
+<p><code>user.microposts.build(…​)</code> 创建一个微博对象，并自动把微博与用户关联起来；</p>
 </li>
 <li>
 <p>Rails 支持使用 <code>default_scope</code> 指定默认排序方式；</p>
@@ -2503,7 +2498,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <p>作用域方法的参数是匿名函数；</p>
 </li>
 <li>
-<p>加入 <code>dependent: :destroy</code> 参数后，删除对象时也会把关联的对象删除；</p>
+<p>加入 <code>dependent: :destroy</code> 选项后，删除对象时也会把关联的对象删除；</p>
 </li>
 <li>
 <p>分页和数量统计都可以通过关联调用，这样写出的代码很简洁；</p>
@@ -2543,23 +2538,25 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 
           <div class="footnotes">
 <ol>
-<li id="fn-1"><code>Faker::Lorem.sentence</code> 生成 lorem ipsum 文本。<a href="chapter6.html#modeling-users">第 6 章</a>说过，lorem ipsum 的<a href="http://www.straightdope.com/columns/read/2290/what-does-the-filler-text-lorem-ipsum-mean">背景故事很有趣</a>。 <a href="#fn-ref-1" class="symbol">&#8617;</a></li>
-<li id="fn-2">Faker 生成的 lorem ipsum 文本是随机的，所以你看到的示例微博可能和我的不一样。 <a href="#fn-ref-2" class="symbol">&#8617;</a></li>
-<li id="fn-3">为了方便，<a href="#listing-micropost-css">代码清单 13.26</a> 实际上包含了本章用到的所有 CSS。 <a href="#fn-ref-3" class="symbol">&#8617;</a></li>
-<li id="fn-4">如果想使用 <code>full_title</code> 重构其他测试，例如<a href="chapter3.html#listing-base-title-test">代码清单 3.30</a>，应该在 <code>test_helper.rb</code> 文件中引入 <code>ApplicationHelper</code> 模块。 <a href="#fn-ref-4" class="symbol">&#8617;</a></li>
-<li id="fn-5"><code>where</code> 及其他相关方法的详细说明参见 Rails 指南中的《<a href="http://guides.rubyonrails.org/active_record_querying.html">Active Record Query Interface</a>》一文。 <a href="#fn-ref-5" class="symbol">&#8617;</a></li>
-<li id="fn-6">对应 HTTP 规范中的 <code>HTTP_REFERER</code>。注意，“REFERER”不是错误拼写，规范中就是这么写的。Rails 更正了这个错误，写成“referrer”。 <a href="#fn-ref-6" class="symbol">&#8617;</a></li>
-<li id="fn-7">我没有立即想到如何在 Rails 应用中获取这个 URL，所以在谷歌中搜索“rails request previous url”，找到了 <a href="http://stackoverflow.com/questions/4652084/ruby-on-rails-how-do-you-get-the-previous-url">Stack Overflow 中的这个问答</a>。 <a href="#fn-ref-7" class="symbol">&#8617;</a></li>
-<li id="fn-8">沙滩图像的来源：https://www.flickr.com/photos/grungepunk/14026922186。 <a href="#fn-ref-8" class="symbol">&#8617;</a></li>
-<li id="fn-9">一开始我把这个属性命名为 <code>image</code>，但这个名字太泛泛了，容易误解。 <a href="#fn-ref-9" class="symbol">&#8617;</a></li>
-<li id="fn-10">如果使用 Windows 系统，要加上 <code>:binary</code> 参数：<code>fixture_file_upload(file, type, :binary)</code>。 <a href="#fn-ref-10" class="symbol">&#8617;</a></li>
-<li id="fn-11">如果想知道怎么实现这样的效果，可以在 Google 中搜索“javascript maximum file size”，你会在 Stack Overflow 中找到答案的。 <a href="#fn-ref-11" class="symbol">&#8617;</a></li>
-<li id="fn-12">jQuery 高级用户可能会把大小检查放在单独的 JavaScript 函数中，但这不是 JavaScript 教程，像<a href="#listing-format-jquery-file-test">代码清单 13.66</a> 那样做就行了。 <a href="#fn-ref-12" class="symbol">&#8617;</a></li>
-<li id="fn-13">使用 CSS 也能限制图像显示的尺寸，但无法改变图像本身的尺寸。一般来说，尺寸大的图像加载时间要久一些。（你可能访问过一些网站，图像看着虽小，但是加载时间很长。就是这个原因。） <a href="#fn-ref-13" class="symbol">&#8617;</a></li>
-<li id="fn-14"><a href="https://help.ubuntu.com/community/ImageMagick">Ubuntu 文档</a>中有说明。如果你没使用云端 IDE，或其他类似的 Linux 系统，可以在谷歌中搜索“imagemagick &lt;your platform&gt;”。在 OS X 中，如果安装了 <a href="http://brew.sh/">Homebrew</a>，可以执行 <code>brew install imagemagick</code> 命令安装。 <a href="#fn-ref-14" class="symbol">&#8617;</a></li>
-<li id="fn-15">坏处有很多，其中一个是：Heroku 中存储的文件是临时的，重新部署后会把以前上传的图像删除。 <a href="#fn-ref-15" class="symbol">&#8617;</a></li>
-<li id="fn-16">这一节有一定难度，可以跳过，对后面的内容没有影响。 <a href="#fn-ref-16" class="symbol">&#8617;</a></li>
-<li id="fn-17">S3 是收费服务，不过测试这个演示应用，每月的花费不会超过一美分。 <a href="#fn-ref-17" class="symbol">&#8617;</a></li>
+<li id="fn-1">外键引用是数据库层约束，指明 microposts 表中的用户 ID 指代 users 表中的 id 列。这个细节对本教程来说不重要，而且不是所有数据库都支持外键约束。（我们在生产环节中使用的 PostgreSQL 支持，但是开发环境使用的 SQLite 数据库适配器不支持。）<a href="chapter14.html#user-relationship-associations">14.1.2 节</a>将进一步学习外键。 <a href="#fn-ref-1" class="symbol">&#8617;</a></li>
+<li id="fn-2">SQL 不区分大小写，但是习惯把 SQL 关键字（如 <code>DESC</code>）写成全大写。 <a href="#fn-ref-2" class="symbol">&#8617;</a></li>
+<li id="fn-3"><code>Faker::Lorem.sentence</code> 生成 lorem ipsum 文本。<a href="chapter6.html#modeling-users">第 6 章</a>说过，lorem ipsum 的<a href="http://www.straightdope.com/columns/read/2290/what-does-the-filler-text-lorem-ipsum-mean">背景故事很有趣</a>。 <a href="#fn-ref-3" class="symbol">&#8617;</a></li>
+<li id="fn-4">Faker 生成的 lorem ipsum 文本是随机的，所以你看到的示例微博可能和我的不一样。 <a href="#fn-ref-4" class="symbol">&#8617;</a></li>
+<li id="fn-5">为了方便，<a href="#listing-micropost-css">代码清单 13.26</a> 实际上包含了本章用到的所有 CSS。 <a href="#fn-ref-5" class="symbol">&#8617;</a></li>
+<li id="fn-6">如果也想使用 <code>full_title</code> 重构其他测试，例如<a href="chapter3.html#listing-base-title-test">代码清单 3.30</a>，应该在 <code>test_helper.rb</code> 文件中引入 <code>ApplicationHelper</code> 模块。 <a href="#fn-ref-6" class="symbol">&#8617;</a></li>
+<li id="fn-7"><code>where</code> 及其相关方法的详细说明参见 Rails 指南中的“<a href="http://guides.rubyonrails.org/active_record_querying.html">Active Record Query Interface</a>”一文。 <a href="#fn-ref-7" class="symbol">&#8617;</a></li>
+<li id="fn-8">对应 HTTP 规范中的 <code>HTTP_REFERER</code>。注意，“REFERER”不是错误拼写，规范中就是这么写的。Rails 更正了这个错误，写成“referrer”。 <a href="#fn-ref-8" class="symbol">&#8617;</a></li>
+<li id="fn-9">我没有立即想到如何在 Rails 应用中获取这个 URL，在 Google 中搜索“rails request previous url”之后找到了 <a href="http://stackoverflow.com/questions/4652084/ruby-on-rails-how-do-you-get-the-previous-url">Stack Overflow 中的这个问答</a>。 <a href="#fn-ref-9" class="symbol">&#8617;</a></li>
+<li id="fn-10">沙滩图像的来源：https://www.flickr.com/photos/grungepunk/14026922186。 <a href="#fn-ref-10" class="symbol">&#8617;</a></li>
+<li id="fn-11">一开始我把这个属性命名为 <code>image</code>，但这个名字太泛泛了，容易误解。 <a href="#fn-ref-11" class="symbol">&#8617;</a></li>
+<li id="fn-12">如果使用 Windows 系统，要加上 <code>:binary</code> 参数：<code>fixture_file_upload(file, type, :binary)</code>。 <a href="#fn-ref-12" class="symbol">&#8617;</a></li>
+<li id="fn-13">如果想知道怎么实现这样的效果，可以在 Google 中搜索“javascript maximum file size”，你会在 Stack Overflow 中找到答案的。 <a href="#fn-ref-13" class="symbol">&#8617;</a></li>
+<li id="fn-14">jQuery 高级用户可能会把大小检查放在单独的 JavaScript 函数中，但这不是 JavaScript 教程，像<a href="#listing-format-jquery-file-test">代码清单 13.66</a> 那样做就行了。 <a href="#fn-ref-14" class="symbol">&#8617;</a></li>
+<li id="fn-15">使用 CSS 能限制图像显示的尺寸，但无法改变图像本身的尺寸。一般来说，尺寸大的图像加载时间要久一些。（你可能访问过一些网站，图像看着虽小，但是加载时间很长。原因就是如此。） <a href="#fn-ref-15" class="symbol">&#8617;</a></li>
+<li id="fn-16"><a href="https://help.ubuntu.com/community/ImageMagick">Ubuntu 文档</a>中有说明。如果你没使用云端 IDE，或其他类似的 Linux 系统，可以在 Google 中搜索“imagemagick &lt;your platform&gt;”。在 macOS 中，如果安装了 <a href="http://brew.sh/">Homebrew</a>，可以执行 <code>brew install imagemagick</code> 命令安装。 <a href="#fn-ref-16" class="symbol">&#8617;</a></li>
+<li id="fn-17">坏处有很多，其中一个是：Heroku 中存储的文件是临时的，重新部署后会把以前上传的图像删除。 <a href="#fn-ref-17" class="symbol">&#8617;</a></li>
+<li id="fn-18">这一节有一定难度，可以跳过，对后面的内容没有影响。 <a href="#fn-ref-18" class="symbol">&#8617;</a></li>
+<li id="fn-19">S3 是收费服务，不过测试这个演示应用，每月的花费不会超过一美分。 <a href="#fn-ref-19" class="symbol">&#8617;</a></li>
 </ol>
 </div>
         </div>

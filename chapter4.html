@@ -14,7 +14,6 @@
   <link rel="stylesheet" type="text/css" href="book.css"/>
   <script type="text/javascript" src="//railstutorial-china.org/assets/js/global.js"></script>
 </head>
-<body>
 
 <body class="book-page">
 
@@ -104,7 +103,7 @@
                                        <span class="s1">'data-turbolinks-track'</span><span class="p">:</span> <span class="s1">'reload'</span> <span class="cp">%&gt;</span>
 </code></pre></div>
 </div>
-<p>这行代码使用 Rails 内置的 <code>stylesheet_link_tag</code> 方法（详细信息参见 <a href="http://api.rubyonrails.org/classes/ActionView/Helpers/AssetTagHelper.html#method-i-stylesheet_link_tag">Rails API 文档</a>），在所有<a href="http://www.w3.org/TR/CSS2/media.html">媒介类型</a>中引入 <code>application.css</code>。对有经验的 Rails 开发者来说，这行代码看起来很简单，但是其中至少有四个 Ruby 知识点可能会让你困惑：内置的 Rails 方法，调用方法时不用括号，符号（Symbol）和哈希（Hash）。这几点本章都会介绍。</p>
+<p>这行代码使用 Rails 内置的 <code>stylesheet_link_tag</code> 方法（详细信息参见 <a href="http://api.rubyonrails.org/classes/ActionView/Helpers/AssetTagHelper.html#method-i-stylesheet_link_tag">Rails API 文档</a>），在所有<a href="http://www.w3.org/TR/CSS2/media.html">媒介类型</a>中引入 <code>application.css</code>。对有经验的 Rails 开发者来说，这行代码看起来很简单，但是其中至少有四个 Ruby 知识点可能会让你困惑：内置的 Rails 方法，调用方法时不用括号，符号（Symbol）和散列（Hash）。这几点本章都会介绍。</p>
 </section>
 <section data-type="sect2" id="custom-helpers">
 <h2><span class="title-label">4.1.2</span> 自定义辅助方法</h2>
@@ -252,7 +251,7 @@
 </code></pre></div>
 </div>
 <p>（注意，之前运行 <code>rails test</code> 时都显示了通过和失败测试的数量，为了行文简洁，从这以后都会省略这些信息。）</p>
-<p>与 <a href="#built-in-helpers">4.1.1 节</a>引入应用的样式表那行代码一样，<a href="#listing-title-helper">代码清单 4.2</a> 的内容对有经验的 Rails 开发者来说也很简单，但其中有很多重要的 Ruby 知识：模块，方法定义，可选的方法参数，注释，局部变量赋值，布尔值，流程控制，字符串拼接和返回值。本章会一一介绍这些知识。</p>
+<p>与 <a href="#built-in-helpers">4.1.1 节</a>引入应用的样式表那行代码一样，<a href="#listing-title-helper">代码清单 4.2</a> 的内容对有经验的 Rails 开发者来说也很简单，但其中有很多重要的 Ruby 知识：模块、方法定义、可选的方法参数、注释、局部变量赋值、布尔值、流程控制、字符串拼接和返回值。本章会一一介绍这些知识。</p>
 </section>
 </section>
 <section data-type="sect1" id="strings-and-methods">
@@ -285,12 +284,12 @@ Loading development environment
 &gt;&gt;
 </code></pre></div>
 </div>
-<p>默认情况下，控制台在开发环境中启动，这是 Rails 定义的三个独立环境之一（另外两个是测试环境和生产环境）。这三个环境的区别对本章不重要，但是对后文就重要了，因此我们会在 <a href="chapter7.html#rails-environments">7.1.1 节</a>详细介绍。</p>
+<p>默认情况下，控制台在开发环境中启动，这是 Rails 定义的三个独立环境之一（另外两个是测试环境和生产环境）。这三个环境的区别对本章不重要，但是对后文就重要了，我们将在 <a href="chapter7.html#rails-environments">7.1.1 节</a>详细介绍。</p>
 <p>控制台是学习的好工具，请尽情探索它的用法。别担心，你（几乎）不会破坏任何东西。如果在控制台中遇到问题，可以按 Ctrl-C 键结束当前执行的操作，或者按 Ctrl-D 键直接退出。与常规的 shell 终端一样，我们可以使用上箭头获取前一个命令，这能节省不少时间。</p>
 <p>在阅读本章后续内容的过程中，你会发现查阅 <a href="http://ruby-doc.org/">Ruby API</a> 很有帮助。API 中有很多信息（或许太多了），例如，如果想进一步了解 Ruby 字符串，可以查看 <code>String</code> 类的文档。</p>
 <section data-type="sect2" id="comments">
 <h2><span class="title-label">4.2.1</span> 注释</h2>
-<p>Ruby 中的注释以井号 <code>#</code>（也叫“哈希符号”，或者更诗意一点，叫“散列字元”）开头，一直到行尾结束。Ruby 会忽略注释，但是注释对人类读者（往往也包括代码的编写者）很有用。在下面的代码中</p>
+<p>Ruby 中的注释以井号 <code>#</code>（也叫“散列符号”，或者更诗意一点，叫“散列字元”）开头，一直到行尾结束。Ruby 会忽略注释，但是注释对人类读者（往往也包括代码的编写者）很有用。在下面的代码中</p>
 <div data-type="listing">
 
 
@@ -387,7 +386,7 @@ foo=&gt; nil
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; print "foo\n"  # 作用于 `puts "foo"` 一样
+<div class="highlight language-irb"><pre><code>&gt;&gt; print "foo\n"  # 作用与 `puts "foo"` 一样
 foo
 =&gt; nil
 </code></pre></div>
@@ -709,7 +708,7 @@ The string is nonempty.
 <p>虽然 Web 应用最终都是处理字符串，但也需要其他的数据类型来生成字符串。本节介绍一些对开发 Rails 应用很重要的其他 Ruby 数据类型。</p>
 <section data-type="sect2" id="arrays-and-ranges">
 <h2><span class="title-label">4.3.1</span> 数组和值域</h2>
-<p>数组是一组具有特定顺序的元素。前面还没用过数组，不过理解数组对理解哈希有很大帮助（<a href="#hashes-and-symbols">4.3.3 节</a>），也有助于理解 Rails 中的数据模型（例如 <a href="chapter2.html#a-user-has-many-microposts">2.3.3 节</a>用到的 <code>has_many</code> 关联，<a href="chapter13.html#user-micropost-associations">13.1.3 节</a>会做详细介绍）。</p>
+<p>数组是一组具有特定顺序的元素。前面还没用过数组，不过理解数组对理解散列有很大帮助（<a href="#hashes-and-symbols">4.3.3 节</a>），也有助于理解 Rails 中的数据模型（例如 <a href="chapter2.html#a-user-has-many-microposts">2.3.3 节</a>用到的 <code>has_many</code> 关联，<a href="chapter13.html#user-micropost-associations">13.1.3 节</a>会做详细介绍）。</p>
 <p>目前，我们已经花了很多时间理解字符串，从字符串过渡到数组可以从 <code>split</code> 方法开始：</p>
 <div data-type="listing">
 
@@ -907,7 +906,7 @@ NoMethodError: undefined method `to_a' for 9:Fixnum
 =&gt; 1..5
 </code></pre></div>
 </div>
-<p>这段代码在值域 <code>(1..5)</code> 上调用 <code>each</code> 方法，然后又把 <code>{ |i| puts 2 * i }</code> 这个块传给 <code>each</code> 方法。<code>|i|</code> 两边的竖线在 Ruby 中用来定义块变量。只有方法本身才知道如何处理后面跟着的块。这里，值域的 <code>each</code> 方法会处理后面的块，块中有一个本地变量 <code>i</code>，<code>each</code> 会把值域中的各个值传进块中，然后执行其中的代码。</p>
+<p>这段代码在值域 <code>(1..5)</code> 上调用 <code>each</code> 方法，然后又把 <code>{ |i| puts 2 * i }</code> 这个块传给 <code>each</code> 方法。<code>|i|</code> 两边的竖线在 Ruby 中用来定义块变量。只有方法本身才知道如何处理后面跟着的块。这里，值域的 <code>each</code> 方法会处理后面的块，块中有一个局部变量 <code>i</code>，<code>each</code> 会把值域中的各个值传进块中，然后执行其中的代码。</p>
 <p>花括号是表示块的一种方式，除此之外还有另一种方式：</p>
 <div data-type="listing">
 
@@ -1038,12 +1037,12 @@ NoMethodError: undefined method `to_a' for 9:Fixnum
 </div>
 </section>
 <section data-type="sect2" id="hashes-and-symbols">
-<h2><span class="title-label">4.3.3</span> 哈希和符号</h2>
-<p>哈希（Hash）本质上就是数组，只不过它的索引不局限于只能使用数字。（实际上在一些语言中，特别是 Perl，因为这个原因而把哈希叫做“关联数组”。）哈希的索引（或者叫“键”）几乎可以使用任何对象。例如，可以使用字符串做键：</p>
+<h2><span class="title-label">4.3.3</span> 散列和符号</h2>
+<p>散列（Hash）本质上就是数组，只不过它的索引不局限于只能使用数字。（实际上在一些语言中，特别是 Perl，因为这个原因而把散列叫做“关联数组”。）散列的索引（或者叫“键”）几乎可以使用任何对象。例如，可以使用字符串做键：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; user = {}                          # {} 是一个空哈希
+<div class="highlight language-irb"><pre><code>&gt;&gt; user = {}                          # {} 是一个空散列
 =&gt; {}
 &gt;&gt; user["first_name"] = "Michael"     # 键为 "first_name"，值为 "Michael"
 =&gt; "Michael"
@@ -1051,12 +1050,12 @@ NoMethodError: undefined method `to_a' for 9:Fixnum
 =&gt; "Hartl"
 &gt;&gt; user["first_name"]                 # 获取元素的方式与数组类似
 =&gt; "Michael"
-&gt;&gt; user                               # 哈希的字面量形式
+&gt;&gt; user                               # 散列的字面量形式
 =&gt; {"last_name"=&gt;"Hartl", "first_name"=&gt;"Michael"}
 </code></pre></div>
 </div>
-<p>哈希通过一对花括号中包含一些键值对的形式表示，如果只有一对花括号而没有键值对（<code>{}</code>）就是一个空哈希。注意，哈希中的花括号和块中的花括号不是一个概念。（是的，这可能会让你困惑。）哈希虽然与数组类似，但二者却有一个很重要的区别：哈希中的元素没有特定的顺序。<sup>[<a id="fn-ref-10" href="#fn-10">10</a>]</sup>如果看重顺序，就要使用数组。</p>
-<p>通过方括号的形式每次定义一个元素的方式不太敏捷，使用 <code>=&gt;</code> 分隔的键值对这种字面量形式定义哈希要简洁得多：</p>
+<p>散列通过一对花括号中包含一些键值对的形式表示，如果只有一对花括号而没有键值对（<code>{}</code>）就是一个空散列。注意，散列中的花括号和块中的花括号不是一个概念。（是的，这可能会让你困惑。）散列虽然与数组类似，但二者却有一个很重要的区别：散列中的元素没有特定的顺序。<sup>[<a id="fn-ref-10" href="#fn-10">10</a>]</sup>如果看重顺序，就要使用数组。</p>
+<p>通过方括号的形式每次定义一个元素的方式不太敏捷，使用 <code>=&gt;</code> 分隔的键值对这种字面量形式定义散列要简洁得多：</p>
 <div data-type="listing">
 
 
@@ -1065,7 +1064,7 @@ NoMethodError: undefined method `to_a' for 9:Fixnum
 </code></pre></div>
 </div>
 <p>在上面的代码中我用到了一个 Ruby 句法约定，在左花括号后面和右花括号前面加入了一个空格，不过控制台会忽略这些空格。（不要问我为什么这些空格是约定俗成的，或许是某个 Ruby 编程大牛喜欢这种形式，然后约定就产生了。）</p>
-<p>目前为止哈希的键都使用字符串，在 Rails 中用符号（Symbol）做键很常见。符号看起来有点儿像字符串，只不过没有包含在一对引号中，而是在前面加一个冒号。例如，<code>:name</code> 就是一个符号。你可以把符号看成没有约束的字符串：<sup>[<a id="fn-ref-11" href="#fn-11">11</a>]</sup></p>
+<p>目前为止散列的键都使用字符串，在 Rails 中用符号（Symbol）做键很常见。符号看起来有点儿像字符串，只不过没有包含在一对引号中，而是在前面加一个冒号。例如，<code>:name</code> 就是一个符号。你可以把符号看成没有约束的字符串：<sup>[<a id="fn-ref-11" href="#fn-11">11</a>]</sup></p>
 <div data-type="listing">
 
 
@@ -1090,7 +1089,7 @@ SyntaxError
 </code></pre></div>
 </div>
 <p>只要以字母开头，其后都使用单词中常用的字符就没事。</p>
-<p>用符号做键时，可以按照如下的方式定义 <code>user</code> 哈希：</p>
+<p>用符号做键时，可以按照如下的方式定义 <code>user</code> 散列：</p>
 <div data-type="listing">
 
 
@@ -1102,7 +1101,7 @@ SyntaxError
 =&gt; nil
 </code></pre></div>
 </div>
-<p>从上面的例子可以看出，哈希中没有定义的键对应的值是 <code>nil</code>。</p>
+<p>从上面的例子可以看出，散列中没有定义的键对应的值是 <code>nil</code>。</p>
 <p>因为符号做键的情况太普遍了，Ruby 1.9 干脆为这种用法定义了一种新句法：</p>
 <div data-type="listing">
 
@@ -1122,13 +1121,13 @@ SyntaxError
 <div class="highlight language-ruby"><pre><code><span class="p">{</span> <span class="ss">name: </span><span class="s2">"Michael Hartl"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"michael@example.com"</span> <span class="p">}</span>
 </code></pre></div>
 </div>
-<p>这种形式更好地沿袭了其他语言（例如 JavaScript）中哈希的表示方式，在 Rails 社区中也越来越受欢迎。这两种方式现在都在使用，所以你要能识别它们。可是，新句法有点让人困惑，因为 <code>:name</code> 本身是一种数据类型（符号），但 <code>name:</code> 却没有意义。不过在哈希字面量中，<code>:name =&gt;</code> 和 <code>name:</code> 作用一样。因此，<code>{ :name =&gt; "Michael Hartl" }</code> 和 <code>{ name: "Michael Hartl" }</code> 是等效的。如果要表示符号，只能使用 <code>:name</code>（冒号在前面）。</p>
-<p>哈希中元素的值可以是任何对象，甚至是另一个哈希，如<a href="#listing-nested-hashes">代码清单 4.13</a> 所示。</p>
+<p>这种形式更好地沿袭了其他语言（例如 JavaScript）中散列的表示方式，在 Rails 社区中也越来越受欢迎。这两种方式现在都在使用，所以你要能识别它们。可是，新句法有点让人困惑，因为 <code>:name</code> 本身是一种数据类型（符号），但 <code>name:</code> 却没有意义。不过在散列字面量中，<code>:name =&gt;</code> 和 <code>name:</code> 作用一样。因此，<code>{ :name =&gt; "Michael Hartl" }</code> 和 <code>{ name: "Michael Hartl" }</code> 是等效的。如果要表示符号，只能使用 <code>:name</code>（冒号在前面）。</p>
+<p>散列中元素的值可以是任何对象，甚至是另一个散列，如<a href="#listing-nested-hashes">代码清单 4.13</a> 所示。</p>
 <div id="listing-nested-hashes" data-type="listing">
-<h5><span class="title-label">代码清单 4.13</span>：嵌套哈希</h5>
+<h5><span class="title-label">代码清单 4.13</span>：嵌套散列</h5>
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; params = {}        # 定义一个名为 params（parameters 的简称）的哈希
+<div class="highlight language-irb"><pre><code>&gt;&gt; params = {}        # 定义一个名为 params（parameters 的简称）的散列
 =&gt; {}
 &gt;&gt; params[:user] = { name: "Michael Hartl", email: "mhartl@example.com" }
 =&gt; {:name=&gt;"Michael Hartl", :email=&gt;"mhartl@example.com"}
@@ -1138,8 +1137,8 @@ SyntaxError
 =&gt; "mhartl@example.com"
 </code></pre></div>
 </div>
-<p>Rails 大量使用这种哈希中有哈希的形式（或称为“嵌套哈希”），我们从 <a href="chapter7.html#unsuccessful-signups">7.3 节</a>起会接触到。</p>
-<p>与数组和值域一样，哈希也能响应 <code>each</code> 方法。例如，下面是一个名为 <code>flash</code> 的哈希，它的键是两个判断条件，<code>:success</code> 和 <code>:danger</code>：</p>
+<p>Rails 大量使用这种散列中有散列的形式（或称为“嵌套散列”），我们从 <a href="chapter7.html#unsuccessful-signups">7.3 节</a>起会接触到。</p>
+<p>与数组和值域一样，散列也能响应 <code>each</code> 方法。例如，下面是一个名为 <code>flash</code> 的散列，它的键是两个判断条件，<code>:success</code> 和 <code>:danger</code>：</p>
 <div data-type="listing">
 
 
@@ -1152,7 +1151,7 @@ Key :success has value "It worked!"
 Key :danger has value "It failed."
 </code></pre></div>
 </div>
-<p>注意，数组的 <code>each</code> 方法后面的块只有一个变量，而哈希的 <code>each</code> 方法后面的块接受两个变量，分别表示键和对应的值。所以哈希的 <code>each</code> 方法每次遍历都会以一个键值对为单位进行。</p>
+<p>注意，数组的 <code>each</code> 方法后面的块只有一个变量，而散列的 <code>each</code> 方法后面的块接受两个变量，分别表示键和对应的值。所以散列的 <code>each</code> 方法每次遍历都会以一个键值对为单位进行。</p>
 <p>这段代码用到了很有用的 <code>inspect</code> 方法，它的作用是返回被调用对象的字符串字面量表示形式：</p>
 <div data-type="listing">
 
@@ -1184,16 +1183,16 @@ It worked!
 <h5 id="exercises-hashes-and-symbols" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>定义一个哈希，把键设为 <code>'one'</code>、<code>'two'</code> 和 <code>'three'</code>，对应的值分别是 <code>'uno'</code>、<code>'dos'</code> 和 <code>'tres'</code>。迭代这个哈希，把各个键值对以 <code>"'#key' in Spanish is '#value'"</code> 的形式打印出来。</p>
+<p>定义一个散列，把键设为 <code>'one'</code>、<code>'two'</code> 和 <code>'three'</code>，对应的值分别是 <code>'uno'</code>、<code>'dos'</code> 和 <code>'tres'</code>。迭代这个散列，把各个键值对以 <code>"'#key' in Spanish is '#value'"</code> 的形式打印出来。</p>
 </li>
 <li>
-<p>创建三个哈希，分别命名为 <code>person1</code>、<code>person2</code> 和 <code>person3</code>，把名和姓赋值给 <code>:first</code> 和 <code>:last</code> 键。然后创建一个名为 <code>params</code> 的哈希，让 <code>params[:father]</code> 对应 <code>person1</code>，<code>params[:mother]</code> 对应 <code>person2</code>，<code>params[:child]</code> 对应 <code>person3</code>。验证一下 <code>params[:father][:first]</code> 的值是否正确。</p>
+<p>创建三个散列，分别命名为 <code>person1</code>、<code>person2</code> 和 <code>person3</code>，把名和姓赋值给 <code>:first</code> 和 <code>:last</code> 键。然后创建一个名为 <code>params</code> 的散列，让 <code>params[:father]</code> 对应 <code>person1</code>，<code>params[:mother]</code> 对应 <code>person2</code>，<code>params[:child]</code> 对应 <code>person3</code>。验证一下 <code>params[:father][:first]</code> 的值是否正确。</p>
 </li>
 <li>
-<p>定义一个哈希，使用符号做键，分别表示名字、电子邮件地址和密码摘要，把键对应的值分别设为你的名字、电子邮件地址和一个由 16 个随机小写字母组成的字符串。</p>
+<p>定义一个散列，使用符号做键，分别表示名字、电子邮件地址和密码摘要，把键对应的值分别设为你的名字、电子邮件地址和一个由 16 个随机小写字母组成的字符串。</p>
 </li>
 <li>
-<p>找一个在线 Ruby API，查阅哈希的 <code>merge</code> 方法。下述表达式的值是什么？</p>
+<p>找一个在线 Ruby API，查阅散列的 <code>merge</code> 方法。下述表达式的值是什么？</p>
 </li>
 </ol>
 <div data-type="listing">
@@ -1232,11 +1231,11 @@ It worked!
                                    <span class="s1">'data-turbolinks-track'</span><span class="p">:</span> <span class="s1">'reload'</span>
 </code></pre></div>
 </div>
-<p>第二，<code>media</code> 部分显然是一个哈希，但是怎么没用花括号？调用函数时，如果哈希是最后一个参数，可以省略花括号。所以下面两种写法是等价的：</p>
+<p>第二，<code>media</code> 部分显然是一个散列，但是怎么没用花括号？调用函数时，如果散列是最后一个参数，可以省略花括号。所以下面两种写法是等价的：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-ruby"><pre><code><span class="c1"># 如果最后一个参数是哈希，可以省略花括号</span>
+<div class="highlight language-ruby"><pre><code><span class="c1"># 如果最后一个参数是散列，可以省略花括号</span>
 <span class="n">stylesheet_link_tag</span> <span class="s1">'application'</span><span class="p">,</span> <span class="p">{</span> <span class="ss">media: </span><span class="s1">'all'</span><span class="p">,</span>
                                      <span class="s1">'data-turbolinks-track'</span><span class="p">:</span> <span class="s1">'reload'</span> <span class="p">}</span>
 <span class="n">stylesheet_link_tag</span> <span class="s1">'application'</span><span class="p">,</span> <span class="ss">media: </span><span class="s1">'all'</span><span class="p">,</span>
@@ -1260,7 +1259,7 @@ It worked!
                                    <span class="s1">'data-turbolinks-track'</span><span class="p">:</span> <span class="s1">'reload'</span>
 </code></pre></div>
 </div>
-<p>调用了 <code>stylesheet_link_tag</code> 函数，并且传入两个参数：一个是字符串，指明样式表的路径；另一个是哈希，包含两个元素，第一个指明媒介类型，第二个启用 Rails 4.0 增加的 <a href="https://github.com/rails/turbolinks">Turbolink</a> 功能。因为使用的是 <code>&lt;%= %&gt;</code>，函数的执行结果会通过 ERb 插入模板中。如果在浏览器中查看网页的源码，会看到引入样式表所用的 HTML，如<a href="#listing-scss-source">代码清单 4.14</a> 所示。（你可能会在 CSS 的文件名后看到额外的字符，例如 <code>?body=1</code>。这是 Rails 加入的，用以确保修改 CSS 后浏览器会重新加载。）</p>
+<p>调用了 <code>stylesheet_link_tag</code> 函数，并且传入两个参数：一个是字符串，指明样式表的路径；另一个是散列，包含两个元素，第一个指明媒介类型，第二个启用 Rails 4.0 增加的 <a href="https://github.com/rails/turbolinks">Turbolink</a> 功能。因为使用的是 <code>&lt;%= %&gt;</code>，函数的执行结果会通过 ERb 插入模板中。如果在浏览器中查看网页的源码，会看到引入样式表所用的 HTML，如<a href="#listing-scss-source">代码清单 4.14</a> 所示。（你可能会在 CSS 的文件名后看到额外的字符，例如 <code>?body=1</code>。这是 Rails 加入的，用以确保修改 CSS 后浏览器会重新加载。）</p>
 <div id="listing-scss-source" data-type="listing">
 <h5><span class="title-label">代码清单 4.14</span>：引入 CSS 的代码生成的 HTML</h5>
 
@@ -1308,7 +1307,7 @@ It worked!
 =&gt; [1, 3, 2]
 </code></pre></div>
 </div>
-<p>不过哈希就有点不同了。数组的构造方法 <code>Array.new</code> 可接受一个可选的参数指明数组的初始值，<code>Hash.new</code> 可接受一个参数指明元素的默认值，即当键不存在时返回的值：</p>
+<p>不过散列就有点不同了。数组的构造方法 <code>Array.new</code> 可接受一个可选的参数指明数组的初始值，<code>Hash.new</code> 可接受一个参数指明元素的默认值，即当键不存在时返回的值：</p>
 <div data-type="listing">
 
 
@@ -1329,7 +1328,7 @@ It worked!
 <p>从 1 到 10 的值域，它的字面构造方法是什么？</p>
 </li>
 <li>
-<p>使用 <code>Range</code> 类和 <code>new</code> 方法怎么编写构造方法？提示：这里，要为 <code>new</code> 方法提供两个参数。</p>
+<p>使用 <code>Range</code> 类和 <code>new</code> 方法怎么编写构造方法？提示：这里要为 <code>new</code> 方法提供两个参数。</p>
 </li>
 <li>
 <p>使用 <code>==</code> 运算符确认前两题使用字面构造方法和具名构造方法创建的值域相等。</p>
@@ -1380,7 +1379,7 @@ It worked!
 =&gt; true
 </code></pre></div>
 </div>
-<p>如果你觉得这个例子有点大题小做，很好，我的目的达到了。定义一个新类，可是只创建一个接受一个字符串作为参数的方法，这么做很古怪。既然单词是字符串，让 <code>Word</code> 继承 <code>String</code> 不就行了，如<a href="#listing-word-class">代码清单 4.15</a> 所示。（你要退出控制台，然后在控制台中输入这写代码，这样才能把之前定义的 <code>Word</code> 类清除掉。）</p>
+<p>如果你觉得这个例子有点大题小做，很好，我的目的达到了。定义一个新类，可是只创建一个接受一个字符串作为参数的方法，这么做很古怪。既然单词是字符串，让 <code>Word</code> 继承 <code>String</code> 不就行了，如<a href="#listing-word-class">代码清单 4.15</a> 所示。（你要退出控制台，然后在控制台中输入这些代码，这样才能把之前定义的 <code>Word</code> 类清除掉。）</p>
 <div id="listing-word-class" data-type="listing">
 <h5><span class="title-label">代码清单 4.15</span>：在控制台中定义 <code>Word</code> 类</h5>
 
@@ -1437,7 +1436,7 @@ It worked!
 <h5 id="exercises-class-inheritance" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>值域的类继承关系是怎样的？哈希和符号呢？</p>
+<p>值域的类继承关系是怎样的？散列和符号呢？</p>
 </li>
 <li>
 <p>把<a href="#listing-word-class">代码清单 4.15</a> 中的 <code>self.reverse</code> 换成 <code>reverse</code>，确认 <code>palindrome?</code> 方法依然可用。</p>
@@ -1561,7 +1560,7 @@ NoMethodError: undefined method `palindrome?' for "level":String
 </div>
 <p><code>home</code> 动作的返回值为 <code>nil</code>，因为它是空的。</p>
 <p>注意，动作没有返回值，或至少没返回真正需要的值。如我们在<a href="chapter3.html#mostly-static-pages">第 3 章</a>看到的，<code>home</code> 动作的目的是渲染网页，而不是返回一个值。但是，我记得没在任何地方调用过 <code>StaticPagesController.new</code>，到底怎么回事呢？</p>
-<p>原因在于，Rails 是用 Ruby 编写的，但 Rails 不是 Ruby。有些 Rails 类就像普通的 Ruby 类一样，不过也有些则得益于 Rails 的强大功能。Rails 是单独的一门学问，应该和 Ruby 分开学习和理解。</p>
+<p>原因在于，Rails 是用 Ruby 编写的，但 Rails 不是 Ruby。有些 Rails 类就像普通的 Ruby 类一样，不过也有些则得益于 Rails 的强大功能。Rails 是单独的一门学问，应该跟 Ruby 分开学习和理解。</p>
 <div id="fig-static-pages-controller-inheritance" class="figure"><img src="images/chapter4/static_pages_controller_inheritance.png" alt="static pages controller inheritance" /><div class="figcaption"><span class="title-label">图 4.3</span>：<code>StaticPagesController</code> 类的继承关系</div></div>
 <h5 id="exercises-a-controller-class" class="discrete">练习</h5>
 <ol class="arabic">
@@ -1575,7 +1574,7 @@ NoMethodError: undefined method `palindrome?' for "level":String
 </section>
 <section data-type="sect2" id="a-user-class">
 <h2><span class="title-label">4.4.5</span> <code>User</code> 类</h2>
-<p>我们要自己定义一个类，以此结束对 Ruby 的介绍。这个类名为 <code>User</code>，目的是实现 <a href="chapter6.html#modeling-users">第 6 章</a>用到的 <code>User</code> 模型。</p>
+<p>我们将自己定义一个类，以此结束对 Ruby 的介绍。这个类名为 <code>User</code>，目的是实现 <a href="chapter6.html#modeling-users">第 6 章</a>用到的 <code>User</code> 模型。</p>
 <p>到目前为止，我们都在控制台中定义类，这样很快捷，但也有点不爽。现在我们要在应用的根目录中创建一个名为 <code>example_user.rb</code> 的文件，然后写入<a href="#listing-example-user">代码清单 4.17</a> 中的内容。</p>
 <div id="listing-example-user" data-type="listing">
 <h5><span class="title-label">代码清单 4.17</span>：定义 <code>User</code> 类</h5>
@@ -1603,8 +1602,8 @@ NoMethodError: undefined method `palindrome?' for "level":String
 <div class="highlight language-ruby"><pre><code>  <span class="kp">attr_accessor</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span>
 </code></pre></div>
 </div>
-<p>这行代码为用户的名字和电子邮件地址创建属性访问器存取方法（attribute accessor），也就是定义读值方法（getter）和设值方法（setter），用于读取和设置 <code>@name</code> 和 <code>@email</code> 实例变量（<a href="chapter2.html#mvc-in-action">2.2.2 节</a>和 <a href="chapter3.html#adding-page-titles">3.4.2 节</a>的<a href="chapter3.html#exercises-adding-page-titles">练习</a>简介过）。在 Rails 中，实例变量的意义在于，它们自动在视图中可用。而通常实例变量的作用是在 Ruby 类中不同的方法之间传递值。（稍后会更详细地说明这一点。）实例变量都以 <code>@</code> 符号开头，如果未定义，值为 <code>nil</code>。</p>
-<p>第一个方法，<code>initialize</code>，在 Ruby 中有特殊的意义：执行 <code>User.new</code> 时会调用这个方法。这个 <code>initialize</code> 方法接受一个参数，<code>attributes</code>：</p>
+<p>这行代码为用户的名字和电子邮件地址创建属性访问器存取方法（attribute accessor），也就是定义读值方法（getter）和设值方法（setter），用于读取和设定 <code>@name</code> 和 <code>@email</code> 实例变量（<a href="chapter2.html#mvc-in-action">2.2.2 节</a>和 <a href="chapter3.html#adding-page-titles">3.4.2 节</a>的<a href="chapter3.html#exercises-adding-page-titles">练习</a>简介过）。在 Rails 中，实例变量的意义在于，它们自动在视图中可用。而通常实例变量的作用是在 Ruby 类中不同的方法之间传递值。（稍后会更详细地说明这一点。）实例变量都以 <code>@</code> 符号开头，如果未定义，值为 <code>nil</code>。</p>
+<p>第一个方法，<code>initialize</code>，在 Ruby 中有特殊的意义：执行 <code>User.new</code> 时会调用它。这个 <code>initialize</code> 方法接受一个参数，<code>attributes</code>：</p>
 <div data-type="listing">
 
 
@@ -1614,7 +1613,7 @@ NoMethodError: undefined method `palindrome?' for "level":String
   <span class="k">end</span>
 </code></pre></div>
 </div>
-<p><code>attributes</code> 参数的默认值是一个空哈希，所以我们可以定义一个没有名字或没有电子邮件地址的用户。（回想一下 <a href="#hashes-and-symbols">4.3.3 节</a>的内容，如果键不存在会返回 <code>nil</code>，所以如果没定义 <code>:name</code> 键，<code>attributes[:name]</code> 会返回 <code>nil</code>，<code>attributes[:email]</code> 也是一样。）</p>
+<p><code>attributes</code> 参数的默认值是一个空散列，所以我们可以定义一个没有名字或没有电子邮件地址的用户。（回想一下 <a href="#hashes-and-symbols">4.3.3 节</a>的内容，如果键不存在会返回 <code>nil</code>，所以如果没定义 <code>:name</code> 键，<code>attributes[:name]</code> 返回 <code>nil</code>，<code>attributes[:email]</code> 也是一样。）</p>
 <p>最后，类中定义了一个名为 <code>formatted_email</code> 的方法，使用被赋了值的 <code>@name</code> 和 <code>@email</code> 变量进行插值，组成一个格式良好的电子邮件地址：</p>
 <div data-type="listing">
 
@@ -1644,7 +1643,7 @@ NoMethodError: undefined method `palindrome?' for "level":String
 </code></pre></div>
 </div>
 <p>这段代码中的点号 <code>.</code>，在 Unix 中指“当前目录”，<code>'./example_user'</code> 告诉 Ruby 在当前目录中寻找这个文件。接下来的代码创建一个空用户，然后通过直接赋值给相应的属性来提供名字和电子邮件地址（因为有 <code>attr_accessor</code> 所以才能赋值）。我们输入 <code>example.name = "Example User"</code> 时，Ruby 会把 <code>@name</code> 变量的值设为 <code>"Example User"</code>（<code>email</code> 属性类似），然后就可以在 <code>formatted_email</code> 中使用。</p>
-<p><a href="#css-revisited">4.3.4 节</a>介绍过，如果最后一个参数是哈希，可以省略花括号。我们可以把一个预先定义好的哈希传给 <code>initialize</code> 方法，再创建一个用户：</p>
+<p><a href="#css-revisited">4.3.4 节</a>介绍过，如果最后一个参数是散列，可以省略花括号。我们可以把一个预先定义好的散列传给 <code>initialize</code> 方法，再创建一个用户：</p>
 <div data-type="listing">
 
 
@@ -1654,7 +1653,7 @@ NoMethodError: undefined method `palindrome?' for "level":String
 =&gt; "Michael Hartl &lt;mhartl@example.com&gt;"
 </code></pre></div>
 </div>
-<p>从<a href="chapter7.html#sign-up">第 7 章</a>开始，我们会使用哈希初始化对象，这种技术叫做批量赋值（mass assignment），在 Rails 中很常见。</p>
+<p>从<a href="chapter7.html#sign-up">第 7 章</a>开始，我们会使用散列初始化对象，这种技术叫做批量赋值（mass assignment），在 Rails 中很常见。</p>
 <h5 id="exercises-a-user-object" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
@@ -1725,7 +1724,7 @@ NoMethodError: undefined method `palindrome?' for "level":String
 <p>在 Ruby 中定义类使用 <code>class</code> 关键字；</p>
 </li>
 <li>
-<p>Ruby 内建支持的数据类型有数组、值域和哈希；</p>
+<p>Ruby 内建支持的数据类型有数组、值域和散列；</p>
 </li>
 <li>
 <p>Ruby 块是一种灵活的语言接口，可以遍历可枚举的数据类型；</p>
@@ -1767,15 +1766,15 @@ NoMethodError: undefined method `palindrome?' for "level":String
 <li id="fn-3">关于“foo”和“bar”，以及不太相关的“foobar”和“FUBAR”的起源，请查看 <a href="http://www.catb.org/jargon/html/F/foo.html">Jargon File 中介绍“foo”的文章</a>。 <a href="#fn-ref-3" class="symbol">&#8617;</a></li>
 <li id="fn-4">熟悉 Perl 或 PHP 的编程人员，可以把这个功能与自动插值美元符号开头的变量相对应，例如 <code>"foo $bar"</code>。 <a href="#fn-ref-4" class="symbol">&#8617;</a></li>
 <li id="fn-5">抱歉，本章在“函数”和“方法”两个称呼之间随意变换。在 Ruby 中这二者是同一个概念：所有方法都是函数，所有函数也都是方法，因为一切皆对象。 <a href="#fn-ref-5" class="symbol">&#8617;</a></li>
-<li id="fn-6">其实还有一个地方我们不理解，那就是 Rails 是怎么把这些联系在一起的：把 URL 映射到动作上，让 <code>full_title</code> 辅助方法可以在视图中使用，等等。这是个很有意思的话题，我建议你以后好好了解一下。不过使用 Rails 并不需要完全了解 Rails 的运作机理。 <a href="#fn-ref-6" class="symbol">&#8617;</a></li>
+<li id="fn-6">其实还有一个地方我们不理解，那就是 Rails 是怎么把这些联系在一起的：把 URL 映射到动作上，让 <code>full_title</code> 辅助方法可以在视图中使用，等等。这是个很有意思的话题，我建议你以后好好了解一下。不过使用 Rails 并不需要完全了解 Rails 的运作机制。 <a href="#fn-ref-6" class="symbol">&#8617;</a></li>
 <li id="fn-7">这里你可能想使用字符串插值，其实本书前几版使用的都是插值，但 <code>provide</code> 方法会把字符串转换成 <code>SafeBuffer</code> 对象，而不是普通的字符串。插入视图模板的 HTML 会过度转义，把“Help’s on the way”转换成“Help&amp;#39;s on the way”。（感谢读者 Jeremy Fleischman 指出这个小问题。） <a href="#fn-ref-7" class="symbol">&#8617;</a></li>
 <li id="fn-8">这段代码中使用的 <code>second</code> 方法不是 Ruby 定义的，而是 Rails 添加的。在这里可以使用这个方法是因为，Rails 控制台会自动加载 Rails 对 Ruby 的扩展。 <a href="#fn-ref-8" class="symbol">&#8617;</a></li>
 <li id="fn-9">块是闭包（closure），知道这一点对资深编程人员可能会有些帮助。闭包是一种匿名函数，其中附带了一些数据。 <a href="#fn-ref-9" class="symbol">&#8617;</a></li>
-<li id="fn-10">在 Ruby 1.9 及以后的版本中，其实会按照元素输入时的顺序保存哈希，不过依赖特定的顺序显然是不明智的。 <a href="#fn-ref-10" class="symbol">&#8617;</a></li>
-<li id="fn-11">没有约束的好处是，符号很容易进行比较，字符串要按照字母一个一个比较，而符号只需比较一次。这就使得符号成为哈希键的最佳选择。 <a href="#fn-ref-11" class="symbol">&#8617;</a></li>
+<li id="fn-10">在 Ruby 1.9 及以后的版本中，其实会按照元素输入时的顺序保存散列，不过依赖特定的顺序显然是不明智的。 <a href="#fn-ref-10" class="symbol">&#8617;</a></li>
+<li id="fn-11">没有约束的好处是，符号很容易进行比较，字符串要按照字母一个一个比较，而符号只需比较一次。这就使得符号成为散列键的最佳选择。 <a href="#fn-ref-11" class="symbol">&#8617;</a></li>
 <li id="fn-12">其实二者之间有些细微差别，<code>p</code> 返回打印的对象，而 <code>puts</code> 始终返回 <code>nil</code>。感谢读者 Katarzyna Siwek 指出这一点。 <a href="#fn-ref-12" class="symbol">&#8617;</a></li>
 <li id="fn-13">换行符在一行的结尾处，作用是开始新的一行。在代码中，换行符用 <code>\n</code> 表示。 <a href="#fn-ref-13" class="symbol">&#8617;</a></li>
-<li id="fn-14">数列数会让你发疯的，所以很多文本编辑器都提供了一个视觉标识。例如，如果再看一下<a href="chapter1.html#fig-cloud9-gemfile">图 1.6</a> 的话，你会发现右边有一条细线，它可以帮助你把一行代码控制在 80 个字符以内。云端 IDE 默认会显示这条竖线。如果使用 TextMate，可以在如下菜单中找到这个功能：View &gt; Wrap Column &gt; 78。在 Sublime Text 中则是：View &gt; Ruler &gt; 78，或：View &gt; Ruler &gt; 80。 <a href="#fn-ref-14" class="symbol">&#8617;</a></li>
+<li id="fn-14">数列数会让你发疯的，所以很多文本编辑器都提供了一个视觉标识。例如，如果再看一下<a href="chapter1.html#fig-cloud9-gemfile">图 1.6</a> 的话，你可能会发现右边有一条细线，它可以帮助你把一行代码控制在 80 个字符以内。云端 IDE 默认会显示这条竖线。如果使用 TextMate，可以在如下菜单中找到这个功能：View &gt; Wrap Column &gt; 78。在 Sublime Text 中则是：View &gt; Ruler &gt; 78，或：View &gt; Ruler &gt; 80。 <a href="#fn-ref-14" class="symbol">&#8617;</a></li>
 <li id="fn-15">返回值可能由于 Ruby 版本的不同而有所不同。这个例子假设你使用的是 Ruby 1.9.3 或以上版本。 <a href="#fn-ref-15" class="symbol">&#8617;</a></li>
 <li id="fn-16">关于 Ruby 类和 <code>self</code> 关键字，请阅读 <a href="http://railstips.org/">RailsTips</a> 中的《<a href="http://railstips.org/blog/archives/2006/11/18/class-and-instance-variables-in-ruby/">Class and Instance Variables in Ruby</a>》一文。 <a href="#fn-ref-16" class="symbol">&#8617;</a></li>
 <li id="fn-17">你没必要知道继承关系中每个类的作用。我也不知道它们都是干什么的，而我从 2005 年起就开始使用 Ruby on Rails 了。这可能意味着以下两个问题中的一个：第一，我是个废柴；第二，不需要知道所有内部知识也能成为熟练的 Rails 开发者。我们当然都希望是第二点。 <a href="#fn-ref-17" class="symbol">&#8617;</a></li>

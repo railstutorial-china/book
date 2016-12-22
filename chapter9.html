@@ -14,7 +14,6 @@
   <link rel="stylesheet" type="text/css" href="book.css"/>
   <script type="text/javascript" src="//railstutorial-china.org/assets/js/global.js"></script>
 </head>
-<body>
 
 <body class="book-page">
 
@@ -60,11 +59,11 @@
           <article class="article">
             <section data-type="chapter" id="advanced-login">
 <h1><span class="title-label">第 9 章</span> 高级登录功能</h1>
-<p><a href="chapter8.html#basic-login">第 8 章</a>实现的登录系统完全可用，不过大多数现代的网站都能记住用户的登录状态，当用户关闭浏览器后再次访问网站时，仍是登录状态。本章使用持久 cookie 实现这种行为。首先，我们实现自动记住用户登录状态的功能（<a href="#remember-me">9.1 节</a>），这是 Bitbucket 和 GitHub 等网站采用的策略。随后，我们将提供一个“记住我”复选框，让用户自己选择是否记住登录状态，这是 Twitter 和 Facebook 等网站采用的策略。</p>
-<p><a href="chapter8.html#basic-login">第 8 章</a>已经为这个演示应用实现了完整的登录系统，如果愿意，你可以跳过本章，从<a href="chapter10.html#updating-showing-and-deleting-users">第 10 章</a>开始阅读，一直到<a href="chapter13.html#user-microposts">第 13 章</a>。不过学习如何实现“记住我”功能也有好处，能为账户激活（<a href="chapter11.html#account-activation">第 11 章</a>）和密码重设（<a href="chapter12.html#password-reset">第 12 章</a>）奠定坚实的基础。而且，本章也能让你体验计算机的神奇，你曾在网上无数次见到这种“记住我”登录表单，现在终于有机会自己动手实现了。</p>
+<p><a href="chapter8.html#basic-login">第 8 章</a>实现的登录系统完全可用，不过大多数现代的网站都能记住用户的登录状态，当用户关闭浏览器后再次访问网站时，仍是登录状态。本章使用持久 cookie 实现这种行为。首先，我们将实现自动记住用户登录状态的功能（<a href="#remember-me">9.1 节</a>），这是 Bitbucket 和 GitHub 等网站采用的策略。随后，我们将提供一个“记住我”复选框，让用户自己选择是否记住登录状态，这是 Twitter 和 Facebook 等网站采用的策略。</p>
+<p><a href="chapter8.html#basic-login">第 8 章</a>已经为这个演示应用实现了完整的登录系统，如果愿意，你可以跳过本章，从<a href="chapter10.html#updating-showing-and-deleting-users">第 10 章</a>开始阅读（一直到<a href="chapter13.html#user-microposts">第 13 章</a>）。不过学习如何实现“记住我”功能也有好处，能为账户激活（<a href="chapter11.html#account-activation">第 11 章</a>）和密码重设（<a href="chapter12.html#password-reset">第 12 章</a>）奠定坚实的基础。而且，本章也能让你体验计算机的神奇，你曾在网上无数次见到这种“记住我”登录表单，现在终于有机会自己动手实现了。</p>
 <section data-type="sect1" id="remember-me">
 <h1><span class="title-label">9.1</span> 记住我</h1>
-<p>本章添加一个功能，让应用记住用户的登录状态，即使关闭浏览器之后再访问，仍能记住用户的登录状态。这个“记住我”功能自动生效，除非用户退出，否则会一直处于登录状态。我们的实现方式还便于添加一个“记住我”复选框（<a href="#remember-me-checkbox">9.2 节</a>）。</p>
+<p>本节添加一个功能，让应用记住用户的登录状态，即使关闭浏览器之后再访问，仍能记住用户的登录状态。这个“记住我”功能自动生效，除非用户退出，否则会一直处于登录状态。我们的实现方式还便于添加一个“记住我”复选框（<a href="#remember-me-checkbox">9.2 节</a>）。</p>
 <p>与往常一样，我建议在继续之前切换到一个主题分支：</p>
 <div data-type="listing">
 
@@ -74,12 +73,12 @@
 </div>
 <section data-type="sect2" id="remember-token-and-digest">
 <h2><span class="title-label">9.1.1</span> 记忆令牌和摘要</h2>
-<p><a href="chapter8.html#logging-in">8.2 节</a>使用 Rails 提供的 <code>session</code> 方法存储用户的 ID，但是浏览器关闭后这个信息就不见了。本节，我们迈出实现持久会话的第一步：生成使用 <code>cookies</code> 方法创建持久 cookie 所需的记忆令牌（remember token），以及验证令牌所需的安全记忆摘要（remember digest）。</p>
-<p><a href="chapter8.html#the-log-in-method">8.2.1 节</a>说过，使用 <code>session</code> 方法存储的信息默认情况下就是安全的，但使用 <code>cookies</code> 方法存储的信息则不然。具体而言，持久 cookie 有被<a href="http://en.wikipedia.org/wiki/Session_hijacking">会话劫持</a>的风险，攻击者可以使用盗取的记忆令牌以某个用户的身份登录。盗取 cookie 中的信息主要有四种方法：（1）使用<a href="https://en.wikipedia.org/wiki/Packet_analyzer">包嗅探</a>工具截获不安全网络中传输的 cookie；<sup>[<a id="fn-ref-1" href="#fn-1">1</a>]</sup>（2）获取包含记忆令牌的数据库；（3）使用跨站脚本（Cross-Site Scripting，简称 XSS）攻击；（4）获取已登录用户的设备访问权。我们在 <a href="chapter7.html#professional-grade-deployment">7.5 节</a>启用了全站 SSL，这样能避免别人嗅探网络中传输的数据，因此解决了第一个问题。为了解决第二个问题，我们不会存储记忆令牌本身，而是存储令牌的哈希摘要——这种方法和 <a href="chapter6.html#adding-a-secure-password">6.3 节</a>一样，不存储原始密码，而是存储密码摘要。<sup>[<a id="fn-ref-2" href="#fn-2">2</a>]</sup>Rails 会转义插入视图模板中的内容，所以自动解决了第三个问题。对于最后一个问题，虽然没有万无一失的方法能避免攻击者获取已登录用户电脑的访问权，不过我们可以在每次用户退出后修改令牌，并且签名加密存储在浏览器中的敏感信息，尽量减少第四个问题发生的几率。</p>
+<p><a href="chapter8.html#logging-in">8.2 节</a>使用 Rails 提供的 <code>session</code> 方法存储用户的 ID，但是浏览器关闭后这个信息就不见了。本节，我们将迈出实现持久会话的第一步：生成使用 <code>cookies</code> 方法创建持久 cookie 所需的记忆令牌（remember token），以及验证令牌所需的安全记忆摘要（remember digest）。</p>
+<p><a href="chapter8.html#the-log-in-method">8.2.1 节</a>说过，使用 <code>session</code> 方法存储的信息默认情况下就是安全的，但使用 <code>cookies</code> 方法存储的信息则不然。具体而言，持久 cookie 有被<a href="http://en.wikipedia.org/wiki/Session_hijacking">会话劫持</a>的风险，攻击者可以使用盗取的记忆令牌以某个用户的身份登录。盗取 cookie 中的信息主要有四种途径：（1）使用<a href="https://en.wikipedia.org/wiki/Packet_analyzer">包嗅探</a>工具截获不安全网络中传输的 cookie；<sup>[<a id="fn-ref-1" href="#fn-1">1</a>]</sup>（2）获取包含记忆令牌的数据库；（3）使用跨站脚本（Cross-Site Scripting，简称 XSS）攻击；（4）获取已登录用户的设备访问权。我们在 <a href="chapter7.html#professional-grade-deployment">7.5 节</a>启用了全站 SSL，这样能避免别人嗅探网络中传输的数据，因此解决了第一个问题。为了解决第二个问题，我们不会存储记忆令牌本身，而是存储令牌的哈希摘要——这种方法和 <a href="chapter6.html#adding-a-secure-password">6.3 节</a>一样，不存储原始密码，而是存储密码摘要。<sup>[<a id="fn-ref-2" href="#fn-2">2</a>]</sup>Rails 会转义插入视图模板中的内容，所以自动解决了第三个问题。对于最后一个问题，虽然没有万无一失的方法能避免攻击者获取已登录用户电脑的访问权，不过我们可以在每次用户退出后修改令牌，并且签名加密存储在浏览器中的敏感信息，尽量减少第四个问题发生的几率。</p>
 <p>经过上述分析，我们计划按照下面的方式实现持久会话：</p>
 <ol class="arabic">
 <li>
-<p>生成随机字符串，当做记忆令牌；</p>
+<p>生成随机字符串，用作记忆令牌；</p>
 </li>
 <li>
 <p>把这个令牌存入浏览器的 cookie 中，并把过期时间设为未来的某个日期；</p>
@@ -94,7 +93,7 @@
 <p>如果 cookie 中有用户的 ID，就用这个 ID 在数据库中查找用户，并且检查 cookie 中的记忆令牌和数据库中的哈希摘要是否匹配。</p>
 </li>
 </ol>
-<p>注意，最后一步和登入用户很相似：使用电子邮件地址取回用户，然后（使用 <code>authenticate</code> 方法）验证提交的密码和密码摘要是否匹配（<a href="chapter8.html#listing-find-authenticate-user">代码清单 8.6</a>）。可以看出，我们的实现方式和 <code>has_secure_password</code> 差不多。</p>
+<p>注意，最后一步和登入用户很相似：使用电子邮件地址检索用户，然后（使用 <code>authenticate</code> 方法）验证提交的密码和密码摘要是否匹配（<a href="chapter8.html#listing-find-authenticate-user">代码清单 8.7</a>）。可见，我们的实现方式和 <code>has_secure_password</code> 差不多。</p>
 <p>首先，我们把所需的 <code>remember_digest</code> 属性加入 <code>User</code> 模型，如<a href="#fig-user-model-remember-digest">图 9.1</a> 所示。</p>
 <div id="fig-user-model-remember-digest" class="figure"><img src="images/chapter9/user_model_remember_digest.png" alt="user model remember digest" /><div class="figcaption"><span class="title-label">图 9.1</span>：添加 <code>remember_digest</code> 属性后的 <code>User</code> 模型</div></div>
 <p>为了把<a href="#fig-user-model-remember-digest">图 9.1</a> 中的数据模型添加到应用中，我们要生成一个迁移：</p>
@@ -104,7 +103,7 @@
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate migration add_remember_digest_to_users remember_digest:string
 </code></pre></div>
 </div>
-<p>（可以和 <a href="chapter6.html#a-hashed-password">6.3.1 节</a>添加密码摘要的迁移比较一下。）与之前的迁移一样，迁移的名字以 <code>_to_users</code> 结尾，这么做是为了告诉 Rails 这个迁移是用来修改 <code>users</code> 表的。因为我们还指定了属性和类型，所以 Rails 会自动为我们生成迁移代码，如<a href="#listing-add-remember-digest-to-users-generated">代码清单 9.1</a> 所示。</p>
+<p>（可以和 <a href="chapter6.html#a-hashed-password">6.3.1 节</a>添加密码摘要的迁移比较一下。）与之前的迁移一样，迁移的名称以 <code>_to_users</code> 结尾，这么做是为了告诉 Rails 这个迁移是用来修改 <code>users</code> 表的。因为我们还指定了属性（<code>remember_digest</code>）及其类型（<code>string</code>），所以 Rails 会自动为我们生成迁移代码，如<a href="#listing-add-remember-digest-to-users-generated">代码清单 9.1</a> 所示。</p>
 <div id="listing-add-remember-digest-to-users-generated" data-type="listing">
 <h5><span class="title-label">代码清单 9.1</span>：生成的迁移，用于添加记忆摘要</h5>
 
@@ -117,7 +116,7 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>我们不会通过记忆摘要取回用户，所以没必要在 <code>remember_digest</code> 列上添加索引，因此可以直接使用上述自动生成的迁移：</p>
+<p>我们不会通过记忆摘要检索用户，所以没必要在 <code>remember_digest</code> 列上添加索引，因此可以直接使用上述自动生成的迁移：</p>
 <div data-type="listing">
 
 
@@ -133,8 +132,8 @@
 =&gt; "q5lt38hQDc_959PVoo6b7A"
 </code></pre></div>
 </div>
-<p>就像两个用户可以使用相同的密码一样，<sup>[<a id="fn-ref-4" href="#fn-4">4</a>]</sup>记忆令牌也没必要是唯一的，不过如果唯一的话，安全性更高。<sup>[<a id="fn-ref-5" href="#fn-5">5</a>]</sup>对 base64 字符串来说，22 个字符中的每一个都有 64 种取值可能，所以两个记忆令牌“碰撞”的几率小到可以忽略，只有 1/64<sup>22</sup> = 2<sup>-132</sup> ≈ 10<sup>-40</sup>。<sup>[<a id="fn-ref-6" href="#fn-6">6</a>]</sup>而且，使用可在 URL 中安全使用的 base64 字符串（如 <code>urlsafe_base64</code> 方法的名字所示），我们还能在账户激活和密码重设链接中使用类似的令牌。</p>
-<p>记住用户的登录状态要创建一个记忆令牌，并且在数据库中存储这个令牌的摘要。我们已经定义了 <code>digest</code> 方法，并且在测试固件中用过（<a href="chapter8.html#listing-digest-method">代码清单 8.20</a>）。基于上述分析，现在我们可以定义一个 <code>new_token</code> 方法，用于创建新令牌。和 <code>digest</code> 方法一样，新建令牌的方法也不需要用户对象，所以也定义为类方法，<sup>[<a id="fn-ref-7" href="#fn-7">7</a>]</sup>如<a href="#listing-token-method">代码清单 9.2</a> 所示。</p>
+<p>就像两个用户可以使用相同的密码一样，<sup>[<a id="fn-ref-4" href="#fn-4">4</a>]</sup>记忆令牌也没必要是唯一的，不过如果唯一的话，安全性更高。<sup>[<a id="fn-ref-5" href="#fn-5">5</a>]</sup>对 base64 字符串来说，22 个字符中的每一个都有 64 种取值可能，所以两个记忆令牌“碰撞”的几率小到可以忽略，只有 1/64<sup>22</sup> = 2<sup>-132</sup> ≈ 10<sup>-40</sup>。<sup>[<a id="fn-ref-6" href="#fn-6">6</a>]</sup>而且，使用可在 URL 中安全使用的 base64 字符串（如 <code>urlsafe_base64</code> 方法的名称所示），我们还能在账户激活和密码重设链接中使用类似的令牌。</p>
+<p>记住用户的登录状态要创建一个记忆令牌，并且在数据库中存储这个令牌的摘要。我们已经定义了 <code>digest</code> 方法，并且在测试固件中用过（<a href="chapter8.html#listing-digest-method">代码清单 8.21</a>）。基于上述分析，现在我们可以定义一个 <code>new_token</code> 方法，用于创建新令牌。和 <code>digest</code> 方法一样，新建令牌的方法也不需要用户对象，所以也定义为类方法，<sup>[<a id="fn-ref-7" href="#fn-7">7</a>]</sup>如<a href="#listing-token-method">代码清单 9.2</a> 所示。</p>
 <div id="listing-token-method" data-type="listing">
 <h5><span class="title-label">代码清单 9.2</span>：添加生成令牌的方法</h5>
 
@@ -164,7 +163,7 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>我们计划定义 <code>user.remember</code> 方法把记忆令牌和用户关联起来，并且把相应的记忆摘要存入数据库。<a href="#listing-add-remember-digest-to-users-generated">代码清单 9.1</a>中的迁移已经添加了 <code>remember_digest</code> 属性，但是还没有 <code>remember_token</code> 属性。我们要找到一种方法，通过 <code>user.remember_token</code> 获取令牌（为了存入 cookie），但又不在数据库中存储令牌。<a href="chapter6.html#adding-a-secure-password">6.3 节</a>解决过类似的问题——使用虚拟属性 <code>password</code> 和数据库中的 <code>password_digest</code> 属性。其中，虚拟属性 <code>password</code> 由 <code>has_secure_password</code> 方法自动创建。但是，我们要自己编写代码创建 <code>remember_token</code> 属性，方法是使用 <a href="chapter4.html#a-user-class">4.4.5 节</a>用过的 <code>attr_accessor</code>，创建一个可访问的属性：</p>
+<p>我们计划定义 <code>user.remember</code> 方法把记忆令牌和用户关联起来，并且把相应的记忆摘要存入数据库。<a href="#listing-add-remember-digest-to-users-generated">代码清单 9.1</a> 中的迁移已经添加了 <code>remember_digest</code> 属性，但是还没有 <code>remember_token</code> 属性。我们要找到一种方法，通过 <code>user.remember_token</code> 获取令牌（为了存入 cookie），但又不在数据库中存储令牌。<a href="chapter6.html#adding-a-secure-password">6.3 节</a>解决过类似的问题——使用虚拟属性 <code>password</code> 和数据库中的 <code>password_digest</code> 属性。其中，虚拟属性 <code>password</code> 由 <code>has_secure_password</code> 方法自动创建。但是，我们要自己编写代码创建 <code>remember_token</code> 属性，方法是使用 <a href="chapter4.html#a-user-class">4.4.5 节</a>用过的 <code>attr_accessor</code>，创建一个可访问的属性：</p>
 <div data-type="listing">
 
 
@@ -180,8 +179,8 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>注意 <code>remember</code> 方法中第一行代码的赋值操作。根据 Ruby 处理对象内部赋值操作的规则，如果没有 <code>self</code>，创建的是一个名为 <code>remember_token</code> 的本地变量——这并不是我们想要的行为。使用 <code>self</code> 的目的是确保把值赋给用户的 <code>remember_token</code> 属性。（现在你应该知道为什么 <code>before_save</code> 回调中要使用 <code>self.email</code>，而不是 <code>email</code> 了吧（<a href="chapter6.html#listing-email-downcase">代码清单 6.32</a>）。）<code>remember</code> 方法的第二行代码使用 <code>update_attribute</code> 方法更新记忆摘要。（<a href="chapter6.html#updating-user-objects">6.1.5 节</a>说过，这个方法会跳过验证。这里必须跳过验证，因为我们无法获取用户的密码和密码确认。）</p>
-<p>基于上述分析，创建有效令牌和摘要的方法是：首先使用 <code>User.new_token</code> 创建一个新记忆令牌，然后使用 <code>User.digest</code> 生成摘要，再更新数据库中的记忆摘要。实现这个步骤的 <code>remember</code> 方法如<a href="#listing-user-model-remember">代码清单 9.3</a> 所示。</p>
+<p>注意 <code>remember</code> 方法中第一行代码的赋值操作。根据 Ruby 处理对象内部赋值操作的规则，如果没有 <code>self</code>，创建的是一个名为 <code>remember_token</code> 的局部变量——这并不是我们想要的行为。使用 <code>self</code> 的目的是确保把值赋给用户的 <code>remember_token</code> 属性。（现在你应该知道为什么 <code>before_save</code> 回调中要使用 <code>self.email</code>，而不是 <code>email</code> 了吧（<a href="chapter6.html#listing-email-downcase">代码清单 6.32</a>）。）<code>remember</code> 方法的第二行代码使用 <code>update_attribute</code> 方法更新记忆摘要。（<a href="chapter6.html#updating-user-objects">6.1.5 节</a>说过，这个方法会跳过验证。这里必须跳过验证，因为我们无法获取用户的密码和密码确认。）</p>
+<p>基于上述分析，创建有效令牌和摘要的方法是：首先使用 <code>User.new_token</code> 创建一个新记忆令牌，然后使用 <code>User.digest</code> 生成摘要，最后更新数据库中的记忆摘要。实现这个步骤的 <code>remember</code> 方法如<a href="#listing-user-model-remember">代码清单 9.3</a> 所示。</p>
 <div id="listing-user-model-remember" data-type="listing">
 <h5><span class="title-label">代码清单 9.3</span>：在 <code>User</code> 模型中添加 <code>remember</code> 方法 <span class="green">GREEN</span></h5>
 
@@ -194,8 +193,8 @@
   <span class="o">.</span>
   <span class="c1"># 为了持久保存会话，在数据库中记住用户</span>
   <span class="k">def</span> <span class="nf">remember</span>
-    <span class="nb">self</span><span class="p">.</span><span class="nf">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new_token</span>
-    <span class="n">update_attribute</span><span class="p">(</span><span class="ss">:remember_digest</span><span class="p">,</span> <span class="no">User</span><span class="p">.</span><span class="nf">digest</span><span class="p">(</span><span class="n">remember_token</span><span class="p">))</span>
+<span class="hll">    <span class="nb">self</span><span class="p">.</span><span class="nf">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new_token</span></span>
+<span class="hll">    <span class="n">update_attribute</span><span class="p">(</span><span class="ss">:remember_digest</span><span class="p">,</span> <span class="no">User</span><span class="p">.</span><span class="nf">digest</span><span class="p">(</span><span class="n">remember_token</span><span class="p">))</span></span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div>
@@ -265,7 +264,7 @@
 </section>
 <section data-type="sect2" id="login-with-remembering">
 <h2><span class="title-label">9.1.2</span> 登录时记住登录状态</h2>
-<p>定义好 <code>user.remember</code> 方法之后，我们可以创建持久会话了，方法是，把（加密后的）用户 ID 和记忆令牌作为持久 cookie 存入浏览器。为此，我们要使用 <code>cookies</code> 方法。这个方法和 <code>session</code> 一样，可以视为一个哈希。一个 cookie 有两部分信息，一个是 <code>value</code>（值），一个是可选的 <code>expires</code>（过期日期）。例如，我们可以创建一个值为记忆令牌，20 年后过期的 cookie，实现持久会话：</p>
+<p>定义好 <code>user.remember</code> 方法之后，我们可以创建持久会话了，方法是，把（加密后的）用户 ID 和记忆令牌作为持久 cookie 存入浏览器。为此，我们要使用 <code>cookies</code> 方法。这个方法和 <code>session</code> 一样，可以视为一个散列。一个 cookie 有两部分信息，一个是 <code>value</code>（值），一个是可选的 <code>expires</code>（过期日期）。例如，我们可以创建一个值为记忆令牌，20 年后过期的 cookie，实现持久会话：</p>
 <div data-type="listing">
 
 
@@ -273,7 +272,7 @@
                              <span class="ss">expires: </span><span class="mi">20</span><span class="p">.</span><span class="nf">years</span><span class="p">.</span><span class="nf">from_now</span><span class="p">.</span><span class="nf">utc</span> <span class="p">}</span>
 </code></pre></div>
 </div>
-<p>（这里使用了一个便利的 Rails 时间辅助方法，参见<a href="#aside-time-helpers">旁注 9.1</a>。 ）Rails 应用中经常使用 20 年后过期的 cookie，所以 Rails 提供了一个特殊的方法 <code>permanent</code>，用于创建这种 cookie，所以上述代码可以简写为：</p>
+<p>（这里使用了一个便利的 Rails 时间辅助方法，参见<a href="#aside-time-helpers">旁注 9.1</a>。 ）Rails 应用经常使用 20 年后过期的 cookie，所以 Rails 提供了一个特殊的方法 <code>permanent</code>，用于创建这种 cookie，所以上述代码可以简写为：</p>
 <div data-type="listing">
 
 
@@ -304,39 +303,39 @@
 =&gt; 5242880
 </code></pre></div>
 </div>
-<p>这几个辅助方法可用于验证文件上传，例如，限制上传的图片最大不超过 <code>5.megabytes</code>。</p>
-<p>这种为内置类添加方法的特性很灵便，可以扩展 Ruby 的功能，不过使用时要小心一些。其实 Rails 的很多优雅之处正是基于 Ruby 语言的这一特性实现的。</p>
+<p>这几个辅助方法可用于验证文件上传，例如，限制上传的图像最大不超过 <code>5.megabytes</code>。</p>
+<p>这种为内置类添加方法的特性很灵便，可以扩展 Ruby 的功能，不过使用时要小心一些。其实，Rails 的很多优雅之处正是基于 Ruby 语言的这一特性实现的。</p>
 </div>
-<p>我们可以参照 <code>session</code> 方法（<a href="chapter8.html#listing-log-in-function">代码清单 8.13</a>），使用下面的方式把用户的 ID 存入 cookie：</p>
+<p>我们可以参照 <code>session</code> 方法（<a href="chapter8.html#listing-log-in-function">代码清单 8.14</a>），使用下面的方式把用户的 ID 存入 cookie：</p>
 <div data-type="listing">
 
 
 <div class="highlight language-ruby"><pre><code><span class="n">cookies</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="nf">id</span>
 </code></pre></div>
 </div>
-<p>但是这种方式存储的是纯文本，因此攻击者很容易窃取用户的账户。为了避免这种情况发生，我们要对 cookie 签名，存入浏览器之前安全加密 cookie：</p>
+<p>但是这种方式存储的是纯文本，攻击者很容易窃取用户的账户。为了避免这种情况发生，我们要对 cookie 签名，存入浏览器之前安全加密 cookie：<sup>[<a id="fn-ref-8" href="#fn-8">8</a>]</sup></p>
 <div data-type="listing">
 
 
 <div class="highlight language-ruby"><pre><code><span class="n">cookies</span><span class="p">.</span><span class="nf">signed</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="nf">id</span>
 </code></pre></div>
 </div>
-<p>因为我们想让用户 ID 和永久的记忆令牌配对，所以也要永久存储用户 ID。为此，我们可以串联调用 <code>signed</code> 和 <code>permanent</code> 方法：<sup>[<a id="fn-ref-8" href="#fn-8">8</a>]</sup></p>
+<p>因为我们想让用户 ID 和持久记忆令牌配对，所以也要持久存储用户 ID。为此，我们可以串联调用 <code>signed</code> 和 <code>permanent</code> 方法：</p>
 <div data-type="listing">
 
 
 <div class="highlight language-ruby"><pre><code><span class="n">cookies</span><span class="p">.</span><span class="nf">permanent</span><span class="p">.</span><span class="nf">signed</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="nf">id</span>
 </code></pre></div>
 </div>
-<p>存储 cookie 后，再访问页面时可以使用下面的代码取回用户：</p>
+<p>存储 cookie 后，再访问页面时可以使用下面的代码检索用户：</p>
 <div data-type="listing">
 
 
 <div class="highlight language-ruby"><pre><code><span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">id: </span><span class="n">cookies</span><span class="p">.</span><span class="nf">signed</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">])</span>
 </code></pre></div>
 </div>
-<p>其中，<code>cookies.signed[:user_id]</code> 会自动解密 cookie 中的用户 ID。然后，再使用 bcrypt 确认 <code>cookies[:remember_token]</code> 与 <a href="#listing-user-model-remember">代码清单 9.3</a> 生成的 <code>remember_digest</code> 是否匹配。（你可能想知道为什么不能只使用签名的用户 ID。如果没有记忆令牌，攻击者一旦知道加密的 ID，就能以这个用户的身份登录。但是按照我们目前的设计方式，就算攻击者同时获得了用户 ID 和记忆令牌，也要等到用户退出后才能登录。）</p>
-<p>最后一步是，确认记忆令牌与用户的记忆摘要匹配。对现在这种情况来说，使用 bcrypt 确认是否匹配有很多等效的方法。如果查看<a href="https://github.com/rails/rails/blob/master/activemodel/lib/active_model/secure_password.rb">安全密码的源码</a>，会发现下面这个比较语句：<sup>[<a id="fn-ref-9" href="#fn-9">9</a>]</sup></p>
+<p>其中，<code>cookies.signed[:user_id]</code> 会自动解密 cookie 中的用户 ID。然后，再使用 bcrypt 确认 <code>cookies[:remember_token]</code> 与<a href="#listing-user-model-remember">代码清单 9.3</a> 生成的 <code>remember_digest</code> 是否匹配。（你可能想知道为什么不能只使用签名的用户 ID。如果没有记忆令牌，攻击者一旦知道加密的 ID，就能以这个用户的身份登录。但是按照我们目前的设计方式，就算攻击者同时获得了用户 ID 和记忆令牌，至多只能维持登录状态到真正的用户退出。）</p>
+<p>最后一步是，确认记忆令牌与用户的记忆摘要匹配。对现在这种情况来说，使用 bcrypt 确认是否匹配有很多等效的方法。如果查看<a href="https://github.com/rails/rails/blob/master/activemodel/lib/active_model/secure_password.rb">安全密码的源码</a>，你会发现下面这个比较语句：<sup>[<a id="fn-ref-9" href="#fn-9">9</a>]</sup></p>
 <div data-type="listing">
 
 
@@ -350,7 +349,7 @@
 <div class="highlight language-ruby"><pre><code><span class="no">BCrypt</span><span class="o">::</span><span class="no">Password</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">remember_digest</span><span class="p">)</span> <span class="o">==</span> <span class="n">remember_token</span>
 </code></pre></div>
 </div>
-<p>仔细一想，这行代码有点儿奇怪：看起来是直接比较 bcrypt 计算得到的密码哈希和令牌，那么，要使用 <code>==</code> 就得解密摘要。可是，使用 bcrypt 的目的是为了得到不可逆的哈希值，所以这么想是不对的。研究 <a href="https://github.com/codahale/bcrypt-ruby/blob/master/lib/bcrypt/password.rb">bcrypt gem 的源码</a>后你会发现，bcrypt 重定义了 <code>==</code>，上述代码其实等效于：</p>
+<p>仔细一想，这行代码有点儿奇怪：看起来是直接比较 bcrypt 计算得到的密码哈希和令牌，那么，要使用 <code>==</code> 就得解密摘要。可是，使用 bcrypt 的目的是为了得到不可逆的哈希值，所以这么想是不对的。研究 <a href="https://github.com/codahale/bcrypt-ruby/blob/master/lib/bcrypt/password.rb">bcrypt gem 的源码</a>后你会发现，bcrypt 重新定义了 <code>==</code>，上述代码其实等效于：</p>
 <div data-type="listing">
 
 
@@ -358,7 +357,7 @@
 </code></pre></div>
 </div>
 <p>这种写法没使用 <code>==</code>，而是使用返回布尔值的 <code>is_password?</code> 方法进行比较。因为这么写意思更明确，所以，在应用代码中我们将这么写。</p>
-<p>基于上述分析，我们可以在 <code>User</code> 模型中定义 <code>authenticated?</code> 方法，比较摘要和令牌。这个方法的作用类似于 <code>has_secure_password</code> 提供用来认证用户的 <code>authenticate</code> 方法（<a href="chapter8.html#listing-log-in-success">代码清单 8.14</a>）。<code>authenticated?</code> 方法的定义如<a href="#listing-authenticated-p">代码清单 9.6</a> 所示。（虽然<a href="#listing-authenticated-p">代码清单 9.6</a> 中的 <code>authenticated?</code> 方法和记忆令牌联系紧密，不过在其他情况下也很有用，<a href="chapter11.html#account-activation">第 11 章</a>会改写这个方法，让它的使用范围更广。）</p>
+<p>基于上述分析，我们可以在 <code>User</code> 模型中定义 <code>authenticated?</code> 方法，比较摘要和令牌。这个方法的作用类似于 <code>has_secure_password</code> 提供用来认证用户的 <code>authenticate</code> 方法（<a href="chapter8.html#listing-log-in-success">代码清单 8.15</a>）。<code>authenticated?</code> 方法的定义如<a href="#listing-authenticated-p">代码清单 9.6</a> 所示。（虽然<a href="#listing-authenticated-p">代码清单 9.6</a> 中的 <code>authenticated?</code> 方法和记忆令牌联系紧密，不过在其他情况下也很有用，<a href="chapter11.html#account-activation">第 11 章</a>会改写这个方法，让它的使用范围更广。）</p>
 <div id="listing-authenticated-p" data-type="listing">
 <h5><span class="title-label">代码清单 9.6</span>：在 <code>User</code> 模型中添加 <code>authenticated?</code> 方法</h5>
 
@@ -371,12 +370,12 @@
   <span class="o">.</span>
   <span class="c1"># 如果指定的令牌和摘要匹配，返回 true</span>
   <span class="k">def</span> <span class="nf">authenticated?</span><span class="p">(</span><span class="n">remember_token</span><span class="p">)</span>
-    <span class="no">BCrypt</span><span class="o">::</span><span class="no">Password</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">remember_digest</span><span class="p">).</span><span class="nf">is_password?</span><span class="p">(</span><span class="n">remember_token</span><span class="p">)</span>
+<span class="hll">    <span class="no">BCrypt</span><span class="o">::</span><span class="no">Password</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">remember_digest</span><span class="p">).</span><span class="nf">is_password?</span><span class="p">(</span><span class="n">remember_token</span><span class="p">)</span></span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>注意，<code>authenticated?</code> 方法中的 <code>remember_token</code> 参数与<a href="#listing-user-model-remember">代码清单 9.3</a> 中使用 <code>attr_accessor :remember_token</code> 定义的 <code>remember_token</code> 不同，它是方法内的局部变量。（这个参数指代记忆令牌，使用与方法同名的名称一点也不奇怪。）还要注意 <code>remember_digest</code> 属性的写法，这与写成 <code>self.remember_digest</code> 的作用一样；<code>self.remember_digest</code> 调用的是方法，由 Active Record 根据数据库中的列名自动创建。</p>
+<p>注意，<code>authenticated?</code> 方法中的 <code>remember_token</code> 参数与<a href="#listing-user-model-remember">代码清单 9.3</a> 中使用 <code>attr_accessor :remember_token</code> 定义的 <code>remember_token</code> 不同，它是方法内的局部变量。（这个参数指代记忆令牌，使用与方法同名的名称一点也不奇怪。）还要注意 <code>remember_digest</code> 属性的写法，这与写成 <code>self.remember_digest</code> 的作用一样；<code>self.remember_digest</code> 调用的是方法，与<a href="chapter6.html#modeling-users">第 6 章</a>中的 <code>name</code> 和 <code>email</code> 类似，由 Active Record 根据数据库中的列名自动创建。</p>
 <p>现在可以记住用户的登录状态了。我们要在 <code>log_in</code> 后面调用 <code>remember</code> 辅助方法，如<a href="#listing-log-in-with-remember">代码清单 9.7</a> 所示。</p>
 <div id="listing-log-in-with-remember" data-type="listing">
 <h5><span class="title-label">代码清单 9.7</span>：登录并记住登录状态</h5>
@@ -407,7 +406,7 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>与登录功能一样，<a href="#listing-log-in-with-remember">代码清单 9.7</a> 把真正的工作交给 <code>Sessions</code> 辅助模块中的方法完成。在 <code>Sessions</code> 辅助模块中，我们要定义一个名为 <code>remember</code> 的方法，调用 <code>user.remember</code>，从而生成一个记忆令牌，并把对应的摘要存入数据库；然后使用 <code>cookies</code> 创建永久 cookie，保存用户 ID 和记忆令牌。结果如<a href="#listing-remember-method">代码清单 9.8</a> 所示。</p>
+<p>与登录功能一样，<a href="#listing-log-in-with-remember">代码清单 9.7</a> 把真正的工作交给 <code>Sessions</code> 辅助模块中的方法完成。在 <code>Sessions</code> 辅助模块中，我们要定义一个名为 <code>remember</code> 的方法，调用 <code>user.remember</code>，从而生成一个记忆令牌，并把对应的摘要存入数据库；然后使用 <code>cookies</code> 创建长久的 cookie，保存用户 ID 和记忆令牌。结果如<a href="#listing-remember-method">代码清单 9.8</a> 所示。</p>
 <div id="listing-remember-method" data-type="listing">
 <h5><span class="title-label">代码清单 9.8</span>：记住用户</h5>
 
@@ -445,14 +444,14 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>现在，用户登录后会被记住，因为在浏览器中存储了有效的记忆令牌。但是这还没有什么实际作用，因为<a href="chapter8.html#listing-current-user">代码清单 8.15</a>中定义的 <code>current_user</code> 方法只能处理临时会话：</p>
+<p>现在，用户登录后会被记住，因为在浏览器中存储了有效的记忆令牌。但是这还没有什么实际作用，因为<a href="chapter8.html#listing-current-user">代码清单 8.16</a> 中定义的 <code>current_user</code> 方法只能处理临时会话：</p>
 <div data-type="listing">
 
 
 <div class="highlight language-ruby"><pre><code><span class="vi">@current_user</span> <span class="o">||=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">id: </span><span class="n">session</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">])</span>
 </code></pre></div>
 </div>
-<p>对持久会话来说，如果临时会话中有 <code>session[:user_id]</code>，那么就从中取回用户；否则，应该检查 <code>cookies[:user_id]</code>，取回（并且登入）持久会话中存储的用户。实现方式如下：</p>
+<p>对持久会话来说，如果临时会话中有 <code>session[:user_id]</code>，那么使用它检索用户；否则，应该检查 <code>cookies[:user_id]</code>，检索（并登入）持久会话中存储的用户。实现方式如下：</p>
 <div data-type="listing">
 
 
@@ -467,7 +466,7 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>（这里沿用了 <a href="chapter8.html#listing-find-authenticate-user">代码清单 8.6</a> 中使用的 <code>user &amp;&amp; user.authenticated</code> 模式。）上述代码可以使用，但注意，其中重复使用了 <code>session</code> 和 <code>cookies</code>。我们可以去除重复，写成这样：</p>
+<p>（这里沿用了<a href="chapter8.html#listing-find-authenticate-user">代码清单 8.7</a> 中使用的 <code>user &amp;&amp; user.authenticated</code> 模式。）上述代码是可以使用，但注意，其中重复使用了 <code>session</code> 和 <code>cookies</code>。我们可以去除重复，写成这样：</p>
 <div data-type="listing">
 
 
@@ -560,7 +559,7 @@
 <h2><span class="title-label">9.1.3</span> 忘记用户</h2>
 <p>为了让用户退出，我们要定义一些和记住用户相对的方法，忘记用户。最终实现的 <code>user.forget</code> 方法，把记忆摘要的值设为 <code>nil</code>，即撤销 <code>user.remember</code> 方法的操作，如<a href="#listing-user-model-forget">代码清单 9.11</a> 所示。</p>
 <div id="listing-user-model-forget" data-type="listing">
-<h5><span class="title-label">代码清单 9.11</span>：在 <code>User</code> 模型中添加 <code>forget</code> 方法</h5>
+<h5><span class="title-label">代码清单 9.11</span>：在 <code>User</code> 模型中添加 <code>forget</code> 方法 <span class="red">RED</span></h5>
 
 <div class="source-file">app/models/user.rb</div>
 
@@ -582,7 +581,7 @@
 </div>
 <p>然后我们可以定义 <code>forget</code> 辅助方法，忘记持久会话，然后在 <code>log_out</code> 辅助方法中调用 <code>forget</code>，如<a href="#listing-log-out-with-forget">代码清单 9.12</a> 所示。<code>forget</code> 方法先调用 <code>user.forget</code>，然后再从 cookie 中删除 <code>user_id</code> 和 <code>remember_token</code>。</p>
 <div id="listing-log-out-with-forget" data-type="listing">
-<h5><span class="title-label">代码清单 9.12</span>：退出持久会话</h5>
+<h5><span class="title-label">代码清单 9.12</span>：退出持久会话 <span class="green">GREEN</span></h5>
 
 <div class="source-file">app/helpers/sessions_helper.rb</div>
 
@@ -628,7 +627,7 @@
 </section>
 <section data-type="sect2" id="two-subtle-bugs">
 <h2><span class="title-label">9.1.4</span> 两个小问题</h2>
-<p>现在还有两个相互之间有关系的小问题要解决。第一个，虽然只有登录后才能看到退出链接，但一个用户可能会同时打开多个浏览器窗口访问网站，如果用户在一个窗口中退出了，再在另一个窗口中点击退出链接的话会导致错误，因为<a href="#listing-log-out-with-forget">代码清单 9.12</a> 中使用了 <code>current_user</code>。<sup>[<a id="fn-ref-12" href="#fn-12">12</a>]</sup>我们可以限制只有已登录的用户才能退出，解决这个问题。</p>
+<p>现在还有两个相互之间有关系的小问题待解决。第一个，虽然只有登录后才能看到退出链接，但一个用户可能会同时打开多个浏览器窗口访问网站，如果用户在一个窗口中退出了，再在另一个窗口中点击退出链接的话会导致错误，这是因为 <code>log_out</code> 方法中使用了 <code>forget(current_user)</code>（<a href="#listing-log-out-with-forget">代码清单 9.12</a>）。<sup>[<a id="fn-ref-12" href="#fn-12">12</a>]</sup>我们可以限制只有已登录的用户才能退出，从而解决这个问题。</p>
 <p>第二个问题，用户可能会在不同的浏览器中登录（登录状态被记住），例如 Chrome 和 Firefox，如果用户在一个浏览器中退出，而另一个浏览器中没有退出，就会导致问题。<sup>[<a id="fn-ref-13" href="#fn-13">13</a>]</sup>假如用户在 Firefox 中退出了，那么记忆摘要的值变成了 <code>nil</code>（通过<a href="#listing-user-model-forget">代码清单 9.11</a> 中的 <code>user.forget</code>）。在 Firefox 中没什么问题，因为<a href="#listing-log-out-with-forget">代码清单 9.12</a> 中的 <code>log_out</code> 方法删除了用户的 ID，所以下面高亮的两行判断的结果都是 <code>false</code>：</p>
 <div data-type="listing">
 
@@ -673,7 +672,7 @@
 <div class="highlight language-ruby"><pre><code><span class="n">user</span> <span class="o">&amp;&amp;</span> <span class="n">user</span><span class="p">.</span><span class="nf">authenticated?</span><span class="p">(</span><span class="n">cookies</span><span class="p">[</span><span class="ss">:remember_token</span><span class="p">])</span>
 </code></pre></div>
 </div>
-<p>因为 <code>user</code> 不是 <code>nil</code>，第二个表达式会执行，从而导致错误抛出。这是因为在 Firefox 中退出时记忆摘要被删除了（<a href="#listing-user-model-forget">代码清单 9.11</a>），在 Chrome 中访问应用时调用下述代码传入的是记忆摘要是 <code>nil</code>，导致 bcrypt 抛出异常：</p>
+<p>因为 <code>user</code> 不是 <code>nil</code>，第二个表达式会执行，从而导致错误抛出。这是因为在 Firefox 中退出时记忆摘要被删除了（<a href="#listing-user-model-forget">代码清单 9.11</a>），在 Chrome 中访问应用时调用下述代码传入的记忆摘要是 <code>nil</code>，导致 bcrypt 抛出异常：</p>
 <div data-type="listing">
 
 
@@ -681,7 +680,7 @@
 </code></pre></div>
 </div>
 <p>若想解决这个问题，<code>authenticated?</code> 方法要返回 <code>false</code>。</p>
-<p>这正是测试驱动开发的优势所在，所以在解决之前，我们先编写测试捕获这两个小问题。我们先让<a href="chapter8.html#listing-user-logout-test">代码清单 8.30</a> 中的集成测试失败，如<a href="#listing-test-double-logout">代码清单 9.14</a> 所示。</p>
+<p>这正是测试驱动开发的优势所在，所以在解决之前，我们先编写测试捕获这两个小问题。我们先让<a href="chapter8.html#listing-user-logout-test">代码清单 8.31</a> 中的集成测试失败，如<a href="#listing-test-double-logout">代码清单 9.14</a> 所示。</p>
 <div id="listing-test-double-logout" data-type="listing">
 <h5><span class="title-label">代码清单 9.14</span>：测试用户退出 <span class="red">RED</span></h5>
 
@@ -744,7 +743,7 @@
 </div>
 <p>第二个问题涉及到两种不同的浏览器，在集成测试中很难模拟，不过直接在 <code>User</code> 模型层测试很简单。我们只需创建一个没有记忆摘要的用户（<code>setup</code> 方法中定义的 <code>@user</code> 变量就没有），再调用 <code>authenticated?</code> 方法即可，如<a href="#listing-test-authenticated-invalid-token">代码清单 9.17</a> 所示。（注意，我们直接使用空记忆令牌，因为还没用到这个值之前就会发生错误。）</p>
 <div id="listing-test-authenticated-invalid-token" data-type="listing">
-<h5><span class="title-label">代码清单 9.17</span>：测试没有摘要时 <code>authenticated?</code> 方法的表现 <span class="red">RED</span></h5>
+<h5><span class="title-label">代码清单 9.17</span>：测试没有摘要时 <code>authenticated?</code> 方法的行为 <span class="red">RED</span></h5>
 
 <div class="source-file">test/models/user_test.rb</div>
 
@@ -765,7 +764,7 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p><code>BCrypt::Password.new(nil)</code> 会抛出异常，所以测试组件不能通过：</p>
+<p>因为 <code>BCrypt::Password.new(nil)</code> 会抛出异常，所以测试组件不能通过：</p>
 <div data-type="listing">
 <h5><span class="title-label">代码清单 9.18</span>：<strong class="red">RED</strong></h5>
 
@@ -796,7 +795,7 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>如果记忆摘要的值为 <code>nil</code>，会直接返回 <code>return</code> 语句。这种方式经常用到，目的是强调其后的代码会被忽略。等价的代码如下：</p>
+<p>如果记忆摘要的值为 <code>nil</code>，直接使用 <code>return</code> 关键字返回。这种方式经常用到，目的是强调其后的代码会被忽略。等价的代码如下：</p>
 <div data-type="listing">
 
 
@@ -833,7 +832,7 @@
 <section data-type="sect1" id="remember-me-checkbox">
 <h1><span class="title-label">9.2</span> “记住我”复选框</h1>
 <p>至此，我们的应用已经实现了完整且专业的身份验证系统。最后，我们来看一下如何使用“记住我”复选框让用户选择是否记住登录状态。包含这个复选框的登录表单构思图如<a href="#fig-login-remember-me-mockup">图 9.3</a> 所示。</p>
-<p>为了实现这个构思，我们首先要在登录表单（<a href="chapter8.html#listing-login-form">代码清单 8.3</a>）中添加一个复选框。与标注（label）、文本字段、密码字段和提交按钮一样，复选框也可以使用 Rails 提供的辅助方法创建。不过，为了得到正确的样式，我们要把复选框嵌套在标注中，如下所示：</p>
+<p>为了实现这个构思，我们首先要在登录表单（<a href="chapter8.html#listing-login-form">代码清单 8.4</a>）中添加一个复选框。与标注（label）、文本字段、密码字段和提交按钮一样，复选框也可以使用 Rails 提供的辅助方法创建。不过，为了得到正确的样式，我们要把复选框嵌套在标注中，如下所示：</p>
 <div data-type="listing">
 
 
@@ -905,8 +904,8 @@
 <span class="p">}</span>
 </code></pre></div>
 </div>
-<p>修改登录表单后，当用户勾选这个复选框时，记住用户的登录状态，否则不记住。因为前一节的工作做得很好，现在实现起来只需一行代码就行。提交登录表单后，<code>params</code> 哈希中包含一个基于复选框状态的值（你可以使用有效信息填写登录表单，然后提交，看一下页面底部的调试信息）。如果勾选了复选框，<code>params[:session][:remember_me]</code> 的值是 <code>'1'</code>，否则是 <code>'0'</code>。</p>
-<p>我们可以检查 <code>params</code> 哈希中相关的值，根据提交的值决定是否记住用户：<sup>[<a id="fn-ref-14" href="#fn-14">14</a>]</sup></p>
+<p>修改登录表单后，当用户勾选这个复选框时，记住用户的登录状态，否则不记住。因为前一节的工作做得很好，现在实现起来只需一行代码就行。提交登录表单后，<code>params</code> 散列中包含一个基于复选框状态的值（你可以使用有效信息填写登录表单，然后提交，看一下页面底部的调试信息）。如果勾选了复选框，<code>params[:session][:remember_me]</code> 的值是 <code>'1'</code>，否则是 <code>'0'</code>。</p>
+<p>我们可以检查 <code>params</code> 散列中相关的值，根据提交的值决定是否记住用户：<sup>[<a id="fn-ref-14" href="#fn-14">14</a>]</sup></p>
 <div data-type="listing">
 
 
@@ -917,14 +916,14 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>根据<a href="#aside-ternary-operator">旁注 9.2</a> 中的说明，这种 <code>if-then</code> 分支语句可以使用三元运算符变成一行：<sup>[<a id="fn-ref-15" href="#fn-15">15</a>]</sup></p>
+<p>根据<a href="#aside-ternary-operator">旁注 9.2</a> 中的说明，这种 <code>if-then</code> 分支语句可以使用三元运算符（ternary operator）变成一行：<sup>[<a id="fn-ref-15" href="#fn-15">15</a>]</sup></p>
 <div data-type="listing">
 
 
 <div class="highlight language-ruby"><pre><code><span class="n">params</span><span class="p">[</span><span class="ss">:session</span><span class="p">][</span><span class="ss">:remember_me</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'1'</span> <span class="p">?</span> <span class="n">remember</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="p">:</span> <span class="n">forget</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
 </code></pre></div>
 </div>
-<p>在 <code>Sessions</code> 控制器的 <code>create</code> 动作中加入这行代码后，得到的代码非常简洁，如<a href="#listing-remember-me-ternary">代码清单 9.23</a> 所示。（现在你应该可以理解<a href="chapter8.html#listing-digest-method">代码清单 8.20</a>中使用三元运算符定义 <code>cost</code> 变量的代码了。）</p>
+<p>在 <code>Sessions</code> 控制器的 <code>create</code> 动作中加入这行代码后，得到的代码非常简洁，如<a href="#listing-remember-me-ternary">代码清单 9.23</a> 所示。（现在你应该可以理解<a href="chapter8.html#listing-digest-method">代码清单 8.21</a> 中使用三元运算符定义 <code>cost</code> 变量的代码了。）</p>
 <div id="listing-remember-me-ternary" data-type="listing">
 <h5><span class="title-label">代码清单 9.23</span>：处理提交的“记住我”复选框</h5>
 
@@ -958,7 +957,7 @@
 <div data-type="sidebar" id="aside-ternary-operator" class="sidebar">
 <h5><span class="title-label">旁注 9.2</span>：世界上有 10 种人</h5>
 <p>有一个老笑话，说世界上有 10 种人，懂二进制的人和不懂二进制的人。（这里的 10，在二进制中是 2。）同理，我们可以说，世界上有 10 种人，一种人喜欢三元运算符，一种人不喜欢，还有一种人不知道三元运算符是什么。（如果你碰巧是第三种人，马上就不是了。）</p>
-<p>编程一段时间之后，你会发现，最常使用的流程控制之一是下面这种：</p>
+<p>编程一段时间之后，你会发现，最常使用的控制流程之一是下面这种：</p>
 <div data-type="listing">
 
 
@@ -969,7 +968,7 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>Ruby 和其他很多语言一样（包括 C/C++，Perl，PHP 和 Java），提供了一种更为简单的表达式来替代这种流程控制结构——三元运算符（之所以这么叫，是因为三元运算符包括三部分）：</p>
+<p>Ruby 和其他很多语言一样（包括 C/C++、Perl、PHP 和 Java），提供了一种更为简单的表达式来替代这种流程控制结构——三元运算符（之所以这么叫，是因为三元运算符包括三部分）：</p>
 <div data-type="listing">
 
 
@@ -994,7 +993,7 @@
 <div class="highlight language-ruby"><pre><code><span class="n">var</span> <span class="o">=</span> <span class="n">boolean?</span> <span class="p">?</span> <span class="n">foo</span> <span class="p">:</span> <span class="n">bar</span>
 </code></pre></div>
 </div>
-<p>而且，为了方便，函数的返回值也经常使用三元操作符：</p>
+<p>而且，为了方便，函数的返回值也经常使用三元运算符：</p>
 <div data-type="listing">
 
 
@@ -1018,7 +1017,7 @@
 </section>
 <section data-type="sect1" id="remember-tests">
 <h1><span class="title-label">9.3</span> 测试“记住我”功能</h1>
-<p>“记住我”功能虽然可以使用了，但是我们还得编写一些测试，确认表现正常。测试的目的是捕获实现方式中可能出现的错误，这一点稍后讨论。更重要的原因是，实现持久会话的代码现在完全没有测试。编写测试时要使用一些小技巧，但能得到更强大的测试组件。</p>
+<p>“记住我”功能虽然可以使用了，但是我们还得编写一些测试，确认表现正常。测试的目的之一是捕获实现方式中可能出现的错误，这一点前文已经讨论。更重要的原因是，实现持久会话的代码现在完全没有测试。编写测试时要使用一些小技巧，但能得到更强大的测试组件。</p>
 <section data-type="sect2" id="testing-the-remember-me-box">
 <h2><span class="title-label">9.3.1</span> 测试“记住我”复选框</h2>
 <p>处理“记住我”复选框时（<a href="#listing-remember-me-ternary">代码清单 9.23</a>），我最初编写的代码是：</p>
@@ -1028,7 +1027,7 @@
 <div class="highlight language-ruby"><pre><code><span class="n">params</span><span class="p">[</span><span class="ss">:session</span><span class="p">][</span><span class="ss">:remember_me</span><span class="p">]</span> <span class="p">?</span> <span class="n">remember</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="p">:</span> <span class="n">forget</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
 </code></pre></div>
 </div>
-<p>而正确的代码应该写成：</p>
+<p>而正确的代码应该是：</p>
 <div data-type="listing">
 
 
@@ -1036,7 +1035,7 @@
 </code></pre></div>
 </div>
 <p><code>params[:session][:remember_me]</code> 的值不是 <code>'0'</code> 就是 <code>'1'</code>，都是真值，所以总是返回 <code>true</code>，应用会一直以为勾选了“记住我”。这正是测试能捕获的问题。</p>
-<p>因为记住登录状态之前用户要先登录，所以我们首先要定义一个辅助方法，在测试中登入用户。在<a href="chapter8.html#listing-user-login-test-valid-information">代码清单 8.22</a> 中，我们使用 <code>post</code> 方法发送有效的 <code>session</code> 哈希，登入用户，但是每次都这么做有点麻烦。为了避免不必要的重复，我们要编写一个辅助方法，名为 <code>log_in_as</code>，登入用户。</p>
+<p>因为记住登录状态之前用户要先登录，所以我们首先要定义一个辅助方法，在测试中登入用户。在<a href="chapter8.html#listing-user-login-test-valid-information">代码清单 8.23</a> 中，我们使用 <code>post</code> 方法发送有效的 <code>session</code> 散列，登入用户，但是每次都这么做有点麻烦。为了避免不必要的重复，我们要编写一个辅助方法，名为 <code>log_in_as</code>，登入用户。</p>
 <p>登入用户的方法在不同类型的测试中有所不同，在控制器测试中可以直接使用 <code>session</code> 方法，把 <code>user.id</code> 赋值给 <code>:user_id</code> 键：</p>
 <div data-type="listing">
 
@@ -1046,7 +1045,7 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>我们把这个方法命名为 <code>log_in_as</code>，这么做是为了避免与<a href="chapter8.html#listing-log-in-function">代码清单 8.13</a> 中定义的 <code>log_in</code> 方法混淆。这个方法要在 <code>test_helper</code> 文件中的 <code>ActiveSupport::TestCase</code> 类里定义，与<a href="chapter8.html#listing-test-helper-sessions">代码清单 8.25</a> 中定义的 <code>is_logged_in?</code> 辅助方法放在一起：</p>
+<p>我们把这个方法命名为 <code>log_in_as</code>，这么做是为了避免与<a href="chapter8.html#listing-log-in-function">代码清单 8.14</a> 中定义的 <code>log_in</code> 方法混淆。这个方法要在 <code>test_helper</code> 文件中的 <code>ActiveSupport::TestCase</code> 类里定义，与<a href="chapter8.html#listing-test-helper-sessions">代码清单 8.26</a> 中定义的 <code>is_logged_in?</code> 辅助方法放在一起：</p>
 <div data-type="listing">
 
 
@@ -1066,7 +1065,7 @@
 </code></pre></div>
 </div>
 <p>现在我们还用不到 <code>log_in_as</code> 方法的这个版本，<a href="chapter10.html#updating-showing-and-deleting-users">第 10 章</a>才能用到。</p>
-<p>在集成测试中不能直接使用 <code>session</code> 方法，不过可以向 <code>login_path</code> 发送 POST 请求（与<a href="chapter8.html#listing-user-login-test-valid-information">代码清单 8.22</a> 类似）。这样定义出来的 <code>log_in_as</code> 方法如下所示：</p>
+<p>在集成测试中不能直接使用 <code>session</code> 方法，不过可以向 <code>login_path</code> 发送 POST 请求（与<a href="chapter8.html#listing-user-login-test-valid-information">代码清单 8.23</a> 类似）。这样定义出来的 <code>log_in_as</code> 方法如下所示：</p>
 <div data-type="listing">
 
 
@@ -1148,7 +1147,7 @@
 <div class="highlight language-ruby"><pre><code><span class="n">cookies</span><span class="p">[</span><span class="s1">'remember_token'</span><span class="p">]</span>
 </code></pre></div>
 </div>
-<p>可以获得我们所需的值。最终写出的测试如<a href="#listing-remember-me-test">代码清单 9.25</a> 所示。（<a href="chapter8.html#listing-user-login-test-valid-information">代码清单 8.22</a> 中用过 <code>users(:michael)</code>，它的作用是获取<a href="chapter8.html#listing-real-user-fixture">代码清单 8.21</a> 中的用户固件。）</p>
+<p>可以获得我们所需的值。最终写出的测试如<a href="#listing-remember-me-test">代码清单 9.25</a> 所示。（<a href="chapter8.html#listing-user-login-test-valid-information">代码清单 8.23</a> 中用过 <code>users(:michael)</code>，它的作用是获取<a href="chapter8.html#listing-real-user-fixture">代码清单 8.22</a> 中的用户固件。）</p>
 <div id="listing-remember-me-test" data-type="listing">
 <h5><span class="title-label">代码清单 9.25</span>：测试“记住我”复选框 <span class="green">GREEN</span></h5>
 
@@ -1166,12 +1165,16 @@
   <span class="p">.</span>
   <span class="nf">test</span> <span class="s2">"login with remembering"</span> <span class="k">do</span>
 <span class="hll">    <span class="n">log_in_as</span><span class="p">(</span><span class="vi">@user</span><span class="p">,</span> <span class="ss">remember_me: </span><span class="s1">'1'</span><span class="p">)</span></span>
-<span class="hll">    <span class="n">assert_not_nil</span> <span class="n">cookies</span><span class="p">[</span><span class="s1">'remember_token'</span><span class="p">]</span></span>
+<span class="hll">    <span class="n">assert_not_empty</span> <span class="n">cookies</span><span class="p">[</span><span class="s1">'remember_token'</span><span class="p">]</span></span>
   <span class="k">end</span>
 
   <span class="nb">test</span> <span class="s2">"login without remembering"</span> <span class="k">do</span>
+<span class="hll">    <span class="c1"># 登录，设定 cookie</span></span>
+<span class="hll">    <span class="n">log_in_as</span><span class="p">(</span><span class="vi">@user</span><span class="p">,</span> <span class="ss">remember_me: </span><span class="s1">'1'</span><span class="p">)</span></span>
+<span class="hll">    <span class="n">delete</span> <span class="n">logout_path</span></span>
+<span class="hll">    <span class="c1"># 再次登录，确认 cookie 被删除了</span></span>
 <span class="hll">    <span class="n">log_in_as</span><span class="p">(</span><span class="vi">@user</span><span class="p">,</span> <span class="ss">remember_me: </span><span class="s1">'0'</span><span class="p">)</span></span>
-<span class="hll">    <span class="n">assert_nil</span> <span class="n">cookies</span><span class="p">[</span><span class="s1">'remember_token'</span><span class="p">]</span></span>
+<span class="hll">    <span class="n">assert_empty</span> <span class="n">cookies</span><span class="p">[</span><span class="s1">'remember_token'</span><span class="p">]</span></span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div>
@@ -1187,7 +1190,7 @@
 <h5 id="exercises-testing-the-remember-me-box" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>前面说过，由于应用现在的设计方式，在<a href="#listing-remember-me-test">代码清单 9.25</a> 中的集成测试无法获取 <code>remember_token</code> 虚拟属性。不过，在测试中使用一个特殊的方法可以获取，这个方法是 <code>assigns</code>。在测试中，可以访问控制器中定义的实例变量，方法是把实例变量的符号形式传给 <code>assigns</code> 方法。例如，如果 <code>create</code> 动作中定义了 <code>@user</code> 变量，在测试中可以使用 <code>assigns(:user)</code> 获取这个变量。现在，<code>Sessions</code> 控制器中的 <code>create</code> 动作定义了一个普通的变量（不是实例变量），名为 <code>user</code>，如果我们把它改成实例变量，就可以测试 <code>cookies</code> 中是否包含用户的记忆令牌。填写<a href="#listing-login-create-user-instance">代码清单 9.27</a> 和<a href="#listing-improved-remember-me-test">代码清单 9.28</a> 中缺少的内容（<code>?</code> 和 <code>FILL_IN</code>），完成改进后的“记住我”复选框测试。</p>
+<p>前面说过，由于应用现在的设计方式，<a href="#listing-remember-me-test">代码清单 9.25</a> 中的集成测试无法获取 <code>remember_token</code> 虚拟属性。不过，在测试中使用一个特殊的方法可以获取，这个方法是 <code>assigns</code>。在测试中，可以访问控制器中定义的实例变量，方法是把实例变量的符号形式传给 <code>assigns</code> 方法。例如，如果 <code>create</code> 动作中定义了 <code>@user</code> 变量，在测试中可以使用 <code>assigns(:user)</code> 获取这个变量。现在，<code>Sessions</code> 控制器中的 <code>create</code> 动作定义了一个普通的变量（不是实例变量），名为 <code>user</code>，如果我们把它改成实例变量，就可以测试 <code>cookies</code> 中是否包含用户的记忆令牌。填写<a href="#listing-login-create-user-instance">代码清单 9.27</a> 和<a href="#listing-improved-remember-me-test">代码清单 9.28</a> 中缺少的内容（<code>?</code> 和 <code>FILL_IN</code>），完成改进后的“记住我”复选框测试。</p>
 </li>
 </ol>
 <div id="listing-login-create-user-instance" data-type="listing">
@@ -1240,8 +1243,12 @@
   <span class="k">end</span>
 
   <span class="nb">test</span> <span class="s2">"login without remembering"</span> <span class="k">do</span>
+    <span class="c1"># 登录，设定 cookie</span>
+    <span class="n">log_in_as</span><span class="p">(</span><span class="vi">@user</span><span class="p">,</span> <span class="ss">remember_me: </span><span class="s1">'1'</span><span class="p">)</span>
+    <span class="n">delete</span> <span class="n">logout_path</span>
+    <span class="c1"># 再次登录，确认 cookie 被删除了</span>
     <span class="n">log_in_as</span><span class="p">(</span><span class="vi">@user</span><span class="p">,</span> <span class="ss">remember_me: </span><span class="s1">'0'</span><span class="p">)</span>
-    <span class="n">assert_nil</span> <span class="n">cookies</span><span class="p">[</span><span class="s1">'remember_token'</span><span class="p">]</span>
+    <span class="n">assert_empty</span> <span class="n">cookies</span><span class="p">[</span><span class="s1">'remember_token'</span><span class="p">]</span>
   <span class="k">end</span>
   <span class="p">.</span>
   <span class="nf">.</span>
@@ -1288,7 +1295,7 @@
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
-<p>这显然是个问题，因为<a href="#listing-branch-raise">代码清单 9.29</a> 会导致应用无法正常使用。而且，手动测试持久会话很麻烦，所以，如果以后想重构 <code>current_user</code> 方法的话（<a href="chapter11.html#account-activation">第 11 章</a>），现在就要测试。</p>
+<p>这显然是个问题，因为<a href="#listing-branch-raise">代码清单 9.29</a> 会导致应用无法正常使用。而且，手动测试持久会话很麻烦，所以，如果以后想重构 <code>current_user</code> 方法的话（<a href="chapter11.html#account-activation">第 11 章</a>将重构），现在就要测试。</p>
 <p>因为<a href="#listing-test-helper-log-in">代码清单 9.24</a> 中的 <code>log_in_as</code> 辅助方法自动设定了 <code>session[:user_id]</code>，所以在集成测试中测试 <code>current_user</code> 方法的“记住”分支很难。不过，幸好我们可以跳过这个限制，在 <code>Sessions</code> 辅助模块的测试中直接测试 <code>current_user</code> 方法。我们要手动创建这个测试文件：</p>
 <div data-type="listing">
 
@@ -1335,21 +1342,21 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>注意，我们还写了一个测试，确认记忆摘要和记忆令牌不匹配时当前用户是 <code>nil</code>，由此测试嵌套的 <code>if</code> 语句中 <code>authenticated?</code> 方法的表现：</p>
+<p>注意，我们还写了一个测试，确认记忆摘要和记忆令牌不匹配时当前用户是 <code>nil</code>，由此测试嵌套的 <code>if</code> 语句中 <code>authenticated?</code> 方法的行为：</p>
 <div data-type="listing">
 
 
 <div class="highlight language-ruby"><pre><code><span class="k">if</span> <span class="n">user</span> <span class="o">&amp;&amp;</span> <span class="n">user</span><span class="p">.</span><span class="nf">authenticated?</span><span class="p">(</span><span class="n">cookies</span><span class="p">[</span><span class="ss">:remember_token</span><span class="p">])</span>
 </code></pre></div>
 </div>
-<p>在<a href="#listing-persistent-sessions-test">代码清单 9.31</a> 中，我们可能会不小心写成：</p>
+<p>在<a href="#listing-persistent-sessions-test">代码清单 9.31</a> 中，我们可能会不小心这样写：</p>
 <div data-type="listing">
 
 
 <div class="highlight language-ruby"><pre><code><span class="n">assert_equal</span> <span class="n">current_user</span><span class="p">,</span> <span class="vi">@user</span>
 </code></pre></div>
 </div>
-<p>这样可能没什么问题，但是 <code>assert_equal</code> 方法的参数习惯先写“预期值”再写“真实值”：</p>
+<p>这样可能没什么问题，但是 <code>assert_equal</code> 方法的参数习惯先写“预期值”再写“实际值”：</p>
 <div data-type="listing">
 
 
@@ -1411,7 +1418,7 @@
 <h5 id="exercises-testing-the-remember-branch" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>把<a href="#listing-branch-no-raise">代码清单 9.33</a> 中的 <code>authenticated?</code> 删除，看看<a href="#listing-persistent-sessions-test">代码清单 9.31</a> 中的测试是否失败，从而确认第二个测试编写的是否正确。</p>
+<p>把<a href="#listing-branch-no-raise">代码清单 9.33</a> 中的 <code>authenticated?</code> 删除，看看<a href="#listing-persistent-sessions-test">代码清单 9.31</a> 中的第二个测试是否失败，从而确认测试编写的是否正确。</p>
 </li>
 </ol>
 </section>
@@ -1419,8 +1426,8 @@
 </section>
 <section data-type="sect1" id="advanced-login-conclusion">
 <h1><span class="title-label">9.4</span> 小结</h1>
-<p>这三章我们介绍了很多基础知识，也为稍显简陋的应用实现了注册和登录功能。实现用户验证功能后，我们可以根据登录状态和用户的身份限制对特定页面的访问权限。我们会在<a href="chapter10.html#updating-showing-and-deleting-users">第 10 章</a>实现编辑用户个人信息的功能。</p>
-<p>在继续之前，先把本章的改动合并到 <code>master</code> 分支：</p>
+<p>这三章我们介绍了很多基础知识，也为稍显简陋的应用实现了注册和登录功能。实现身份验证功能后，我们可以根据登录状态和用户的身份限制对特定页面的访问权限。我们将在<a href="chapter10.html#updating-showing-and-deleting-users">第 10 章</a>实现编辑用户个人信息的功能。</p>
+<p>在继续之前，先把本章的改动合并到主分支：</p>
 <div data-type="listing">
 
 
@@ -1431,17 +1438,17 @@
 <span class="gp">$ </span>git merge advanced-login
 </code></pre></div>
 </div>
-<p>部署之前要注意一个问题：推送之后，迁移完成之前，用户基本上处于不可用状态。在拥有巨大流量的线上网站中，更新前最好开启<a href="https://devcenter.heroku.com/articles/maintenance-mode">维护模式</a>：</p>
+<p>部署到 Heroku 之前要注意一个问题：推送之后，迁移完成之前，应用基本上处于不可用状态。在拥有巨大流量的线上网站中，更新前最好开启<a href="https://devcenter.heroku.com/articles/maintenance-mode">维护模式</a>：</p>
 <div data-type="listing">
 
 
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>heroku maintenance:on
 <span class="gp">$ </span>git push heroku
-<span class="gp">$ </span>heroku run rake db:migrate
+<span class="gp">$ </span>heroku run rails db:migrate
 <span class="gp">$ </span>heroku maintenance:off
 </code></pre></div>
 </div>
-<p>这样，在部署和执行迁移期间会显示一个标准的错误页面。详情参见 Heroku 文档对<a href="https://devcenter.heroku.com/articles/error-pages">错误页面</a>的说明。</p>
+<p>这样，在部署和执行迁移期间会显示一个标准的错误页面。（以后不会再做这一步，不过至少亲见一次总是好的。）详情参见 Heroku 文档对<a href="https://devcenter.heroku.com/articles/error-pages">错误页面</a>的说明。</p>
 <section data-type="sect2" id="log-in-log-out-learned">
 <h2><span class="title-label">9.4.1</span> 本章所学</h2>
 <ul>
@@ -1452,7 +1459,7 @@
 <p>为了实现持久会话，我们为每个用户生成了记忆令牌和对应的记忆摘要；</p>
 </li>
 <li>
-<p>使用 <code>cookies</code> 方法可以在浏览器的 cookie 中存储一个永久记忆令牌，实现持久会话；</p>
+<p>使用 <code>cookies</code> 方法可以在浏览器的 cookie 中存储一个长久的记忆令牌，实现持久会话；</p>
 </li>
 <li>
 <p>登录状态取决于有没有当前用户，而当前用户通过临时会话中的用户 ID 或持久会话中唯一的记忆令牌获取；</p>
@@ -1461,7 +1468,7 @@
 <p>退出功能通过删除会话中的用户 ID 和浏览器中的持久 cookie 实现；</p>
 </li>
 <li>
-<p>三元运算符是编写简单 <code>if-else</code> 语句的简洁方式。</p>
+<p>三元运算符是编写简单的 if-else 语句的简洁方式。</p>
 </li>
 </ul>
 </section>
@@ -1476,20 +1483,20 @@
               
 
               
-              <li class="pager-next"><a class="next" href="chapter10.html" title="第 10 章 更新，显示和删除用户">第 10 章 更新，显示和删除用户 &raquo;</a></li>
+              <li class="pager-next"><a class="next" href="chapter10.html" title="第 10 章 更新、显示和删除用户">第 10 章 更新、显示和删除用户 &raquo;</a></li>
               
             </ul>
           </nav>
 
           <div class="footnotes">
 <ol>
-<li id="fn-1">会话劫持大都可由 <a href="http://codebutler.com/firesheep">Firesheep</a> 应用发现。连接公共 WIFI 时，使用这个应用能看到很多知名网站的记忆令牌。 <a href="#fn-ref-1" class="symbol">&#8617;</a></li>
-<li id="fn-2">Rails 5 提供了 <code>has_secure_token</code> 方法，用于生产随机的令牌，但是它在数据库中存储的是未经哈希的值，因此不符合这里的需求。 <a href="#fn-ref-2" class="symbol">&#8617;</a></li>
-<li id="fn-3">之所以使用这个方法，是因为我看了 <a href="http://railscasts.com/episodes/274-remember-me-reset-password">RailsCast 中对记住我功能的介绍</a>。 <a href="#fn-ref-3" class="symbol">&#8617;</a></li>
+<li id="fn-1">会话劫持大都可由 <a href="http://codebutler.com/firesheep">Firesheep</a> 应用发现。连接公共 Wi-Fi 时，使用这个应用能看到很多知名网站的记忆令牌。 <a href="#fn-ref-1" class="symbol">&#8617;</a></li>
+<li id="fn-2">Rails 5 提供了 <code>has_secure_token</code> 方法，用于生成随机的令牌，但是它在数据库中存储的是未经哈希的值，因此不符合这里的需求。 <a href="#fn-ref-2" class="symbol">&#8617;</a></li>
+<li id="fn-3">之所以使用这个方法，是因为我看了 <a href="http://railscasts.com/episodes/274-remember-me-reset-password">RailsCast 中对记住我功能的讲解</a>。 <a href="#fn-ref-3" class="symbol">&#8617;</a></li>
 <li id="fn-4">何止“可以”，因为 bcrypt 会在哈希值中<a href="https://en.wikipedia.org/wiki/Salt_%28cryptography%29">加盐</a>，其实没有办法判别两个用户的密码是否相同。 <a href="#fn-ref-4" class="symbol">&#8617;</a></li>
 <li id="fn-5">如果记忆令牌是唯一的，攻击者必须同时拥有用户的 ID 和 cookie 中的记忆令牌才能劫持会话。 <a href="#fn-ref-5" class="symbol">&#8617;</a></li>
 <li id="fn-6">这还不足以让某些开发者信服，他们还是想确认没有碰撞，但是 10<sup>-40</sup> 概率太小了，这根本就是徒劳无益。如果整个宇宙一秒钟生成 10 亿个令牌，发生碰撞的几率仍是 10<sup>-23</sup> 数量级。 <a href="#fn-ref-6" class="symbol">&#8617;</a></li>
-<li id="fn-7">一般的规则是，如果方法不需要访问类的实例，就应该定义为类方法。到 <a href="chapter11.html#account-activation-emails">11.2 节</a>会发现，这个决定很重要。 <a href="#fn-ref-7" class="symbol">&#8617;</a></li>
+<li id="fn-7">一般的规则是，如果方法不需要访问类的实例，就应该定义为类方法。到 <a href="chapter11.html#account-activation-emails">11.2 节</a>你会发现，这个决定很重要。 <a href="#fn-ref-7" class="symbol">&#8617;</a></li>
 <li id="fn-8">一般来说，<a href="https://en.wikipedia.org/wiki/Digital_signature">签名</a>和<a href="https://en.wikipedia.org/wiki/Encryption">加密</a>是两个不同的操作，但是从 Rails 4 开始，`signed`方法默认<a href="http://api.rubyonrails.org/classes/ActionDispatch/Session/CookieStore.html">既签名也加密</a>。 <a href="#fn-ref-8" class="symbol">&#8617;</a></li>
 <li id="fn-9"><a href="chapter6.html#a-hashed-password">6.3.1 节</a>说过，“unencrypted password”（未加密的密码）用词不当，因为安全密码是哈希值，并不是加密后得到的值。 <a href="#fn-ref-9" class="symbol">&#8617;</a></li>
 <li id="fn-10">我一般会把这种赋值语句放在括号内，从视觉上提醒自己，这不是比较。 <a href="#fn-ref-10" class="symbol">&#8617;</a></li>

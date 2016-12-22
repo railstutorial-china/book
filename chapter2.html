@@ -14,7 +14,6 @@
   <link rel="stylesheet" type="text/css" href="book.css"/>
   <script type="text/javascript" src="//railstutorial-china.org/assets/js/global.js"></script>
 </head>
-<body>
 
 <body class="book-page">
 
@@ -60,16 +59,16 @@
           <article class="article">
             <section data-type="chapter" id="a-toy-app">
 <h1><span class="title-label">第 2 章</span> 玩具应用</h1>
-<p>本章我们要开发一个简单的演示应用，展示 Rails 强大的功能。我们会使用脚手架快速生成程序，这样就能站在一定高度上概览 Ruby on Rails 编程的过程（也能大致了解 Web 开发）。正如<a href="chapter1.html#aside-scaffolding">旁注 1.2</a> 所说，本书将采用与众不同方法，循序渐进开发一个完整的演示应用，遇到新的概念都会详细说明。不过为了快速概览（也为了寻找成就感），无需对脚手架避而不谈。我们将通过 URL 与最终开发出来的玩具应用交互，了解 Rails 应用的结构，也第一次演示 Rails 使用的 REST 架构。</p>
-<p>与后面的演示应用类似，这个玩具应用中有用户（users）和微博（microposts），因此算是一个简化的 Twitter 类应用。应用的功能还需要后续开发，而且开发过程中的很多步骤看起来很神秘，不过暂时不用担心：从<a href="chapter3.html#static-pages">3.2 节</a>起将从零开始再开发一个类似的完整应用，我还会提供大量的资料供你后续阅读。你要有些耐心，不要怕多犯错误，本章的主要目的就是让你不要被脚手架的神奇迷惑住，而要更深入的了解 Rails。</p>
+<p>本章我们要开发一个简单的演示应用，展示 Rails 强大的功能。我们会使用脚手架快速生成应用，这样就能站在一定高度上概览 Ruby on Rails 编程的过程（也能大致了解 Web 开发）。正如<a href="chapter1.html#aside-scaffolding">旁注 1.2</a> 所说，本书将采用与众不同的方法，循序渐进开发一个完整的演示应用，遇到新的概念都会详细说明。不过为了快速概览（也为了寻找成就感），无需对脚手架避而不谈。我们将通过 URL 与最终开发出来的玩具应用交互，了解 Rails 应用的结构，也第一次演示 Rails 使用的 REST 架构。</p>
+<p>与后面的演示应用类似，这个玩具应用中有用户（users）和微博（microposts），因此算是一个简化的 Twitter 类应用。应用的功能还需要后续开发，而且开发过程中的很多步骤看起来很神秘，不过暂时不用担心：从<a href="chapter3.html#static-pages">3.2 节</a>起将从零开始再开发一个类似的完整应用，我还会提供大量的资料供你后续阅读。你要有些耐心，不要怕多犯错误，本章的主要目的就是让你不要被脚手架的神奇迷惑住，而要更深入地了解 Rails。</p>
 <section data-type="sect1" id="planning-the-application">
 <h1><span class="title-label">2.1</span> 规划应用</h1>
-<p>这一节，我们要规划一下这个玩具应用。与 <a href="chapter1.html#the-hello-application">1.3 节</a>一样，我们先使用 <code>rails new</code> 命令生成应用的骨架：</p>
+<p>这一节，我们要规划一下这个玩具应用。与 <a href="chapter1.html#the-hello-application">1.3 节</a>一样，我们先使用 <code>rails new</code> 命令（指定 Rails 的版本号）生成应用的骨架：</p>
 <div data-type="listing">
 
 
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span><span class="nb">cd</span> ~/workspace
-<span class="gp">$ </span>rails _5.0.0.1_ new toy_app
+<span class="gp">$ </span>rails _5.0.1_ new toy_app
 <span class="gp">$ </span><span class="nb">cd </span>toy_app/
 </code></pre></div>
 </div>
@@ -81,7 +80,7 @@
 
 <div class="highlight language-ruby"><pre><code><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
 
-<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>        <span class="s1">'5.0.0.1'</span>
+<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>        <span class="s1">'5.0.1'</span>
 <span class="n">gem</span> <span class="s1">'puma'</span><span class="p">,</span>         <span class="s1">'3.4.0'</span>
 <span class="n">gem</span> <span class="s1">'sass-rails'</span><span class="p">,</span>   <span class="s1">'5.0.6'</span>
 <span class="n">gem</span> <span class="s1">'uglifier'</span><span class="p">,</span>     <span class="s1">'3.0.0'</span>
@@ -91,7 +90,7 @@
 <span class="n">gem</span> <span class="s1">'jbuilder'</span><span class="p">,</span>     <span class="s1">'2.4.1'</span>
 
 <span class="n">group</span> <span class="ss">:development</span><span class="p">,</span> <span class="ss">:test</span> <span class="k">do</span>
-  <span class="n">gem</span> <span class="s1">'sqlite3'</span><span class="p">,</span> <span class="s1">'1.3.11'</span>
+  <span class="n">gem</span> <span class="s1">'sqlite3'</span><span class="p">,</span> <span class="s1">'1.3.12'</span>
   <span class="n">gem</span> <span class="s1">'byebug'</span><span class="p">,</span>  <span class="s1">'9.0.0'</span><span class="p">,</span> <span class="ss">platform: :mri</span>
 <span class="k">end</span>
 
@@ -118,6 +117,7 @@
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>bundle install --without production
 </code></pre></div>
 </div>
+<p>如 <a href="chapter1.html#bundler">1.3.1 节</a>所述，可能还要运行 <code>bundle update</code>（<a href="chapter1.html#aside-technical-sophistication">旁注 1.1</a>）。</p>
 <p>最后，把这个玩具应用纳入 Git 版本控制系统：</p>
 <div data-type="listing">
 
@@ -128,7 +128,7 @@
 </code></pre></div>
 </div>
 <div id="fig-create-demo-repository" class="figure"><img src="images/chapter2/create_demo_repo_bitbucket.png" alt="create demo repo bitbucket" /><div class="figcaption"><span class="title-label">图 2.1</span>：在 Bitbucket 中为这个玩具应用创建一个仓库</div></div>
-<p>你还可以在 Bitbucket 网站中点击“Create”（新建）按钮<a href="https://bitbucket.org/repo/create">创建一个新仓库</a>（<a href="#fig-create-demo-repository">图 2.1</a>），然后把代码推送到这个远程仓库中：</p>
+<p>你还可以在 Bitbucket 中点击“Create”（新建）按钮<a href="https://bitbucket.org/repo/create">创建一个新仓库</a>（<a href="#fig-create-demo-repository">图 2.1</a>），然后把代码推送到这个远程仓库中：</p>
 <div data-type="listing">
 
 
@@ -174,19 +174,19 @@
 <p>下面要开发这个应用了。一般来说，开发 Web 应用的第一步是创建数据模型（data model）。模型表示应用所需的结构。这个玩具应用是个Twitter 类微博，只有用户和简短的文章（微博）。那么，我们先为这个应用添加 <code>User</code> 模型（<a href="#modeling-demo-users">2.1.1 节</a>），然后再添加 <code>Micropost</code> 模型（<a href="#modeling-demo-microposts">2.1.2 节</a>）。</p>
 <section data-type="sect2" id="modeling-demo-users">
 <h2><span class="title-label">2.1.1</span> <code>User</code> 模型</h2>
-<p>网络中有多少不同的注册表单，就有多少定义用户数据模型的方式。简单起见，我们将使用一种最简可用的方式。这个玩具应用的用户有一个唯一的标识 <code>id</code>（<code>integer</code> 类型），一个公开的名字 <code>name</code>（<code>string</code> 类型），以及一个电子邮件地址 <code>email</code>（也是 <code>string</code> 类型）。电子邮件地址会作为用户名使用。<code>User</code> 模型的结构如<a href="#fig-demo-user-model">图 2.2</a>。</p>
+<p>网络中有多少不同的注册表单，就有多少定义用户数据模型的方式。简单起见，我们将使用一种最简可用的方式。这个玩具应用的用户有一个唯一的标识 <code>id</code>（<code>integer</code> 类型）、一个公开的名字 <code>name</code>（<code>string</code> 类型）和一个电子邮件地址 <code>email</code>（也是 <code>string</code> 类型）。电子邮件地址将作为用户名使用。<code>User</code> 模型的结构如<a href="#fig-demo-user-model">图 2.2</a>。</p>
 <div id="fig-demo-user-model" class="figure"><img src="images/chapter2/demo_user_model.png" alt="demo user model" /><div class="figcaption"><span class="title-label">图 2.2</span>：<code>User</code> 数据模型</div></div>
-<p>在 <a href="chapter6.html#database-migrations">6.1.1 节</a>会看到，<a href="#fig-demo-user-model">图 2.2</a> 中的 <code>users</code> 对应于数据库中的一个表；<code>id</code>、<code>name</code> 和 <code>email</code> 是表中的列。</p>
+<p>在 <a href="chapter6.html#database-migrations">6.1.1 节</a>会看到，<a href="#fig-demo-user-model">图 2.2</a> 中的 <code>users</code> 对应于数据库中的一个表（table）；<code>id</code>、<code>name</code> 和 <code>email</code> 是表中的列（column）。</p>
 </section>
 <section data-type="sect2" id="modeling-demo-microposts">
 <h2><span class="title-label">2.1.2</span> <code>Micropost</code> 模型</h2>
-<p><code>Micropost</code> 数据模型比 <code>User</code> 模型还要简单：微博只要一个 <code>id</code> 和表示微博内容的 <code>content</code>（<code>text</code> 类型）字段即可。<sup>[<a id="fn-ref-1" href="#fn-1">1</a>]</sup>此外还有一个比较复杂的字段要实现，这个字段把微博和用户关联起来。我们使用 <code>user_id</code> 存储微博的属主。最终得到的 <code>Micropost</code> 数据模型如<a href="#fig-demo-micropost-model">图 2.3</a> 所示。</p>
+<p><code>Micropost</code> 数据模型比 <code>User</code> 模型还要简单：微博只要一个 <code>id</code> 和表示微博内容的 <code>content</code>（<code>text</code> 类型）字段即可。<sup>[<a id="fn-ref-1" href="#fn-1">1</a>]</sup>此外还有一个比较复杂的字段要实现，这个字段把微博和用户关联（associate）起来。我们使用 <code>user_id</code> 存储微博的属主。最终得到的 <code>Micropost</code> 数据模型如<a href="#fig-demo-micropost-model">图 2.3</a> 所示。</p>
 <div id="fig-demo-micropost-model" class="figure"><img src="images/chapter2/demo_micropost_model.png" alt="demo micropost model" /><div class="figcaption"><span class="title-label">图 2.3</span>：<code>Micropost</code> 数据模型</div></div>
-<p><a href="#a-user-has-many-microposts">2.3.3 节</a>会介绍怎样使用 <code>user_id</code> 字段简单实现一个用户拥有多个微博的功能。（在<a href="chapter13.html#user-microposts">第 13 章</a>有更完整的说明。）</p>
+<p><a href="#a-user-has-many-microposts">2.3.3 节</a>会介绍怎样使用 <code>user_id</code> 字段简单实现一个用户拥有多个微博的功能。（<a href="chapter13.html#user-microposts">第 13 章</a>有更完整的说明。）</p>
 </section>
 </section>
 <section data-type="sect1" id="demo-users-resource">
-<h1><span class="title-label">2.2</span> <code>Users</code> 资源</h1>
+<h1><span class="title-label">2.2</span> Users 资源</h1>
 <p>这一节我们要实现 <a href="#modeling-demo-users">2.1.1 节</a>设定的 <code>User</code> 数据模型，还会为它创建 Web 界面。二者结合起来就是一个 <code>Users</code> 资源。“资源”的意思是把用户设想为对象，可以通过 <a href="http://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol">HTTP 协议</a>在网页中创建（create）、读取（read）、更新（update）和删除（delete）。正如前面提到的，我们将使用 Rails 内置的脚手架生成 <code>Users</code> 资源。我建议你先不要细看脚手架生成的代码，这时看只会让你更困惑。</p>
 <p>把 <code>scaffold</code> 传给 <code>rails generate</code> 命令就可以使用 Rails 的脚手架了。传给 <code>scaffold</code> 的参数是资源名的单数形式（这里是 <code>User</code>）<sup>[<a id="fn-ref-2" href="#fn-2">2</a>]</sup>，后面可以再跟着一些可选参数，指定数据模型中的字段：</p>
 <div data-type="listing">
@@ -227,7 +227,7 @@
       create    app/assets/stylesheets/scaffolds.scss
 </code></pre></div>
 </div>
-<p>我们在执行的命令中加入了 <code>name:string</code> 和 <code>email:string</code>，这样就可以实现<a href="#fig-demo-user-model">图 2.2</a> 中的 <code>Users</code> 模型了。注意，没必要指定 <code>id</code> 字段，Rails 会自动创建并将其设为表的主键（primary key）。</p>
+<p>我们在执行的命令中加入了 <code>name:string</code> 和 <code>email:string</code>，这样就可以实现<a href="#fig-demo-user-model">图 2.2</a> 中的 <code>User</code> 模型了。注意，没必要指定 <code>id</code> 字段，Rails 会自动创建并将其设为表的主键（primary key）。</p>
 <p>接下来我们要用 <code>rails db:migrate</code> 命令迁移（migrate）数据库，如<a href="#listing-first-migration">代码清单 2.4</a> 所示。</p>
 <div id="listing-first-migration" data-type="listing">
 <h5><span class="title-label">代码清单 2.4</span>：迁移数据库</h5>
@@ -245,7 +245,7 @@
 <div data-type="sidebar" id="aside-rake" class="sidebar">
 <h5><span class="title-label">旁注 2.1</span>：Rake</h5>
 <p>在 Unix 中，把源码编译成可执行的程序时，<a href="http://en.wikipedia.org/wiki/Make_(software)">Make</a> 扮演了很重要的角色。Rake 是 Ruby 版 Make，是使用 Ruby 语言编写的 Make 类程序。</p>
-<p>在 Rails 5 之前，Ruby on Rails 大量使用 Rake，因此为了维护以前的应用，一定要知道如何使用 Rake。或许，Rails 最常使用的两个 Rake 命令是 <code>rake db:migrate</code>（迁移数据库，更新数据模型）和 <code>rake test</code>（运行自动化测试组件）。使用 Rake 时，要确保使用的是 Rails 应用 <code>Gemfile</code> 文件中指定的版本，方法是使用 Bundler 提供的 <code>bundle exec</code> 命令。因此，执行迁移的 <code>rake db:migrate</code> 命令要写成：</p>
+<p>在 Rails 5 之前，Ruby on Rails 大量使用 Rake，因此为了维护以前的应用，一定要知道如何使用 Rake。或许，Rails 最常使用的两个 Rake 命令是 <code>rake db:migrate</code>（迁移数据库，更新数据模型）和 <code>rake test</code>（运行自动化测试组件）。使用 Rake 时，要确保使用的是 Rails 应用 <code>Gemfile</code> 文件中指定的版本，方法是使用 Bundler 提供的 <code>bundle exec</code> 命令。因此，执行迁移的 <code>rails db:migrate</code> 命令要写成：</p>
 <div data-type="listing">
 
 
@@ -257,10 +257,10 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails server -b <span class="nv">$IP</span> -p <span class="nv">$PORT</span>    <span class="c"># 在本地要执行 `rails server`</span>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails server -b <span class="nv">$IP</span> -p <span class="nv">$PORT</span> <span class="c"># 在本地要执行 `rails server`</span>
 </code></pre></div>
 </div>
-<p>现在，这个玩具应用应该可以在本地服务器中访问了（<a href="chapter1.html#rails-server">1.3.2 节</a>）。（如果使用云端 IDE，要在一个新的浏览器选项卡中打开网页，别在 IDE 中打开。）</p>
+<p>现在，这个玩具应用应该可以在本地服务器中访问了，结果与 <a href="chapter1.html#rails-server">1.3.2 节</a>一样。（如果使用云端 IDE，要在一个新的浏览器选项卡中打开网页，别在 IDE 中打开。）</p>
 <section data-type="sect2" id="a-user-tour">
 <h2><span class="title-label">2.2.1</span> 浏览用户相关的页面</h2>
 <p>访问根 URL，我们会看到与<a href="chapter1.html#fig-hello-world-hello-app">图 1.12</a> 一样的“hello, world!”页面。不过使用脚手架生成 <code>Users</code> 资源时生成了很多用来处理用户的页面。例如，列出所有用户的页面 /users，创建新用户的页面 /users/new。本节的目的是走马观花地浏览一下这些用户相关的页面。浏览时你会发现<a href="#table-user-urls">表 2.1</a> 很有用，表中显示了页面和 URL 之间的对应关系。</p>
@@ -301,7 +301,7 @@
 </tr>
 </tbody>
 </table>
-<p>我们先来看显示所有用户的页面，这个页面叫索引页，路径是 /users。和预期一样，目前还没有用户，如<a href="#fig-demo-blank-user-index-rails-3">图 2.4</a> 所示。</p>
+<p>我们先来看显示应用中所有用户的页面，这个页面叫索引页，路径是 /users。和预期一样，目前还没有用户，如<a href="#fig-demo-blank-user-index-rails-3">图 2.4</a> 所示。</p>
 <p>如果想创建新用户，要访问 /users/new 路径上的页面，如<a href="#fig-demo-new-user-rails_3">图 2.5</a> 所示。<a href="chapter7.html#sign-up">第 7 章</a>会把这个页面打造成用户注册页面。</p>
 <p>我们可以在表单中填入名字和电子邮件地址，然后点击“Create User”（创建用户）按钮创建一个用户。
 此时，浏览器会转向这个用户的页面，即 /users/1，如<a href="#fig-demo-show-user-rails-3">图 2.6</a> 所示。（页面中显示的绿色文字是闪现消息（flash message），<a href="chapter7.html#the-flash">7.4.2 节</a>会介绍。）注意，这个页面的 URL 是 /users/1。你可能猜到了，这里的 <code>1</code> 就是<a href="#fig-demo-user-model">图 2.2</a> 中的用户 <code>id</code>。<a href="chapter7.html#showing-users">7.1 节</a>会把这个页面打造成用户的资料页。</p>
@@ -312,13 +312,13 @@
 <div id="fig-demo-edit-user-rails-3" class="figure"><img src="images/chapter2/demo_edit_user_3rd_edition.png" alt="demo edit user 3rd edition" /><div class="figcaption"><span class="title-label">图 2.7</span>：编辑用户信息的页面（/users/1/edit）</div></div>
 <div id="fig-demo-update-user-rails-3" class="figure"><img src="images/chapter2/demo_update_user_3rd_edition.png" alt="demo update user 3rd edition" /><div class="figcaption"><span class="title-label">图 2.8</span>：更新信息后的用户页面</div></div>
 <div id="fig-demo-user-index-two-rails-3" class="figure"><img src="images/chapter2/demo_user_index_two_3rd_edition.png" alt="demo user index two 3rd edition" /><div class="figcaption"><span class="title-label">图 2.9</span>：创建第二个用户后的用户索引页（/users）</div></div>
-<p>现在回到 /users/new 页面，在表单中编写信息，创建第二个用户。然后访问用户索引页，结果如<a href="#fig-demo-user-index-two-rails-3">图 2.9</a> 所示。<a href="chapter7.html#showing-users">7.1 节</a>会美化这个显示所有用户的页面。</p>
+<p>现在回到 /users/new 页面，在表单中填写信息，创建第二个用户。然后访问用户索引页，结果如<a href="#fig-demo-user-index-two-rails-3">图 2.9</a> 所示。<a href="chapter7.html#showing-users">7.1 节</a>会美化这个显示所有用户的页面。</p>
 <p>我们已经看了创建、显示和编辑用户的页面，最后要看删除用户的页面（<a href="#fig-demo-destroy-user">图 2.10</a>）。点击<a href="#fig-demo-destroy-user">图 2.10</a> 中所示的链接后，会删除第二个用户，现在索引页面就只剩一个用户了。（如果这个操作不成功，确认浏览器是否启用了 JavaScript。Rails 通过 JavaScript 发送删除用户的请求。）<a href="chapter10.html#deleting-users">10.4 节</a>会为演示应用实现用户删除功能，而且仅限于管理员级别的用户才能执行这项操作。</p>
 <div id="fig-demo-destroy-user" class="figure"><img src="images/chapter2/demo_destroy_user_3rd_edition.png" alt="demo destroy user 3rd edition" /><div class="figcaption"><span class="title-label">图 2.10</span>：删除一个用户</div></div>
 <h5 id="exercises-a-user-tour" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>创建一个新用户，然后使用浏览器中的 HTML 审查工具找出“User was successfully created.”文本的 CSS ID。刷新页面后会发生什么？</p>
+<p>（如果你了解 CSS）创建一个新用户，然后使用浏览器中的 HTML 审查工具找出“User was successfully created.”文本的 CSS ID。刷新页面后会发生什么？</p>
 </li>
 <li>
 <p>如果创建用户时只填写名字，而没填写电子邮件地址，会发生什么？</p>
@@ -344,7 +344,7 @@
 <p>Rails 的路由把 /users 交给 <code>Users</code> 控制器的 <code>index</code> 动作处理；</p>
 </li>
 <li>
-<p><code>index</code> 动作要求 <code>User</code> 模型读取所有用户（<code>User.all</code>）；</p>
+<p><code>index</code> 动作要求 <code>User</code> 模型检索所有用户（<code>User.all</code>）；</p>
 </li>
 <li>
 <p><code>User</code> 模型从数据库中读取所有用户；</p>
@@ -362,9 +362,9 @@
 <p>控制器把 HTML 送回浏览器。<sup>[<a id="fn-ref-3" href="#fn-3">3</a>]</sup></p>
 </li>
 </ol>
-<p>下面详细分析这个过程。首先，浏览器发送请求（第 1 步）。这一步可以直接在浏览器地址栏中输入地址，也可以点击网页中的链接。请求到达 Rails 路由（第 2 步），路由根据 URL（以及请求的类型，参见<a href="chapter3.html#aside-get-etc">旁注 3.2</a>）将把请求分配合适的控制器动作。把 <code>Users</code> 资源中相关的 URL 映射到控制器动作的代码如<a href="#listing-rails-routes">代码清单 2.5</a> 所示。那行代码会按照<a href="#table-user-urls">表 2.1</a> 中的对应关系做映射。（<code>:users</code> 这个写法看着很奇怪，它是一个符号（Symbol），<a href="chapter4.html#hashes-and-symbols">4.3.3 节</a>会介绍。）</p>
+<p>下面详细分析这个过程。首先，浏览器发送请求（第 1 步）。这一步可以直接在浏览器地址栏中输入地址，也可以点击网页中的链接。请求到达 Rails 路由器（第 2 步），路由器根据 URL（以及请求的类型，参见<a href="chapter3.html#aside-get-etc">旁注 3.2</a>）把请求分配给合适的控制器动作。把 <code>Users</code> 资源中相关的 URL 映射到控制器动作的代码如<a href="#listing-rails-routes">代码清单 2.5</a> 所示。那行代码会按照<a href="#table-user-urls">表 2.1</a> 中的对应关系做映射。（<code>:users</code> 这个写法看着很奇怪，它是一个符号（Symbol），<a href="chapter4.html#hashes-and-symbols">4.3.3 节</a>会介绍。）</p>
 <div id="listing-rails-routes" data-type="listing">
-<h5><span class="title-label">代码清单 2.5</span>：Rails 路由，为 <code>Users</code> 资源定义了的规则</h5>
+<h5><span class="title-label">代码清单 2.5</span>：Rails 路由，为 <code>Users</code> 资源定义了一条规则</h5>
 
 <div class="source-file">config/routes.rb</div>
 
@@ -447,9 +447,9 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>你可能注意到了，动作的数量比我们看过的页面数量多，<code>index</code>、<code>show</code>、<code>new</code> 和 <code>edit</code> 对应于 <a href="#a-user-tour">2.2.1 节</a>介绍的页面。此外还有一些其他动作，<code>create</code>、<code>update</code> 和 <code>destroy</code> 等。这些动作一般不直接渲染页面（不过有时也会），只会修改数据库中保存的用户数据。<a href="#table-demo-restful-users">表 2.2</a> 列出了控制器的全部动作，这些动作就是 Rails 对 REST 架构（<a href="#aside-rest">旁注 2.2</a>）的实现。REST 架构由计算机科学家 <a href="http://en.wikipedia.org/wiki/Roy_Fielding">Roy Fielding</a> 提出，意思是“表现层状态转化”（Representational State Transfer）。<sup>[<a id="fn-ref-4" href="#fn-4">4</a>]</sup>注意<a href="#table-demo-restful-users">表 2.2</a> 中的内容，有些部分有重叠。例如 <code>show</code> 和 <code>update</code> 两个动作都映射到 /users/1 这个地址上，二者的区别是使用的 <a href="http://en.wikipedia.org/wiki/HTTP_request#Request_methods">HTTP 请求方法</a>不同。<a href="chapter3.html#getting-started-with-testing">3.3 节</a>会更详细地介绍 HTTP 请求方法。</p>
+<p>你可能注意到了，动作的数量比我们看过的页面数量多，<code>index</code>、<code>show</code>、<code>new</code> 和 <code>edit</code> 对应于 <a href="#a-user-tour">2.2.1 节</a>介绍的页面。此外还有一些其他动作，<code>create</code>、<code>update</code> 和 <code>destroy</code>。这些动作一般不直接渲染页面（不过有时也会），只会修改数据库中保存的用户数据。<a href="#table-demo-restful-users">表 2.2</a> 列出了控制器的全部动作，这些动作就是 Rails 对 REST 架构（<a href="#aside-rest">旁注 2.2</a>）的实现。REST 架构由计算机科学家 <a href="http://en.wikipedia.org/wiki/Roy_Fielding">Roy Fielding</a> 提出，意思是“表现层状态转化”（Representational State Transfer）。<sup>[<a id="fn-ref-4" href="#fn-4">4</a>]</sup>注意<a href="#table-demo-restful-users">表 2.2</a> 中的内容，有些部分有重叠。例如 <code>show</code> 和 <code>update</code> 两个动作都映射到 /users/1 这个地址上，二者的区别是响应的 <a href="http://en.wikipedia.org/wiki/HTTP_request#Request_methods">HTTP 请求方法</a>不同。<a href="chapter3.html#getting-started-with-testing">3.3 节</a>会更详细地介绍 HTTP 请求方法。</p>
 <table id="table-demo-restful-users" class="tableblock frame-all grid-all" style="width: 100%;">
-<caption><span class="title-label">表 2.2</span>：<a href="#listing-rails-routes">代码清单 2.5</a> 生成的符合 REST 架构的路由</caption>
+<caption><span class="title-label">表 2.2</span>：<a href="#listing-rails-routes">代码清单 2.5</a> 中 <code>Users</code> 资源生成的符合 REST 架构的路由</caption>
 <colgroup>
 <col style="width: 15%;" />
 <col style="width: 20%;" />
@@ -469,7 +469,7 @@
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>GET</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">/users</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>index</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">列出所用用户</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">列出所有用户</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>GET</code></p></td>
@@ -481,7 +481,7 @@
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>GET</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">/users/new</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>new</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">显示创建新用户页面</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">显示创建新用户的页面</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>POST</code></p></td>
@@ -511,8 +511,8 @@
 </table>
 <div data-type="sidebar" id="aside-rest" class="sidebar">
 <h5><span class="title-label">旁注 2.2</span>：表现层状态转化（REST）</h5>
-<p>如果阅读过一些 Ruby on Rails Web 开发相关的资料，你会发现很多地方都提到了“REST”，它是“表现层状态转化”（REpresentational State Transfer）的简称。REST 是一种架构方式，用于开发分布式、基于网络的系统和软件程序，例如 WWW 和 Web 应用。REST 理论很抽象，在 Rails 应用中，REST 意味着大多数组件（例如用户和微博）都被模型化，变成资源（resource），可以创建（create）、读取（read）、更新（update）和删除（delete）。这些操作与<a href="http://en.wikipedia.org/wiki/Create,_read,_update_and_delete">关系型数据库中的 CRUD 操作</a>和 <a href="http://en.wikipedia.org/wiki/HTTP_request#Request_methods">HTTP 请求方法</a>（<code>POST</code>，<code>GET</code>，<code>PATCH</code> 和 <code>DELETE</code>）对应。<a href="chapter3.html#getting-started-with-testing">3.3 节</a>，特别是<a href="chapter3.html#aside-get-etc">旁注 3.2</a>，将更详细地介绍 HTTP 请求。</p>
-<p>作为 Rails 应用开发者，REST 开发方式能帮助你决定编写哪些控制器和动作：你只需简单的把可以创建、读取、更新和删除的资源理清就可以了。对本章的“用户”和“微博”来说，这一过程非常明确，因为它们都是很自然的资源形式。在<a href="chapter14.html#following-users">第 14 章</a>将看到，使用 REST 架构可以通过一种自然而便捷的方式解决棘手问题（“关注用户”功能）。</p>
+<p>如果阅读过一些 Ruby on Rails Web 开发相关的资料，你会发现很多地方都提到了“REST”，它是“表现层状态转化”（REpresentational State Transfer）的简称。REST 是一种架构风格，用于开发分布式、基于网络的系统和软件应用，例如万维网和 Web 应用。REST 理论很抽象，在 Rails 应用中，REST 意味着大多数组件（例如用户和微博）都被模型化，变成资源（resource），可以创建（create）、读取（read）、更新（update）和删除（delete）。这些操作与<a href="http://en.wikipedia.org/wiki/Create,_read,_update_and_delete">关系型数据库中的 CRUD 操作</a>和 <a href="http://en.wikipedia.org/wiki/HTTP_request#Request_methods">HTTP 请求方法</a>（<code>POST</code>、<code>GET</code>、<code>PATCH</code> 和 <code>DELETE</code>）对应。<a href="chapter3.html#getting-started-with-testing">3.3 节</a>，特别是<a href="chapter3.html#aside-get-etc">旁注 3.2</a>，将更详细地介绍 HTTP 请求。</p>
+<p>作为 Rails 应用开发者，REST 开发方式能帮助你决定编写哪些控制器和动作：你只需简单地把可以创建、读取、更新和删除的资源理清就可以了。对本章的“用户”和“微博”来说，这一过程非常明确，因为它们都是很自然的资源形式。在<a href="chapter14.html#following-users">第 14 章</a>将看到，使用 REST 架构可以通过一种自然而便捷的方式解决棘手问题（“关注用户”功能）。</p>
 </div>
 <p>为了探明 <code>Users</code> 控制器与 <code>User</code> 模型之间的关系，我们看一下简化后的 <code>index</code> 动作，如<a href="#listing-demo-index-action">代码清单 2.8</a> 所示。（要阅读不完全能理解的代码也体现了“技术是复杂的”。）</p>
 <div id="listing-demo-index-action" data-type="listing">
@@ -533,7 +533,7 @@
 <span class="nf">end</span>
 </code></pre></div>
 </div>
-<p><code>index</code> 动作中有一行代码，<code>@users = User.all</code>（<a href="#fig-mvc-detailed">图 2.11</a> 中的第 3 步），让 <code>User</code> 模型从数据库中取出所有用户（第 4 步），然后把结果赋值给 <code>@users</code> 变量（读作“at-users”，第 5 步）。<code>User</code> 模型的代码参见<a href="#listing-demo-user-model">代码清单 2.9</a>。这段代码看似简单，但是通过继承具备了很多功能（参见 <a href="#inheritance-hierarchies">2.3.4 节</a> 和 <a href="chapter4.html#ruby-classes">4.4 节</a>）。具体而言，调用 Rails 中的 Active Record 库后，<code>User.all</code> 就能获取数据库中的所有用户。</p>
+<p><code>index</code> 动作中有一行代码，<code>@users = User.all</code>（<a href="#fig-mvc-detailed">图 2.11</a> 中的第 3 步），让 <code>User</code> 模型从数据库中检索所有用户（第 4 步），然后把结果赋值给 <code>@users</code> 变量（读作“at-users”，第 5 步）。<code>User</code> 模型的代码参见<a href="#listing-demo-user-model">代码清单 2.9</a>。这段代码看似简单，但是通过继承具备了很多功能（参见 <a href="#inheritance-hierarchies">2.3.4 节</a> 和 <a href="chapter4.html#ruby-classes">4.4 节</a>）。具体而言，使用 Rails 中名为 Active Record 的库后，<code>User.all</code> 就能返回数据库中的所有用户。</p>
 <div id="listing-demo-user-model" data-type="listing">
 <h5><span class="title-label">代码清单 2.9</span>：玩具应用中的 <code>User</code> 模型</h5>
 
@@ -581,10 +581,10 @@
 <h5 id="exercises-mvc-in-action" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>参照<a href="#fig-mvc-detailed">图 2.11</a> 写出访问 /users/1/edit 页面的步骤。</p>
+<p>参照<a href="#fig-mvc-detailed">图 2.11</a>，写出访问 /users/1/edit 页面的步骤。</p>
 </li>
 <li>
-<p>在脚手架生成的代码中找出前一题从数据库中获取用户数据的代码。</p>
+<p>在脚手架生成的代码中找出前一题从数据库中检索用户的代码。</p>
 </li>
 <li>
 <p>编辑用户页面的视图文件，其名称是什么？</p>
@@ -596,7 +596,7 @@
 <p>脚手架生成的 <code>Users</code> 资源虽然能够让你大致了解 Rails，但也有一些不足：</p>
 <ul>
 <li>
-<p><strong>没验证数据</strong>。<code>User</code> 模型会接受空名字和无效的电子邮件地址，而不报错。</p>
+<p><strong>没有验证数据</strong>。<code>User</code> 模型会接受空名字和无效的电子邮件地址，而不报错。</p>
 </li>
 <li>
 <p><strong>没有验证身份</strong>。没实现登录和退出功能，随意一个用户都可以进行任何操作。</p>
@@ -726,7 +726,7 @@
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>GET</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">/microposts/1/edit</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>edit</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">显示 ID 为 1 的微博的编辑页码</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">显示 ID 为 1 的微博的编辑页面</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>PATCH</code></p></td>
@@ -803,7 +803,7 @@
 <h5 id="exercises-a-micropost-microtour" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>发布一篇新微博，然后使用浏览器中的 HTML 审查工具找出“Micropost was successfully created.”文本的 CSS ID。刷新页面后会发生什么？</p>
+<p>（如果你了解 CSS）发布一篇新微博，然后使用浏览器中的 HTML 审查工具找出“Micropost was successfully created.”文本的 CSS ID。刷新页面后会发生什么？</p>
 </li>
 <li>
 <p>发布微博时不输入内容也不指定用户 ID 试试。</p>
@@ -867,7 +867,7 @@
 </div>
 <p>我们可以把这种关联用<a href="#fig-micropost-user-association">图 2.15</a> 表示出来。因为 <code>microposts</code> 表中有 <code>user_id</code> 这一列，所以 Rails（通过 Active Record）能把微博和各个用户关联起来。</p>
 <div id="fig-micropost-user-association" class="figure"><img src="images/chapter2/micropost_user_association.png" alt="micropost user association" /><div class="figcaption"><span class="title-label">图 2.15</span>：微博和用户之间的关联</div></div>
-<p>在<a href="chapter13.html#user-microposts">第 13 章</a>和<a href="chapter14.html#following-users">第 14 章</a>，我们会使用微博和用户之间的关联显示用户的所有微博，还会生成一个和 Twitter 类似的微博列表。现在，我们可以在控制台（console）中检查用户与微博之间的关联。控制台是与 Rails 应用交互常用的工具。在命令行中执行 <code>rails console</code> 命令，启动控制台。然后输入 <code>User.first</code>，从数据库中读取第一个用户，并把得到的数据赋值给 <code>first_user</code> 变量：<sup>[<a id="fn-ref-7" href="#fn-7">7</a>]</sup></p>
+<p>在<a href="chapter13.html#user-microposts">第 13 章</a>和<a href="chapter14.html#following-users">第 14 章</a>，我们会使用微博和用户之间的关联显示用户的所有微博，还会生成一个和 Twitter 类似的微博列表。现在，我们可以在控制台（console）中检查用户与微博之间的关联。控制台是与 Rails 应用交互常用的工具。在命令行中执行 <code>rails console</code> 命令，启动控制台。然后输入 <code>User.first</code>，从数据库中检索第一个用户，并把得到的数据赋值给 <code>first_user</code> 变量：<sup>[<a id="fn-ref-7" href="#fn-7">7</a>]</sup></p>
 <div data-type="listing">
 
 
@@ -889,8 +889,7 @@ created_at: "2016-05-15 02:01:31", updated_at: "2016-05-15 02:01:31"&gt;
 &gt;&gt; exit
 </code></pre></div>
 </div>
-<p>（我在这段代码的最后一行加上了 <code>exit</code>，告诉你如何退出控制台。在大多数系统中也可以按 Ctrl-D 键退出控制台。）<sup>[<a id="fn-ref-8" href="#fn-8">8</a>]</sup>
-我们使用 <code>first_user.microposts</code> 获取这个用户发布的微博。Active Record 会自动返回 <code>user_id</code> 的值与 <code>first_user</code> 的 ID（<code>1</code>）相同的所有微博。在<a href="chapter13.html#user-microposts">第 13 章</a>和<a href="chapter14.html#following-users">第 14 章</a>中，我们会更深入地学习关联。</p>
+<p>（我在这段代码的最后一行加上了 <code>exit</code>，告诉你如何退出控制台。在大多数系统中也可以按 Ctrl-D 键退出控制台。）<sup>[<a id="fn-ref-8" href="#fn-8">8</a>]</sup>我们使用 <code>first_user.microposts</code> 获取这个用户发布的微博。Active Record 会自动返回 <code>user_id</code> 的值与 <code>first_user</code> 的 ID（<code>1</code>）相同的所有微博。在<a href="chapter13.html#user-microposts">第 13 章</a>和<a href="chapter14.html#following-users">第 14 章</a>中，我们会更深入地学习关联。</p>
 <h5 id="exercises-a-user-has-many-microposts" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
@@ -922,8 +921,8 @@ created_at: "2016-05-15 02:01:31", updated_at: "2016-05-15 02:01:31"&gt;
 
 <div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
   <span class="n">has_many</span> <span class="ss">:microposts</span>
-<span class="hll">  <span class="n">validates</span> <span class="no">FILL_IN</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span>    <span class="c1"># Replace FILL_IN with the right code.</span></span>
-<span class="hll">  <span class="n">validates</span> <span class="no">FILL_IN</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span>    <span class="c1"># Replace FILL_IN with the right code.</span></span>
+<span class="hll">  <span class="n">validates</span> <span class="no">FILL_IN</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span> <span class="c1"># 把 FILL_IN 换成正确的代码</span></span>
+<span class="hll">  <span class="n">validates</span> <span class="no">FILL_IN</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span> <span class="c1"># 把 FILL_IN 换成正确的代码</span></span>
 <span class="k">end</span>
 </code></pre></div>
 </div>
@@ -933,8 +932,8 @@ created_at: "2016-05-15 02:01:31", updated_at: "2016-05-15 02:01:31"&gt;
 <section data-type="sect2" id="inheritance-hierarchies">
 <h2><span class="title-label">2.3.4</span> 继承体系</h2>
 <p>接下来简要介绍 Rails 中控制器和模型的类继承。
-如果你有面向对象编程（Object-oriented Programming，简称 OOP）的经验，尤其是类，能更好地理解这些内容。如果暂时不理解，也没关系，<a href="chapter4.html#ruby-classes">4.4 节</a>会详细说明这个概念。</p>
-<p>我们先介绍模型的继承体系。对比一下<a href="#listing-demo-user-class">代码清单 2.18</a> 和<a href="#listing-demo-micropost-class">代码清单 2.19</a> ，可以看出，<code>User</code> 和 <code>Micropost</code> 都（通过 <code>&lt;</code> 符号）继承自 <code>ApplicationRecord</code> 类，而这个类继承自 <code>ActiveRecord::Base</code> 类，这是 Active Record 为模型提供的基类。<a href="#fig-demo-model-inheritance">图 2.18</a> 列出了这种继承关系。继承 <code>ActiveRecord::Base</code> 类，模型对象才能与数据库通讯，才能把数据库中的列看做 Ruby 中的属性，等等。</p>
+如果你有面向对象编程（Object-oriented Programming，简称 OOP）的经验，尤其是类，能更好地理解这些内容。如果暂时不理解，也没关系，<a href="chapter4.html#ruby-classes">4.4 节</a>会详细说明这些概念。</p>
+<p>我们先介绍模型的继承体系。对比一下<a href="#listing-demo-user-class">代码清单 2.18</a> 和<a href="#listing-demo-micropost-class">代码清单 2.19</a>，可以看出，<code>User</code> 和 <code>Micropost</code> 都（通过 <code>&lt;</code> 符号）继承自 <code>ApplicationRecord</code> 类，而这个类继承自 <code>ActiveRecord::Base</code> 类，这是 Active Record 为模型提供的基类。<a href="#fig-demo-model-inheritance">图 2.18</a> 列出了这种继承关系。继承 <code>ActiveRecord::Base</code> 类，模型对象才能与数据库通讯，才能把数据库中的列看做 Ruby 中的属性，等等。</p>
 <div id="listing-demo-user-class" data-type="listing">
 <h5><span class="title-label">代码清单 2.18</span>：<code>User</code> 类的继承关系</h5>
 
@@ -998,11 +997,11 @@ created_at: "2016-05-15 02:01:31", updated_at: "2016-05-15 02:01:31"&gt;
 </code></pre></div>
 </div>
 <div id="fig-demo-controller-inheritance" class="figure"><img src="images/chapter2/demo_controller_inheritance.png" alt="demo controller inheritance" /><div class="figcaption"><span class="title-label">图 2.19</span>：<code>UsersController</code> 和 <code>MicropostsController</code> 的继承体系</div></div>
-<p>与模型的继承类似，通过继承 <code>ActionController::Base</code>，<code>Users</code> 控制器和 <code>Microposts</code> 控制器获得了很多功能。例如，处理模型对象的能力，过滤输入的 HTTP 请求，以及把视图渲染成 HTML 的能力。Rails 应用中的所有控制器都继承 <code>ApplicationController</code>，所以其中定义的规则会自动运用于应用中的的每个动作。例如，<a href="chapter9.html#remember-me">9.1 节</a>会介绍如何在 <code>Application</code> 控制器中引入辅助方法，为整个应用的所有控制器都加上登录和退出功能。</p>
+<p>与模型的继承类似，通过继承 <code>ActionController::Base</code>，<code>Users</code> 控制器和 <code>Microposts</code> 控制器获得了很多功能。例如，处理模型对象的能力、过滤入站 HTTP 请求，以及把视图渲染成 HTML 的能力。Rails 应用中的所有控制器都继承自 <code>ApplicationController</code>，所以其中定义的规则会自动运用于应用中的每个动作。例如，<a href="chapter9.html#remember-me">9.1 节</a>会介绍如何在 <code>Application</code> 控制器中引入辅助方法，为整个应用的所有控制器都加上登录和退出功能。</p>
 <h5 id="exercises-inheritance-hierarchies" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>查看 <code>Application</code> 控制器文件的内容，找出 <code>ApplicationController</code> 继承 <code>ActionController::Base</code> 的代码。</p>
+<p>查看 <code>Application</code> 控制器文件的内容，找出 <code>ApplicationController</code> 继承自 <code>ActionController::Base</code> 的代码。</p>
 </li>
 <li>
 <p><code>ApplicationRecord</code> 是不是也在类似的文件中继承 <code>ActiveRecord::Base</code>？提示：可能是 <code>app/models</code> 目录中名为 <code>application_record.rb</code> 的文件。</p>
@@ -1029,15 +1028,15 @@ created_at: "2016-05-15 02:01:31", updated_at: "2016-05-15 02:01:31"&gt;
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>git push heroku
 </code></pre></div>
 </div>
-<p>（执行这个命令之前要按照 <a href="#planning-the-application">2.1 节</a>中的说明创建 Heroku 应用：先执行 <code>hreoku create</code> 命令，然后再执行 <code>git push heroku master</code> 命令。）</p>
-<p>然后还要执行下面的命令迁移生产环境的数据库，这样应用才能使用数据库：</p>
+<p>（执行这个命令之前要按照 <a href="#planning-the-application">2.1 节</a>中的说明创建 Heroku 应用：先执行 <code>heroku create</code> 命令，然后再执行 <code>git push heroku master</code> 命令。）</p>
+<p>为了让应用能使用数据库，还要迁移生产数据库，方法是在<a href="#listing-first-migration">代码清单 2.4</a> 中那个迁移命令前面加上 <code>heroku run</code>：</p>
 <div data-type="listing">
 
 
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>heroku run rails db:migrate
 </code></pre></div>
 </div>
-<p>这个命令会按照 <code>User</code> 和  Micropost` 数据模型更新 Heroku 中的数据库。迁移数据库之后，就可以在生产环境中使用这个应用了，如<a href="#fig-toy-app-production">图 2.20</a> 所示，而且这个应用使用 PostgreSQL 数据库。</p>
+<p>这个命令会按照 <code>User</code> 和  <code>Micropost</code> 数据模型更新 Heroku 中的数据库。迁移数据库之后，就可以在生产环境中使用这个应用了，如<a href="#fig-toy-app-production">图 2.20</a> 所示，而且这个应用使用 PostgreSQL 数据库。</p>
 <div id="fig-toy-app-production" class="figure"><img src="images/chapter2/toy_app_production.png" alt="toy app production" /><div class="figcaption"><span class="title-label">图 2.20</span>：运行在生产环境中的玩具应用</div></div>
 <p>最后，如果你做了 <a href="#a-user-has-many-microposts">2.3.3 节</a>的<a href="#exercises-a-user-has-many-microposts">练习</a>，要把显示第一个用户微博的代码去掉，这样应用才能正确加载。你只需把那些代码删掉，做次提交，然后再推送到 Heroku。</p>
 <h5 id="exercises-deploying-the-toy-app" class="discrete">练习</h5>
@@ -1119,7 +1118,7 @@ created_at: "2016-05-15 02:01:31", updated_at: "2016-05-15 02:01:31"&gt;
 <p>使用脚手架自动生成模型的代码，然后通过 Web 界面与应用交互；</p>
 </li>
 <li>
-<p>脚手架有利于快速上手，但生成的代码不易理解；</p>
+<p>脚手架利于快速上手，但生成的代码不易理解；</p>
 </li>
 <li>
 <p>Rails 使用“模型-视图-控制器”（MVC）模式组织 Web 应用；</p>
@@ -1157,13 +1156,13 @@ created_at: "2016-05-15 02:01:31", updated_at: "2016-05-15 02:01:31"&gt;
           <div class="footnotes">
 <ol>
 <li id="fn-1">微博的内容很短，<code>string</code> 类型就足够了，但使用 <code>text</code> 类型更能表明我们的意图，而且也便于以后放宽微博长度限制。 <a href="#fn-ref-1" class="symbol">&#8617;</a></li>
-<li id="fn-2">脚手架中使用的名称与模型一样，是单数；而资源和控制器使用复数。因此，这里要使用 <code>User</code>，不是 <code>Users</code>。 <a href="#fn-ref-2" class="symbol">&#8617;</a></li>
+<li id="fn-2">脚手架中使用的名称与模型一样，是单数；而资源和控制器使用复数。因此，这里要使用 <code>User</code>，而不是 <code>Users</code>。 <a href="#fn-ref-2" class="symbol">&#8617;</a></li>
 <li id="fn-3">有些文章说视图直接把 HTML 返回给浏览器（通过 Web 服务器，例如 Apache 或 Nginx）。不管实现的细节如何，我更相信控制器是一个中枢，应用中所有信息都会经由它传递。 <a href="#fn-ref-3" class="symbol">&#8617;</a></li>
 <li id="fn-4">加州大学欧文分校 2000 年 Roy Thomas Fielding 的博士论文《<a href="http://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm">Architectural Styles and the Design of Network-based Software Architectures</a>》。 <a href="#fn-ref-4" class="symbol">&#8617;</a></li>
 <li id="fn-5">与生成用户资源使用的脚手架命令一样，生成微博资源的脚手架也要使用单数形式，因此要用 <code>generate Micropost</code>。 <a href="#fn-ref-5" class="symbol">&#8617;</a></li>
 <li id="fn-6">与<a href="#listing-demo-microposts-resource">代码清单 2.11</a> 相比，脚手架生成的代码可能会有额外的空行。无须担心，因为 Ruby 会忽略额外的空行。 <a href="#fn-ref-6" class="symbol">&#8617;</a></li>
 <li id="fn-7">你的控制台可能会显示类似 <code>2.1.1 :001 &gt;</code> 的提示符，但示例中使用 <code>&gt;&gt;</code> 代替，因为不同的 Ruby 版本显示的提示符不同。 <a href="#fn-ref-7" class="symbol">&#8617;</a></li>
-<li id="fn-8">和“Ctrl-C”一样，虽然实际按的是“Ctrl-d”，但习惯写成“Ctrl-D”。 <a href="#fn-ref-8" class="symbol">&#8617;</a></li>
+<li id="fn-8">和“Ctrl-C”一样，这里大写的“D”指代键盘上的按键，不是大写字母“D”，因此按 Ctrl 键的同时不用按住 Shift 键。 <a href="#fn-ref-8" class="symbol">&#8617;</a></li>
 </ol>
 </div>
         </div>

@@ -14,7 +14,6 @@
   <link rel="stylesheet" type="text/css" href="book.css"/>
   <script type="text/javascript" src="//railstutorial-china.org/assets/js/global.js"></script>
 </head>
-<body>
 
 <body class="book-page">
 
@@ -60,18 +59,18 @@
           <article class="article">
             <section data-type="chapter" id="modeling-users">
 <h1><span class="title-label">第 6 章</span> 用户建模</h1>
-<p><a href="chapter5.html#filling-in-the-layout">第 5 章</a>末尾创建了一个临时的用户注册页面（<a href="chapter5.html#user-signup">5.4 节</a>）。本书接下来的六章会逐步在这个页面中添加功能。本章我们要迈出关键的一步，创建网站中用户的数据模型，并实现存储数据的方式。<a href="chapter7.html#sign-up">第 7 章</a>会实现用户注册功能，并创建用户资料页面。用户能注册后，我们要实现登录和退出功能（<a href="chapter8.html#basic-login">第 8 章</a>和<a href="chapter9.html#advanced-login">第 9 章</a>）。<a href="chapter10.html#updating-showing-and-deleting-users">第 10 章</a>（<a href="chapter10.html#requiring-logged-in-users">10.2.1 节</a>）会介绍如何保护页面，禁止无权限的用户访问。最后，在<a href="chapter11.html#account-activation">第 11 章</a>和<a href="chapter12.html#password-reset">第 12 章</a>实现账户激活（从而确认电子邮件地址有效）和密码重设功能。<a href="#modeling-users">第 6 章</a>到<a href="chapter12.html#password-reset">第 12 章</a>的内容结合在一起，为 Rails 应用开发一个功能完整的登录和身份验证系统。或许你知道已经有很多开发好的 Rails 身份验证方案，<a href="#aside-roll-your-own">旁注 6.1</a>会告诉你为什么至少在初学阶段，最好自己动手实现。</p>
+<p><a href="chapter5.html#filling-in-the-layout">第 5 章</a>末尾创建了一个临时的用户注册页面（<a href="chapter5.html#user-signup">5.4 节</a>）。本书接下来的六章会逐步在这个页面中添加功能。本章我们将迈出关键的一步，创建网站中用户的数据模型（data model），并实现存储数据的方式。<a href="chapter7.html#sign-up">第 7 章</a>会实现用户注册功能，并创建用户资料页面。用户能注册后，我们将实现登录和退出功能（<a href="chapter8.html#basic-login">第 8 章</a>和<a href="chapter9.html#advanced-login">第 9 章</a>）。<a href="chapter10.html#updating-showing-and-deleting-users">第 10 章</a>（<a href="chapter10.html#requiring-logged-in-users">10.2.1 节</a>）会介绍如何保护页面，禁止无权限的用户访问。最后，在<a href="chapter11.html#account-activation">第 11 章</a>和<a href="chapter12.html#password-reset">第 12 章</a>实现账户激活（从而确认电子邮件地址有效）和密码重设功能。<a href="#modeling-users">第 6 章</a>到<a href="chapter12.html#password-reset">第 12 章</a>的内容结合在一起，为 Rails 应用开发一个功能完整的登录和身份验证系统。你或许知道已经有很多开发好的 Rails 身份验证方案，<a href="#aside-roll-your-own">旁注 6.1</a>会告诉你为什么至少在初学阶段，最好自己动手实现。</p>
 <div data-type="sidebar" id="aside-roll-your-own" class="sidebar">
 <h5><span class="title-label">旁注 6.1</span>：自己开发身份验证系统</h5>
-<p>基本上所有 Web 应用都需要某种登录和认证系统。为此，大多数 Web 框架都提供了多种实现方式，Rails 也不例外。为 Rails 开发的身份验证和权限系统有 <a href="http://github.com/thoughtbot/clearance">Clearance</a>、<a href="http://github.com/binarylogic/authlogic">Authlogic</a>、<a href="http://github.com/plataformatec/devise">Devise</a> 和 <a href="http://railscasts.com/episodes/192-authorization-with-cancan">CanCan</a>。除此之外，还有一些不是 Rails 专用的方案，基于 <a href="http://en.wikipedia.org/wiki/OpenID">OpenID</a> 或 <a href="http://en.wikipedia.org/wiki/Oauth">OAuth</a> 实现。所以你肯定会问，为什么我们要重复制造轮子，为什么不直接使用现成的方案，而要自己开发呢？</p>
-<p>首先，实践已经证明，大多数网站的身份验证系统都要对第三方代码库做一些定制和修改，这往往比重新开发一个工作量还大。再者，现成的方案就像一个“黑盒”，你无法了解其中到底有些什么功能，而自己开发的话能更好地理解实现的过程。而且，Rails 最近的更新（参见 <a href="#adding-a-secure-password">6.3 节</a>），让开发认证系统变得很简单。最后，如果以后要用第三方系统的话，因为自己开发过，所以能更好地理解实现过程，便于定制功能。</p>
+<p>基本上所有 Web 应用都需要某种登录和身份验证系统。为此，大多数 Web 框架都提供了多种实现方式，Rails 也不例外。为 Rails 开发的身份验证和权限系统有 <a href="http://github.com/thoughtbot/clearance">Clearance</a>、<a href="http://github.com/binarylogic/authlogic">Authlogic</a>、<a href="http://github.com/plataformatec/devise">Devise</a> 和 <a href="http://railscasts.com/episodes/192-authorization-with-cancan">CanCan</a>。除此之外，还有一些不是 Rails 专用的方案，而是基于 <a href="http://en.wikipedia.org/wiki/OpenID">OpenID</a> 或 <a href="http://en.wikipedia.org/wiki/Oauth">OAuth</a> 实现。所以你肯定会问，为什么我们要重复制造轮子，为什么不直接使用现成的方案，而要自己开发呢？</p>
+<p>首先，实践已经证明，大多数网站的身份验证系统都要对第三方产品做一些定制和修改，这往往比重新开发一个工作量还大。再者，现成的方案就像一个“黑盒”，你无法了解其中到底有些什么功能，而自己开发的话能更好地理解实现的过程。而且，Rails 最近的更新（参见 <a href="#adding-a-secure-password">6.3 节</a>），把开发身份验证系统变得很简单。最后，如果以后要用第三方系统的话，因为自己开发过，所以能更好地理解实现过程，便于定制功能。</p>
 </div>
 <section data-type="sect1" id="user-model">
 <h1><span class="title-label">6.1</span> <code>User</code> 模型</h1>
 <p>接下来的三章要实现网站的“注册”页面（构思图如<a href="#fig-signup-mockup-preview">图 6.1</a> 所示），在此之前我们要先解决存储问题，因为现在还没地方存储用户信息。所以，实现用户注册功能的第一步是，创建一个数据结构，用于存取用户的信息。</p>
-<div id="fig-signup-mockup-preview" class="figure"><img src="images/chapter6/signup_mockup_bootstrap.png" alt="signup mockup bootstrap" /><div class="figcaption"><span class="title-label">图 6.1</span>：注册用户页面的构思图</div></div>
+<div id="fig-signup-mockup-preview" class="figure"><img src="images/chapter6/signup_mockup_bootstrap.png" alt="signup mockup bootstrap" /><div class="figcaption"><span class="title-label">图 6.1</span>：用户注册页面的构思图</div></div>
 <p>在 Rails 中，数据模型的默认数据结构叫模型（model，MVC 中的 M，参见 <a href="chapter1.html#mvc">1.3.3 节</a>）。Rails 为解决数据持久化提供的默认解决方案是，使用数据库存储需要长期使用的数据。与数据库交互默认使用的是 Active Record。<sup>[<a id="fn-ref-1" href="#fn-1">1</a>]</sup>Active Record 提供了一系列方法，无需使用<a href="http://en.wikipedia.org/wiki/Relational_database">关系数据库</a>所用的结构化查询语言（Structured Query Language，简称 SQL），<sup>[<a id="fn-ref-2" href="#fn-2">2</a>]</sup>就能创建、保存和查询数据对象。Rails 还支持迁移（migration）功能，允许我们使用纯 Ruby 代码定义数据结构，而不用学习 SQL 数据定义语言（Data Definition Language，简称 DDL）。最终的结果是，Active Record 把你和数据库完全隔开了。本书开发的应用在本地使用 SQLite，部署后使用 PostgreSQL（由 Heroku 提供，参见 <a href="chapter1.html#deploying">1.5 节</a>）。这就引出了一个更深层的话题——在不同的环境中，即便使用不同类型的数据库，我们也无需关心 Rails 是如何存储数据的。</p>
-<p>和之前一样，如果使用 Git 做版本控制，现在应该新建一个主题分支：</p>
+<p>和之前一样，如果使用 Git 做版本控制，现在应该新建一个主题分支，用于建模用户：</p>
 <div data-type="listing">
 
 
@@ -81,7 +80,7 @@
 <section data-type="sect2" id="database-migrations">
 <h2><span class="title-label">6.1.1</span> 数据库迁移</h2>
 <p>回顾一下 <a href="chapter4.html#a-user-class">4.4.5 节</a>的内容，我们在自己创建的 <code>User</code> 类中为用户对象定义了 <code>name</code> 和 <code>email</code> 两个属性。那是个很有用的例子，但没有实现持久化存储最关键的要求：在 Rails 控制台中创建的用户对象，退出控制台后就会消失。本节的目的是为用户创建一个模型，让用户数据不会这么轻易消失。</p>
-<p>与 <a href="chapter4.html#a-user-class">4.4.5 节</a>中定义的 <code>User</code> 类一样，我们先为 <code>User</code> 模型创建两个属性，分别是 <code>name</code> 和 <code>email</code>。我们会把 <code>email</code> 属性用作唯一的用户名。<sup>[<a id="fn-ref-3" href="#fn-3">3</a>]</sup>（<a href="#adding-a-secure-password">6.3 节</a>会添加一个属性，存储密码）在<a href="chapter4.html#listing-example-user">代码清单 4.17</a> 中，我们使用 Ruby 的 <code>attr_accessor</code> 方法创建了这两个属性：</p>
+<p>与 <a href="chapter4.html#a-user-class">4.4.5 节</a>中定义的 <code>User</code> 类一样，我们先为 <code>User</code> 模型创建两个属性，分别为 <code>name</code> 和 <code>email</code>。我们会把 <code>email</code> 属性用作唯一的用户名。<sup>[<a id="fn-ref-3" href="#fn-3">3</a>]</sup>（<a href="#adding-a-secure-password">6.3 节</a>会添加一个属性，用于存储密码。）在<a href="chapter4.html#listing-example-user">代码清单 4.17</a> 中，我们使用 Ruby 的 <code>attr_accessor</code> 方法创建了这两个属性：</p>
 <div data-type="listing">
 
 
@@ -93,7 +92,7 @@
 <span class="nf">end</span>
 </code></pre></div>
 </div>
-<p>不过，在 Rails 中不用这样定义属性。前面提到过，Rails 默认使用关系数据库存储数据，数据库中的表由数据行组成，每一行都有相应的列，对应于数据属性。例如，为了存储用户的名字和电子邮件地址，我们要创建 <code>users</code> 表，表中有两个列，<code>name</code> 和 <code>email</code>，这样每一行就表示一个用户，如<a href="#fig-users-table">图 6.2</a> 所示，对应的数据模型如<a href="#fig-user-model-sketch">图 6.3</a> 所示。（<a href="#fig-user-model-sketch">图 6.3</a> 只是梗概，完整的数据模型如<a href="#fig-user-model-initial">图 6.4</a> 所示。）把列命名为 <code>name</code> 和 <code>email</code> 后，Active Record 会自动把它们识别为用户对象的属性。</p>
+<p>不过，在 Rails 中不用这样定义属性。前面提到过，Rails 默认使用关系数据库存储数据，数据库中的表由数据行（row）组成，每一行都有相应的列（column），对应于数据属性。例如，为了存储用户的名字和电子邮件地址，我们要创建 <code>users</code> 表，表中有两个列，<code>name</code> 和 <code>email</code>，这样每一行就表示一个用户，如<a href="#fig-users-table">图 6.2</a> 所示，对应的数据模型如<a href="#fig-user-model-sketch">图 6.3</a> 所示。（<a href="#fig-user-model-sketch">图 6.3</a> 只是梗概，完整的数据模型如<a href="#fig-user-model-initial">图 6.4</a> 所示。）把列命名为 <code>name</code> 和 <code>email</code> 后，Active Record 会自动把它们识别为用户对象的属性。</p>
 <div id="fig-users-table" class="figure"><img src="images/chapter6/users_table.png" alt="users table" /><div class="figcaption"><span class="title-label">图 6.2</span>：<code>users</code> 表中的示例数据</div></div>
 <div id="fig-user-model-sketch" class="figure"><img src="images/chapter6/user_model_sketch.png" alt="user model sketch" /><div class="figcaption"><span class="title-label">图 6.3</span>：<code>User</code> 数据模型梗概</div></div>
 <p>你可能还记得，在<a href="chapter5.html#listing-generate-users-controller">代码清单 5.38</a> 中，我们使用下面的命令生成了 <code>Users</code> 控制器和 <code>new</code> 动作：</p>
@@ -118,7 +117,7 @@
 </code></pre></div>
 </div>
 <p>（注意，控制器名是复数，模型名是单数：控制器是 <code>Users</code>，而模型是 <code>User</code>。）我们指定了可选的参数 <code>name:string</code> 和 <code>email:string</code>，告诉 Rails 我们需要的两个属性是什么，以及各自的类型（两个都是字符串）。你可以把这两个参数与<a href="chapter3.html#listing-generating-pages">代码清单 3.6</a> 和<a href="chapter5.html#listing-generate-users-controller">代码清单 5.38</a> 中的动作名对比一下，看看有什么不同。</p>
-<p>执行上述 <code>generate</code> 命令之后，会生成一个迁移文件。迁移是一种递进修改数据库结构的方式，可以根据需求修改数据模型。执行 <code>generate</code> 命令后会自动为 <code>User</code> 模型创建迁移，这个迁移的作用是创建一个 <code>users</code> 表以及 <code>name</code> 和 <code>email</code> 两个列，如<a href="#listing-users-migration">代码清单 6.2</a> 所示。（我们会在 <a href="#uniqueness-validation">6.2.5 节</a>介绍如何手动创建迁移文件。）</p>
+<p>执行上述 <code>generate</code> 命令之后，会生成一个迁移文件。迁移是一种递进修改数据库结构的方式，可以根据需求修改数据模型。执行上述 <code>generate</code> 命令后会自动为 <code>User</code> 模型创建迁移，这个迁移的作用是创建一个 <code>users</code> 表，以及 <code>name</code> 和 <code>email</code> 两个列，如<a href="#listing-users-migration">代码清单 6.2</a> 所示。（我们会在 <a href="#uniqueness-validation">6.2.5 节</a>介绍如何手动创建迁移文件。）</p>
 <div id="listing-users-migration" data-type="listing">
 <h5><span class="title-label">代码清单 6.2</span>：<code>User</code> 模型的迁移文件（创建 <code>users</code> 表）</h5>
 
@@ -136,23 +135,23 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>注意，迁移文件名前面有个时间戳，指明创建的时间。早期，迁移文件名的前缀是递增的数字，在团队协作中，如果多个程序员生成了序号相同的迁移文件就可能会发生冲突。除非两个迁移文件在同一秒钟生成这种小概率事件发生了，否则使用时间戳基本可以避免冲突的发生。</p>
-<p>迁移文件中有一个名为 <code>change</code> 的方法，定义要对数据库做什么操作。在<a href="#listing-users-migration">代码清单 6.2</a> 中，<code>change</code> 方法使用 Rails 提供的 <code>create_table</code> 方法在数据库中新建一个表，用于存储用户。<code>create_table</code> 方法可以接受一个块，有一个块变量 <code>t</code>（“table”）。在块中，<code>create_table</code> 方法通过 <code>t</code> 对象创建 <code>name</code> 和 <code>email</code> 两个列，均为 <code>string</code> 类型。<sup>[<a id="fn-ref-4" href="#fn-4">4</a>]</sup>表名是复数形式（<code>users</code>），不过模型名是单数形式（<code>User</code>），这是 Rails 在用词上的一个约定：模型表示单个用户，而数据库表中存储了很多用户。块中最后一行 <code>t.timestamps</code> 是个特殊的方法，它会自动创建 <code>created_at</code> 和 <code>updated_at</code> 两个列，分别记录创建用户的时间戳和更新用户数据的时间戳。（<a href="#creating-user-objects">6.1.3 节</a>有使用这两个列的例子。）这个迁移文件表示的完整数据模型如<a href="#fig-user-model-initial">图 6.4</a> 所示。（注意，<a href="#fig-user-model-sketch">图 6.3</a> 中没有列出自动添加的两个时间戳列。）</p>
+<p>注意，迁移文件名前面有个时间戳（timestamp），指明创建的时间。早期，迁移文件名的前缀是递增的数字，在团队协作中，如果多个程序员生成了序号相同的迁移文件就可能会发生冲突。除非两个迁移文件在同一秒钟生成这种小概率事件发生了，否则使用时间戳基本可以避免冲突。</p>
+<p>迁移文件中有一个名为 <code>change</code> 的方法，定义要对数据库做什么操作。在<a href="#listing-users-migration">代码清单 6.2</a> 中，<code>change</code> 方法使用 Rails 提供的 <code>create_table</code> 方法在数据库中新建一个表，用于存储用户。<code>create_table</code> 方法可以接受一个块，有一个块变量 <code>t</code>（“table”）。在块中，<code>create_table</code> 方法通过 <code>t</code> 对象在数据库中创建 <code>name</code> 和 <code>email</code> 两个列，二者均为 <code>string</code> 类型。<sup>[<a id="fn-ref-4" href="#fn-4">4</a>]</sup>表名是复数形式（<code>users</code>），不过模型名是单数形式（<code>User</code>），这是 Rails 在用词上的一个约定：模型表示单个用户，而数据库表中存储了很多用户。块中最后一行 <code>t.timestamps</code> 是个特殊的方法，它会自动创建 <code>created_at</code> 和 <code>updated_at</code> 两个列，分别记录创建用户的时间戳和更新用户的时间戳。（<a href="#creating-user-objects">6.1.3 节</a>有使用这两个列的例子。）这个迁移文件表示的完整数据模型如<a href="#fig-user-model-initial">图 6.4</a> 所示。（注意，<a href="#fig-user-model-sketch">图 6.3</a> 中没有列出自动添加的两个时间戳列。）</p>
 <div id="fig-user-model-initial" class="figure"><img src="images/chapter6/user_model_initial_3rd_edition.png" alt="user model initial 3rd edition" /><div class="figcaption"><span class="title-label">图 6.4</span>：<a href="#listing-users-migration">代码清单 6.2</a> 生成的 <code>User</code> 数据模型</div></div>
-<p>我们可以使用如下的 <code>rails</code> 命令执行这个迁移（叫“向上迁移”）：</p>
+<p>我们可以使用如下的 <code>db:migrate</code> 命令执行这个迁移（这叫“向上迁移”）：</p>
 <div data-type="listing">
 
 
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails db:migrate
 </code></pre></div>
 </div>
-<p>（你可能还记得，我们在 <a href="chapter2.html#demo-users-resource">2.2 节</a>用过这个命令。）第一次运行 <code>db:migrate</code> 命令时会创建 <code>db/development.sqlite3</code>，这是 SQLite <sup>[<a id="fn-ref-5" href="#fn-5">5</a>]</sup>数据库文件。若要查看数据库结构，可以使用 <a href="http://sqlitebrowser.org/">SQLite 数据库浏览器</a>打开 <code>db/development.sqlite3</code> 文件，如<a href="#fig-sqlite-database-browser">图 6.5</a> 所示。（如果使用云端 IDE，要先把数据库文件下载到本地硬盘中，如<a href="#fig-sqlite-download">图 6.6</a> 所示。）与<a href="#fig-user-model-initial">图 6.4</a> 中的模型对比之后，你可能会发现有一个列在迁移中没有出现——<code>id</code> 列。<a href="chapter2.html#demo-users-resource">2.2 节</a>提到过，这个列是自动生成的，Rails 用这个列作为行的唯一标识符。</p>
+<p>（你可能还记得，我们在 <a href="chapter2.html#demo-users-resource">2.2 节</a>用过这个命令。）第一次运行 <code>db:migrate</code> 命令时会创建 <code>db/development.sqlite3</code> 文件，这是 SQLite <sup>[<a id="fn-ref-5" href="#fn-5">5</a>]</sup>数据库文件。若想查看数据库结构，可以使用 <a href="http://sqlitebrowser.org/">SQLite 数据库浏览器</a>打开 <code>db/development.sqlite3</code> 文件，如<a href="#fig-sqlite-database-browser">图 6.5</a> 所示。（如果使用云端 IDE，要先把数据库文件下载到本地磁盘中，如<a href="#fig-sqlite-download">图 6.6</a> 所示。）与<a href="#fig-user-model-initial">图 6.4</a> 中的模型对比之后，你可能会发现有一个列在迁移中没有出现——<code>id</code> 列。<a href="chapter2.html#demo-users-resource">2.2 节</a>提到过，这个列是自动生成的，Rails 用这个列作为行的唯一标识符。</p>
 <div id="fig-sqlite-database-browser" class="figure"><img src="images/chapter6/sqlite_database_browser_3rd_edition.png" alt="sqlite database browser 3rd edition" /><div class="figcaption"><span class="title-label">图 6.5</span>：在 SQLite 数据库浏览器中查看刚创建的 <code>users</code> 表</div></div>
 <div id="fig-sqlite-download" class="figure"><img src="images/chapter6/sqlite_download.png" alt="sqlite download" /><div class="figcaption"><span class="title-label">图 6.6</span>：从云端 IDE 中下载文件</div></div>
 <h5 id="exercises-database-migrations" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>Rails 使用 <code>db/</code> 目录中的 <code>schema.rb</code> 文件记录数据库的结构。打开你应用中的 <code>schema.rb</code> 文件，与<a href="#listing-users-migration">代码清单 6.2</a> 中的迁移代码比较一下。</p>
+<p>Rails 使用 <code>db/</code> 目录中的 <code>schema.rb</code> 文件记录数据库的结构［称作模式（schema），因此才用这个文件名］。打开你应用中的 <code>db/schema.rb</code> 文件，与<a href="#listing-users-migration">代码清单 6.2</a> 中的迁移代码比较一下。</p>
 </li>
 <li>
 <p>大多数迁移，包括本书中的所有迁移，都是可逆的，也就是说可以使用一个简单的命令“向下迁移”，撤销之前的操作。这个命令是 <code>db:rollback</code>：</p>
@@ -172,7 +171,7 @@
 </section>
 <section data-type="sect2" id="the-model-file">
 <h2><span class="title-label">6.1.2</span> 模型文件</h2>
-<p>我们看到，执行<a href="#listing-generate-user-model">代码清单 6.1</a> 中的命令后会生成一个迁移文件（<a href="#listing-users-migration">代码清单 6.2</a>），也看到了执行迁移后得到的结果（<a href="#fig-sqlite-database-browser">图 6.5</a>）：修改 <code>db/development.sqlite3</code> 文件，新建 <code>users</code> 表，并创建 <code>id</code>、<code>name</code>、<code>email</code>、<code>created_at</code> 和 <code>updated_at</code> 等列。<a href="#listing-generate-user-model">代码清单 6.1</a> 还生成了一个模型文件，本节剩下的内容专门讲解这个文件。</p>
+<p>我们看到，执行<a href="#listing-generate-user-model">代码清单 6.1</a> 中的命令后会生成一个迁移文件（<a href="#listing-users-migration">代码清单 6.2</a>），也看到了执行迁移后得到的结果（<a href="#fig-sqlite-database-browser">图 6.5</a>）：修改 <code>development.sqlite3</code> 文件，新建 <code>users</code> 表，并创建 <code>id</code>、<code>name</code>、<code>email</code>、<code>created_at</code> 和 <code>updated_at</code> 等列。<a href="#listing-generate-user-model">代码清单 6.1</a> 还生成了一个模型文件，本节剩下的内容专门讲解这个文件。</p>
 <p>我们先看 <code>User</code> 模型的代码，在 <code>app/models/</code> 目录中的 <code>user.rb</code> 文件里。这个文件的内容非常简单，如<a href="#listing-raw-user-model">代码清单 6.3</a> 所示。</p>
 <div id="listing-raw-user-model" data-type="listing">
 <h5><span class="title-label">代码清单 6.3</span>：刚创建的 <code>User</code> 模型</h5>
@@ -196,7 +195,7 @@
 </section>
 <section data-type="sect2" id="creating-user-objects">
 <h2><span class="title-label">6.1.3</span> 创建用户对象</h2>
-<p>和<a href="chapter4.html#rails-flavored-ruby">第 4 章</a>一样，探索数据模型使用的工具是 Rails 控制台。因为我们还不想修改数据库中的数据，所以要在沙盒模式中启动控制台：</p>
+<p>和<a href="chapter4.html#rails-flavored-ruby">第 4 章</a>一样，探索数据模型使用的工具是 Rails 控制台。因为我们（还）不想修改数据库中的数据，所以要在沙盒（sandbox）模式中启动控制台：</p>
 <div data-type="listing">
 
 
@@ -206,7 +205,7 @@ Any modifications you make will be rolled back on exit
 &gt;&gt;
 </code></pre></div>
 </div>
-<p>如提示消息所说，“Any modifications you make will be rolled back on exit”，在沙盒模式下使用控制台，退出当前会话后，对数据库做的所有改动都会回归到原来的状态。</p>
+<p>如提示消息所说，“Any modifications you make will be rolled back on exit”，在沙盒模式下使用控制台，退出当前会话后，对数据库做的所有改动都会回归到原来的状态（即撤销）。</p>
 <p>在 <a href="chapter4.html#a-user-class">4.4.5 节</a>的控制台会话中，我们要引入<a href="chapter4.html#listing-example-user">代码清单 4.17</a> 中的代码才能使用 <code>User.new</code> 创建用户对象。对模型来说，情况有所不同。你可能还记得 <a href="chapter4.html#a-controller-class">4.4.4 节</a>说过，Rails 控制台会自动加载 Rails 环境，这其中就包括模型。也就是说，现在无需加载任何代码就可以直接创建用户对象：</p>
 <div data-type="listing">
 
@@ -215,8 +214,8 @@ Any modifications you make will be rolled back on exit
 =&gt; #&lt;User id: nil, name: nil, email: nil, created_at: nil, updated_at: nil&gt;
 </code></pre></div>
 </div>
-<p>上述代码显示了一个用户对象的默认值。</p>
-<p>如果不为 <code>User.new</code> 指定参数，对象的所有属性值都是 <code>nil</code>。在 <a href="chapter4.html#a-user-class">4.4.5 节</a>，自己编写的 <code>User</code> 类可以接受一个哈希参数初始化对象的属性。这种方式是受 Active Record 启发的，在 Active Record 中也可以使用相同的方式指定初始值：</p>
+<p>上述代码显示了用户对象在控制台中的默认表述。</p>
+<p>如果不为 <code>User.new</code> 指定参数，对象的所有属性值都是 <code>nil</code>。在 <a href="chapter4.html#a-user-class">4.4.5 节</a>，我们自己编写的 <code>User</code> 类可以接受一个散列参数，指定用于初始化对象的属性。这种方式是受 Active Record 启发的，在 Active Record 中也可以使用相同的方式指定初始值：</p>
 <div data-type="listing">
 
 
@@ -225,8 +224,8 @@ Any modifications you make will be rolled back on exit
 created_at: nil, updated_at: nil&gt;
 </code></pre></div>
 </div>
-<p>我们看到 <code>name</code> 和 <code>email</code> 属性的值都已经设定了。</p>
-<p>数据的有效性对理解 Active Record 模型对象很重要，我们会在 <a href="#user-validations">6.2 节</a>深入介绍。不过注意，现在这个 <code>user</code> 对象是有效的，我们可以在这个对象上调用 <code>valid?</code> 方法确认：</p>
+<p>我们看到 <code>name</code> 和 <code>email</code> 属性的值都已经按预期设定了。</p>
+<p>数据的有效性（validity）对理解 Active Record 模型对象很重要，我们会在 <a href="#user-validations">6.2 节</a>深入探讨。不过注意，现在这个 <code>user</code> 对象是有效的，我们可以在这个对象上调用 <code>valid?</code> 方法确认：</p>
 <div data-type="listing">
 
 
@@ -248,17 +247,17 @@ true
 =&gt; true
 </code></pre></div>
 </div>
-<p>如果保存成功，<code>save</code> 方法返回 <code>true</code>，否则返回 <code>false</code>。（现在所有保存操作都会成功，因为还没有数据验证，<a href="#user-validations">6.2 节</a>会看到一些失败的例子。）Rails 还会在控制台中显示 <code>user.save</code> 对应的 SQL 语句（<code>INSERT INTO "users"…</code>），以供参考。本书几乎不会使用原始的 SQL，<sup>[<a id="fn-ref-6" href="#fn-6">6</a>]</sup>所以此后会省略 SQL。不过，从 Active Record 各种操作生成的 SQL 中可以学到很多知识。</p>
+<p>如果保存成功，<code>save</code> 方法返回 <code>true</code>，否则返回 <code>false</code>。（现在所有保存操作都会成功，因为还没有数据验证；<a href="#user-validations">6.2 节</a>会看到一些失败的例子。）Rails 还会在控制台中显示 <code>user.save</code> 对应的 SQL 语句（<code>INSERT INTO "users"…</code>），以供参考。本书几乎不会使用原始的 SQL，<sup>[<a id="fn-ref-6" href="#fn-6">6</a>]</sup>所以此后我会省略 SQL。不过，从 Active Record 各种操作生成的 SQL 中可以学到很多知识。</p>
 <p>你可能注意到了，刚创建时用户对象的 <code>id</code>、<code>created_at</code> 和 <code>updated_at</code> 属性值都是 <code>nil</code>，下面看一下保存之后有没有变化：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; user
+<div class="highlight language-irb"><pre><code>&gt;&gt; user.save
 =&gt; #&lt;User id: 1, name: "Michael Hartl", email: "mhartl@example.com",
 created_at: "2016-05-23 19:05:58", updated_at: "2016-05-23 19:05:58"&gt;
 </code></pre></div>
 </div>
-<p>我们看到，<code>id</code> 的值变成了 <code>1</code>，那两个自动创建的时间戳属性也变成了当前时间。<sup>[<a id="fn-ref-7" href="#fn-7">7</a>]</sup>现在这两个时间戳是一样的，<a href="#updating-user-objects">6.1.5 节</a>会看到二者不同的情况。</p>
+<p>我们看到，<code>id</code> 的值变成了 <code>1</code>，那两个自动创建的时间戳属性也变成了当前时间和日期。<sup>[<a id="fn-ref-7" href="#fn-7">7</a>]</sup>现在这两个时间戳是一样的，<a href="#updating-user-objects">6.1.5 节</a>会看到二者不同的情况。</p>
 <p>与 <a href="chapter4.html#a-user-class">4.4.5 节</a>定义的 <code>User</code> 类一样，<code>User</code> 模型的实例也可以使用点号获取属性：</p>
 <div data-type="listing">
 
@@ -283,7 +282,7 @@ created_at: "2016-05-23 19:05:58", updated_at: "2016-05-23 19:05:58"&gt;
 19:19:06", updated_at: "2016-05-23 19:19:06"&gt;
 </code></pre></div>
 </div>
-<p>注意，<code>User.create</code> 的返回值不是 <code>true</code> 或 <code>false</code>，而是创建的用户对象，可直接赋值给变量（例如上面第二个命令中的 <code>foo</code> 变量）.</p>
+<p>注意，<code>User.create</code> 的返回值不是 <code>true</code> 或 <code>false</code>，而是创建的用户对象，可以直接赋值给变量（例如上面第二个命令中的 <code>foo</code> 变量）.</p>
 <p><code>create</code> 的逆操作是 <code>destroy</code>：</p>
 <div data-type="listing">
 
@@ -318,7 +317,7 @@ created_at: "2016-05-23 19:05:58", updated_at: "2016-05-23 19:05:58"&gt;
 </section>
 <section data-type="sect2" id="finding-user-objects">
 <h2><span class="title-label">6.1.4</span> 查找用户对象</h2>
-<p>Active Record 提供了好几种查找对象的方法。下面我们使用这些方法查找创建的第一个用户，同时也验证一下第三个用户（<code>foo</code>）是否被销毁了。先看一下还存在的用户：</p>
+<p>Active Record 提供了好几种查找对象的方法。下面我们使用这些方法查找前面创建的第一个用户，同时也验证一下第三个用户（<code>foo</code>）是否被销毁了。先看一下还存在的用户：</p>
 <div data-type="listing">
 
 
@@ -336,7 +335,7 @@ created_at: "2016-05-23 19:05:58", updated_at: "2016-05-23 19:05:58"&gt;
 ActiveRecord::RecordNotFound: Couldn't find User with ID=3
 </code></pre></div>
 </div>
-<p>因为我们在 <a href="#creating-user-objects">6.1.3 节</a>销毁了第三个用户，所以 Active Record 无法在数据库中找到这个用户，抛出了一个异常，这说明在查找过程中出现了问题。因为 ID 不存在，所以 <code>find</code> 方法抛出 <code>ActiveRecord::RecordNotFound</code> 异常。<sup>[<a id="fn-ref-8" href="#fn-8">8</a>]</sup></p>
+<p>因为我们在 <a href="#creating-user-objects">6.1.3 节</a>销毁了第三个用户，所以 Active Record 无法在数据库中找到这个用户，从而抛出一个异常（exception），这说明在查找过程中出现了问题。因为 ID 不存在，所以 <code>find</code> 方法抛出 <code>ActiveRecord::RecordNotFound</code> 异常。<sup>[<a id="fn-ref-8" href="#fn-8">8</a>]</sup></p>
 <p>除了这种查找方式之外，Active Record 还支持通过属性查找用户：</p>
 <div data-type="listing">
 
@@ -346,7 +345,7 @@ ActiveRecord::RecordNotFound: Couldn't find User with ID=3
 created_at: "2016-05-23 19:05:58", updated_at: "2016-05-23 19:05:58"&gt;
 </code></pre></div>
 </div>
-<p>我们会使用电子邮件地址做用户名，所以在学习如何让用户登录网站时会用到这种 <code>find</code> 方法（<a href="chapter7.html#sign-up">第 7 章</a>）。你可能会担心如果用户数量过多，使用 <code>find_by</code> 的效率不高。事实的确如此，我们会在 <a href="#uniqueness-validation">6.2.5 节</a>说明这个问题，以及如何使用数据库索引解决。</p>
+<p>我们将使用电子邮件地址做用户名，在学习如何让用户登录网站时会用到这种 <code>find</code> 方法（<a href="chapter7.html#sign-up">第 7 章</a>）。你可能会担心如果用户数量过多，使用 <code>find_by</code> 的效率不高。事实的确如此，我们会在 <a href="#uniqueness-validation">6.2.5 节</a>说明这个问题，以及如何使用数据库索引解决。</p>
 <p>最后，再介绍几个常用的查找方法。首先是 <code>first</code> 方法：</p>
 <div data-type="listing">
 
@@ -432,7 +431,7 @@ created_at: "2016-05-23 19:05:58", updated_at: "2016-05-23 19:05:58"&gt;
 =&gt; "dude@abides.org"
 </code></pre></div>
 </div>
-<p><code>update_attributes</code> 方法接受一个指定对象属性的哈希作为参数，如果操作成功，会执行更新和保存两个操作（保存成功时返回 <code>true</code>）。注意，如果任何一个数据验证失败了，例如存储记录时需要密码（<a href="#adding-a-secure-password">6.3 节</a>实现），<code>update_attributes</code> 操作就会失败。如果只需要更新单个属性，可以使用 <code>update_attribute</code> 方法，跳过验证：</p>
+<p><code>update_attributes</code> 方法接受一个指定对象属性的散列作为参数，如果操作成功，会执行更新和保存两个操作（保存成功时返回 <code>true</code>）。注意，如果任何一个数据验证失败了，例如存储记录时需要密码（<a href="#adding-a-secure-password">6.3 节</a>实现），<code>update_attributes</code> 操作就会失败。如果只需要更新单个属性，可以使用 <code>update_attribute</code> 方法，跳过验证：</p>
 <div data-type="listing">
 
 
@@ -458,13 +457,13 @@ created_at: "2016-05-23 19:05:58", updated_at: "2016-05-23 19:05:58"&gt;
 </section>
 <section data-type="sect1" id="user-validations">
 <h1><span class="title-label">6.2</span> 验证用户数据</h1>
-<p><a href="#user-model">6.1 节</a>创建的 <code>User</code> 模型现在已经有了可以使用的 <code>name</code> 和 <code>email</code> 属性，不过功能还很简单：任何字符串（包括空字符串）都可以使用。名字和电子邮件地址的格式显然要复杂一些。例如，<code>name</code> 不应该是空的，<code>email</code> 应该符合特定的格式。而且，我们要把电子邮件地址当成用户名用来登录，那么在数据库中就不能重复出现。</p>
-<p>总之，<code>name</code> 和 <code>email</code> 不是什么字符串都可以使用的，我们要对它们可使用的值做个限制。Active Record 通过数据验证实现这种限制（<a href="chapter2.html#putting-the-micro-in-microposts">2.3.2 节</a>简单提到过）。本节，我们会介绍几种常用的数据验证：存在性、长度、格式和唯一性。<a href="#user-has-secure-password">6.3.2 节</a>还会介绍另一种常用的数据验证——二次确认。<a href="chapter7.html#unsuccessful-signups">7.3 节</a>会看到，如果提交了不合要求的数据，数据验证会显示一些很有用的错误消息。</p>
+<p><a href="#user-model">6.1 节</a>创建的 <code>User</code> 模型现在已经有了可以使用的 <code>name</code> 和 <code>email</code> 属性，不过功能还很简单：任何字符串（包括空字符串）都可以使用。名字和电子邮件地址的格式显然要复杂一些。例如，<code>name</code> 不应该是空的，<code>email</code> 应该符合特定的格式。而且，我们将把电子邮件地址当成用户名用来登录，那么在数据库中就不能重复出现。</p>
+<p>总之，<code>name</code> 和 <code>email</code> 不是什么字符串都可以使用的，我们要对它们可以使用的值做个限制。Active Record 通过数据验证（validation）实现这种限制（<a href="chapter2.html#putting-the-micro-in-microposts">2.3.2 节</a>简单提到过）。本节介绍几种常用的数据验证：存在性、长度、格式和唯一性。<a href="#user-has-secure-password">6.3.2 节</a>还会介绍另一种常用的数据验证——二次确认。<a href="chapter7.html#unsuccessful-signups">7.3 节</a>会看到，如果提交不合要求的数据，数据验证会显示一些很有用的错误消息。</p>
 <section data-type="sect2" id="a-validity-test">
 <h2><span class="title-label">6.2.1</span> 有效性测试</h2>
 <p><a href="chapter3.html#aside-when-to-test">旁注 3.3</a>说过，TDD 并不适用所有情况，但是模型验证是使用 TDD 的绝佳时机。如果不先编写失败测试，再想办法让它通过，我们很难确定验证是否实现了我们希望实现的功能。</p>
 <p>我们采用的方法是，先得到一个有效的模型对象，然后把属性改为无效值，以此确认这个对象是无效的。以防万一，我们先编写一个测试，确认模型对象一开始是有效的。这样，如果验证测试失败了，我们才知道的确事出有因（而不是因为一开始对象是无效的）。</p>
-<p><a href="#listing-generate-user-model">代码清单 6.1</a> 中的命令生成了一个用来测试 <code>User</code> 模型的测试文件，现在这个文件中还没什么内容，如<a href="#listing-default-user-test">代码清单 6.4</a> 所示。</p>
+<p><a href="#listing-generate-user-model">代码清单 6.1</a> 中的命令生成了一个用于测试 <code>User</code> 模型的测试文件，现在这个文件中还没什么内容，如<a href="#listing-default-user-test">代码清单 6.4</a> 所示。</p>
 <div id="listing-default-user-test" data-type="listing">
 <h5><span class="title-label">代码清单 6.4</span>：还没什么内容的 <code>User</code> 模型测试文件</h5>
 
@@ -522,9 +521,9 @@ created_at: "2016-05-23 19:05:58", updated_at: "2016-05-23 19:05:58"&gt;
 <section data-type="sect2" id="validating-presence">
 <h2><span class="title-label">6.2.2</span> 存在性验证</h2>
 <p>存在性验证算是最基本的验证了，只是检查指定的属性是否存在。本节我们会确保用户存入数据库之前，<code>name</code> 和 <code>email</code> 字段都有值。<a href="chapter7.html#signup-error-messages">7.3.3 节</a>会介绍如何把这个限制应用到创建用户的注册表单中。</p>
-<p>我们要先在<a href="#listing-valid-user-test">代码清单 6.5</a> 的基础上再编写一个测试，检查 <code>name</code> 属性是否存在。如<a href="#listing-name-presence-test">代码清单 6.7</a> 所示，我们只需把 <code>@user</code> 的 <code>name</code> 属性设为空字符串（包含几个空格的字符串），然后使用 <code>assert_not</code> 方法确认得到的用户对象是无效的。</p>
+<p>我们要先在<a href="#listing-valid-user-test">代码清单 6.5</a> 的基础上再编写一个测试，检查 <code>name</code> 属性是否存在。如<a href="#listing-name-presence-test">代码清单 6.7</a> 所示，我们只需把 <code>@user</code> 变量的 <code>name</code> 属性设为空字符串（包含几个空格的字符串），然后使用 <code>assert_not</code> 方法确认得到的用户对象是无效的。</p>
 <div id="listing-name-presence-test" data-type="listing">
-<h5><span class="title-label">代码清单 6.7</span>：测试 <code>name</code> 属性的验证措施 <span class="red">RED</span></h5>
+<h5><span class="title-label">代码清单 6.7</span>：测试 <code>name</code> 属性的验证 <span class="red">RED</span></h5>
 
 <div class="source-file">test/models/user_test.rb</div>
 
@@ -555,9 +554,9 @@ created_at: "2016-05-23 19:05:58", updated_at: "2016-05-23 19:05:58"&gt;
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>:models
 </code></pre></div>
 </div>
-<p>我们在<a href="chapter2.html#a-toy-app">第 2 章</a>的练习中见过，<code>name</code> 属性的存在性验证使用 <code>validates</code> 方法，而且其参数为 <code>presence: true</code>，如<a href="#listing-validates-presence-of-name">代码清单 6.9</a> 所示。<code>presence: true</code> 是只有一个元素的可选哈希参数，<a href="chapter4.html#css-revisited">4.3.4 节</a>说过，如果方法的最后一个参数是哈希，可以省略花括号。（<a href="chapter5.html#site-navigation">5.1.1 节</a>说过，Rails 经常使用哈希做参数。）</p>
+<p>我们在<a href="chapter2.html#a-toy-app">第 2 章</a>的练习中见过，<code>name</code> 属性的存在性验证使用 <code>validates</code> 方法，而且其参数为 <code>presence: true</code>，如<a href="#listing-validates-presence-of-name">代码清单 6.9</a> 所示。<code>presence: true</code> 是只有一个元素的可选散列参数；<a href="chapter4.html#css-revisited">4.3.4 节</a>说过，如果方法的最后一个参数是散列，可以省略花括号。（<a href="chapter5.html#site-navigation">5.1.1 节</a>说过，Rails 经常使用散列做参数。）</p>
 <div id="listing-validates-presence-of-name" data-type="listing">
-<h5><span class="title-label">代码清单 6.9</span>：添加 <code>name</code> 属性存在性验证 <span class="green">GREEN</span></h5>
+<h5><span class="title-label">代码清单 6.9</span>：为 <code>name</code> 属性添加存在性验证 <span class="green">GREEN</span></h5>
 
 <div class="source-file">app/models/user.rb</div>
 
@@ -612,7 +611,7 @@ created_at: "2016-05-23 19:05:58", updated_at: "2016-05-23 19:05:58"&gt;
 </div>
 <p>按照<a href="#listing-name-presence-test">代码清单 6.7</a> 的方式，再编写一个检查 <code>email</code> 属性存在性的测试就简单了，如<a href="#listing-email-presence-test">代码清单 6.11</a> 所示。让这个测试通过的应用代码如<a href="#listing-validates-presence-of-email">代码清单 6.12</a> 所示。</p>
 <div id="listing-email-presence-test" data-type="listing">
-<h5><span class="title-label">代码清单 6.11</span>：测试 <code>email</code> 属性的验证措施 <span class="red">RED</span></h5>
+<h5><span class="title-label">代码清单 6.11</span>：测试 <code>email</code> 属性的验证 <span class="red">RED</span></h5>
 
 <div class="source-file">test/models/user_test.rb</div>
 
@@ -641,7 +640,7 @@ created_at: "2016-05-23 19:05:58", updated_at: "2016-05-23 19:05:58"&gt;
 </code></pre></div>
 </div>
 <div id="listing-validates-presence-of-email" data-type="listing">
-<h5><span class="title-label">代码清单 6.12</span>：添加 <code>email</code> 属性存在性验证 <span class="green">GREEN</span></h5>
+<h5><span class="title-label">代码清单 6.12</span>：为 <code>email</code> 属性添加存在性验证 <span class="green">GREEN</span></h5>
 
 <div class="source-file">app/models/user.rb</div>
 
@@ -665,7 +664,7 @@ created_at: "2016-05-23 19:05:58", updated_at: "2016-05-23 19:05:58"&gt;
 <p>新建一个用户，赋值给变量 <code>u</code>，确认一开始这个用户对象是无效的。看一下完整的错误消息是什么。</p>
 </li>
 <li>
-<p>确认 <code>u.errors.messages</code> 是一个哈希。怎么获取电子邮件地址相关的错误呢？</p>
+<p>确认 <code>u.errors.messages</code> 是一个散列。怎么获取电子邮件地址相关的错误呢？</p>
 </li>
 </ol>
 </section>
@@ -764,8 +763,8 @@ aaaaaaaaaaa@example.com"
 </section>
 <section data-type="sect2" id="format-validation">
 <h2><span class="title-label">6.2.4</span> 格式验证</h2>
-<p><code>name</code> 属性的验证只需做一些简单的限制就好——任何非空、长度小于 51 个字符的字符串都可以。可是 <code>email</code> 属性需要更复杂的限制，必须是有效的电子邮件地址才行。目前我们只拒绝空电子邮件地址，本节我们要限制电子邮件地址符合常用的形式，类似 <code>user@example.com</code> 这种。</p>
-<p>这里我们用到的测试和验证不是十全十美的，只是刚好可以覆盖大多数有效的电子邮件地址，并拒绝大多数无效的电子邮件地址。我们会先测试一组有效的电子邮件地址和一组无效的电子邮件地址。我们要使用 <code>%w[]</code> 创建这两组地址，其中每个地址都是字符串形式，如下面的控制台会话所示：</p>
+<p><code>name</code> 属性的验证只需做一些简单的限制就好——任何非空、长度小于 51 个字符的字符串都可以。可是 <code>email</code> 属性需要更复杂的限制，必须是有效的电子邮件地址才行。目前我们只拒绝空电子邮件地址，本节将限制电子邮件地址符合常用的形式，类似 <code>user@example.com</code> 这种。</p>
+<p>这里我们用到的测试和验证不是十全十美的，只是刚好可以覆盖大多数有效的电子邮件地址，并拒绝大多数无效的电子邮件地址。我们会先测试一组有效的电子邮件地址和一组无效的电子邮件地址。我们将使用 <code>%w[]</code> 创建这两组地址，其中每个地址都是字符串形式，如下面的控制台会话所示：</p>
 <div data-type="listing">
 
 
@@ -781,7 +780,7 @@ THE_US-ER@foo.bar.org
 first.last@foo.jp
 </code></pre></div>
 </div>
-<p>在上面这个控制台会话中，我们使用 <code>each</code> 方法（<a href="chapter4.html#blocks">4.3.2 节</a>）遍历 <code>addresses</code> 数组中的元素。掌握这种用法之后，我们就可以编写一些基本的电子邮件地址格式验证测试了。</p>
+<p>在上面的控制台会话中，我们使用 <code>each</code> 方法（<a href="chapter4.html#blocks">4.3.2 节</a>）遍历 <code>addresses</code> 数组中的元素。掌握这种用法之后，我们就可以编写一些基本的电子邮件地址格式验证测试了。</p>
 <p>电子邮件地址格式验证有点棘手，而且容易出错，所以我们会先编写检查有效电子邮件地址的测试，这些测试应该能通过，以此捕获验证可能出现的错误。也就是说，添加验证后，不仅要拒绝无效的电子邮件地址，例如 <em>user@example,com</em>，还得接受有效的电子邮件地址，例如 <em>user@example.com</em>。（显然目前会接受所有电子邮件地址，因为只要不为空值都能通过验证。）检查有效电子邮件地址的测试如<a href="#listing-email-format-valid-tests">代码清单 6.18</a> 所示。</p>
 <div id="listing-email-format-valid-tests" data-type="listing">
 <h5><span class="title-label">代码清单 6.18</span>：测试有效的电子邮件地址格式 <span class="green">GREEN</span></h5>
@@ -809,7 +808,7 @@ first.last@foo.jp
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>注意，我们为 <code>assert</code> 方法指定了可选的第二个参数，定制错误消息，识别是哪个地址导致测试失败的：</p>
+<p>注意，我们为 <code>assert</code> 方法指定了可选的第二个参数，用于定制错误消息，识别是哪个地址导致测试失败的：</p>
 <div data-type="listing">
 
 
@@ -859,7 +858,7 @@ first.last@foo.jp
 <div class="highlight language-ruby"><pre><code><span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">format: </span><span class="p">{</span> <span class="ss">with: </span><span class="sr">/&lt;regular expression&gt;/</span> <span class="p">}</span>
 </code></pre></div>
 </div>
-<p>它使用指定的正则表达式验证属性。正则表达式很强大，使用模式匹配字符串，但往往晦涩难懂。我们要编写一个正则表达式，匹配有效的电子邮件地址，但不匹配无效的地址。</p>
+<p>它使用指定的正则表达式（regular expression，简称 regex）验证属性。正则表达式很强大，使用模式匹配字符串，但往往晦涩难懂。我们要编写一个正则表达式，匹配有效的电子邮件地址，但不匹配无效的地址。</p>
 <p>在官方标准中其实有一个正则表达式，可以匹配全部有效的电子邮件地址，但没必要使用这么复杂的正则表达式。<sup>[<a id="fn-ref-11" href="#fn-11">11</a>]</sup>本书使用一个更务实的正则表达式，能很好地满足实际需求，如下所示：</p>
 <div data-type="listing">
 
@@ -867,7 +866,7 @@ first.last@foo.jp
 <div class="highlight language-ruby"><pre><code><span class="no">VALID_EMAIL_REGEX</span> <span class="o">=</span> <span class="sr">/\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i</span>
 </code></pre></div>
 </div>
-<p>为了便于理解，我把 <code>VALID_EMAIL_REGEX</code> 拆分成几块来讲，如<a href="#table-valid-email-regex">表 6.1</a> 所示。</p>
+<p>为了便于理解，我把 <code>VALID_EMAIL_REGEX</code> 拆分成几块来讲，如<a href="#table-valid-email-regex">表 6.1</a> 所示。<sup>[<a id="fn-ref-12" href="#fn-12">12</a>]</sup></p>
 <table id="table-valid-email-regex" class="tableblock frame-all grid-all" style="width: 100%;">
 <caption><span class="title-label">表 6.1</span>：拆解匹配有效电子邮件地址的正则表达式</caption>
 <colgroup>
@@ -927,9 +926,9 @@ first.last@foo.jp
 </tr>
 </tbody>
 </table>
-<p>从<a href="#table-valid-email-regex">表 6.1</a> 中虽然能学到很多，但若想真正理解正则表达式，我觉得交互式正则表达式匹配工具，例如 <a href="http://www.rubular.com/">Rubular</a>（<a href="#fig-rubular">图 6.7</a>）<sup>[<a id="fn-ref-12" href="#fn-12">12</a>]</sup>，是必不可少的的。Rubular 的界面很友好，便于编写所需的正则表达式，而且还有一个便捷的语法速查表。我建议你使用 Rubular 来理解<a href="#table-valid-email-regex">表 6.1</a>中的正则表达式——读得次数再多也不比不上在 Rubular 中实操几次。（注意：如果你在 Rubular 中输入<a href="#table-valid-email-regex">表 6.1</a> 中的正则表达式，要把 <code>\A</code> 和 <code>\z</code> 去掉，因为 Rubular 无法正确处理字符串的头尾。此外还要注意，正则表达式夹在一对斜线内，在 Rubular 中无需再输入斜线。）</p>
+<p>从<a href="#table-valid-email-regex">表 6.1</a> 中虽然能学到很多，但若想真正理解正则表达式，我觉得交互式正则表达式匹配工具，例如 <a href="http://www.rubular.com/">Rubular</a>（<a href="#fig-rubular">图 6.7</a>）<sup>[<a id="fn-ref-13" href="#fn-13">13</a>]</sup>，是必不可少的。Rubular 的界面很友好，便于编写所需的正则表达式，而且还有一个便捷的语法速查表。我建议你使用 Rubular 来理解<a href="#table-valid-email-regex">表 6.1</a>中的正则表达式——读得次数再多也不比不上在 Rubular 中实操几次。（注意：如果你在 Rubular 中输入<a href="#table-valid-email-regex">表 6.1</a> 中的正则表达式，要把 <code>\A</code> 和 <code>\z</code> 去掉，这样便可以一次匹配字符串中的多个电子邮件地址。此外还要注意，正则表达式夹在一对斜线内，在 Rubular 中无需再输入斜线。）</p>
 <div id="fig-rubular" class="figure"><img src="images/chapter6/rubular.png" alt="rubular" /><div class="figcaption"><span class="title-label">图 6.7</span>：强大的 Rubular 正则表达式编辑器</div></div>
-<p>在 <code>email</code> 属性的格式验证中使用这个表达式后得到的代码如<a href="#listing-validates-format-of-email">代码清单 6.21</a> 所示。</p>
+<p>在 <code>email</code> 属性的格式验证中使用这个正则表达式后得到的代码如<a href="#listing-validates-format-of-email">代码清单 6.21</a> 所示。</p>
 <div id="listing-validates-format-of-email" data-type="listing">
 <h5><span class="title-label">代码清单 6.21</span>：使用正则表达式验证电子邮件地址的格式 <span class="green">GREEN</span></h5>
 
@@ -943,7 +942,7 @@ first.last@foo.jp
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>其中，<code>VALID_EMAIL_REGEX</code> 是一个常量。在 Ruby 中常量的首字母为大写形式。下面这段代码：</p>
+<p>其中，<code>VALID_EMAIL_REGEX</code> 是一个常量（constant）。在 Ruby 中常量的首字母为大写。下面这段代码：</p>
 <div data-type="listing">
 
 
@@ -961,17 +960,17 @@ first.last@foo.jp
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>:models
 </code></pre></div>
 </div>
-<p>那么就只剩一个限制要实现了：确保电子邮件地址的唯一性。</p>
+<p>那么，现在就只剩一个限制要实现了：确保电子邮件地址的唯一性。</p>
 <h5 id="exercises-format-validation" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>把<a href="#listing-email-format-valid-tests">代码清单 6.18</a> 中的有效地址和<a href="#listing-email-format-validation-tests">代码清单 6.19</a> 中的无效地址复制粘贴到 Rubular 的测试字符串文本框中，确认<a href="#listing-validates-format-of-email">代码清单 6.21</a> 中的正则表达式能匹配全部有效地址，不能匹配全部无效地址。</p>
+<p>把<a href="#listing-email-format-valid-tests">代码清单 6.18</a> 中的有效地址和<a href="#listing-email-format-validation-tests">代码清单 6.19</a> 中的无效地址复制粘贴到 Rubular 的测试字符串文本框中，确认<a href="#listing-validates-format-of-email">代码清单 6.21</a> 中的正则表达式能匹配全部有效地址，而且不能匹配任何无效地址。</p>
 </li>
 <li>
 <p>前面说过，<a href="#listing-validates-format-of-email">代码清单 6.21</a> 中的电子邮件地址正则表达式能匹配有连续点号的无效地址，例如 <em>foo@bar..com</em>。把这个地址添加到<a href="#listing-email-format-validation-tests">代码清单 6.19</a> 中的无效地址列表中，让测试失败，然后使用<a href="#listing-better-email-regex">代码清单 6.23</a> 中较复杂的正则表达式让测试通过。</p>
 </li>
 <li>
-<p>把 <em>foo@bar..com</em> 添加到 Rubular 中的测试字符串文本框中，确认<a href="#listing-better-email-regex">代码清单 6.23</a> 中的正则表达式能匹配全部有效地址，不能匹配全部无效地址。</p>
+<p>把 <em>foo@bar..com</em> 添加到 Rubular 中的测试字符串文本框中，确认<a href="#listing-better-email-regex">代码清单 6.23</a> 中的正则表达式能匹配全部有效地址，而且不能匹配任何无效地址。</p>
 </li>
 </ol>
 <div id="listing-better-email-regex" data-type="listing">
@@ -990,8 +989,8 @@ first.last@foo.jp
 </section>
 <section data-type="sect2" id="uniqueness-validation">
 <h2><span class="title-label">6.2.5</span> 唯一性验证</h2>
-<p>确保电子邮件地址的唯一性（这样才能作为用户名），要使用 <code>validates</code> 方法的 <code>:unique</code> 参数。提前说明，实现的过程中有一个很大的陷阱，所以别轻易跳过本节，要认真阅读。</p>
-<p>我们要先编写一些简短的测试。之前的模型测试，只是使用 <code>User.new</code> 在内存中创建一个 Ruby 对象，但是测试唯一性时要把数据存入数据库。<sup>[<a id="fn-ref-13" href="#fn-13">13</a>]</sup>对重复电子邮件地址的测试如<a href="#listing-validates-uniqueness-of-email-test">代码清单 6.24</a> 所示。</p>
+<p>确保电子邮件地址的唯一性（这样才能作为用户名），要使用 <code>validates</code> 方法的 <code>:unique</code> 选项。提前说明，实现的过程中有一个很大的陷阱，所以别轻易跳过本节，要认真阅读。</p>
+<p>我们要先编写一些简短的测试。之前的模型测试，只是使用 <code>User.new</code> 在内存中创建一个 Ruby 对象，但是测试唯一性时要把数据存入数据库。<sup>[<a id="fn-ref-14" href="#fn-14">14</a>]</sup>对重复电子邮件地址的测试如<a href="#listing-validates-uniqueness-of-email-test">代码清单 6.24</a> 所示。</p>
 <div id="listing-validates-uniqueness-of-email-test" data-type="listing">
 <h5><span class="title-label">代码清单 6.24</span>：拒绝重复电子邮件地址的测试 <span class="red">RED</span></h5>
 
@@ -1031,7 +1030,7 @@ first.last@foo.jp
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>这还不行，一般来说电子邮件地址不区分大小写，也就说 <code>foo@bar.com</code> 和 <code>FOO@BAR.COM</code> 或 <code>FoO@BAr.coM</code> 是同一个地址，所以验证时也要考虑这种情况。<sup>[<a id="fn-ref-14" href="#fn-14">14</a>]</sup>因此，还要测试不区分大小写，如<a href="#listing-validates-uniqueness-of-email-case-insensitive-test">代码清单 6.26</a> 所示。</p>
+<p>这还不行，一般来说电子邮件地址不区分大小写，也就说 <code>foo@bar.com</code> 和 <code>FOO@BAR.COM</code> 或 <code>FoO@BAr.coM</code> 是同一个地址，所以验证时也要考虑这种情况。<sup>[<a id="fn-ref-15" href="#fn-15">15</a>]</sup>因此，还要测试不区分大小写，如<a href="#listing-validates-uniqueness-of-email-case-insensitive-test">代码清单 6.26</a> 所示。</p>
 <div id="listing-validates-uniqueness-of-email-case-insensitive-test" data-type="listing">
 <h5><span class="title-label">代码清单 6.26</span>：测试电子邮件地址的唯一性验证不区分大小写 <span class="red">RED</span></h5>
 
@@ -1056,7 +1055,7 @@ first.last@foo.jp
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>上面的代码，在字符串上调用 <code>upcase</code> 方法（<a href="chapter4.html#blocks">4.3.2 节</a>简介过）。这个测试和前面对重复电子邮件的测试作用一样，只是把地址转换成全部大写字母的形式。如果觉得太抽象，那就在控制台中实操一下吧：</p>
+<p>上面的代码，在字符串上调用 <code>upcase</code> 方法（<a href="chapter4.html#blocks">4.3.2 节</a>简介过）。这个测试和前面对重复电子邮件的测试作用一样，只是把地址转换成全部大写字母的形式。如果你觉得太抽象，那就在控制台中实操一下吧：</p>
 <div data-type="listing">
 
 
@@ -1086,7 +1085,7 @@ first.last@foo.jp
 </code></pre></div>
 </div>
 <p>注意，我们直接把 <code>true</code> 换成了 <code>case_sensitive: false</code>，Rails 会自动指定 <code>:uniqueness</code> 的值为 <code>true</code>。</p>
-<p>至此，我们的应用虽还有不足，但基本可以保证电子邮件地址的唯一性了，测试组件应该可以通过了：</p>
+<p>至此，我们的应用虽然还有不足，但基本可以保证电子邮件地址的唯一性了，测试组件应该可以通过了：</p>
 <div data-type="listing">
 <h5><span class="title-label">代码清单 6.28</span>：<strong class="green">GREEN</strong></h5>
 
@@ -1109,10 +1108,10 @@ first.last@foo.jp
 <p>结果是，尽管有唯一性验证，数据库中还是有两条用户记录的电子邮件地址是一样的。</p>
 </li>
 </ol>
-<p>相信我，上面这种难以置信的情况可能发生，只要有一定的访问量，在任何 Rails 网站中都可能发生。幸好解决的方法很简单，只需在数据库层也加上唯一性限制。我们要做的是在数据库中为 <code>email</code> 列建立索引（<a href="#aside-database-indices">旁注 6.2</a>），然后为索引加上唯一性限制。</p>
+<p>相信我，上面这种难以置信的情况可能发生，只要有一定的访问量，在任何 Rails 网站中都可能发生（这是我从教训中学到的经验）。幸好解决的方法很简单，只需在数据库层也加上唯一性限制。我们要做的是在数据库中为 <code>email</code> 列建立索引（<a href="#aside-database-indices">旁注 6.2</a>），然后为索引加上唯一性约束。</p>
 <div data-type="sidebar" id="aside-database-indices" class="sidebar">
 <h5><span class="title-label">旁注 6.2</span>：数据库索引</h5>
-<p>在数据库中创建列时要考虑是否需要通过这个列查找记录。以<a href="#listing-users-migration">代码清单 6.2</a>中的迁移创建的 <code>email</code> 属性为例，<a href="chapter7.html#sign-up">第 7 章</a>实现登录功能后，我们要根据提交的电子邮件地址查找对应的用户记录。可是，在这个简单的数据模型中通过电子邮件地址查找用户只有一种方法——检查数据库中的所有用户记录，比较记录中的 <code>email</code> 属性和指定的电子邮件地址。也就是说，可能要检查每一条记录（毕竟用户可能是数据库中的最后一条记录）。在数据库领域，这叫全表扫描。如果网站中有几千个用户，这可不是一件轻松的事。</p>
+<p>在数据库中创建列时要考虑是否需要通过这个列查找记录。以<a href="#listing-users-migration">代码清单 6.2</a>中的迁移创建的 <code>email</code> 属性为例，<a href="chapter7.html#sign-up">第 7 章</a>实现登录功能后，我们将根据提交的电子邮件地址查找对应的用户记录。可是，在这个简单的数据模型中通过电子邮件地址查找用户只有一种方法——检查数据库中的所有用户记录，比较记录中的 <code>email</code> 属性和指定的电子邮件地址。也就是说，可能要检查每一条记录（毕竟用户可能是数据库中的最后一条记录）。在数据库领域，这叫全表扫描（full-table scan）。如果网站中有几千个用户，这可不是一件轻松的事。</p>
 <p>为 <code>email</code> 列加上索引可以解决这个问题。我们可以把数据库索引看成书籍的索引。如果要在一本书中找出某个字符串（例如 <code>"foobar"</code>）出现的所有位置，需要翻看书中的每一页。但是如果有索引的话，只需在索引中找到 <code>"foobar"</code> 条目，就能看到所有包含 <code>"foobar"</code> 的页码。数据库索引基本上也是这种原理。</p>
 </div>
 <p>为 <code>email</code> 列建立索引要改变数据模型，在 Rails 中可以通过迁移实现。在 <a href="#database-migrations">6.1.1 节</a>我们看到，生成 <code>User</code> 模型时会自动创建一个迁移文件（<a href="#listing-users-migration">代码清单 6.2</a>）。现在我们是要改变已经存在的模型结构，那么使用 <code>migration</code> 命令直接创建迁移文件就可以了：</p>
@@ -1122,7 +1121,7 @@ first.last@foo.jp
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate migration add_index_to_users_email
 </code></pre></div>
 </div>
-<p>与 <code>User</code> 模型的迁移不同，实现电子邮件地址唯一性的操作没有事先定义好的模板可用，所以我们要自己动手编写，如<a href="#listing-email-uniqueness-index">代码清单 6.29</a> 所示。<sup>[<a id="fn-ref-15" href="#fn-15">15</a>]</sup></p>
+<p>与 <code>User</code> 模型的迁移不同，实现电子邮件地址唯一性的操作没有事先定义好的模板可用，所以我们要自己动手编写，如<a href="#listing-email-uniqueness-index">代码清单 6.29</a> 所示。<sup>[<a id="fn-ref-16" href="#fn-16">16</a>]</sup></p>
 <div id="listing-email-uniqueness-index" data-type="listing">
 <h5><span class="title-label">代码清单 6.29</span>：添加电子邮件唯一性约束的迁移</h5>
 
@@ -1171,7 +1170,7 @@ first.last@foo.jp
 <div class="highlight language-yaml"><pre><code><span class="c1"># empty</span>
 </code></pre></div>
 </div>
-<p>为了保证电子邮件地址的唯一性，还要做些修改。有些数据库适配器的索引区分大小写，会把“Foo@ExAMPle.CoM”和“foo@example.com”视作不同的字符串，但我们的应用会把他们看做同一个地址。为了避免不兼容，我们要统一使用小写形式的地址，存入数据库前，把“Foo@ExAMPle.CoM”转换成“foo@example.com”。为此，我们要使用回调（callback），在 Active Record 对象生命周期的特定时刻调用。<sup>[<a id="fn-ref-16" href="#fn-16">16</a>]</sup>现在，我们要使用的回调是 <code>before_save</code>，在用户对象存入数据库之前把电子邮件地址转换成全小写字母形式，如<a href="#listing-email-downcase">代码清单 6.32</a> 所示。（这只是初步实现方式，<a href="chapter11.html#account-activations-resource">11.1 节</a>会再次讨论这个话题，届时会使用常用的“方法引用”定义回调。）</p>
+<p>为了保证电子邮件地址的唯一性，还要做些修改。有些数据库适配器的索引区分大小写，会把“Foo@ExAMPle.CoM”和“foo@example.com”视作不同的字符串，但我们的应用会把它们看做同一个地址。为了避免不兼容，我们要统一使用小写形式的地址，存入数据库前，把“Foo@ExAMPle.CoM”转换成“foo@example.com”。为此，我们要使用回调（callback），在 Active Record 对象生命周期的特定时刻调用。<sup>[<a id="fn-ref-17" href="#fn-17">17</a>]</sup>这里，我们要使用的回调是 <code>before_save</code>，在用户对象存入数据库之前把电子邮件地址转换成全小写字母形式，如<a href="#listing-email-downcase">代码清单 6.32</a> 所示。（这只是初步实现方式，<a href="chapter11.html#account-activations-resource">11.1 节</a>会再次讨论这个话题，届时会使用常用的“方法引用”定义回调。）</p>
 <div id="listing-email-downcase" data-type="listing">
 <h5><span class="title-label">代码清单 6.32</span>：把 <code>email</code> 属性的值转换为小写形式，确保电子邮件地址的唯一性 <span class="green">GREEN</span></h5>
 
@@ -1210,14 +1209,14 @@ first.last@foo.jp
 </code></pre></div>
 </div>
 <p>是不对的。（<a href="chapter9.html#remember-me">9.1 节</a>会进一步讨论这个话题。）</p>
-<p>现在，前面 Alice 遇到的问题解决了，数据库会存储请求 1 创建的用户，不会存储请求 2 创建的用户，因为后者违反了唯一性约束。（在 Rails 的日志中会显示一个错误，不过并无大碍。）为 <code>email</code> 列建立索引同时也解决了 <a href="#finding-user-objects">6.1.4 节</a>提到的问题：如<a href="#aside-database-indices">旁注 6.2</a> 所说，为 <code>email</code> 列添加索引之后，使用电子邮件地址查找用户时不会进行全表扫描，解决了潜在的效率问题。</p>
+<p>现在，前面 Alice 遇到的问题解决了，数据库会存储请求 1 创建的用户，不会存储请求 2 创建的用户，因为后者违反了唯一性约束。（在 Rails 的日志中会显示一个错误，不过并无大碍。）为 <code>email</code> 列建立索引同时也解决了 <a href="#finding-user-objects">6.1.4 节</a>提到的问题：如<a href="#aside-database-indices">旁注 6.2</a> 所说，为 <code>email</code> 列添加索引之后，使用电子邮件地址查找用户时不会进行全表扫描，从而解决了潜在的效率问题。</p>
 <h5 id="exercises-uniqueness-validation" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>为<a href="#listing-email-downcase">代码清单 6.32</a> 中把电子邮件地址转换成小写形式的代码编写一个测试，如<a href="#listing-email-downcase-test">代码清单 6.33</a> 所示。这段测试使用 <code>reload</code> 方法从数据库中重新加载数据；使用 <code>assert_equal</code> 方法测试是否相等。为了验证<a href="#listing-email-downcase-test">代码清单 6.33</a> 是正确的，先把 <code>before_save</code> 那行注释掉，看测试是否失败，然后去掉注释，看测试能否通过。</p>
+<p>为<a href="#listing-email-downcase">代码清单 6.32</a> 中把电子邮件地址转换成小写形式的代码编写一个测试，如<a href="#listing-email-downcase-test">代码清单 6.33</a> 所示。这段测试使用 <code>reload</code> 方法从数据库中重新加载数据，使用 <code>assert_equal</code> 方法测试是否相等。为了验证<a href="#listing-email-downcase-test">代码清单 6.33</a> 是正确的，先把 <code>before_save</code> 那行注释掉，看测试是否失败，然后去掉注释，看测试能否通过。</p>
 </li>
 <li>
-<p>通过测试组件确认在 <code>before_save</code> 回调中可以使用“炸弹”方法 <code>email.downcase!</code>，直接修改 <code>email</code> 属性，如<a href="#listing-downcase-bang">代码清单 6.34</a> 所示。</p>
+<p>通过测试组件确认在 <code>before_save</code> 回调中可以使用“炸弹”方法 <code>email.downcase!</code> 直接修改 <code>email</code> 属性，如<a href="#listing-downcase-bang">代码清单 6.34</a> 所示。</p>
 </li>
 </ol>
 <div id="listing-email-downcase-test" data-type="listing">
@@ -1270,7 +1269,7 @@ first.last@foo.jp
 </section>
 <section data-type="sect1" id="adding-a-secure-password">
 <h1><span class="title-label">6.3</span> 添加安全密码</h1>
-<p>我们已经为 <code>name</code> 和 <code>email</code> 字段添加了验证规则，现在要加入用户所需的最后一个常规属性：安全密码。每个用户都要设置一个密码（还要二次确认），数据库中则存储经过哈希加密后的密码。（你可能会困惑。这里所说的“哈希”不是 <a href="chapter4.html#hashes-and-symbols">4.3.3 节</a>介绍的 Ruby 数据结构，而是经过不可逆<a href="http://en.wikipedia.org/wiki/Hash_function">哈希算法</a>计算得到的结果。）我们还要加入基于密码的身份验证机制，<a href="chapter8.html#basic-login">第 8 章</a>会利用这个机制实现用户登录功能。</p>
+<p>我们已经为 <code>name</code> 和 <code>email</code> 字段添加了验证规则，现在要加入用户所需的最后一个常规属性：安全密码。每个用户都要设置一个密码（还要二次确认），数据库中则存储经过哈希（hash）加密后的密码。（你可能会困惑。这里所说的“哈希”不是 <a href="chapter4.html#hashes-and-symbols">4.3.3 节</a>介绍的 Ruby 数据结构，而是经过不可逆<a href="http://en.wikipedia.org/wiki/Hash_function">哈希算法</a>计算得到的结果。）{![哈希和散列对应的英语单词都是 hash，但是译成中文后，就没有这个问题了：算法是“哈希”，数据结构是“散列”。——译者注]}我们还要加入基于密码的身份验证机制，<a href="chapter8.html#basic-login">第 8 章</a>会利用这个机制实现用户登录功能。</p>
 <p>验证身份的方法是，获取用户提交的密码，哈希加密，再与数据库中存储的密码哈希值对比。如果二者一致，用户提交的就是正确的密码，用户的身份也就通过验证了。我们要对比的是密码哈希值，而不是原始密码，所以不用在数据库中存储用户的密码。因此，就算被“脱库”了，用户的密码仍然安全。</p>
 <section data-type="sect2" id="a-hashed-password">
 <h2><span class="title-label">6.3.1</span> 计算密码哈希值</h2>
@@ -1292,13 +1291,13 @@ first.last@foo.jp
 <p>在数据库中的 <code>password_digest</code> 列存储安全的密码哈希值；</p>
 </li>
 <li>
-<p>获得一对虚拟属性，<sup>[<a id="fn-ref-17" href="#fn-17">17</a>]</sup><code>password</code> 和 <code>password_confirmation</code>，而且创建用户对象时会执行存在性验证和匹配验证；</p>
+<p>获得一对虚拟属性，<sup>[<a id="fn-ref-18" href="#fn-18">18</a>]</sup><code>password</code> 和 <code>password_confirmation</code>，而且创建用户对象时会执行存在性验证和匹配验证；</p>
 </li>
 <li>
 <p>获得 <code>authenticate</code> 方法，如果密码正确，返回对应的用户对象，否则返回 <code>false</code>。</p>
 </li>
 </ul>
-<p><code>has_secure_password</code> 发挥功效的唯一要求是，对应的模型中有个名为 <code>password_digest</code> 的属性。（digest（摘要）是<a href="http://en.wikipedia.org/wiki/Cryptographic_hash_function">哈希加密算法</a>中的术语。“密码哈希值”和“密码摘要”是一个意思。）<sup>[<a id="fn-ref-18" href="#fn-18">18</a>]</sup>对 <code>User</code> 模型来说，我们要实现如<a href="#fig-user-model-password-digest">图 6.8</a> 所示的数据模型。</p>
+<p><code>has_secure_password</code> 发挥功效的唯一要求是，对应的模型中有个名为 <code>password_digest</code> 的属性。（digest（摘要）是<a href="http://en.wikipedia.org/wiki/Cryptographic_hash_function">哈希加密算法</a>中的术语。“密码哈希值”和“密码摘要”是一个意思。）<sup>[<a id="fn-ref-19" href="#fn-19">19</a>]</sup>对 <code>User</code> 模型来说，我们要实现如<a href="#fig-user-model-password-digest">图 6.8</a> 所示的数据模型。</p>
 <div id="fig-user-model-password-digest" class="figure"><img src="images/chapter6/user_model_password_digest_3rd_edition.png" alt="user model password digest 3rd edition" /><div class="figcaption"><span class="title-label">图 6.8</span>：<code>User</code> 数据模型，多了一个 <code>password_digest</code> 属性</div></div>
 <p>为了实现<a href="#fig-user-model-password-digest">图 6.8</a> 中的数据模型，首先要创建一个适当的迁移文件，添加 <code>password_digest</code> 列。迁移的名字随意，不过最好以 <code>to_users</code> 结尾，因为这样 Rails 会自动生成一个向 <code>users</code> 表添加列的迁移。我们把这个迁移命名为 <code>add_password_digest_to_users</code>，生成迁移的命令如下：</p>
 <div data-type="listing">
@@ -1334,7 +1333,7 @@ first.last@foo.jp
 
 <div class="highlight language-ruby"><pre><code><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
 
-<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>          <span class="s1">'5.0.0.1'</span>
+<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>          <span class="s1">'5.0.1'</span>
 <span class="n">gem</span> <span class="s1">'bcrypt'</span><span class="p">,</span>         <span class="s1">'3.1.11'</span>
 <span class="p">.</span>
 <span class="nf">.</span>
@@ -1376,7 +1375,7 @@ first.last@foo.jp
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
-<p>我们在 <a href="#a-hashed-password">6.3.1 节</a>说过，<code>has_secure_password</code> 会在 <code>password</code> 和 <code>password_confirmation</code> 两个虚拟属性上执行验证，但是现在<a href="#listing-validates-uniqueness-of-email-case-insensitive-test">代码清单 6.26</a> 创建 <code>@user</code> 变量时没有指定这两个属性：</p>
+<p>我们在 <a href="#a-hashed-password">6.3.1 节</a>说过，<code>has_secure_password</code> 会在 <code>password</code> 和 <code>password_confirmation</code> 两个虚拟属性上执行验证，但是现在<a href="#listing-validates-uniqueness-of-email-case-insensitive-test">代码清单 6.26</a> 创建 <code>@user</code> 变量时没有设定这两个属性：</p>
 <div data-type="listing">
 
 
@@ -1405,6 +1404,7 @@ first.last@foo.jp
 <span class="nf">end</span>
 </code></pre></div>
 </div>
+<p>注意，<code>setup</code> 方法的第一行末尾有个逗号，这是 Ruby 的散列句法所需的（<a href="chapter4.html#hashes-and-symbols">4.3.3 节</a>）。如果没有那个逗号，会出现句法错误。如果遇到这个问题，你要设法自行解决。</p>
 <p>现在测试应该可以通过了：</p>
 <div data-type="listing">
 <h5><span class="title-label">代码清单 6.40</span>：<strong class="green">GREEN</strong></h5>
@@ -1509,7 +1509,7 @@ first.last@foo.jp
 <section data-type="sect2" id="creating-and-authenticating-a-user">
 <h2><span class="title-label">6.3.4</span> 创建并验证用户的身份</h2>
 <p>至此，基本的 <code>User</code> 模型已经完成了。接下来，我们要在数据库中创建一个用户，为 <a href="chapter7.html#showing-users">7.1 节</a>开发的用户资料页面做准备。同时也看一下在 <code>User</code> 模型中添加 <code>has_secure_password</code> 方法后的效果，还要用一下重要的 <code>authenticate</code> 方法。</p>
-<p>因为现在还不能在网页中注册（<a href="chapter7.html#sign-up">第 7 章</a>实现），我们要在控制台中手动创建新用户。为了方便，我们会使用 <a href="#creating-user-objects">6.1.3 节</a>介绍的 <code>create</code> 方法。注意，不要在沙盒模式中启用控制台，否则结果不会存入数据库。我们要使用 <code>rails console</code> 启动普通的控制台，然后使用有效的名字和电子邮件地址，以及密码和密码确认，创建一个用户：</p>
+<p>因为现在还不能在网页中注册（<a href="chapter7.html#sign-up">第 7 章</a>实现），我们要在 Rails 控制台中手动创建新用户。为了方便，我们会使用 <a href="#creating-user-objects">6.1.3 节</a>介绍的 <code>create</code> 方法。注意，不要在沙盒模式中启用控制台，否则结果不会存入数据库。我们要使用 <code>rails console</code> 启动普通的控制台，然后使用有效的名字和电子邮件地址，以及密码和密码确认，创建一个用户：</p>
 <div data-type="listing">
 
 
@@ -1521,9 +1521,9 @@ created_at: "2016-05-23 20:36:46", updated_at: "2016-05-23 20:36:46",
 password_digest: "$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3..."&gt;
 </code></pre></div>
 </div>
-<p>为了确认结果，我们使用 SQLite 数据库浏览器查看开发数据库（<code>db/development.sqlite3</code>）中的 <code>users</code> 表，如<a href="#fig-sqlite-user-row">图 6.9</a> 所示。<sup>[<a id="fn-ref-19" href="#fn-19">19</a>]</sup>（如果使用云端 IDE，要按照<a href="#fig-sqlite-download">图 6.6</a> 中的方法下载数据库文件。）留意<a href="#fig-user-model-password-digest">图 6.8</a> 中数据模型的各个属性。</p>
+<p>为了确认结果，我们使用 SQLite 数据库浏览器查看开发数据库（<code>db/development.sqlite3</code>）中的 <code>users</code> 表，如<a href="#fig-sqlite-user-row">图 6.9</a> 所示。<sup>[<a id="fn-ref-20" href="#fn-20">20</a>]</sup>（如果使用云端 IDE，要按照<a href="#fig-sqlite-download">图 6.6</a> 中的方法下载数据库文件。）留意<a href="#fig-user-model-password-digest">图 6.8</a> 中数据模型的各个属性。</p>
 <div id="fig-sqlite-user-row" class="figure"><img src="images/chapter6/sqlite_user_row_with_password_4th_edition.png" alt="sqlite user row with password 4th edition" /><div class="figcaption"><span class="title-label">图 6.9</span>：SQLite 数据库 <code>db/development.sqlite3</code> 中的一个用户记录</div></div>
-<p>回到控制台，查看 <code>password_digest</code> 属性的值，由此可以看出<a href="#listing-password-implementation">代码清单 6.42</a>中 <code>has_secure_password</code> 方法的作用：</p>
+<p>回到控制台，查看 <code>password_digest</code> 属性的值，由此可以看出<a href="#listing-password-implementation">代码清单 6.42</a> 中 <code>has_secure_password</code> 方法的作用：</p>
 <div data-type="listing">
 
 
@@ -1532,7 +1532,7 @@ password_digest: "$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3..."&gt;
 =&gt; "$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3yOcVFzb6oK"
 </code></pre></div>
 </div>
-<p>这是创建用户对象时指定的密码（<code>"foobar"</code>）的哈希值。这个值由 bcrypt 计算得出，很难反推出原始密码。<sup>[<a id="fn-ref-20" href="#fn-20">20</a>]</sup></p>
+<p>这是创建用户对象时指定的密码（<code>"foobar"</code>）的哈希值。这个值由 bcrypt 计算得出，很难反推出原始密码。<sup>[<a id="fn-ref-21" href="#fn-21">21</a>]</sup></p>
 <p><a href="#a-hashed-password">6.3.1 节</a>说过，<code>has_secure_password</code> 方法会自动在对应的模型对象中添加 <code>authenticate</code> 方法。这个方法会计算给定密码的哈希值，然后与数据库中 <code>password_digest</code> 列的值比较，以此判断用户提供的密码是否正确。我们可以在刚创建的用户上试几个错误密码：</p>
 <div data-type="listing">
 
@@ -1578,7 +1578,7 @@ password_digest: "$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3..."&gt;
 <section data-type="sect1" id="modeling-users-conclusion">
 <h1><span class="title-label">6.4</span> 小结</h1>
 <p>本章从零开始建立了一个可以正常使用的 <code>User</code> 模型，创建了 <code>name</code>、<code>email</code> 和 <code>password</code> 属性，还为这些属性制定了重要的取值约束规则。而且，已经可以使用密码对用户进行身份验证了。整个 <code>User</code> 模型只用了十行代码。</p>
-<p>在接下来的<a href="chapter7.html#sign-up">第 7 章</a>，我们会创建一个注册表单，用于新建用户；还会创建一个页面，显示用户的信息。<a href="chapter8.html#basic-login">第 8 章</a>会使用 <a href="#adding-a-secure-password">6.3 节</a>实现的身份验证机制让用户登录网站。</p>
+<p>在接下来的<a href="chapter7.html#sign-up">第 7 章</a>，我们将创建一个注册表单，用于新建用户；还将创建一个页面，显示用户的信息。<a href="chapter8.html#basic-login">第 8 章</a>会使用 <a href="#adding-a-secure-password">6.3 节</a>实现的身份验证机制让用户登录网站。</p>
 <p>如果使用 Git，而且一直都没提交，现在是提交的好时机：</p>
 <div data-type="listing">
 
@@ -1662,26 +1662,27 @@ password_digest: "$2a$10$74xFguZRoTZBXTUqs1FjpOf3OoLhrvgxC2wlohtTEcH..."&gt;
 
           <div class="footnotes">
 <ol>
-<li id="fn-1">Active Record 这个名字来自“Active Record 模式”，出自 Martin Fowler 写的《企业应用架构模式》一书。 <a href="#fn-ref-1" class="symbol">&#8617;</a></li>
+<li id="fn-1">Active Record 这个名称来自“Active Record 模式”，出自 Martin Fowler 写的《企业应用架构模式》一书。 <a href="#fn-ref-1" class="symbol">&#8617;</a></li>
 <li id="fn-2">SQL 的官方读音是“ess-cue-ell”，不过也经常读作“sequel”。 <a href="#fn-ref-2" class="symbol">&#8617;</a></li>
-<li id="fn-3">把电子邮件地址作为用户名，以后如果需要和用户联系就方便了（参见<a href="chapter11.html#account-activation">第 11 章</a>）。 <a href="#fn-ref-3" class="symbol">&#8617;</a></li>
-<li id="fn-4">别管 <code>t</code> 对象是怎么实现的，这是抽象层的东西，我们无需知道。你只要相信 <code>t</code> 能完成指定的工作就行了。 <a href="#fn-ref-4" class="symbol">&#8617;</a></li>
+<li id="fn-3">把电子邮件地址作为用户名，以后如果需要和用户联系就方便了（参见<a href="chapter11.html#account-activation">第 11 章</a>和<a href="chapter12.html#password-reset">第 12 章</a>）。 <a href="#fn-ref-3" class="symbol">&#8617;</a></li>
+<li id="fn-4">别管 <code>t</code> 对象是怎么实现的，这是抽象层（abstraction layer）的东西，我们无需知道。你只要相信 <code>t</code> 能完成指定的工作就行了。 <a href="#fn-ref-4" class="symbol">&#8617;</a></li>
 <li id="fn-5">SQLite 读作“ess-cue-ell-ite”，不过倒是经常使用错误的读音“sequel-ite”。 <a href="#fn-ref-5" class="symbol">&#8617;</a></li>
-<li id="fn-6"><a href="chapter14.html#subselects">14.3.3 节</a>是个例外。 <a href="#fn-ref-6" class="symbol">&#8617;</a></li>
-<li id="fn-7">时间戳是<a href="http://dwz.cn/uFS7b">协调世界时</a>（Coordinated Universal Time，简称 UTC），作用类似于<a href="http://dwz.cn/uFSfF">格林尼治标准时间</a>（Greenwich Mean Time，简称 GMT）。以下内容摘自<a href="http://www.nist.gov/pml/div688/utcnist.cfm#cut">美国国家标准技术研究所时间和频率司的常见问题解答页面</a>。问：为什么协调世界时的缩写是 UTC 而不是 CUT？答：协调世界时是在 1970 年由国际电信联盟（ITU）的专家顾问团设计的，ITU 觉得应该使用一个通用的缩写以避免混淆，因为各方无法达成共识，最终 ITU 没有采用英文缩写 CUT 或法文缩写 TUC ，而是折中选择了 UTC。 <a href="#fn-ref-7" class="symbol">&#8617;</a></li>
+<li id="fn-6"><a href="chapter14.html#subselects">14.3.3 节</a>是唯一的例外。 <a href="#fn-ref-6" class="symbol">&#8617;</a></li>
+<li id="fn-7">时间戳使用<a href="http://dwz.cn/uFS7b">协调世界时</a>（Coordinated Universal Time，简称 UTC）记录，UTC 的作用类似于<a href="http://dwz.cn/uFSfF">格林尼治标准时间</a>（Greenwich Mean Time，简称 GMT）。以下内容摘自<a href="http://www.nist.gov/pml/div688/utcnist.cfm#cut">美国国家标准技术研究所时间和频率司的常见问题解答页面</a>。问：为什么协调世界时的缩写是 UTC 而不是 CUT？答：协调世界时是在 1970 年由国际电信联盟（International Telecommunication Union，简称 ITU）的专家顾问团设计的，ITU 觉得应该使用一个通用的缩写以避免混淆，因为各方无法达成共识，最终 ITU 没有采用英文缩写 CUT 或法文缩写 TUC ，而是折中选择了 UTC。 <a href="#fn-ref-7" class="symbol">&#8617;</a></li>
 <li id="fn-8">异常和异常处理是 Ruby 语言相对高级的功能，本书基本不会用到。不过异常是 Ruby 语言很重要的一部分，建议你阅读 <a href="chapter14.html#guide-to-further-resources">14.4.1 节</a>推荐的书籍学习。 <a href="#fn-ref-8" class="symbol">&#8617;</a></li>
 <li id="fn-9"><code>update_attributes</code> 方法是 <code>update</code> 方法的别名，但我喜欢使用前者，因为它和单数形式 <code>update_attribute</code> 对应。 <a href="#fn-ref-9" class="symbol">&#8617;</a></li>
-<li id="fn-10">如果结果不难想象，我们会省略在控制台中执行命令得到的结果，例如 <code>User.new</code> 的返回值。 <a href="#fn-ref-10" class="symbol">&#8617;</a></li>
-<li id="fn-11">你知道吗，根据标准，<code>"Michael Hartl"@example.com</code> 虽有引号和空格，但也是有效的电子邮件地址，很不可思议吧。 <a href="#fn-ref-11" class="symbol">&#8617;</a></li>
-<li id="fn-12">如果你和我一样觉得 Rubular 很有用，建议你向作者 <a href="http://lovitt.net/">Michael Lovitt</a> 适当<a href="http://dwz.cn/uJ09K">捐献一些钱</a>，感谢他的辛勤劳动。 <a href="#fn-ref-12" class="symbol">&#8617;</a></li>
-<li id="fn-13">如前所述，这里要使用测试专用的数据库 <code>db/test.sqlite3</code>。 <a href="#fn-ref-13" class="symbol">&#8617;</a></li>
-<li id="fn-14">严格来说，只有域名部分不区分大小写，<code>foo@bar.com</code> 和 <code>Foo@bar.com</code> 其实是不同的地址。但在实际使用中，千万别依赖这个规则，<a href="http://email.about.com/od/emailbehindthescenes/f/email_case_sens.htm">about.com</a> 中的文章说道，“区分大小写的电子邮件地址会带来很多麻烦，不易互换使用，也不利传播，所以要求输入正确的大小写是很愚蠢的。几乎没有电子邮件服务提供商或 ISP 强制要求使用区分大小写的电子邮件地址，也不会提示收件人的大小写错了（例如，要全部大写）。”感谢读者 Riley Moses 指正这个问题。 <a href="#fn-ref-14" class="symbol">&#8617;</a></li>
-<li id="fn-15">当然，我们可以直接编辑创建 <code>users</code> 表的迁移文件（<a href="#listing-users-migration">代码清单 6.2</a>），不过，这样要先回滚再迁移。这不是 Rails 的风格，正确的做法是每次修改数据结构都要使用迁移。 <a href="#fn-ref-15" class="symbol">&#8617;</a></li>
-<li id="fn-16">Rails 支持的回调参见 <a href="http://api.rubyonrails.org/v4.2.2/classes/ActiveRecord/Callbacks.html">Rails API</a>。 <a href="#fn-ref-16" class="symbol">&#8617;</a></li>
-<li id="fn-17">“虚拟”的意思是模型对象中有属性，但数据库中没有对应的列。 <a href="#fn-ref-17" class="symbol">&#8617;</a></li>
-<li id="fn-18">“密码哈希摘要”经常称作“加密密码”，这种叫法是错误的。<a href="https://github.com/rails/rails/blob/master/activemodel/lib/active_model/secure_password.rb">Rails 源码</a>和本书前两版都犯了这个错误。“加密密码”之所以不对，是因为从设计角度看，加密是可逆的——能加密，也能解密。而计算密码哈希摘要的目的是实现不可逆，由摘要很难推出原始密码。感谢读者 Andy Philips 指出这个问题，并建议我使用正确的术语。 <a href="#fn-ref-18" class="symbol">&#8617;</a></li>
-<li id="fn-19">如果出现问题，可以使用这个方法还原数据库：1）退出控制台；2）在命令行中执行 <code>$ rm -f development.sqlite3</code> 命令，删除数据库（<a href="chapter7.html#sign-up">第 7 章</a>会介绍一种更优雅的做法）；3）执行 <code>rails db:migrate</code> 命令，重新运行迁移；4）重启控制台。 <a href="#fn-ref-19" class="symbol">&#8617;</a></li>
-<li id="fn-20">bcrypt 算法计算哈希值时会<a href="https://en.wikipedia.org/wiki/Salt_(cryptography)">加盐</a>，这样做能避免两种重要的破解方式：<a href="https://en.wikipedia.org/wiki/Dictionary_attack">字典破解</a>和<a href="https://en.wikipedia.org/wiki/Rainbow_table">彩虹表破解</a>。 <a href="#fn-ref-20" class="symbol">&#8617;</a></li>
+<li id="fn-10">如果结果不难想象，我会省略在控制台中执行命令得到的结果，例如 <code>User.new</code> 的返回值。 <a href="#fn-ref-10" class="symbol">&#8617;</a></li>
+<li id="fn-11">你知道吗，根据标准，<code>"Michael Hartl"@example.com</code> 虽有引号和空格，但也是有效的电子邮件地址？很不可思议吧。 <a href="#fn-ref-11" class="symbol">&#8617;</a></li>
+<li id="fn-12">注意，<a href="#table-valid-email-regex">表 6.1</a> 中的“字母”指的是“小写字母”，正则表达式末尾的 <code>i</code> 指定匹配时不区分大小写。 <a href="#fn-ref-12" class="symbol">&#8617;</a></li>
+<li id="fn-13">如果你和我一样觉得 Rubular 很有用，建议你向 Rubular 的作者 <a href="http://lovitt.net/">Michael Lovitt</a> 适当<a href="http://dwz.cn/uJ09K">捐献一些钱</a>，感谢他的辛勤劳动。 <a href="#fn-ref-13" class="symbol">&#8617;</a></li>
+<li id="fn-14">如前所述，这里要使用测试专用的数据库 <code>db/test.sqlite3</code>。 <a href="#fn-ref-14" class="symbol">&#8617;</a></li>
+<li id="fn-15">严格来说，只有域名部分不区分大小写，<code>foo@bar.com</code> 和 <code>Foo@bar.com</code> 其实是不同的地址。但在实际使用中，千万别依赖这个规则。<a href="http://email.about.com/od/emailbehindthescenes/f/email_case_sens.htm">about.com</a> 中的文章说道，“区分大小写的电子邮件地址会带来很多麻烦，不易互换使用，也不利传播，所以要求输入正确的大小写是很愚蠢的。几乎没有电子邮件服务提供商或 ISP 强制要求使用区分大小写的电子邮件地址，也不会提示收件人的大小写错了（例如，要全部大写）。”感谢读者 Riley Moses 指正这个问题。 <a href="#fn-ref-15" class="symbol">&#8617;</a></li>
+<li id="fn-16">当然，我们可以直接编辑创建 <code>users</code> 表的迁移文件（<a href="#listing-users-migration">代码清单 6.2</a>），不过，这样要先回滚再迁移。这不是 Rails 的风格，正确的做法是每次修改数据结构都使用迁移。 <a href="#fn-ref-16" class="symbol">&#8617;</a></li>
+<li id="fn-17">Rails 支持的回调参见 <a href="http://api.rubyonrails.org/v4.2.2/classes/ActiveRecord/Callbacks.html">Rails API</a>。 <a href="#fn-ref-17" class="symbol">&#8617;</a></li>
+<li id="fn-18">“虚拟”的意思是模型对象中有属性，但数据库中没有对应的列。 <a href="#fn-ref-18" class="symbol">&#8617;</a></li>
+<li id="fn-19">“密码哈希摘要”经常称作“加密密码”，这种叫法是错误的。<a href="https://github.com/rails/rails/blob/master/activemodel/lib/active_model/secure_password.rb">Rails 源码</a>和本书前两版都犯了这个错误。“加密密码”之所以不对，是因为从设计角度看，加密是可逆的——能加密，也能解密。而计算密码哈希摘要的目的是实现不可逆，由摘要很难推出原始密码。感谢读者 Andy Philips 指出这个问题，并建议我使用正确的术语。 <a href="#fn-ref-19" class="symbol">&#8617;</a></li>
+<li id="fn-20">如果出现问题，可以使用这个方法还原数据库：1）退出控制台；2）在命令行中执行 <code>$ rm -f development.sqlite3</code> 命令，删除数据库（<a href="chapter7.html#sign-up">第 7 章</a>会介绍一种更优雅的做法）；3）执行 <code>rails db:migrate</code> 命令，重新运行迁移；4）重启控制台。 <a href="#fn-ref-20" class="symbol">&#8617;</a></li>
+<li id="fn-21">bcrypt 算法计算哈希值时会<a href="https://en.wikipedia.org/wiki/Salt_(cryptography)">加盐</a>，这样做能避免两种重要的攻击方式：<a href="https://en.wikipedia.org/wiki/Dictionary_attack">字典攻击</a>和<a href="https://en.wikipedia.org/wiki/Rainbow_table">彩虹表攻击</a>。 <a href="#fn-ref-21" class="symbol">&#8617;</a></li>
 </ol>
 </div>
         </div>
