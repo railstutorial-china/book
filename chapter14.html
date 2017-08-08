@@ -9,7 +9,7 @@
   <meta name="keywords" content="ruby, rails, tutorial"/>
   <meta name="author" content="Michael Hartl"/>
   <meta name="translator" content="安道"/>
-  <meta name="generator" content="persie 0.0.2.beta.1"/>
+  <meta name="generator" content="persie 0.0.3.beta.4"/>
   <link rel="stylesheet" type="text/css" href="//railstutorial-china.org/assets/css/main.css"/>
   <link rel="stylesheet" type="text/css" href="book.css"/>
   <script type="text/javascript" src="//railstutorial-china.org/assets/js/global.js"></script>
@@ -59,9 +59,9 @@
           <article class="article">
             <section data-type="chapter" id="following-users">
 <h1><span class="title-label">第 14 章</span> 关注用户</h1>
-<p>这一章，我们要为演示应用添加社交功能，允许用户关注（及取消关注）其他人，并在主页显示被关注用户发布的微博（动态流）。我们将在 <a href="#the-relationship-model">14.1 节</a>学习如何建立用户之间的关系，然后在 <a href="#a-web-interface-for-following-users">14.2 节</a>编写相应的 Web 界面（还会介绍 Ajax）。最后，在 <a href="#the-status-feed">14.3 节</a>实现功能完善的动态流。</p>
-<p>这是本书最后一章，有些内容具有挑战性。比如说，为了实现动态流，我们会使用一些 Ruby 和 SQL 技巧。通过这些示例，你将了解到 Rails 是如何处理更加复杂的数据模型的，这些知识也会在你日后开发其他应用时发挥作用。 为了帮助你平稳地从学习过渡到独立开发，<a href="#following-users-conclusion">14.4 节</a>会列出一些进阶学习资源。</p>
-<p>因为本章的内容比较有挑战性，所以在开始编写代码之前，我们先来讨论一下界面。和之前的章节一样，在开发之前，我们将使用构思图。<sup>[<a id="fn-ref-1" href="#fn-1">1</a>]</sup>完整的页面流程是这样的：一个用户 (John Calvin) 从他的资料页面（<a href="#fig-page-flow-profile-mockup">图 14.1</a>）浏览到用户列表页面（<a href="#fig-page-flow-user-index-mockup">图 14.2</a>），寻找想关注的用户；然后他打开另一个用户 Thomas Hobbes 的资料页面（<a href="#fig-page-flow-other-profile-follow-button">图 14.3</a>），点击“Follow”（关注）按钮关注了他，这时“Follow”按钮会变为“Unfollow”（取消关注），而且关注 Hobbes 的人数增加了一个（<a href="#fig-page-flow-other-profile-unfollow-button-mockup">图 14.4</a>）；接着，Calvin 回到主页，看到他关注的人数也增加了一个，而且在动态流中能看到 Hobbes 发布的微博（<a href="#fig-page-flow-home-page-feed-mockup">图 14.5</a>）。本章接下来的内容就是要实现这样的页面流程。</p>
+<p>这一章，我们要为演示应用添加社交功能，允许用户关注（及取消关注）其他人，并在主页显示被关注用户发布的微博（动态流）。我们将在 <a class="xref-link" href="#the-relationship-model">14.1 节</a>学习如何建立用户之间的关系，然后在 <a class="xref-link" href="#a-web-interface-for-following-users">14.2 节</a>编写相应的 Web 界面（还会介绍 Ajax）。最后，在 <a class="xref-link" href="#the-status-feed">14.3 节</a>实现功能完善的动态流。</p>
+<p>这是本书最后一章，有些内容具有挑战性。比如说，为了实现动态流，我们会使用一些 Ruby 和 SQL 技巧。通过这些示例，你将了解到 Rails 是如何处理更加复杂的数据模型的，这些知识也会在你日后开发其他应用时发挥作用。 为了帮助你平稳地从学习过渡到独立开发，<a class="xref-link" href="#following-users-conclusion">14.4 节</a>会列出一些进阶学习资源。</p>
+<p>因为本章的内容比较有挑战性，所以在开始编写代码之前，我们先来讨论一下界面。和之前的章节一样，在开发之前，我们将使用构思图。<sup>[<a id="fn-ref-1" href="#fn-1">1</a>]</sup>完整的页面流程是这样的：一个用户 (John Calvin) 从他的资料页面（<a class="xref-link" href="#fig-page-flow-profile-mockup">图 14.1</a>）浏览到用户列表页面（<a class="xref-link" href="#fig-page-flow-user-index-mockup">图 14.2</a>），寻找想关注的用户；然后他打开另一个用户 Thomas Hobbes 的资料页面（<a class="xref-link" href="#fig-page-flow-other-profile-follow-button">图 14.3</a>），点击“Follow”（关注）按钮关注了他，这时“Follow”按钮会变为“Unfollow”（取消关注），而且关注 Hobbes 的人数增加了一个（<a class="xref-link" href="#fig-page-flow-other-profile-unfollow-button-mockup">图 14.4</a>）；接着，Calvin 回到主页，看到他关注的人数也增加了一个，而且在动态流中能看到 Hobbes 发布的微博（<a class="xref-link" href="#fig-page-flow-home-page-feed-mockup">图 14.5</a>）。本章接下来的内容就是要实现这样的页面流程。</p>
 <div id="fig-page-flow-profile-mockup" class="figure"><img src="images/chapter14/page_flow_profile_mockup_3rd_edition.png" alt="page flow profile mockup 3rd edition" /><div class="figcaption"><span class="title-label">图 14.1</span>：当前用户的资料页面</div></div>
 <div id="fig-page-flow-user-index-mockup" class="figure"><img src="images/chapter14/page_flow_user_index_mockup_bootstrap.png" alt="page flow user index mockup bootstrap" /><div class="figcaption"><span class="title-label">图 14.2</span>：找一个想关注的用户</div></div>
 <div id="fig-page-flow-other-profile-follow-button" class="figure"><img src="images/chapter14/page_flow_other_profile_follow_button_mockup_3rd_edition.png" alt="page flow other profile follow button mockup 3rd edition" /><div class="figcaption"><span class="title-label">图 14.3</span>：想关注的那个用户的资料页面，有一个“Follow”（关注）按钮</div></div>
@@ -80,23 +80,23 @@
 <section data-type="sect2" id="a-problem-with-the-data-model-and-a-solution">
 <h2><span class="title-label">14.1.1</span> 数据模型带来的问题（以及解决方法）</h2>
 <p>在构建关注用户所需的数据模型之前，我们先来分析一个典型的案例。假如一个用户关注了另外一个用户，比如 Calvin 关注了 Hobbes，也就是 Hobbes 被 Calvin 关注了，那么 Calvin 就是“关注人”（follower），Hobbes 则是“被关注人”（followed）。按照 Rails 默认的复数命名约定， 我们称关注了某个用户的所有用户为这个用户的“followers”，因此，<code>hobbes.followers</code> 是一个数组，包含所有关注了 Hobbes 的用户。不过，如果反过来，这种表述就说不通了：默认情况下，所有被关注的用户应该叫“followeds”，但是这样说并不符合英语语法。所以，参照 Twitter 的叫法，我们把被关注的用户叫做“following”（例如，“50 following, 75 followers”）。因此，Calvin 关注的人可以通过 <code>calvin.following</code> 数组获取。</p>
-<p>经过上述讨论，我们可以按照<a href="#fig-naive-user-has-many-following">图 14.6</a> 中的方式构建被关注用户的模型——一个 <code>following</code> 表和 <code>has_many</code> 关联。由于 <code>user.following</code> 应该是一个用户对象组成的数组，所以 <code>following</code> 表中的每一行都应该是一个用户，通过 <code>followed_id</code> 列标识，然后再通过 <code>follower_id</code> 列建立关联。<sup>[<a id="fn-ref-2" href="#fn-2">2</a>]</sup>除此之外，由于每一行都是一个用户，所以还要在表中加入用户的其他属性，例如名字、电子邮件地址和密码等。</p>
+<p>经过上述讨论，我们可以按照<a class="xref-link" href="#fig-naive-user-has-many-following">图 14.6</a> 中的方式构建被关注用户的模型——一个 <code>following</code> 表和 <code>has_many</code> 关联。由于 <code>user.following</code> 应该是一个用户对象组成的数组，所以 <code>following</code> 表中的每一行都应该是一个用户，通过 <code>followed_id</code> 列标识，然后再通过 <code>follower_id</code> 列建立关联。<sup>[<a id="fn-ref-2" href="#fn-2">2</a>]</sup>除此之外，由于每一行都是一个用户，所以还要在表中加入用户的其他属性，例如名字、电子邮件地址和密码等。</p>
 <div id="fig-naive-user-has-many-following" class="figure"><img src="images/chapter14/naive_user_has_many_following.png" alt="naive user has many following" /><div class="figcaption"><span class="title-label">图 14.6</span>：一个用户关注的人（天真方式）</div></div>
-<p><a href="#fig-naive-user-has-many-following">图 14.6</a> 中的数据模型有个问题：存在非常多的冗余，每一行不仅包括被关注用户的 ID，还包括他们的其他信息，而这些信息在 <code>users</code> 表中都有。 更糟的是，为了保存关注我的人，还需要另一个同样冗余的 <code>followers</code> 表。这么做会导致数据模型极难维护：用户修改名字时，不仅要修改 <code>users</code> 表中的数据，还要修改 <code>following</code> 和 <code>followers</code> 表中包含这个用户的每一条记录。</p>
-<p>造成这个问题的原因是缺少底层抽象。找到合适的抽象有一种方法：思考在 Web 应用中如何实现关注用户的操作。<a href="chapter7.html#a-users-resource">7.1.2 节</a>介绍过，REST 架构涉及到资源的创建和销毁两个操作。由此引出了两个问题：用户关注另一个用户时，创建的是什么？用户取消关注另一个用户时，销毁的是什么？按照这样的方式思考，我们会发现，在关注用户的过程中，创建和销毁的是两个用户之间的“关系”。因此，一个用户有多个“关系”，从而通过这个“关系”得到很多我关注的人（<code>following</code>）和关注我的人（<code>followers</code>）。</p>
+<p><a class="xref-link" href="#fig-naive-user-has-many-following">图 14.6</a> 中的数据模型有个问题：存在非常多的冗余，每一行不仅包括被关注用户的 ID，还包括他们的其他信息，而这些信息在 <code>users</code> 表中都有。 更糟的是，为了保存关注我的人，还需要另一个同样冗余的 <code>followers</code> 表。这么做会导致数据模型极难维护：用户修改名字时，不仅要修改 <code>users</code> 表中的数据，还要修改 <code>following</code> 和 <code>followers</code> 表中包含这个用户的每一条记录。</p>
+<p>造成这个问题的原因是缺少底层抽象。找到合适的抽象有一种方法：思考在 Web 应用中如何实现关注用户的操作。<a class="xref-link" href="chapter7.html#a-users-resource">7.1.2 节</a>介绍过，REST 架构涉及到资源的创建和销毁两个操作。由此引出了两个问题：用户关注另一个用户时，创建的是什么？用户取消关注另一个用户时，销毁的是什么？按照这样的方式思考，我们会发现，在关注用户的过程中，创建和销毁的是两个用户之间的“关系”。因此，一个用户有多个“关系”，从而通过这个“关系”得到很多我关注的人（<code>following</code>）和关注我的人（<code>followers</code>）。</p>
 <p>在实现应用的数据模型时还有一个细节要注意：Facebook 实现的关系是对称的（至少在数据模型层是），而我们要实现的关系和 Twitter 类似，是不对称的，Calvin 可以关注 Hobbes，但 Hobbes 并不需要关注 Calvin。为了区分这两种情况，我们要使用专业的术语：如果 Calvin 关注了 Hobbes，但 Hobbes 没有关注 Calvin，那么 Calvin 和 Hobbes 之间建立的是主动关系（active relationship），而 Hobbes 和 Calvin 之间是被动关系（passive relationship）。<sup>[<a id="fn-ref-3" href="#fn-3">3</a>]</sup></p>
-<p>现在我们集中精力实现主动关系，即获取我关注的用户。<a href="#followers">14.1.5 节</a>再实现被动关系。从<a href="#fig-naive-user-has-many-following">图 14.6</a> 中可以看出实现的方式：既然我关注的每一个用户都由 <code>followed_id</code> 独一无二地标识出来了，我们就可以把 <code>following</code> 表转化成 <code>active_relationships</code> 表，删掉用户的属性，然后使用 <code>followed_id</code> 从 <code>users</code> 表中检索我关注的用户的信息。这个数据模型如<a href="#fig-user-has-many-following">图 14.7</a> 所示。</p>
+<p>现在我们集中精力实现主动关系，即获取我关注的用户。<a class="xref-link" href="#followers">14.1.5 节</a>再实现被动关系。从<a class="xref-link" href="#fig-naive-user-has-many-following">图 14.6</a> 中可以看出实现的方式：既然我关注的每一个用户都由 <code>followed_id</code> 独一无二地标识出来了，我们就可以把 <code>following</code> 表转化成 <code>active_relationships</code> 表，删掉用户的属性，然后使用 <code>followed_id</code> 从 <code>users</code> 表中检索我关注的用户的信息。这个数据模型如<a class="xref-link" href="#fig-user-has-many-following">图 14.7</a> 所示。</p>
 <div id="fig-user-has-many-following" class="figure"><img src="images/chapter14/user_has_many_following_3rd_edition.png" alt="user has many following 3rd edition" /><div class="figcaption"><span class="title-label">图 14.7</span>：通过主动关系获取我关注的用户</div></div>
-<p>因为主动关系和被动关系最终会存储在同一个表中，所以我们把这个表命名为“relationships”。这个表对应的模型是 <code>Relationship</code>，如<a href="#fig-relationship-model">图 14.8</a> 所示。从 <a href="#followed-users">14.1.4 节</a>开始，我们将介绍如何使用这个模型同时实现主动关系和被动关系。</p>
+<p>因为主动关系和被动关系最终会存储在同一个表中，所以我们把这个表命名为“relationships”。这个表对应的模型是 <code>Relationship</code>，如<a class="xref-link" href="#fig-relationship-model">图 14.8</a> 所示。从 <a class="xref-link" href="#followed-users">14.1.4 节</a>开始，我们将介绍如何使用这个模型同时实现主动关系和被动关系。</p>
 <div id="fig-relationship-model" class="figure"><img src="images/chapter14/relationship_model.png" alt="relationship model" /><div class="figcaption"><span class="title-label">图 14.8</span>：<code>Relationship</code> 数据模型</div></div>
-<p>为此，我们要生成一个迁移，对应于<a href="#fig-relationship-model">图 14.8</a> 中的模型：</p>
+<p>为此，我们要生成一个迁移，对应于<a class="xref-link" href="#fig-relationship-model">图 14.8</a> 中的模型：</p>
 <div data-type="listing">
 
 
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate model Relationship follower_id:integer followed_id:integer
 </code></pre></div>
 </div>
-<p>因为我们将通过 <code>follower_id</code> 和 <code>followed_id</code> 查找关系，所以还要为这两个列建立索引，提高查询的效率，如<a href="#listing-relationships-migration">代码清单 14.1</a> 所示。</p>
+<p>因为我们将通过 <code>follower_id</code> 和 <code>followed_id</code> 查找关系，所以还要为这两个列建立索引，提高查询的效率，如<a class="xref-link" href="#listing-relationships-migration">代码清单 14.1</a> 所示。</p>
 <div id="listing-relationships-migration" data-type="listing">
 <h5><span class="title-label">代码清单 14.1</span>：在 <code>relationships</code> 表中添加索引</h5>
 
@@ -117,7 +117,7 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>在<a href="#listing-relationships-migration">代码清单 14.1</a> 中，我们还设置了一个多键索引，确保 (<code>follower_id, followed_id</code>) 组合是唯一的，避免多次关注同一个用户。（可以和<a href="chapter6.html#listing-email-uniqueness-index">代码清单 6.29</a> 中保持电子邮件地址唯一的索引，以及<a href="chapter13.html#listing-micropost-migration">代码清单 13.3</a> 中的多键索引比较一下。）从 <a href="#followed-users">14.1.4 节</a>起会看到，用户界面不会允许这样的事发生，但添加索引后，如果用户试图创建重复的关系（例如使用 <code>curl</code> 这样的命令行工具），应用会抛出异常。</p>
+<p>在<a class="xref-link" href="#listing-relationships-migration">代码清单 14.1</a> 中，我们还设置了一个多键索引，确保 (<code>follower_id, followed_id</code>) 组合是唯一的，避免多次关注同一个用户。（可以和<a class="xref-link" href="chapter6.html#listing-email-uniqueness-index">代码清单 6.29</a> 中保持电子邮件地址唯一的索引，以及<a class="xref-link" href="chapter13.html#listing-micropost-migration">代码清单 13.3</a> 中的多键索引比较一下。）从 <a class="xref-link" href="#followed-users">14.1.4 节</a>起会看到，用户界面不会允许这样的事发生，但添加索引后，如果用户试图创建重复的关系（例如使用 <code>curl</code> 这样的命令行工具），应用会抛出异常。</p>
 <p>为了创建 <code>relationships</code> 表，和之前一样，我们要迁移数据库：</p>
 <div data-type="listing">
 
@@ -128,24 +128,24 @@
 <h5 id="exercises-a-problem-with-the-data-model-and-a-solution" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>对<a href="#fig-user-has-many-following">图 14.7</a> 中 ID 为 1 的用户来说，<code>user.following.map(&amp;:id)</code> 的值是什么？（<a href="chapter4.html#blocks">4.3.2 节</a> 介绍过 <code>map(&amp;:method_name)</code> 这种句法；<code>user.following.map(&amp;:id)</code> 返回的是 ID 组成的数组。）</p>
+<p>对<a class="xref-link" href="#fig-user-has-many-following">图 14.7</a> 中 ID 为 1 的用户来说，<code>user.following.map(&amp;:id)</code> 的值是什么？（<a class="xref-link" href="chapter4.html#blocks">4.3.2 节</a> 介绍过 <code>map(&amp;:method_name)</code> 这种句法；<code>user.following.map(&amp;:id)</code> 返回的是 ID 组成的数组。）</p>
 </li>
 <li>
-<p>查看<a href="#fig-user-has-many-following">图 14.7</a>，对 ID 为 2 的用户来说，<code>user.following</code> 的值是什么？<code>user.following.map(&amp;:id)</code> 呢？</p>
+<p>查看<a class="xref-link" href="#fig-user-has-many-following">图 14.7</a>，对 ID 为 2 的用户来说，<code>user.following</code> 的值是什么？<code>user.following.map(&amp;:id)</code> 呢？</p>
 </li>
 </ol>
 </section>
 <section data-type="sect2" id="user-relationship-associations">
 <h2><span class="title-label">14.1.2</span> <code>User</code> 模型和 <code>Relationship</code> 模型之间的关联</h2>
 <p>在获取我关注的人和关注我的人之前，我们要先建立 <code>User</code> 模型和 <code>Relationship</code> 模型之间的关联。一个用户有多个“关系”（<code>has_many</code>），因为一个“关系”涉及到两个用户，所以“关系”同时属于（<code>belongs_to</code>）该用户和被关注的用户。</p>
-<p>和 <a href="chapter13.html#user-micropost-associations">13.1.3 节</a>创建微博的方式一样，我们要通过关联创建“关系”，如下面的代码所示：</p>
+<p>和 <a class="xref-link" href="chapter13.html#user-micropost-associations">13.1.3 节</a>创建微博的方式一样，我们要通过关联创建“关系”，如下面的代码所示：</p>
 <div data-type="listing">
 
 
 <div class="highlight language-ruby"><pre><code><span class="n">user</span><span class="p">.</span><span class="nf">active_relationships</span><span class="p">.</span><span class="nf">build</span><span class="p">(</span><span class="ss">followed_id: </span><span class="p">.</span><span class="nf">.</span><span class="o">.</span><span class="p">)</span>
 </code></pre></div>
 </div>
-<p>此时，你可能想在应用中加入类似于 <a href="chapter13.html#user-micropost-associations">13.1.3 节</a>使用的代码。我们要添加的代码确实很像，但有两处不同。</p>
+<p>此时，你可能想在应用中加入类似于 <a class="xref-link" href="chapter13.html#user-micropost-associations">13.1.3 节</a>使用的代码。我们要添加的代码确实很像，但有两处不同。</p>
 <p>首先，把用户和微博关联起来时我们是这么写的：</p>
 <div data-type="listing">
 
@@ -178,8 +178,8 @@
 <span class="nf">end</span>
 </code></pre></div>
 </div>
-<p>之所以可以这么写，是因为 <code>microposts</code> 表中有识别用户的 <code>user_id</code> 列（<a href="chapter13.html#the-basic-model">13.1.1 节</a>）。这种连接两个表的列，我们称之为外键（foreign key）。当指向 <code>User</code> 模型的外键为 <code>user_id</code> 时，Rails 会自动获知关联，因为默认情况下，Rails 会寻找名为 <code>&lt;class&gt;_id</code> 的外键，其中 <code>&lt;class&gt;</code> 是模型类名的小写形式。<sup>[<a id="fn-ref-5" href="#fn-5">5</a>]</sup>现在，尽管我们处理的还是用户，但识别用户使用的外键是 <code>follower_id</code>，所以要告诉 Rails 这一变化。</p>
-<p>综上所述，<code>User</code> 和 <code>Relationship</code> 模型之间的关联如<a href="#listing-user-relationships-association">代码清单 14.2</a> 和<a href="#listing-relationship-belongs-to">代码清单 14.3</a> 所示。</p>
+<p>之所以可以这么写，是因为 <code>microposts</code> 表中有识别用户的 <code>user_id</code> 列（<a class="xref-link" href="chapter13.html#the-basic-model">13.1.1 节</a>）。这种连接两个表的列，我们称之为外键（foreign key）。当指向 <code>User</code> 模型的外键为 <code>user_id</code> 时，Rails 会自动获知关联，因为默认情况下，Rails 会寻找名为 <code>&lt;class&gt;_id</code> 的外键，其中 <code>&lt;class&gt;</code> 是模型类名的小写形式。<sup>[<a id="fn-ref-5" href="#fn-5">5</a>]</sup>现在，尽管我们处理的还是用户，但识别用户使用的外键是 <code>follower_id</code>，所以要告诉 Rails 这一变化。</p>
+<p>综上所述，<code>User</code> 和 <code>Relationship</code> 模型之间的关联如<a class="xref-link" href="#listing-user-relationships-association">代码清单 14.2</a> 和<a class="xref-link" href="#listing-relationship-belongs-to">代码清单 14.3</a> 所示。</p>
 <div id="listing-user-relationships-association" data-type="listing">
 <h5><span class="title-label">代码清单 14.2</span>：实现主动关系中的 <code>has_many</code> 关联</h5>
 
@@ -208,8 +208,8 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>尽管 <a href="#followers">14.1.5 节</a>才会用到 <code>followed</code> 关联，但同时添加易于理解。</p>
-<p>建立上述关联后，会得到一系列类似于<a href="chapter13.html#table-association-methods">表 13.1</a> 中的方法，如<a href="#table-association-methods-relationships">表 14.1</a> 所示。</p>
+<p>尽管 <a class="xref-link" href="#followers">14.1.5 节</a>才会用到 <code>followed</code> 关联，但同时添加易于理解。</p>
+<p>建立上述关联后，会得到一系列类似于<a class="xref-link" href="chapter13.html#table-association-methods">表 13.1</a> 中的方法，如<a class="xref-link" href="#table-association-methods-relationships">表 14.1</a> 所示。</p>
 <table id="table-association-methods-relationships" class="tableblock frame-all grid-all" style="width: 100%;">
 <caption><span class="title-label">表 14.1</span>：<code>User</code> 模型与 <code>Relationship</code> 模型建立主动关系之后得到的方法简介</caption>
 <colgroup>
@@ -248,7 +248,7 @@
 <h5 id="exercises-relationship-user-associations" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>打开 Rails 控制台，使用<a href="#table-association-methods-relationships">表 14.1</a> 中的 <code>create</code> 方法为数据库中的第一个用户和第二个用户建立主动关系。</p>
+<p>打开 Rails 控制台，使用<a class="xref-link" href="#table-association-methods-relationships">表 14.1</a> 中的 <code>create</code> 方法为数据库中的第一个用户和第二个用户建立主动关系。</p>
 </li>
 <li>
 <p>确认 <code>active_relationship.followed</code> 和 <code>active_relationship.follower</code> 返回的值是正确的。</p>
@@ -257,7 +257,7 @@
 </section>
 <section data-type="sect2" id="relationship-validations">
 <h2><span class="title-label">14.1.3</span> 数据验证</h2>
-<p>在继续之前，我们要在 <code>Relationship</code> 模型中添加一些验证。测试（<a href="#listing-relationship-validation-tests">代码清单 14.4</a>）和应用代码（<a href="#listing-relationship-validations">代码清单 14.5</a>）都非常直观。与生成的用户固件一样（<a href="chapter6.html#listing-default-fixtures">代码清单 6.30</a>），生成的“关系”固件也违背了迁移中的唯一性约束（<a href="#listing-relationships-migration">代码清单 14.1</a>）。这个问题的解决方法也和之前一样（<a href="chapter6.html#listing-empty-fixtures">代码清单 6.31</a>）——删除自动生成的固件，如<a href="#listing-empty-relationship-fixture">代码清单 14.6</a> 所示。</p>
+<p>在继续之前，我们要在 <code>Relationship</code> 模型中添加一些验证。测试（<a class="xref-link" href="#listing-relationship-validation-tests">代码清单 14.4</a>）和应用代码（<a class="xref-link" href="#listing-relationship-validations">代码清单 14.5</a>）都非常直观。与生成的用户固件一样（<a class="xref-link" href="chapter6.html#listing-default-fixtures">代码清单 6.30</a>），生成的“关系”固件也违背了迁移中的唯一性约束（<a class="xref-link" href="#listing-relationships-migration">代码清单 14.1</a>）。这个问题的解决方法也和之前一样（<a class="xref-link" href="chapter6.html#listing-empty-fixtures">代码清单 6.31</a>）——删除自动生成的固件，如<a class="xref-link" href="#listing-empty-relationship-fixture">代码清单 14.6</a> 所示。</p>
 <div id="listing-relationship-validation-tests" data-type="listing">
 <h5><span class="title-label">代码清单 14.4</span>：测试 <code>Relationship</code> 模型中的验证</h5>
 
@@ -320,20 +320,20 @@
 <h5 id="exercises-relationship-validations" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>把<a href="#listing-relationship-validations">代码清单 14.5</a> 中的验证注释掉，确认测试仍能通过。（这是 Rails 5 的变化，在之前的 Rails 版本中，必须添加那两个验证。为了明确表明意图，我们会留着验证。不过你要知道这一点，以防其他人编写的代码中没有这两个验证。）</p>
+<p>把<a class="xref-link" href="#listing-relationship-validations">代码清单 14.5</a> 中的验证注释掉，确认测试仍能通过。（这是 Rails 5 的变化，在之前的 Rails 版本中，必须添加那两个验证。为了明确表明意图，我们会留着验证。不过你要知道这一点，以防其他人编写的代码中没有这两个验证。）</p>
 </li>
 </ol>
 </section>
 <section data-type="sect2" id="followed-users">
 <h2><span class="title-label">14.1.4</span> 我关注的用户</h2>
-<p>现在到“关系”的核心部分了——获取我关注的用户（<code>following</code>）和关注我的用户（<code>followers</code>）。这里我们要首次用到 <code>has_many :through</code> 关联：用户通过 <code>Relationship</code> 模型关注多个用户，如<a href="#fig-user-has-many-following">图 14.7</a> 所示。默认情况下，在 <code>has_many :through</code> 关联中，Rails 会寻找关联名单数形式对应的外键。例如：</p>
+<p>现在到“关系”的核心部分了——获取我关注的用户（<code>following</code>）和关注我的用户（<code>followers</code>）。这里我们要首次用到 <code>has_many :through</code> 关联：用户通过 <code>Relationship</code> 模型关注多个用户，如<a class="xref-link" href="#fig-user-has-many-following">图 14.7</a> 所示。默认情况下，在 <code>has_many :through</code> 关联中，Rails 会寻找关联名单数形式对应的外键。例如：</p>
 <div data-type="listing">
 
 
 <div class="highlight language-ruby"><pre><code><span class="n">has_many</span> <span class="ss">:followeds</span><span class="p">,</span> <span class="ss">through: :active_relationships</span>
 </code></pre></div>
 </div>
-<p>Rails 发现关联名是“followeds”，先把它变成单数形式“followed”，然后在 <code>relationships</code> 表中获取一个由 <code>followed_id</code> 组成的集合。不过，<a href="#a-problem-with-the-data-model-and-a-solution">14.1.1 节</a>说过，写成 <code>user.followeds</code> 有点说不通，所以我们会使用 <code>user.following</code>。Rails 允许定制默认生成的关联方法：使用 <code>source</code> 参数指定 <code>following</code> 数组由 <code>followed_id</code> 组成，如<a href="#listing-has-many-following-through-active-relationships">代码清单 14.8</a> 所示。</p>
+<p>Rails 发现关联名是“followeds”，先把它变成单数形式“followed”，然后在 <code>relationships</code> 表中获取一个由 <code>followed_id</code> 组成的集合。不过，<a class="xref-link" href="#a-problem-with-the-data-model-and-a-solution">14.1.1 节</a>说过，写成 <code>user.followeds</code> 有点说不通，所以我们会使用 <code>user.following</code>。Rails 允许定制默认生成的关联方法：使用 <code>source</code> 参数指定 <code>following</code> 数组由 <code>followed_id</code> 组成，如<a class="xref-link" href="#listing-has-many-following-through-active-relationships">代码清单 14.8</a> 所示。</p>
 <div id="listing-has-many-following-through-active-relationships" data-type="listing">
 <h5><span class="title-label">代码清单 14.8</span>：在 <code>User</code> 模型中添加 <code>following</code> 关联</h5>
 
@@ -351,7 +351,7 @@
 <span class="nf">end</span>
 </code></pre></div>
 </div>
-<p>定义这个关联后，我们可以充分利用 Active Record 和数组的功能。例如，可以使用 <code>include?</code> 方法（<a href="chapter4.html#arrays-and-ranges">4.3.1 节</a>）检查我关注的用户中有没有某个用户，或者通过关联查找一个用户：</p>
+<p>定义这个关联后，我们可以充分利用 Active Record 和数组的功能。例如，可以使用 <code>include?</code> 方法（<a class="xref-link" href="chapter4.html#arrays-and-ranges">4.3.1 节</a>）检查我关注的用户中有没有某个用户，或者通过关联查找一个用户：</p>
 <div data-type="listing">
 
 
@@ -359,6 +359,15 @@
 <span class="n">user</span><span class="p">.</span><span class="nf">following</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">other_user</span><span class="p">)</span>
 </code></pre></div>
 </div>
+<p>还可以像数组那样添加和删除元素：</p>
+<div data-type="listing">
+
+
+<div class="highlight language-ruby"><pre><code><span class="n">user</span><span class="p">.</span><span class="nf">following</span> <span class="o">&lt;&lt;</span> <span class="n">other_user</span>
+<span class="n">user</span><span class="p">.</span><span class="nf">following</span><span class="p">.</span><span class="nf">delete</span><span class="p">(</span><span class="n">other_user</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<p>（<a class="xref-link" href="chapter4.html#arrays-and-ranges">4.3.1 节</a>说过，<code>&lt;&lt;</code> 运算符把元素添加到数组末尾。）</p>
 <p>很多情况下都可以把 <code>following</code> 当成数组来用，Rails 会使用特定的方式处理 <code>following</code>，所以这么做很高效。例如：</p>
 <div data-type="listing">
 
@@ -366,9 +375,9 @@
 <div class="highlight language-ruby"><pre><code><span class="n">following</span><span class="p">.</span><span class="nf">include?</span><span class="p">(</span><span class="n">other_user</span><span class="p">)</span>
 </code></pre></div>
 </div>
-<p>这看起来好像是要把我关注的所有用户都从数据库中读取出来，然后再调用 <code>include?</code>。其实不然，为了提高效率，Rails 会直接在数据库层执行相关的操作。（和 <a href="chapter13.html#rendering-microposts">13.2.1 节</a>使用 <code>user.microposts.count</code> 获取数量一样，都直接在数据库中操作。）</p>
+<p>这看起来好像是要把我关注的所有用户都从数据库中读取出来，然后再调用 <code>include?</code>。其实不然，为了提高效率，Rails 会直接在数据库层执行相关的操作。（和 <a class="xref-link" href="chapter13.html#rendering-microposts">13.2.1 节</a>使用 <code>user.microposts.count</code> 获取数量一样，都直接在数据库中操作。）</p>
 <p>为了处理关注用户的操作，我们要定义两个辅助方法：<code>follow</code> 和 <code>unfollow</code>。这样我们就可以写 <code>user.follow(other_user)</code>。我们还要定义 <code>following?</code> 布尔值方法，检查一个用户是否关注了另一个用户。<sup>[<a id="fn-ref-6" href="#fn-6">6</a>]</sup></p>
-<p>现在是编写测试的好时机，因为我们还要等很久才会开发关注用户的网页界面，如果一直没人监管，很难向前推进。我们可以为 <code>User</code> 模型编写一个简短的测试，先调用 <code>following?</code> 方法确认某个用户没有关注另一个用户，然后调用 <code>follow</code> 方法关注那个用户，再使用 <code>following?</code> 方法确认关注成功了，最后调用 <code>unfollow</code> 方法取消关注，并确认操作成功，如<a href="#listing-utility-method-tests">代码清单 14.9</a> 所示。</p>
+<p>现在是编写测试的好时机，因为我们还要等很久才会开发关注用户的网页界面，如果一直没人监管，很难向前推进。我们可以为 <code>User</code> 模型编写一个简短的测试，先调用 <code>following?</code> 方法确认某个用户没有关注另一个用户，然后调用 <code>follow</code> 方法关注那个用户，再使用 <code>following?</code> 方法确认关注成功了，最后调用 <code>unfollow</code> 方法取消关注，并确认操作成功，如<a class="xref-link" href="#listing-utility-method-tests">代码清单 14.9</a> 所示。</p>
 <div id="listing-utility-method-tests" data-type="listing">
 <h5><span class="title-label">代码清单 14.9</span>：测试关注用户相关的几个辅助方法 <span class="red">RED</span></h5>
 
@@ -392,7 +401,7 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>参照<a href="#table-association-methods-relationships">表 14.1</a>，我们要使用 <code>following</code> 关联定义 <code>follow</code>、<code>unfollow</code> 和 <code>following?</code> 三个方法，如<a href="#listing-follow-unfollow-following">代码清单 14.10</a> 所示。（注意，只要可能，我们就省略 <code>self</code>。）</p>
+<p>把 <code>` 关联视作对象，可以像<a class="xref-link" href="#listing-follow-unfollow-following">代码清单 14.10</a> 那样定义 `follow</code>、<code>unfollow</code> 和 <code>following?</code> 三个方法。（注意，只要可能，我们就省略 <code>self</code>。）</p>
 <div id="listing-follow-unfollow-following" data-type="listing">
 <h5><span class="title-label">代码清单 14.10</span>：定义关注用户相关的几个辅助方法 <span class="green">GREEN</span></h5>
 
@@ -410,12 +419,12 @@
 
   <span class="c1"># 关注另一个用户</span>
   <span class="k">def</span> <span class="nf">follow</span><span class="p">(</span><span class="n">other_user</span><span class="p">)</span>
-<span class="hll">    <span class="n">active_relationships</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">followed_id: </span><span class="n">other_user</span><span class="p">.</span><span class="nf">id</span><span class="p">)</span></span>
+<span class="hll">    <span class="n">following</span> <span class="o">&lt;&lt;</span> <span class="n">other_user</span></span>
   <span class="k">end</span>
 
   <span class="c1"># 取消关注另一个用户</span>
   <span class="k">def</span> <span class="nf">unfollow</span><span class="p">(</span><span class="n">other_user</span><span class="p">)</span>
-<span class="hll">    <span class="n">active_relationships</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">followed_id: </span><span class="n">other_user</span><span class="p">.</span><span class="nf">id</span><span class="p">).</span><span class="nf">destroy</span></span>
+<span class="hll">    <span class="n">following</span><span class="p">.</span><span class="nf">delete</span><span class="p">(</span><span class="n">other_user</span><span class="p">)</span></span>
   <span class="k">end</span>
 
   <span class="c1"># 如果当前用户关注了指定的用户，返回 true</span>
@@ -441,7 +450,7 @@
 <h5 id="exercises-following" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>在 Rails 控制台中重现<a href="#listing-utility-method-tests">代码清单 14.9</a> 中的步骤。</p>
+<p>在 Rails 控制台中重现<a class="xref-link" href="#listing-utility-method-tests">代码清单 14.9</a> 中的步骤。</p>
 </li>
 <li>
 <p>前一题中各个操作对应的 SQL 语句是什么？</p>
@@ -450,9 +459,9 @@
 </section>
 <section data-type="sect2" id="followers">
 <h2><span class="title-label">14.1.5</span> 关注我的人</h2>
-<p>“关系”的最后一部分是定义与 <code>user.following</code> 对应的 <code>user.followers</code> 方法。从<a href="#fig-user-has-many-following">图 14.7</a> 中得知，获取关注我的人所需的数据都已经存在于 <code>relationships</code> 表中（我们要参照<a href="#listing-user-relationships-association">代码清单 14.2</a> 中实现 <code>active_relationships</code> 表的方式）。其实我们要使用的方法和实现我关注的人一样，只要对调 <code>follower_id</code> 和 <code>followed_id</code> 的位置，并把 <code>active_relationships</code> 换成 <code>passive_relationships</code> 即可，如<a href="#fig-user-has-many-followers">图 14.9</a> 所示。</p>
+<p>“关系”的最后一部分是定义与 <code>user.following</code> 对应的 <code>user.followers</code> 方法。从<a class="xref-link" href="#fig-user-has-many-following">图 14.7</a> 中得知，获取关注我的人所需的数据都已经存在于 <code>relationships</code> 表中（我们要参照<a class="xref-link" href="#listing-user-relationships-association">代码清单 14.2</a> 中实现 <code>active_relationships</code> 表的方式）。其实我们要使用的方法和实现我关注的人一样，只要对调 <code>follower_id</code> 和 <code>followed_id</code> 的位置，并把 <code>active_relationships</code> 换成 <code>passive_relationships</code> 即可，如<a class="xref-link" href="#fig-user-has-many-followers">图 14.9</a> 所示。</p>
 <div id="fig-user-has-many-followers" class="figure"><img src="images/chapter14/user_has_many_followers_3rd_edition.png" alt="user has many followers 3rd edition" /><div class="figcaption"><span class="title-label">图 14.9</span>：通过被动关系获取关注我的用户</div></div>
-<p>参照<a href="#listing-has-many-following-through-active-relationships">代码清单 14.8</a>，我们可以使用<a href="#listing-has-many-following-through-passive-relationships">代码清单 14.12</a> 中的代码实现<a href="#fig-user-has-many-followers">图 14.9</a> 中的模型。</p>
+<p>参照<a class="xref-link" href="#listing-has-many-following-through-active-relationships">代码清单 14.8</a>，我们可以使用<a class="xref-link" href="#listing-has-many-following-through-passive-relationships">代码清单 14.12</a> 中的代码实现<a class="xref-link" href="#fig-user-has-many-followers">图 14.9</a> 中的模型。</p>
 <div id="listing-has-many-following-through-passive-relationships" data-type="listing">
 <h5><span class="title-label">代码清单 14.12</span>：使用被动关系实现 <code>user.followers</code></h5>
 
@@ -481,8 +490,8 @@
 <div class="highlight language-ruby"><pre><code><span class="n">has_many</span> <span class="ss">:followers</span><span class="p">,</span> <span class="ss">through: :passive_relationships</span>
 </code></pre></div>
 </div>
-<p>因为 Rails 会把“followers”转换成单数“follower”，然后查找名为 <code>follower_id</code> 的外键。<a href="#listing-has-many-following-through-passive-relationships">代码清单 14.12</a> 之所以保留了 <code>source</code> 参数，是为了和 <code>has_many :following</code> 关联的结构保持一致。</p>
-<p>我们可以使用 <code>followers.include?</code> 测试这个数据模型，如<a href="#listing-followers-test">代码清单 14.13</a> 所示。（这段测试本可以使用与 <code>following?</code> 方法对应的 <code>followed_by?</code> 方法，但应用中用不到，所以我们没这么做。）</p>
+<p>因为 Rails 会把“followers”转换成单数“follower”，然后查找名为 <code>follower_id</code> 的外键。<a class="xref-link" href="#listing-has-many-following-through-passive-relationships">代码清单 14.12</a> 之所以保留了 <code>source</code> 参数，是为了和 <code>has_many :following</code> 关联的结构保持一致。</p>
+<p>我们可以使用 <code>followers.include?</code> 测试这个数据模型，如<a class="xref-link" href="#listing-followers-test">代码清单 14.13</a> 所示。（这段测试本可以使用与 <code>following?</code> 方法对应的 <code>followed_by?</code> 方法，但应用中用不到，所以我们没这么做。）</p>
 <div id="listing-followers-test" data-type="listing">
 <h5><span class="title-label">代码清单 14.13</span>：测试 <code>followers</code> 关联 <span class="green">GREEN</span></h5>
 
@@ -507,7 +516,7 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>我们只在<a href="#listing-utility-method-tests">代码清单 14.9</a> 的基础上增加了一行代码，但若想让这个测试通过，很多事情都要正确处理才行，这足以测试<a href="#listing-has-many-following-through-passive-relationships">代码清单 14.12</a> 中的关联。</p>
+<p>我们只在<a class="xref-link" href="#listing-utility-method-tests">代码清单 14.9</a> 的基础上增加了一行代码，但若想让这个测试通过，很多事情都要正确处理才行，这足以测试<a class="xref-link" href="#listing-has-many-following-through-passive-relationships">代码清单 14.12</a> 中的关联。</p>
 <p>现在，整个测试组件都能通过：</p>
 <div data-type="listing">
 
@@ -531,12 +540,12 @@
 </section>
 <section data-type="sect1" id="a-web-interface-for-following-users">
 <h1><span class="title-label">14.2</span> 关注用户的网页界面</h1>
-<p><a href="#the-relationship-model">14.1 节</a>用到了很多数据模型技术，可能要花些时间才能完全理解。其实，理解这些关联最好的方式是在网页界面中使用。</p>
-<p>在本章的导言中，我们介绍了关注用户的操作流程。本节，我们要实现这些构思的页面，以及关注和取消关注功能。我们还会创建两个页面，分别列出我关注的用户和关注我的用户。在 <a href="#the-status-feed">14.3 节</a>，我们会实现用户的动态流，届时，这个演示应用才算完成。</p>
+<p><a class="xref-link" href="#the-relationship-model">14.1 节</a>用到了很多数据模型技术，可能要花些时间才能完全理解。其实，理解这些关联最好的方式是在网页界面中使用。</p>
+<p>在本章的导言中，我们介绍了关注用户的操作流程。本节，我们要实现这些构思的页面，以及关注和取消关注功能。我们还会创建两个页面，分别列出我关注的用户和关注我的用户。在 <a class="xref-link" href="#the-status-feed">14.3 节</a>，我们会实现用户的动态流，届时，这个演示应用才算完成。</p>
 <section data-type="sect2" id="sample-following-data">
 <h2><span class="title-label">14.2.1</span> 示例数据</h2>
 <p>和之前的几章一样，我们要使用 <code>rails db:seed</code> 命令把“关系”相关的种子数据加载到数据库中。有了示例数据，我们就可以先实现网页界面，本节末尾再实现后端功能。</p>
-<p>“关系”相关的种子数据如<a href="#listing-sample-relationships">代码清单 14.14</a> 所示。我们让第一个用户关注第 3-51 个用户，让第 4-41 个用户关注第一个用户。这样的数据足够用来开发应用的界面了。</p>
+<p>“关系”相关的种子数据如<a class="xref-link" href="#listing-sample-relationships">代码清单 14.14</a> 所示。我们让第一个用户关注第 3-51 个用户，让第 4-41 个用户关注第一个用户。这样的数据足够用来开发应用的界面了。</p>
 <div id="listing-sample-relationships" data-type="listing">
 <h5><span class="title-label">代码清单 14.14</span>：在种子数据中添加“关系”相关的数据</h5>
 
@@ -544,12 +553,12 @@
 
 <div class="highlight language-yaml"><pre><code><span class="c1"># Users</span>
 <span class="s">User.create!(name</span><span class="pi">:</span>  <span class="s2">"</span><span class="s">Example</span><span class="nv"> </span><span class="s">User"</span><span class="err">,</span>
-             <span class="s">email</span><span class="pi">:</span> <span class="s2">"</span><span class="s">example@railstutorial.org"</span><span class="err">,</span>
-             <span class="s">password</span><span class="pi">:</span>              <span class="s2">"</span><span class="s">foobar"</span><span class="err">,</span>
-             <span class="s">password_confirmation</span><span class="pi">:</span> <span class="s2">"</span><span class="s">foobar"</span><span class="err">,</span>
-             <span class="s">admin</span><span class="pi">:</span>     <span class="s">true,</span>
-             <span class="s">activated</span><span class="pi">:</span> <span class="s">true,</span>
-             <span class="s">activated_at</span><span class="pi">:</span> <span class="s">Time.zone.now)</span>
+             <span class="na">email</span><span class="pi">:</span> <span class="s2">"</span><span class="s">example@railstutorial.org"</span><span class="err">,</span>
+             <span class="na">password</span><span class="pi">:</span>              <span class="s2">"</span><span class="s">foobar"</span><span class="err">,</span>
+             <span class="na">password_confirmation</span><span class="pi">:</span> <span class="s2">"</span><span class="s">foobar"</span><span class="err">,</span>
+             <span class="na">admin</span><span class="pi">:</span>     <span class="s">true,</span>
+             <span class="na">activated</span><span class="pi">:</span> <span class="s">true,</span>
+             <span class="na">activated_at</span><span class="pi">:</span> <span class="s">Time.zone.now)</span>
 
 <span class="s">99.times do |n|</span>
   <span class="s">name  = Faker::Name.name</span>
@@ -590,7 +599,7 @@
 <h5 id="exercises-sample-following-data" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>在 Rails 控制台中确认 <code>User.first.followers.count</code> 的值与<a href="#listing-sample-relationships">代码清单 14.14</a> 设定的一样。</p>
+<p>在 Rails 控制台中确认 <code>User.first.followers.count</code> 的值与<a class="xref-link" href="#listing-sample-relationships">代码清单 14.14</a> 设定的一样。</p>
 </li>
 <li>
 <p>确认 <code>User.first.following.count</code> 的值也正确。</p>
@@ -600,9 +609,9 @@
 <section data-type="sect2" id="stats-and-a-follow-form">
 <h2><span class="title-label">14.2.2</span> 数量统计和关注表单</h2>
 <p>现在示例用户已经关注了其他用户，也被其他用户关注了，我们要更新一下用户资料页面和首页，把这些变动显示出来。首先，我们要创建一个局部视图，在资料页面和首页显示我关注的人和关注我的人的数量。然后再添加关注和取消关注表单，并且在专门的页面中列出我关注的用户和关注我的用户。</p>
-<p><a href="#a-problem-with-the-data-model-and-a-solution">14.1.1 节</a>说过，我们参照了 Twitter 的叫法，在我关注的用户数量后使用“following”作标注，例如“50 following”。<a href="#fig-page-flow-profile-mockup">图 14.1</a> 中的构思图就使用了这种表述方式，现在把这部分单独摘出来，如<a href="#fig-stats-partial-mockup">图 14.10</a> 所示。</p>
+<p><a class="xref-link" href="#a-problem-with-the-data-model-and-a-solution">14.1.1 节</a>说过，我们参照了 Twitter 的叫法，在我关注的用户数量后使用“following”作标注，例如“50 following”。<a class="xref-link" href="#fig-page-flow-profile-mockup">图 14.1</a> 中的构思图就使用了这种表述方式，现在把这部分单独摘出来，如<a class="xref-link" href="#fig-stats-partial-mockup">图 14.10</a> 所示。</p>
 <div id="fig-stats-partial-mockup" class="figure"><img src="images/chapter14/stats_partial_mockup.png" alt="stats partial mockup" /><div class="figcaption"><span class="title-label">图 14.10</span>：数量统计局部视图的构思图</div></div>
-<p><a href="#fig-stats-partial-mockup">图 14.10</a> 中显示的数量统计包含当前用户关注的人数和关注当前用户的人数，而且分别链接到专门的用户列表页面。在<a href="chapter5.html#filling-in-the-layout">第 5 章</a>，我们使用 <code>#</code> 占位符代替真实的网址，因为那时我们还没怎么接触路由。现在，虽然 <a href="#following-and-followers-pages">14.2.3 节</a>才会创建所需的页面，不过可以先设置路由，如<a href="#listing-following-followers-actions-routes">代码清单 14.15</a> 所示。这段代码在 <code>resources</code> 块中使用了 <code>:member</code> 方法。我们以前没用过这个方法，你可以猜一下这个方法的作用是什么。</p>
+<p><a class="xref-link" href="#fig-stats-partial-mockup">图 14.10</a> 中显示的数量统计包含当前用户关注的人数和关注当前用户的人数，而且分别链接到专门的用户列表页面。在<a class="xref-link" href="chapter5.html#filling-in-the-layout">第 5 章</a>，我们使用 <code>#</code> 占位符代替真实的网址，因为那时我们还没怎么接触路由。现在，虽然 <a class="xref-link" href="#following-and-followers-pages">14.2.3 节</a>才会创建所需的页面，不过可以先设置路由，如<a class="xref-link" href="#listing-following-followers-actions-routes">代码清单 14.15</a> 所示。这段代码在 <code>resources</code> 块中使用了 <code>:member</code> 方法。我们以前没用过这个方法，你可以猜一下这个方法的作用是什么。</p>
 <div id="listing-following-followers-actions-routes" data-type="listing">
 <h5><span class="title-label">代码清单 14.15</span>：在 <code>Users</code> 控制器中添加 <code>following</code> 和 <code>followers</code> 两个动作</h5>
 
@@ -628,7 +637,7 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>你可能猜到了，设定上述路由后，得到的 URL 地址类似 /users/1/following 和 /users/1/followers 这种形式。不错，<a href="#listing-following-followers-actions-routes">代码清单 14.15</a> 的作用确实如此。因为这两个页面都是用来显示数据的，所以我们使用了 <code>get</code> 方法，指定这两个地址响应的是 GET 请求。而且，使用 <code>member</code> 方法后，这两个动作对应的 URL 地址中都会包含用户的 ID。除此之外，我们还可以使用 <code>collection</code> 方法，但这样 URL 中就没有用户 ID 了。所以，如下的代码</p>
+<p>你可能猜到了，设定上述路由后，得到的 URL 地址类似 /users/1/following 和 /users/1/followers 这种形式。不错，<a class="xref-link" href="#listing-following-followers-actions-routes">代码清单 14.15</a> 的作用确实如此。因为这两个页面都是用来显示数据的，所以我们使用了 <code>get</code> 方法，指定这两个地址响应的是 GET 请求。而且，使用 <code>member</code> 方法后，这两个动作对应的 URL 地址中都会包含用户的 ID。除此之外，我们还可以使用 <code>collection</code> 方法，但这样 URL 中就没有用户 ID 了。所以，如下的代码</p>
 <div data-type="listing">
 
 
@@ -640,9 +649,9 @@
 </code></pre></div>
 </div>
 <p>得到的 URL 是 /users/tigers（或许可以用来显示应用中所有的老虎）。<sup>[<a id="fn-ref-7" href="#fn-7">7</a>]</sup></p>
-<p><a href="#listing-following-followers-actions-routes">代码清单 14.15</a> 生成的路由如<a href="#table-following-routes">表 14.2</a> 所示。留意一下我关注的用户页面和关注我的用户页面的具名路由是什么，稍后会用到。</p>
+<p><a class="xref-link" href="#listing-following-followers-actions-routes">代码清单 14.15</a> 生成的路由如<a class="xref-link" href="#table-following-routes">表 14.2</a> 所示。留意一下我关注的用户页面和关注我的用户页面的具名路由是什么，稍后会用到。</p>
 <table id="table-following-routes" class="tableblock frame-all grid-all" style="width: 100%;">
-<caption><span class="title-label">表 14.2</span>：<a href="#listing-following-followers-actions-routes">代码清单 14.15</a> 中设置的规则生成的 REST 路由</caption>
+<caption><span class="title-label">表 14.2</span>：<a class="xref-link" href="#listing-following-followers-actions-routes">代码清单 14.15</a> 中设置的规则生成的 REST 路由</caption>
 <colgroup>
 <col style="width: 15%;" />
 <col style="width: 20%;" />
@@ -672,7 +681,7 @@
 </tr>
 </tbody>
 </table>
-<p>设好了路由后，我们来编写数量统计局部视图。我们要在一个 <code>div</code> 元素中显示几个链接，如<a href="#listing-stats-partial">代码清单 14.16</a> 所示。</p>
+<p>设好了路由后，我们来编写数量统计局部视图。我们要在一个 <code>div</code> 元素中显示几个链接，如<a class="xref-link" href="#listing-stats-partial">代码清单 14.16</a> 所示。</p>
 <div id="listing-stats-partial" data-type="listing">
 <h5><span class="title-label">代码清单 14.16</span>：显示数量统计的局部视图</h5>
 
@@ -695,15 +704,15 @@
 <span class="nt">&lt;/div&gt;</span>
 </code></pre></div>
 </div>
-<p>因为用户资料页面和首页都要使用这个局部视图，所以在<a href="#listing-stats-partial">代码清单 14.16</a> 的第一行，我们要获取正确的用户对象：</p>
+<p>因为用户资料页面和首页都要使用这个局部视图，所以在<a class="xref-link" href="#listing-stats-partial">代码清单 14.16</a> 的第一行，我们要获取正确的用户对象：</p>
 <div data-type="listing">
 
 
 <div class="highlight language-erb"><pre><code><span class="cp">&lt;%</span> <span class="vi">@user</span> <span class="o">||=</span> <span class="n">current_user</span> <span class="cp">%&gt;</span>
 </code></pre></div>
 </div>
-<p>我们在<a href="chapter8.html#aside-or-equals">旁注 8.1</a>中介绍过这种用法，如果 <code>@user</code> 不是 <code>nil</code>（在用户资料页面），这行代码没什么效果；如果是 <code>nil</code>（在首页），就会把当前用户赋值给 <code>@user</code>。还有一处要注意，我关注的人数和关注我的人数是通过关联获取的，分别使用 <code>@user.following.count</code> 和 <code>@user.followers.count</code>。</p>
-<p>我们可以和<a href="chapter13.html#listing-user-show-microposts">代码清单 13.24</a> 中获取微博数量的代码对比一下，微博的数量通过 <code>@user.microposts.count</code> 获取。为了提高效率，Rails 会直接在数据库层统计数量。</p>
+<p>我们在<a class="xref-link" href="chapter8.html#aside-or-equals">旁注 8.1</a>中介绍过这种用法，如果 <code>@user</code> 不是 <code>nil</code>（在用户资料页面），这行代码没什么效果；如果是 <code>nil</code>（在首页），就会把当前用户赋值给 <code>@user</code>。还有一处要注意，我关注的人数和关注我的人数是通过关联获取的，分别使用 <code>@user.following.count</code> 和 <code>@user.followers.count</code>。</p>
+<p>我们可以和<a class="xref-link" href="chapter13.html#listing-user-show-microposts">代码清单 13.24</a> 中获取微博数量的代码对比一下，微博的数量通过 <code>@user.microposts.count</code> 获取。为了提高效率，Rails 会直接在数据库层统计数量。</p>
 <p>最后还有一个细节需要注意，我们为某些元素指定了 CSS ID，例如：</p>
 <div data-type="listing">
 
@@ -713,8 +722,8 @@
 <span class="nt">&lt;/strong&gt;</span>
 </code></pre></div>
 </div>
-<p>这些 ID 是为 <a href="#a-working-follow-button-with-ajax">14.2.5 节</a>中的 Ajax 准备的，因为 Ajax 要通过独一无二的 ID 获取页面中的元素。</p>
-<p>编写好局部视图，把它放入首页就很简单了，如<a href="#listing-home-page-stats">代码清单 14.17</a> 所示。</p>
+<p>这些 ID 是为 <a class="xref-link" href="#a-working-follow-button-with-ajax">14.2.5 节</a>中的 Ajax 准备的，因为 Ajax 要通过独一无二的 ID 获取页面中的元素。</p>
+<p>编写好局部视图，把它放入首页就很简单了，如<a class="xref-link" href="#listing-home-page-stats">代码清单 14.17</a> 所示。</p>
 <div id="listing-home-page-stats" data-type="listing">
 <h5><span class="title-label">代码清单 14.17</span>：在首页显示数量统计</h5>
 
@@ -745,7 +754,7 @@
 <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
 </code></pre></div>
 </div>
-<p>我们要添加一些 SCSS 代码，美化数量统计，如<a href="#listing-stats-css">代码清单 14.18</a> 所示（包含本章用到的所有样式）。添加样式后，首页如<a href="#fig-home-page-follow-stats">图 14.11</a> 所示。</p>
+<p>我们要添加一些 SCSS 代码，美化数量统计，如<a class="xref-link" href="#listing-stats-css">代码清单 14.18</a> 所示（包含本章用到的所有样式）。添加样式后，首页如<a class="xref-link" href="#fig-home-page-follow-stats">图 14.11</a> 所示。</p>
 <div id="listing-stats-css" data-type="listing">
 <h5><span class="title-label">代码清单 14.18</span>：首页侧边栏的 SCSS 样式</h5>
 
@@ -812,7 +821,7 @@
 </code></pre></div>
 </div>
 <div id="fig-home-page-follow-stats" class="figure"><img src="images/chapter14/home_page_follow_stats_3rd_edition.png" alt="home page follow stats 3rd edition" /><div class="figcaption"><span class="title-label">图 14.11</span>：显示有数量统计的首页</div></div>
-<p>稍后再把数量统计局部视图添加到用户资料页面中，现在先来编写关注和取消关注按钮的局部视图，如<a href="#listing-follow-form-partial">代码清单 14.19</a> 所示。</p>
+<p>稍后再把数量统计局部视图添加到用户资料页面中，现在先来编写关注和取消关注按钮的局部视图，如<a class="xref-link" href="#listing-follow-form-partial">代码清单 14.19</a> 所示。</p>
 <div id="listing-follow-form-partial" data-type="listing">
 <h5><span class="title-label">代码清单 14.19</span>：显示关注或取消关注表单的局部视图</h5>
 
@@ -829,7 +838,7 @@
 <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
 </code></pre></div>
 </div>
-<p>这段代码其实也没做什么，只是把具体的工作委托给 <code>follow</code> 和 <code>unfollow</code> 局部视图了。我们要再次设置路由，加入 <code>Relationships</code> 资源，如<a href="#listing-relationships-resource">代码清单 14.20</a> 所示，这与 <code>Microposts</code> 资源的设置类似（<a href="chapter13.html#listing-microposts-resource">代码清单 13.30</a>）。</p>
+<p>这段代码其实也没做什么，只是把具体的工作委托给 <code>follow</code> 和 <code>unfollow</code> 局部视图了。我们要再次设置路由，加入 <code>Relationships</code> 资源，如<a class="xref-link" href="#listing-relationships-resource">代码清单 14.20</a> 所示，这与 <code>Microposts</code> 资源的设置类似（<a class="xref-link" href="chapter13.html#listing-microposts-resource">代码清单 13.30</a>）。</p>
 <div id="listing-relationships-resource" data-type="listing">
 <h5><span class="title-label">代码清单 14.20</span>：添加 <code>Relationships</code> 资源的路由规则</h5>
 
@@ -856,7 +865,7 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p><code>follow</code> 和 <code>unfollow</code> 局部视图的代码分别如<a href="#listing-follow-form">代码清单 14.21</a> 和<a href="#listing-unfollow-form">代码清单 14.22</a> 所示。</p>
+<p><code>follow</code> 和 <code>unfollow</code> 局部视图的代码分别如<a class="xref-link" href="#listing-follow-form">代码清单 14.21</a> 和<a class="xref-link" href="#listing-unfollow-form">代码清单 14.22</a> 所示。</p>
 <div id="listing-follow-form" data-type="listing">
 <h5><span class="title-label">代码清单 14.21</span>：关注用户的表单</h5>
 
@@ -879,15 +888,15 @@
 <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
 </code></pre></div>
 </div>
-<p>这两个表单都使用 <code>form_for</code> 处理 <code>Relationship</code> 模型对象，二者之间主要的不同是，<a href="#listing-follow-form">代码清单 14.21</a> 用于构建一个新“关系”，而<a href="#listing-unfollow-form">代码清单 14.22</a> 查找现有的“关系”。很显然，第一个表单会向 <code>Relationships</code> 控制器的 <code>create</code> 动作发送 <code>POST</code> 请求，创建“关系”；而第二个表单向 <code>destroy</code> 动作发送 <code>DELETE</code> 请求，销毁“关系”。（这两个动作在 <a href="#a-working-follow-button-the-standard-way">14.2.4 节</a>编写。）你可能还注意到了，关注用户的表单中除了按钮之外什么内容也没有，但是仍然要把 <code>followed_id</code> 发送给控制器。在<a href="#listing-follow-form">代码清单 14.21</a> 中，我们使用 <code>hidden_field_tag</code> 方法把 <code>followed_id</code> 添加到表单中，生成的 HTML 如下：</p>
+<p>这两个表单都使用 <code>form_for</code> 处理 <code>Relationship</code> 模型对象，二者之间主要的不同是，<a class="xref-link" href="#listing-follow-form">代码清单 14.21</a> 用于构建一个新“关系”，而<a class="xref-link" href="#listing-unfollow-form">代码清单 14.22</a> 查找现有的“关系”。很显然，第一个表单会向 <code>Relationships</code> 控制器的 <code>create</code> 动作发送 <code>POST</code> 请求，创建“关系”；而第二个表单向 <code>destroy</code> 动作发送 <code>DELETE</code> 请求，销毁“关系”。（这两个动作在 <a class="xref-link" href="#a-working-follow-button-the-standard-way">14.2.4 节</a>编写。）你可能还注意到了，关注用户的表单中除了按钮之外什么内容也没有，但是仍然要把 <code>followed_id</code> 发送给控制器。在<a class="xref-link" href="#listing-follow-form">代码清单 14.21</a> 中，我们使用 <code>hidden_field_tag</code> 方法把 <code>followed_id</code> 添加到表单中，生成的 HTML 如下：</p>
 <div data-type="listing">
 
 
 <div class="highlight language-html"><pre><code><span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"followed_id"</span> <span class="na">name=</span><span class="s">"followed_id"</span> <span class="na">type=</span><span class="s">"hidden"</span> <span class="na">value=</span><span class="s">"3"</span> <span class="nt">/&gt;</span>
 </code></pre></div>
 </div>
-<p><a href="chapter12.html#resetting-the-password">12.3 节</a>说过，隐藏的 <code>input</code> 标签会把所需的信息包含在表单中，但在浏览器中不显示。</p>
-<p>现在我们可以在资料页面中加入关注表单和数量统计了，如<a href="#listing-user-follow-form-profile-stats">代码清单 14.23</a> 所示，只需渲染相应的局部视图即可。显示有关注按钮和取消关注按钮的用户资料页面分别如<a href="#fig-profile-follow-button">图 14.12</a> 和<a href="#fig-profile-unfollow-button">图 14.13</a> 所示。</p>
+<p><a class="xref-link" href="chapter12.html#resetting-the-password">12.3 节</a>说过，隐藏的 <code>input</code> 标签会把所需的信息包含在表单中，但在浏览器中不显示。</p>
+<p>现在我们可以在资料页面中加入关注表单和数量统计了，如<a class="xref-link" href="#listing-user-follow-form-profile-stats">代码清单 14.23</a> 所示，只需渲染相应的局部视图即可。显示有关注按钮和取消关注按钮的用户资料页面分别如<a class="xref-link" href="#fig-profile-follow-button">图 14.12</a> 和<a class="xref-link" href="#fig-profile-unfollow-button">图 14.13</a> 所示。</p>
 <div id="listing-user-follow-form-profile-stats" data-type="listing">
 <h5><span class="title-label">代码清单 14.23</span>：在用户资料页面加入关注表单和数量统计</h5>
 
@@ -921,7 +930,7 @@
 </div>
 <div id="fig-profile-follow-button" class="figure"><img src="images/chapter14/profile_follow_button_3rd_edition.png" alt="profile follow button 3rd edition" /><div class="figcaption"><span class="title-label">图 14.12</span>：某个用户的资料页面（/users/2），显示有关注按钮</div></div>
 <div id="fig-profile-unfollow-button" class="figure"><img src="images/chapter14/profile_unfollow_button_3rd_edition.png" alt="profile unfollow button 3rd edition" /><div class="figcaption"><span class="title-label">图 14.13</span>：某个用户的资料页面（/users/5），显示有取消关注按钮</div></div>
-<p>稍后我们会让这些按钮起作用，而且将使用两种方式实现，一种是常规方式（<a href="#a-working-follow-button-the-standard-way">14.2.4 节</a>），另一种使用 Ajax（<a href="#a-working-follow-button-with-ajax">14.2.5 节</a>）。不过在此之前，我们要创建剩下的页面——我关注的用户列表页面和关注我的用户列表页面。</p>
+<p>稍后我们会让这些按钮起作用，而且将使用两种方式实现，一种是常规方式（<a class="xref-link" href="#a-working-follow-button-the-standard-way">14.2.4 节</a>），另一种使用 Ajax（<a class="xref-link" href="#a-working-follow-button-with-ajax">14.2.5 节</a>）。不过在此之前，我们要创建剩下的页面——我关注的用户列表页面和关注我的用户列表页面。</p>
 <h5 id="exercises-stats-and-a-follow-form" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
@@ -931,16 +940,16 @@
 <p>在浏览器中确认首页和资料页面有数量统计。</p>
 </li>
 <li>
-<p>为首页中的数量统计编写测试。提示：把测试添加到<a href="chapter13.html#listing-user-profile-test">代码清单 13.28</a> 中。为什么不用再测试资料页面的数量统计了？</p>
+<p>为首页中的数量统计编写测试。提示：把测试添加到<a class="xref-link" href="chapter13.html#listing-user-profile-test">代码清单 13.28</a> 中。为什么不用再测试资料页面的数量统计了？</p>
 </li>
 </ol>
 </section>
 <section data-type="sect2" id="following-and-followers-pages">
 <h2><span class="title-label">14.2.3</span> 我关注的用户列表页面和关注我的用户列表页面</h2>
-<p>我关注的用户列表页面和关注我的用户列表页面是资料页面和用户列表页面的混合体，在侧边栏显示用户的信息（包括数量统计），再列出一系列用户。除此之外，还会在侧边栏中显示一个用户头像列表。构思图如<a href="#fig-following-mockup">图 14.14</a>（我关注的用户）和<a href="#fig-followers-mockup">图 14.15</a>（关注我的用户）所示。</p>
+<p>我关注的用户列表页面和关注我的用户列表页面是资料页面和用户列表页面的混合体，在侧边栏显示用户的信息（包括数量统计），再列出一系列用户。除此之外，还会在侧边栏中显示一个用户头像列表。构思图如<a class="xref-link" href="#fig-following-mockup">图 14.14</a>（我关注的用户）和<a class="xref-link" href="#fig-followers-mockup">图 14.15</a>（关注我的用户）所示。</p>
 <div id="fig-following-mockup" class="figure"><img src="images/chapter14/following_mockup_bootstrap.png" alt="following mockup bootstrap" /><div class="figcaption"><span class="title-label">图 14.14</span>：我关注的用户列表页面构思图</div></div>
 <div id="fig-followers-mockup" class="figure"><img src="images/chapter14/followers_mockup_bootstrap.png" alt="followers mockup bootstrap" /><div class="figcaption"><span class="title-label">图 14.15</span>：关注我的用户列表页面构思图</div></div>
-<p>首先，我们要让这两个页面的地址可访问。按照 Twitter 的方式，访问这两个页面都需要先登录。我们要先编写测试，参照以前的访问限制测试，写出的测试如<a href="#listing-following-followers-authorization-test">代码清单 14.24</a> 所示。注意，<a href="#listing-following-followers-authorization-test">代码清单 14.24</a> 用到了<a href="#table-following-routes">表 14.2</a> 中的具名路由。</p>
+<p>首先，我们要让这两个页面的地址可访问。按照 Twitter 的方式，访问这两个页面都需要先登录。我们要先编写测试，参照以前的访问限制测试，写出的测试如<a class="xref-link" href="#listing-following-followers-authorization-test">代码清单 14.24</a> 所示。注意，<a class="xref-link" href="#listing-following-followers-authorization-test">代码清单 14.24</a> 用到了<a class="xref-link" href="#table-following-routes">表 14.2</a> 中的具名路由。</p>
 <div id="listing-following-followers-authorization-test" data-type="listing">
 <h5><span class="title-label">代码清单 14.24</span>：测试我关注的用户列表页面和关注我的用户列表页面的访问限制</h5>
 
@@ -969,7 +978,7 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>在实现这两个页面的过程中，唯一很难想到的是，我们要在 <code>Users</code> 控制器中添加相应的两个动作。按照<a href="#listing-following-followers-actions-routes">代码清单 14.15</a> 中的路由规则，这两个动作应该命名为 <code>following</code> 和 <code>followers</code>。在这两个动作中，需要设置页面的标题、查找用户，获取 <code>@user.followed_users</code> 或 <code>@user.followers</code>（要分页显示），然后再渲染页面，如<a href="#listing-following-followers-actions">代码清单 14.25</a> 所示。</p>
+<p>在实现这两个页面的过程中，唯一很难想到的是，我们要在 <code>Users</code> 控制器中添加相应的两个动作。按照<a class="xref-link" href="#listing-following-followers-actions-routes">代码清单 14.15</a> 中的路由规则，这两个动作应该命名为 <code>following</code> 和 <code>followers</code>。在这两个动作中，需要设置页面的标题、查找用户，获取 <code>@user.followed_users</code> 或 <code>@user.followers</code>（要分页显示），然后再渲染页面，如<a class="xref-link" href="#listing-following-followers-actions">代码清单 14.25</a> 所示。</p>
 <div id="listing-following-followers-actions" data-type="listing">
 <h5><span class="title-label">代码清单 14.25</span>：<code>following</code> 和 <code>followers</code> 动作 <span class="red">RED</span></h5>
 
@@ -1002,7 +1011,7 @@
 <span class="nf">end</span>
 </code></pre></div>
 </div>
-<p>读过本书前面的内容我们发现，按照 Rails 的约定，动作最后都会隐式渲染对应的视图，例如 <code>show</code> 动作最后会渲染 <code>show.html.erb</code>。而<a href="#listing-following-followers-actions">代码清单 14.25</a> 中的两个动作都显式调用了 <code>render</code> 方法，渲染一个名为 <code>show_follow</code> 的视图。下面我们来编写这个视图。这两个动作之所以使用同一个视图，是因为两种情况用到的 ERb 代码差不多，如<a href="#listing-show-follow-view">代码清单 14.26</a> 所示。</p>
+<p>读过本书前面的内容我们发现，按照 Rails 的约定，动作最后都会隐式渲染对应的视图，例如 <code>show</code> 动作最后会渲染 <code>show.html.erb</code>。而<a class="xref-link" href="#listing-following-followers-actions">代码清单 14.25</a> 中的两个动作都显式调用了 <code>render</code> 方法，渲染一个名为 <code>show_follow</code> 的视图。下面我们来编写这个视图。这两个动作之所以使用同一个视图，是因为两种情况用到的 ERb 代码差不多，如<a class="xref-link" href="#listing-show-follow-view">代码清单 14.26</a> 所示。</p>
 <div id="listing-show-follow-view" data-type="listing">
 <h5><span class="title-label">代码清单 14.26</span>：渲染我关注的用户列表页面和关注我的用户列表页面的 <code>show_follow</code> 视图</h5>
 
@@ -1040,8 +1049,8 @@
 <span class="nt">&lt;/div&gt;</span>
 </code></pre></div>
 </div>
-<p><a href="#listing-following-followers-actions">代码清单 14.25</a> 中的动作会按需渲染<a href="#listing-show-follow-view">代码清单 14.26</a> 中的视图，分别显式我关注的用户列表和关注我的用户列表，如<a href="#fig-user-following">图 14.16</a> 和<a href="#fig-user-followers">图 14.17</a> 所示。注意，上述代码都没用到“当前用户”，所以这两个链接对其他用户也可用，如<a href="#fig-different-user-followers">图 14.18</a> 所示。</p>
-<p>现在，<a href="#listing-following-followers-authorization-test">代码清单 14.24</a> 中的测试应该能通过：</p>
+<p><a class="xref-link" href="#listing-following-followers-actions">代码清单 14.25</a> 中的动作会按需渲染<a class="xref-link" href="#listing-show-follow-view">代码清单 14.26</a> 中的视图，分别显式我关注的用户列表和关注我的用户列表，如<a class="xref-link" href="#fig-user-following">图 14.16</a> 和<a class="xref-link" href="#fig-user-followers">图 14.17</a> 所示。注意，上述代码都没用到“当前用户”，所以这两个链接对其他用户也可用，如<a class="xref-link" href="#fig-different-user-followers">图 14.18</a> 所示。</p>
+<p>现在，<a class="xref-link" href="#listing-following-followers-authorization-test">代码清单 14.24</a> 中的测试应该能通过：</p>
 <div data-type="listing">
 <h5><span class="title-label">代码清单 14.27</span>：<strong class="green">GREEN</strong></h5>
 
@@ -1052,7 +1061,7 @@
 <div id="fig-user-following" class="figure"><img src="images/chapter14/user_following_3rd_edition.png" alt="user following 3rd edition" /><div class="figcaption"><span class="title-label">图 14.16</span>：显示某个用户关注的人</div></div>
 <div id="fig-user-followers" class="figure"><img src="images/chapter14/user_followers_3rd_edition.png" alt="user followers 3rd edition" /><div class="figcaption"><span class="title-label">图 14.17</span>：显示关注某个用户的人</div></div>
 <div id="fig-different-user-followers" class="figure"><img src="images/chapter14/diferent_user_followers_3rd_edition.png" alt="diferent user followers 3rd edition" /><div class="figcaption"><span class="title-label">图 14.18</span>：显示关注另一个用户的人</div></div>
-<p>现在，这两个页面可以使用了，下面要编写一些简短的集成测试，确认表现正确。这些测试只是健全检查，无需面面俱到。正如 <a href="chapter5.html#layout-link-tests">5.3.4 节</a>所说的，全面的测试，例如检查 HTML 结构，并不牢靠，而且可能适得其反。对这两个页面来说，我们计划确认显示的数量正确，而且页面中有指向正确的 URL 的链接。</p>
+<p>现在，这两个页面可以使用了，下面要编写一些简短的集成测试，确认表现正确。这些测试只是健全检查，无需面面俱到。正如 <a class="xref-link" href="chapter5.html#layout-link-tests">5.3.4 节</a>所说的，全面的测试，例如检查 HTML 结构，并不牢靠，而且可能适得其反。对这两个页面来说，我们计划确认显示的数量正确，而且页面中有指向正确的 URL 的链接。</p>
 <p>首先，和之前一样，生成一个集成测试文件：</p>
 <div data-type="listing">
 
@@ -1062,41 +1071,41 @@
       create    <span class="nb">test</span>/integration/following_test.rb
 </code></pre></div>
 </div>
-<p>然后，准备测试数据。我们要在“关系”固件中创建一些关注关系。<a href="chapter13.html#profile-micropost-tests">13.2.3 节</a>使用下面的代码把微博和用户关联起来：</p>
+<p>然后，准备测试数据。我们要在“关系”固件中创建一些关注关系。<a class="xref-link" href="chapter13.html#profile-micropost-tests">13.2.3 节</a>使用下面的代码把微博和用户关联起来：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-yaml"><pre><code><span class="s">orange</span><span class="pi">:</span>
-  <span class="s">content</span><span class="pi">:</span> <span class="s2">"</span><span class="s">I</span><span class="nv"> </span><span class="s">just</span><span class="nv"> </span><span class="s">ate</span><span class="nv"> </span><span class="s">an</span><span class="nv"> </span><span class="s">orange!"</span>
-  <span class="s">created_at</span><span class="pi">:</span> <span class="s">&lt;%= 10.minutes.ago %&gt;</span>
-  <span class="s">user</span><span class="pi">:</span> <span class="s">michael</span>
+<div class="highlight language-yaml"><pre><code><span class="na">orange</span><span class="pi">:</span>
+  <span class="na">content</span><span class="pi">:</span> <span class="s2">"</span><span class="s">I</span><span class="nv"> </span><span class="s">just</span><span class="nv"> </span><span class="s">ate</span><span class="nv"> </span><span class="s">an</span><span class="nv"> </span><span class="s">orange!"</span>
+  <span class="na">created_at</span><span class="pi">:</span> <span class="s">&lt;%= 10.minutes.ago %&gt;</span>
+  <span class="na">user</span><span class="pi">:</span> <span class="s">michael</span>
 </code></pre></div>
 </div>
 <p>注意，我们没有用 <code>user_id: 1</code>，而是 <code>user: michael</code>。</p>
-<p>按照这种方式编写“关系”固件，如<a href="#listing-relationships-fixtures">代码清单 14.28</a> 所示。</p>
+<p>按照这种方式编写“关系”固件，如<a class="xref-link" href="#listing-relationships-fixtures">代码清单 14.28</a> 所示。</p>
 <div id="listing-relationships-fixtures" data-type="listing">
 <h5><span class="title-label">代码清单 14.28</span>：“关系”固件</h5>
 
 <div class="source-file">test/fixtures/relationships.yml</div>
 
-<div class="highlight language-yaml"><pre><code><span class="s">one</span><span class="pi">:</span>
-  <span class="s">follower</span><span class="pi">:</span> <span class="s">michael</span>
-  <span class="s">followed</span><span class="pi">:</span> <span class="s">lana</span>
+<div class="highlight language-yaml"><pre><code><span class="na">one</span><span class="pi">:</span>
+  <span class="na">follower</span><span class="pi">:</span> <span class="s">michael</span>
+  <span class="na">followed</span><span class="pi">:</span> <span class="s">lana</span>
 
-<span class="s">two</span><span class="pi">:</span>
-  <span class="s">follower</span><span class="pi">:</span> <span class="s">michael</span>
-  <span class="s">followed</span><span class="pi">:</span> <span class="s">malory</span>
+<span class="na">two</span><span class="pi">:</span>
+  <span class="na">follower</span><span class="pi">:</span> <span class="s">michael</span>
+  <span class="na">followed</span><span class="pi">:</span> <span class="s">malory</span>
 
-<span class="s">three</span><span class="pi">:</span>
-  <span class="s">follower</span><span class="pi">:</span> <span class="s">lana</span>
-  <span class="s">followed</span><span class="pi">:</span> <span class="s">michael</span>
+<span class="na">three</span><span class="pi">:</span>
+  <span class="na">follower</span><span class="pi">:</span> <span class="s">lana</span>
+  <span class="na">followed</span><span class="pi">:</span> <span class="s">michael</span>
 
-<span class="s">four</span><span class="pi">:</span>
-  <span class="s">follower</span><span class="pi">:</span> <span class="s">archer</span>
-  <span class="s">followed</span><span class="pi">:</span> <span class="s">michael</span>
+<span class="na">four</span><span class="pi">:</span>
+  <span class="na">follower</span><span class="pi">:</span> <span class="s">archer</span>
+  <span class="na">followed</span><span class="pi">:</span> <span class="s">michael</span>
 </code></pre></div>
 </div>
-<p>在这些固件中，Michael 关注了 Lana 和 Malory，Lana 和 Archer 关注了 Michael。为了测试数量，我们可以使用检查资料页面中微博数量的 <code>assert_match</code> 方法（<a href="chapter13.html#listing-user-profile-test">代码清单 13.28</a>）。然后再检查页面中有没有正确的链接，如<a href="#listing-following-tests">代码清单 14.29</a> 所示。</p>
+<p>在这些固件中，Michael 关注了 Lana 和 Malory，Lana 和 Archer 关注了 Michael。为了测试数量，我们可以使用检查资料页面中微博数量的 <code>assert_match</code> 方法（<a class="xref-link" href="chapter13.html#listing-user-profile-test">代码清单 13.28</a>）。然后再检查页面中有没有正确的链接，如<a class="xref-link" href="#listing-following-tests">代码清单 14.29</a> 所示。</p>
 <div id="listing-following-tests" data-type="listing">
 <h5><span class="title-label">代码清单 14.29</span>：测试我关注的用户列表页面和关注我的用户列表页面 <span class="green">GREEN</span></h5>
 
@@ -1162,7 +1171,7 @@
 <p>在浏览器中确认 /users/1/followers 和 /users/1/following 页面能显示正确的内容。侧边栏中的头像链接正确吗？</p>
 </li>
 <li>
-<p>把<a href="#listing-following-tests">代码清单 14.29</a> 中 <code>assert_select</code> 断言对应的应用代码注释掉，确认测试会失败，从而证明测试写的正确。</p>
+<p>把<a class="xref-link" href="#listing-following-tests">代码清单 14.29</a> 中 <code>assert_select</code> 断言对应的应用代码注释掉，确认测试会失败，从而证明测试写的正确。</p>
 </li>
 </ol>
 </section>
@@ -1175,7 +1184,7 @@
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate controller Relationships
 </code></pre></div>
 </div>
-<p>在<a href="#listing-relationships-controller">代码清单 14.32</a> 中会看到，限制访问这个控制器中的动作没有太大的意义，但我们还是要加入安全机制。我们要在测试中确认，访问这个控制器中的动作之前要先登录（没登录就重定向到登录页面），而且数据库中的“关系”数量没有变化，如<a href="#listing-relationships-access-control">代码清单 14.31</a> 所示。</p>
+<p>在<a class="xref-link" href="#listing-relationships-controller">代码清单 14.32</a> 中会看到，限制访问这个控制器中的动作没有太大的意义，但我们还是要加入安全机制。我们要在测试中确认，访问这个控制器中的动作之前要先登录（没登录就重定向到登录页面），而且数据库中的“关系”数量没有变化，如<a class="xref-link" href="#listing-relationships-access-control">代码清单 14.31</a> 所示。</p>
 <div id="listing-relationships-access-control" data-type="listing">
 <h5><span class="title-label">代码清单 14.31</span>：测试 <code>Relationships</code> 控制器的基本访问限制 <span class="red">RED</span></h5>
 
@@ -1201,7 +1210,7 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>在 <code>Relationships</code> 控制器中添加 <code>logged_in_user</code> 前置过滤器后，这个测试就能通过，如<a href="#listing-relationships-controller">代码清单 14.32</a> 所示。</p>
+<p>在 <code>Relationships</code> 控制器中添加 <code>logged_in_user</code> 前置过滤器后，这个测试就能通过，如<a class="xref-link" href="#listing-relationships-controller">代码清单 14.32</a> 所示。</p>
 <div id="listing-relationships-controller" data-type="listing">
 <h5><span class="title-label">代码清单 14.32</span>：为 <code>Relationships</code> 控制器添加访问限制 <span class="green">GREEN</span></h5>
 
@@ -1218,7 +1227,7 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>为了让关注和取消关注按钮起作用，我们需要找到表单中 <code>followed_id</code> 字段（参见<a href="#listing-follow-form">代码清单 14.21</a> 和<a href="#listing-unfollow-form">代码清单 14.22</a>）对应的用户，然后再调用<a href="#listing-follow-unfollow-following">代码清单 14.10</a> 中定义的 <code>follow</code> 或 <code>unfollow</code> 方法。各个动作完整的实现如<a href="#listing-relationships-controller-following">代码清单 14.33</a> 所示。</p>
+<p>为了让关注和取消关注按钮起作用，我们需要找到表单中 <code>followed_id</code> 字段（参见<a class="xref-link" href="#listing-follow-form">代码清单 14.21</a> 和<a class="xref-link" href="#listing-unfollow-form">代码清单 14.22</a>）对应的用户，然后再调用<a class="xref-link" href="#listing-follow-unfollow-following">代码清单 14.10</a> 中定义的 <code>follow</code> 或 <code>unfollow</code> 方法。各个动作完整的实现如<a class="xref-link" href="#listing-relationships-controller-following">代码清单 14.33</a> 所示。</p>
 <div id="listing-relationships-controller-following" data-type="listing">
 <h5><span class="title-label">代码清单 14.33</span>：<code>Relationships</code> 控制器的代码</h5>
 
@@ -1242,7 +1251,7 @@
 </code></pre></div>
 </div>
 <p>从这段代码中可以看出为什么前面说“限制访问没有太大意义”：如果未登录的用户直接访问某个动作（例如使用 <code>curl</code> 等命令行工具），<code>current_user</code> 的值是 <code>nil</code>，执行到这两个动作的第二行代码时会抛出异常，即得到一个错误，但对应用和数据来说都没危害。不过完全依赖这样的表现也不好，所以我们添加了一层安全防护措施。</p>
-<p>现在，关注和取消关注功能都能正常使用了，任何用户都可以关注或取消关注其他用户。你可以在浏览器中点击相应的按钮验证一下。（我们会在 <a href="#following-tests">14.2.6 节</a>编写集成测试检查这些操作。）关注第二个用户前后显示的资料页面如<a href="#fig-unfollowed-user">图 14.19</a> 和<a href="#fig-followed-user">图 14.20</a> 所示。</p>
+<p>现在，关注和取消关注功能都能正常使用了，任何用户都可以关注或取消关注其他用户。你可以在浏览器中点击相应的按钮验证一下。（我们会在 <a class="xref-link" href="#following-tests">14.2.6 节</a>编写集成测试检查这些操作。）关注第二个用户前后显示的资料页面如<a class="xref-link" href="#fig-unfollowed-user">图 14.19</a> 和<a class="xref-link" href="#fig-followed-user">图 14.20</a> 所示。</p>
 <div id="fig-unfollowed-user" class="figure"><img src="images/chapter14/unfollowed_user.png" alt="unfollowed user" /><div class="figcaption"><span class="title-label">图 14.19</span>：关注前的资料页面</div></div>
 <div id="fig-followed-user" class="figure"><img src="images/chapter14/followed_user.png" alt="followed user" /><div class="figcaption"><span class="title-label">图 14.20</span>：关注后的资料页面</div></div>
 <h5 id="exercises-a-working-follow-button-the-standard-way" class="discrete">练习</h5>
@@ -1257,8 +1266,8 @@
 </section>
 <section data-type="sect2" id="a-working-follow-button-with-ajax">
 <h2><span class="title-label">14.2.5</span> 关注按钮的 Ajax 实现方式</h2>
-<p>虽然关注用户的功能已经完全实现了，但在实现动态流之前，还有可以增强的地方。你可能已经注意到了，在 <a href="#a-working-follow-button-the-standard-way">14.2.4 节</a>中，<code>Relationships</code> 控制器的 <code>create</code> 和 <code>destroy</code> 动作最后都返回了一开始访问的用户资料页面。也就是说，用户 A 先访问用户 B 的资料页面，点击关注按钮关注用户 B，然后页面立即又转回到用户 B 的资料页面。因此，对这样的流程我们有一个疑问：为什么要多一次页面转向呢？</p>
-<p>Ajax <sup>[<a id="fn-ref-8" href="#fn-8">8</a>]</sup>可以解决这种问题。Ajax 向服务器发送异步请求，在不刷新页面的情况下更新页面的内容。因为经常要在表单中处理 Ajax 请求，所以 Rails 提供了简单的实现方式。其实，关注和取消关注表单局部视图不用做大的改动，只要把 <code>form_for</code> 改成 <code>form_for…​, remote: true</code>，Rails 就会自动使用 Ajax 处理表单。这两个局部视图更新后的版本如<a href="#listing-follow-form-ajax">代码清单 14.34</a> 和<a href="#listing-unfollow-form-ajax">代码清单 14.35</a> 所示。</p>
+<p>虽然关注用户的功能已经完全实现了，但在实现动态流之前，还有可以增强的地方。你可能已经注意到了，在 <a class="xref-link" href="#a-working-follow-button-the-standard-way">14.2.4 节</a>中，<code>Relationships</code> 控制器的 <code>create</code> 和 <code>destroy</code> 动作最后都返回了一开始访问的用户资料页面。也就是说，用户 A 先访问用户 B 的资料页面，点击关注按钮关注用户 B，然后页面立即又转回到用户 B 的资料页面。因此，对这样的流程我们有一个疑问：为什么要多一次页面转向呢？</p>
+<p>Ajax <sup>[<a id="fn-ref-8" href="#fn-8">8</a>]</sup>可以解决这种问题。Ajax 向服务器发送异步请求，在不刷新页面的情况下更新页面的内容。因为经常要在表单中处理 Ajax 请求，所以 Rails 提供了简单的实现方式。其实，关注和取消关注表单局部视图不用做大的改动，只要把 <code>form_for</code> 改成 <code>form_for…​, remote: true</code>，Rails 就会自动使用 Ajax 处理表单。这两个局部视图更新后的版本如<a class="xref-link" href="#listing-follow-form-ajax">代码清单 14.34</a> 和<a class="xref-link" href="#listing-unfollow-form-ajax">代码清单 14.35</a> 所示。</p>
 <div id="listing-follow-form-ajax" data-type="listing">
 <h5><span class="title-label">代码清单 14.34</span>：使用 Ajax 处理关注用户的表单</h5>
 
@@ -1294,7 +1303,7 @@
 <span class="nt">&lt;/form&gt;</span>
 </code></pre></div>
 </div>
-<p>可以看出，<code>form</code> 标签中设定了 <code>data-remote="true"</code>，这个属性告诉 Rails，这个表单可以使用 JavaScript 处理。Rails 遵从<a href="http://railscasts.com/episodes/205-unobtrusive-javascript">非侵入式 JavaScript</a>原则（unobtrusive JavaScript），没有直接在视图中写入 JavaScript 代码（Rails 之前的版本直接写入 JavaScript 代码），而是使用了一个简单的 HTML 属性。</p>
+<p>可以看出，<code>form</code> 标签中设定了 <code>data-remote="true"</code>，这个属性告诉 Rails，这个表单可以使用 JavaScript 处理。Rails 遵从<a href="http://railscasts.com/episodes/205-unobtrusive-javascript" class="external-link">非侵入式 JavaScript</a>原则（unobtrusive JavaScript），没有直接在视图中写入 JavaScript 代码（Rails 之前的版本直接写入 JavaScript 代码），而是使用了一个简单的 HTML 属性。</p>
 <p>修改表单后，我们要让 <code>Relationships</code> 控制器响应 Ajax 请求。为此，我们要使用 <code>respond_to</code> 方法，根据请求的类型生成合适的响应：</p>
 <div data-type="listing">
 
@@ -1305,7 +1314,7 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>这种写法可能会让人困惑，其实只有一行代码会执行。（<code>respond_to</code> 块中的代码更像是 <code>if-else</code> 语句，而不是代码序列。）为了让 <code>Relationships</code> 控制器响应 Ajax 请求，我们要在 <code>create</code> 和 <code>destroy</code> 动作（<a href="#listing-relationships-controller-following">代码清单 14.33</a>）中添加类似上面的 <code>respond_to</code> 块，如<a href="#listing-relationships-controller-ajax">代码清单 14.36</a> 所示。注意，我们把本地变量 <code>user</code> 改成了实例变量 <code>@user</code>，因为在<a href="#listing-relationships-controller-following">代码清单 14.33</a> 中无需使用实例变量，而使用 Ajax 处理的表单（<a href="#listing-follow-form-ajax">代码清单 14.34</a> 和<a href="#listing-unfollow-form-ajax">代码清单 14.35</a>）则需要使用。</p>
+<p>这种写法可能会让人困惑，其实只有一行代码会执行。（<code>respond_to</code> 块中的代码更像是 <code>if-else</code> 语句，而不是代码序列。）为了让 <code>Relationships</code> 控制器响应 Ajax 请求，我们要在 <code>create</code> 和 <code>destroy</code> 动作（<a class="xref-link" href="#listing-relationships-controller-following">代码清单 14.33</a>）中添加类似上面的 <code>respond_to</code> 块，如<a class="xref-link" href="#listing-relationships-controller-ajax">代码清单 14.36</a> 所示。注意，我们把本地变量 <code>user</code> 改成了实例变量 <code>@user</code>，因为在<a class="xref-link" href="#listing-relationships-controller-following">代码清单 14.33</a> 中无需使用实例变量，而使用 Ajax 处理的表单（<a class="xref-link" href="#listing-follow-form-ajax">代码清单 14.34</a> 和<a class="xref-link" href="#listing-unfollow-form-ajax">代码清单 14.35</a>）则需要使用。</p>
 <div id="listing-relationships-controller-ajax" data-type="listing">
 <h5><span class="title-label">代码清单 14.36</span>：让 <code>Relationships</code> 控制器响应 Ajax 请求</h5>
 
@@ -1334,7 +1343,7 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p><a href="#listing-relationships-controller-ajax">代码清单 14.36</a> 中的代码会优雅降级（不过要配置一个选项，如<a href="#listing-degrade-gracefully">代码清单 14.37</a> 所示），如果浏览器不支持 JavaScript，也能正常运行。</p>
+<p><a class="xref-link" href="#listing-relationships-controller-ajax">代码清单 14.36</a> 中的代码会优雅降级（不过要配置一个选项，如<a class="xref-link" href="#listing-degrade-gracefully">代码清单 14.37</a> 所示），如果浏览器不支持 JavaScript，也能正常运行。</p>
 <div id="listing-degrade-gracefully" data-type="listing">
 <h5><span class="title-label">代码清单 14.37</span>：添加优雅降级所需的配置</h5>
 
@@ -1356,14 +1365,14 @@
 </code></pre></div>
 </div>
 <p>当然，如果支持 JavaScript，也能正确响应。如果是 Ajax 请求，Rails 会自动调用包含 JavaScript 的嵌入式 Ruby 文件（<code>.js.erb</code>），文件名和动作一样，例如 <code>create.js.erb</code> 或 <code>destroy.js.erb</code>。你可能猜到了，在这种文件中既可以使用 JavaScript 也可以使用嵌入式 Ruby 处理当前页面。所以，为了更新关注后和取消关注后的页面，我们要创建这种文件。</p>
-<p>在 JS-ERb 文件中，Rails 自动提供了 <a href="http://jquery.com/">jQuery</a> 库的辅助函数，可以通过<a href="http://www.w3.org/DOM/">文档对象模型</a>（Document Object Model，简称 DOM）处理页面中的内容。jQuery 库中有很多处理 DOM 的方法，但现在我们只会用到其中两个。首先，我们要知道通过 ID 获取 DOM 元素的美元符号，例如，要获取 <code>follow_form</code> 元素，可以使用如下的代码：</p>
+<p>在 JS-ERb 文件中，Rails 自动提供了 <a href="http://jquery.com/" class="external-link">jQuery</a> 库的辅助函数，可以通过<a href="http://www.w3.org/DOM/" class="external-link">文档对象模型</a>（Document Object Model，简称 DOM）处理页面中的内容。jQuery 库中有很多处理 DOM 的方法，但现在我们只会用到其中两个。首先，我们要知道通过 ID 获取 DOM 元素的美元符号，例如，要获取 <code>follow_form</code> 元素，可以使用如下的代码：</p>
 <div data-type="listing">
 
 
 <div class="highlight language-javascript"><pre><code><span class="nx">$</span><span class="p">(</span><span class="s2">"#follow_form"</span><span class="p">)</span>
 </code></pre></div>
 </div>
-<p>（参见<a href="#listing-follow-form-partial">代码清单 14.19</a>，这个元素是包含表单的 <code>div</code> 元素，而不是表单本身。）上面的句法和 CSS 一样，<code>#</code> 符号表示 CSS ID。由此你可能猜到了，jQuery 和 CSS 一样，使用点号 <code>.</code> 表示 CSS 类。</p>
+<p>（参见<a class="xref-link" href="#listing-follow-form-partial">代码清单 14.19</a>，这个元素是包含表单的 <code>div</code> 元素，而不是表单本身。）上面的句法和 CSS 一样，<code>#</code> 符号表示 CSS ID。由此你可能猜到了，jQuery 和 CSS 一样，使用点号 <code>.</code> 表示 CSS 类。</p>
 <p>我们要使用的第二个方法是 <code>html</code>，使用指定的内容修改元素中的 HTML。例如，如果要把整个表单换成字符串 <code>"foobar"</code>，可以这么写：</p>
 <div data-type="listing">
 
@@ -1371,7 +1380,7 @@
 <div class="highlight language-javascript"><pre><code><span class="nx">$</span><span class="p">(</span><span class="s2">"#follow_form"</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="s2">"foobar"</span><span class="p">)</span>
 </code></pre></div>
 </div>
-<p>和常规的 JavaScript 文件不同，JS-ERb 文件还可以使用嵌入式 Ruby 代码。在 <code>create.js.erb</code> 文件中，（成功关注后）我们会把关注用户表单换成取消关注用户表单，并更新关注数量，如<a href="#listing-create-js-erb">代码清单 14.38</a> 所示。这段代码中用到了 <code>escape_javascript</code> 方法，在 JavaScript 中写入 HTML 代码必须使用这个方法对 HTML 进行转义。</p>
+<p>和常规的 JavaScript 文件不同，JS-ERb 文件还可以使用嵌入式 Ruby 代码。在 <code>create.js.erb</code> 文件中，（成功关注后）我们会把关注用户表单换成取消关注用户表单，并更新关注数量，如<a class="xref-link" href="#listing-create-js-erb">代码清单 14.38</a> 所示。这段代码中用到了 <code>escape_javascript</code> 方法，在 JavaScript 中写入 HTML 代码必须使用这个方法对 HTML 进行转义。</p>
 <div id="listing-create-js-erb" data-type="listing">
 <h5><span class="title-label">代码清单 14.38</span>：创建“关系”的 JS-ERb 代码</h5>
 
@@ -1381,8 +1390,8 @@
 $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">followers</span><span class="p">.</span><span class="nf">count</span> <span class="cp">%&gt;</span>');
 </code></pre></div>
 </div>
-<p>注意，上述代码的行尾有分号，这是 <a href="https://en.wikipedia.org/wiki/ALGOL">ALGOL</a> 语言系的一个特色。</p>
-<p><code>destroy.js.erb</code> 文件的内容类似，如<a href="#listing-destroy-js-erb">代码清单 14.39</a> 所示。</p>
+<p>注意，上述代码的行尾有分号，这是 <a href="https://en.wikipedia.org/wiki/ALGOL" class="external-link">ALGOL</a> 语言系的一个特色。</p>
+<p><code>destroy.js.erb</code> 文件的内容类似，如<a class="xref-link" href="#listing-destroy-js-erb">代码清单 14.39</a> 所示。</p>
 <div id="listing-destroy-js-erb" data-type="listing">
 <h5><span class="title-label">代码清单 14.39</span>：销毁“关系”的 JS-ERb 代码</h5>
 
@@ -1423,7 +1432,7 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p><code>xhr</code> 是 XmlHttpRequest 的简称，把 <code>xhr</code> 参数的值设为 <code>true</code> 之后，会发送 Ajax 请求，目的是执行 <code>respond_to</code> 块中对应于 JavaScript 的代码（<a href="#listing-relationships-controller-ajax">代码清单 14.36</a>）。</p>
+<p><code>xhr</code> 是 XmlHttpRequest 的简称，把 <code>xhr</code> 参数的值设为 <code>true</code> 之后，会发送 Ajax 请求，目的是执行 <code>respond_to</code> 块中对应于 JavaScript 的代码（<a class="xref-link" href="#listing-relationships-controller-ajax">代码清单 14.36</a>）。</p>
 <p>取消关注的测试类似，只需把 <code>post</code> 换成 <code>delete</code>。在下面的代码中，我们检查关注的人数减少了一个，而且指定了“关系”和被关注用户的 ID。</p>
 <p>普通请求：</p>
 <div data-type="listing">
@@ -1443,7 +1452,7 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>综上所述，测试如<a href="#listing-follow-button-tests">代码清单 14.40</a> 所示。</p>
+<p>综上所述，测试如<a class="xref-link" href="#listing-follow-button-tests">代码清单 14.40</a> 所示。</p>
 <div id="listing-follow-button-tests" data-type="listing">
 <h5><span class="title-label">代码清单 14.40</span>：测试关注和取消关注按钮 <span class="green">GREEN</span></h5>
 
@@ -1502,24 +1511,25 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
 <h5 id="exercises-following-tests" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>分别注释掉 <code>respond_to</code> 块中的各行代码（<a href="#listing-relationships-controller-ajax">代码清单 14.36</a>），确认测试会失败，然后再把注释去掉，让测试通过，从而证明测试写的正确。在这个过程中分别是哪个测试失败的？</p>
+<p>分别注释掉 <code>respond_to</code> 块中的各行代码（<a class="xref-link" href="#listing-relationships-controller-ajax">代码清单 14.36</a>），确认测试会失败，然后再把注释去掉，让测试通过，从而证明测试写的正确。在这个过程中分别是哪个测试失败的？</p>
 </li>
 <li>
-<p>如果把<a href="#listing-follow-button-tests">代码清单 14.40</a> 中的某个 <code>xhr: true</code> 删掉，会发生什么？说说为什么会这样，以及为什么前一题的操作过程能捕获这个问题。</p>
+<p>如果把<a class="xref-link" href="#listing-follow-button-tests">代码清单 14.40</a> 中的某个 <code>xhr: true</code> 删掉，会发生什么？说说为什么会这样，以及为什么前一题的操作过程能捕获这个问题。</p>
 </li>
 </ol>
 </section>
 </section>
 <section data-type="sect1" id="the-status-feed">
 <h1><span class="title-label">14.3</span> 动态流</h1>
-<p>接下来我们要实现这个演示应用最难的功能：微博动态流。基本上本节的内容算是全书最高深的。完整的动态流以 <a href="chapter13.html#a-proto-feed">13.3.3 节</a>的动态流原型为基础，动态流中除了当前用户自己的微博之外，还包含他关注的用户发布的微博。我们会采用循序渐进的方式实现动态流。在实现的过程中，会用到一些相当高级的 Rails、Ruby 和 SQL 技术。</p>
-<p>因为我们要做的事情很多，在此之前最好先想清楚我们要实现的是什么功能。<a href="#fig-page-flow-home-page-feed-mockup">图 14.5</a> 显示了最终要实现的动态流，<a href="#fig-home-page-feed-mockup">图 14.21</a> 是同一幅图。</p>
+<p>接下来我们要实现这个演示应用最难的功能：微博动态流。基本上本节的内容算是全书最高深的。完整的动态流以 <a class="xref-link" href="chapter13.html#a-proto-feed">13.3.3 节</a>的动态流原型为基础，动态流中除了当前用户自己的微博之外，还包含他关注的用户发布的微博。我们会采用循序渐进的方式实现动态流。在实现的过程中，会用到一些相当高级的 Rails、Ruby 和 SQL 技术。</p>
+<p>因为我们要做的事情很多，在此之前最好先想清楚我们要实现的是什么功能。<a class="xref-link" href="#fig-page-flow-home-page-feed-mockup">图 14.5</a> 显示了最终要实现的动态流，<a class="xref-link" href="#fig-home-page-feed-mockup">图 14.21</a> 是同一幅图。</p>
 <section data-type="sect2" id="motivation-and-strategy">
 <h2><span class="title-label">14.3.1</span> 目的和策略</h2>
-<p>我们对动态流的构思很简单。<a href="#fig-user-feed">图 14.22</a> 中显示了 <code>microposts</code> 表示例和要显示的动态。动态流就是要把当前用户关注的用户发布的微博（也包括当前用户自己的微博）从 <code>microposts</code> 表中取出来，如图中的箭头所示。</p>
+<p>我们对动态流的构思很简单。<a class="xref-link" href="#fig-user-feed">图 14.22</a> 中显示了 <code>microposts</code> 表示例和要显示的动态。动态流就是要把当前用户关注的用户发布的微博（也包括当前用户自己的微博）从 <code>microposts</code> 表中取出来，如图中的箭头所示。</p>
 <div id="fig-home-page-feed-mockup" class="figure"><img src="images/chapter14/page_flow_home_page_feed_mockup_bootstrap.png" alt="page flow home page feed mockup bootstrap" /><div class="figcaption"><span class="title-label">图 14.21</span>：某个用户登录后看到的首页，显示有动态流</div></div>
 <div id="fig-user-feed" class="figure"><img src="images/chapter14/user_feed.png" alt="user feed" /><div class="figcaption"><span class="title-label">图 14.22</span>：ID 为 1 的用户关注了 ID 为 2，7，8，10 的用户后得到的动态流</div></div>
-<p>虽然我们还不知道怎么实现动态流，但测试的方法很明确，所以我们先写测试。测试的关键是要覆盖三种情况：动态流中既要包含关注的用户发布的微博，还要有用户自己的微博，但是不能包含未关注用户的微博。根据<a href="chapter10.html#listing-users-fixtures-extra-users">代码清单 10.47</a> 和<a href="chapter13.html#listing-add-micropost-different-owner">代码清单 13.53</a> 中的固件，也就是说，Michael 要能看到 Lana 和自己的微博，但不能看到 Archer 的微博。把这个需求转换成测试，如<a href="#listing-full-feed-test">代码清单 14.42</a> 所示。（用到了 <a href="chapter13.html#listing-proto-status-feed">代码清单 13.46</a>定义的 <code>feed</code> 方法。）</p>
+<p>虽然我们还不知道怎么实现动态流，但测试的方法很明确，所以我们先写测试。测试的关键是要覆盖三种情况：动态流中既要包含关注的用户发布的微博，还要有用户自己的微博，但是不能包含未关注用户的微博。</p>
+<p>按照<a class="xref-link" href="#listing-relationships-fixtures">代码清单 14.28</a>，我们将安排 Michael 关注 Lana，但不关注 Archer。根据<a class="xref-link" href="chapter10.html#listing-users-fixtures-extra-users">代码清单 10.47</a> 和<a class="xref-link" href="chapter13.html#listing-add-micropost-different-owner">代码清单 13.53</a> 中的固件，也就是说，Michael 要能看到 Lana 和自己的微博，但不能看到 Archer 的微博。把这个需求转换成测试，如<a class="xref-link" href="#listing-full-feed-test">代码清单 14.42</a> 所示。（用到了 <a class="xref-link" href="chapter13.html#listing-proto-status-feed">代码清单 13.46</a>定义的 <code>feed</code> 方法。）</p>
 <div id="listing-full-feed-test" data-type="listing">
 <h5><span class="title-label">代码清单 14.42</span>：测试动态流 <span class="red">RED</span></h5>
 
@@ -1562,13 +1572,13 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
 <h5 id="exercises-motivation-and-strategy" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>假设微博的 ID 是连续的，而且数字大的是最近发布的。对<a href="#fig-user-feed">图 14.22</a> 中的动态流而言，<code>user.feed.map(:id)</code> 的返回值是什么？提示：回顾一下 <a href="chapter13.html#micropost-refinements">13.1.4 节</a>定义的默认作用域。</p>
+<p>假设微博的 ID 是连续的，而且数字大的是最近发布的。对<a class="xref-link" href="#fig-user-feed">图 14.22</a> 中的动态流而言，<code>user.feed.map(:id)</code> 的返回值是什么？提示：回顾一下 <a class="xref-link" href="chapter13.html#micropost-refinements">13.1.4 节</a>定义的默认作用域。</p>
 </li>
 </ol>
 </section>
 <section data-type="sect2" id="a-first-feed-implementation">
 <h2><span class="title-label">14.3.2</span> 初步实现动态流</h2>
-<p>有了检查动态流的测试后（<a href="#listing-full-feed-test">代码清单 14.42</a>），我们可以开始实现动态流了。因为要实现的功能有点复杂，因此我们会一点一点实现。首先，我们要知道该使用怎样的查询语句。我们要从 <code>microposts</code> 表中取出关注的用户发布的微博（也要取出用户自己的微博）。为此，我们可以使用类似下面的查询语句：</p>
+<p>有了检查动态流的测试后（<a class="xref-link" href="#listing-full-feed-test">代码清单 14.42</a>），我们可以开始实现动态流了。因为要实现的功能有点复杂，因此我们会一点一点实现。首先，我们要知道该使用怎样的查询语句。我们要从 <code>microposts</code> 表中取出关注的用户发布的微博（也要取出用户自己的微博）。为此，我们可以使用类似下面的查询语句：</p>
 <div data-type="listing">
 
 
@@ -1577,7 +1587,7 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
 </code></pre></div>
 </div>
 <p>编写这个查询语句时，我们假设 SQL 支持使用 <code>IN</code> 关键字检测集合中是否包含指定的元素。（还好，SQL 支持。）</p>
-<p><a href="chapter13.html#a-proto-feed">13.3.3 节</a>实现动态流原型时，我们使用 Active Record 中的 <code>where</code> 方法完成上面这种查询（<a href="chapter13.html#listing-proto-status-feed">代码清单 13.46</a>）。那时所需的查询很简单，只是通过当前用户的 ID 取出他发布的微博：</p>
+<p><a class="xref-link" href="chapter13.html#a-proto-feed">13.3.3 节</a>实现动态流原型时，我们使用 Active Record 中的 <code>where</code> 方法完成上面这种查询（<a class="xref-link" href="chapter13.html#listing-proto-status-feed">代码清单 13.46</a>）。那时所需的查询很简单，只是通过当前用户的 ID 取出他发布的微博：</p>
 <div data-type="listing">
 
 
@@ -1591,7 +1601,7 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
 <div class="highlight language-ruby"><pre><code><span class="no">Micropost</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="s2">"user_id IN (?) OR user_id = ?"</span><span class="p">,</span> <span class="n">following_ids</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
 </code></pre></div>
 </div>
-<p>从上面的查询条件可以看出，我们需要生成一个数组，其元素是关注的用户的 ID。生成这个数组的方式之一是，使用 Ruby 中的 <code>map</code> 方法，这个方法可以在任意可枚举的对象（enumerable）上调用，<sup>[<a id="fn-ref-9" href="#fn-9">9</a>]</sup>例如由一组元素组成的集合（数组或散列）。我们在 <a href="chapter4.html#blocks">4.3.2 节</a>举例介绍过这个方法，下面再举个例子，把整数数组中的元素都转换成字符串：</p>
+<p>从上面的查询条件可以看出，我们需要生成一个数组，其元素是关注的用户的 ID。生成这个数组的方式之一是，使用 Ruby 中的 <code>map</code> 方法，这个方法可以在任意可枚举的对象（enumerable）上调用，<sup>[<a id="fn-ref-9" href="#fn-9">9</a>]</sup>例如由一组元素组成的集合（数组或散列）。我们在 <a class="xref-link" href="chapter4.html#blocks">4.3.2 节</a>举例介绍过这个方法，下面再举个例子，把整数数组中的元素都转换成字符串：</p>
 <div data-type="listing">
 
 
@@ -1600,7 +1610,7 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
 =&gt; ["1", "2", "3", "4"]
 </code></pre></div>
 </div>
-<p>像上面这种在每个元素上调用同一个方法的情况很常见，所以 Ruby 为此定义了一种简写形式（<a href="chapter4.html#blocks">4.3.2 节</a>简介过）——在 <code>&amp;</code> 符号后面跟上被调用方法的符号形式：</p>
+<p>像上面这种在每个元素上调用同一个方法的情况很常见，所以 Ruby 为此定义了一种简写形式（<a class="xref-link" href="chapter4.html#blocks">4.3.2 节</a>简介过）——在 <code>&amp;</code> 符号后面跟上被调用方法的符号形式：</p>
 <div data-type="listing">
 
 
@@ -1608,7 +1618,7 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
 =&gt; ["1", "2", "3", "4"]
 </code></pre></div>
 </div>
-<p>使用 <code>join</code> 方法（<a href="chapter4.html#arrays-and-ranges">4.3.1 节</a>）可以把数组中的元素合并起来组成字符串，各元素之间用逗号加一个空格分开：</p>
+<p>使用 <code>join</code> 方法（<a class="xref-link" href="chapter4.html#arrays-and-ranges">4.3.1 节</a>）可以把数组中的元素合并起来组成字符串，各元素之间用逗号加一个空格分开：</p>
 <div data-type="listing">
 
 
@@ -1636,7 +1646,7 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
 42, 43, 44, 45, 46, 47, 48, 49, 50, 51]
 </code></pre></div>
 </div>
-<p>上述代码中的 <code>following_ids</code> 方法是 Active Record 根据 <code>has_many :following</code> 关联（<a href="#listing-has-many-following-through-active-relationships">代码清单 14.8</a>）合成的。因此，我们只需在关联名后面加上 <code>_ids</code> 就可以获取 <code>user.following</code> 集合中所有用户的 ID。用户 ID 组成的字符串如下：</p>
+<p>上述代码中的 <code>following_ids</code> 方法是 Active Record 根据 <code>has_many :following</code> 关联（<a class="xref-link" href="#listing-has-many-following-through-active-relationships">代码清单 14.8</a>）合成的。因此，我们只需在关联名后面加上 <code>_ids</code> 就可以获取 <code>user.following</code> 集合中所有用户的 ID。用户 ID 组成的字符串如下：</p>
 <div data-type="listing">
 
 
@@ -1653,7 +1663,7 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
 <div class="highlight language-ruby"><pre><code><span class="no">Micropost</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="s2">"user_id IN (?) OR user_id = ?"</span><span class="p">,</span> <span class="n">following_ids</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
 </code></pre></div>
 </div>
-<p><code>feed</code> 方法的定义如<a href="#listing-initial-working-feed">代码清单 14.44</a> 所示。</p>
+<p><code>feed</code> 方法的定义如<a class="xref-link" href="#listing-initial-working-feed">代码清单 14.44</a> 所示。</p>
 <div id="listing-initial-working-feed" data-type="listing">
 <h5><span class="title-label">代码清单 14.44</span>：初步实现的动态流 <span class="green">GREEN</span></h5>
 
@@ -1695,21 +1705,21 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
 <h5 id="exercises-a-first-feed-implementation" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>把<a href="#listing-initial-working-feed">代码清单 14.44</a> 中查询用户自己的微博的代码去掉，<a href="#listing-full-feed-test">代码清单 14.42</a> 中的哪个测试会失败？</p>
+<p>把<a class="xref-link" href="#listing-initial-working-feed">代码清单 14.44</a> 中查询用户自己的微博的代码去掉，<a class="xref-link" href="#listing-full-feed-test">代码清单 14.42</a> 中的哪个测试会失败？</p>
 </li>
 <li>
-<p>把<a href="#listing-initial-working-feed">代码清单 14.44</a> 中查询关注用户的微博的代码去掉，<a href="#listing-full-feed-test">代码清单 14.42</a> 中的哪个测试会失败？</p>
+<p>把<a class="xref-link" href="#listing-initial-working-feed">代码清单 14.44</a> 中查询关注用户的微博的代码去掉，<a class="xref-link" href="#listing-full-feed-test">代码清单 14.42</a> 中的哪个测试会失败？</p>
 </li>
 <li>
-<p>如何修改<a href="#listing-initial-working-feed">代码清单 14.44</a> 中的查询才能返回未关注用户的微博（此时<a href="#listing-full-feed-test">代码清单 14.42</a> 中的第三个测试会失败）？提示：返回全部微博即可。</p>
+<p>如何修改<a class="xref-link" href="#listing-initial-working-feed">代码清单 14.44</a> 中的查询才能返回未关注用户的微博（此时<a class="xref-link" href="#listing-full-feed-test">代码清单 14.42</a> 中的第三个测试会失败）？提示：返回全部微博即可。</p>
 </li>
 </ol>
 </section>
 <section data-type="sect2" id="subselects">
 <h2><span class="title-label">14.3.3</span> 子查询</h2>
-<p>如前一节末尾所说，对 <a href="#a-first-feed-implementation">14.3.2 节</a>的实现方式来说，如果用户关注了 5000 个人，动态流中的微博数量会变多，性能就会下降。本节，我们将重新实现动态流，在关注的用户数量很多时，性能也很好。</p>
-<p><a href="#a-first-feed-implementation">14.3.2 节</a>中存在问题的是 <code>following_ids</code> 这行代码，它会把关注的所有用户 ID 取出，加载到内存中，还会创建一个元素数量和关注的用户数量相同的数组。既然<a href="#listing-initial-working-feed">代码清单 14.44</a> 的目的只是为了检查集合中是否包含指定的元素，那么就一定有一种更高效的方式。其实 SQL 真的提供了针对这种问题的优化措施：使用子查询（subselect），在数据库层查找关注的用户 ID。</p>
-<p>针对动态流的重构，先从<a href="#listing-feed-second-cut">代码清单 14.46</a> 中的小改动开始。</p>
+<p>如前一节末尾所说，对 <a class="xref-link" href="#a-first-feed-implementation">14.3.2 节</a>的实现方式来说，如果用户关注了 5000 个人，动态流中的微博数量会变多，性能就会下降。本节，我们将重新实现动态流，在关注的用户数量很多时，性能也很好。</p>
+<p><a class="xref-link" href="#a-first-feed-implementation">14.3.2 节</a>中存在问题的是 <code>following_ids</code> 这行代码，它会把关注的所有用户 ID 取出，加载到内存中，还会创建一个元素数量和关注的用户数量相同的数组。既然<a class="xref-link" href="#listing-initial-working-feed">代码清单 14.44</a> 的目的只是为了检查集合中是否包含指定的元素，那么就一定有一种更高效的方式。其实 SQL 真的提供了针对这种问题的优化措施：使用子查询（subselect），在数据库层查找关注的用户 ID。</p>
+<p>针对动态流的重构，先从<a class="xref-link" href="#listing-feed-second-cut">代码清单 14.46</a> 中的小改动开始。</p>
 <div id="listing-feed-second-cut" data-type="listing">
 <h5><span class="title-label">代码清单 14.46</span>：在获取动态流的 <code>where</code> 方法中使用键值对 <span class="green">GREEN</span></h5>
 
@@ -1772,7 +1782,7 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
 </code></pre></div>
 </div>
 <p>使用子查询后，所有的集合包含关系都交由数据库处理，这样效率更高。</p>
-<p>有了这些基础，我们就可以着手实现更高效的动态流了，如<a href="#listing-feed-final">代码清单 14.47</a> 所示。注意，因为现在使用的是纯 SQL 语句，所以要使用插值方式把 <code>following_ids</code> 加入语句中，而不能使用转义的方式。</p>
+<p>有了这些基础，我们就可以着手实现更高效的动态流了，如<a class="xref-link" href="#listing-feed-final">代码清单 14.47</a> 所示。注意，因为现在使用的是纯 SQL 语句，所以要使用插值方式把 <code>following_ids</code> 加入语句中，而不能使用转义的方式。</p>
 <div id="listing-feed-final" data-type="listing">
 <h5><span class="title-label">代码清单 14.47</span>：动态流的最终实现 <span class="green">GREEN</span></h5>
 
@@ -1804,7 +1814,7 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
 </code></pre></div>
 </div>
 <p>当然，子查询也不是万能的。对于更大型的网站而言，可能要使用后台作业（background job）异步生成动态流。性能优化这个话题已经超出了本书范畴。</p>
-<p>现在，动态流完全实现了。<a href="chapter13.html#a-proto-feed">13.3.3 节</a>已经在首页加入了动态流，不过<a href="chapter13.html#user-microposts">第 13 章</a>实现的只是动态流原型（<a href="chapter13.html#fig-home-with-proto-feed">图 13.14</a>），添加<a href="#listing-feed-final">代码清单 14.47</a> 中的代码后，首页显示的动态流完整了，如<a href="#fig-home-page-with-feed">图 14.23</a> 所示。</p>
+<p>现在，动态流完全实现了。<a class="xref-link" href="chapter13.html#a-proto-feed">13.3.3 节</a>已经在首页加入了动态流，不过<a class="xref-link" href="chapter13.html#user-microposts">第 13 章</a>实现的只是动态流原型（<a class="xref-link" href="chapter13.html#fig-home-with-proto-feed">图 13.14</a>），添加<a class="xref-link" href="#listing-feed-final">代码清单 14.47</a> 中的代码后，首页显示的动态流完整了，如<a class="xref-link" href="#fig-home-page-with-feed">图 14.23</a> 所示。</p>
 <div id="fig-home-page-with-feed" class="figure"><img src="images/chapter14/home_page_with_feed_3rd_edition.png" alt="home page with feed 3rd edition" /><div class="figcaption"><span class="title-label">图 14.23</span>：首页，显示有动态流</div></div>
 <p>现在可以把改动合并到 <code>master</code> 分支了：</p>
 <div data-type="listing">
@@ -1828,15 +1838,15 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
 <span class="gp">$ </span>heroku run rails db:seed
 </code></pre></div>
 </div>
-<p>在生产环境的线上网站中也会显示动态流，如<a href="#fig-live-status-feed">图 14.24</a> 所示。</p>
+<p>在生产环境的线上网站中也会显示动态流，如<a class="xref-link" href="#fig-live-status-feed">图 14.24</a> 所示。</p>
 <div id="fig-live-status-feed" class="figure"><img src="images/chapter14/live_status_feed.png" alt="live status feed" /><div class="figcaption"><span class="title-label">图 14.24</span>：线上网站中显示的动态流</div></div>
 <h5 id="exercises-subselects" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>编写集成测试，检查首页正确显示了动态流的第一页。模板参见<a href="#listing-home-feed-test">代码清单 14.49</a>。</p>
+<p>编写集成测试，检查首页正确显示了动态流的第一页。模板参见<a class="xref-link" href="#listing-home-feed-test">代码清单 14.49</a>。</p>
 </li>
 <li>
-<p>注意，<a href="#listing-home-feed-test">代码清单 14.49</a> 使用 <code>CGI.escapeHTML</code> 方法转义了 HTML，想一下为什么要这么做。提示：把转义的代码去掉，仔细查看不匹配的微博内容源码。在终端中使用搜索功能（大多数系统可按 Cmd-F 或 Ctrl-F 键），查找“sorry”这个词。</p>
+<p>注意，<a class="xref-link" href="#listing-home-feed-test">代码清单 14.49</a> 使用 <code>CGI.escapeHTML</code> 方法转义了 HTML，想一下为什么要这么做。提示：把转义的代码去掉，仔细查看不匹配的微博内容源码。在终端中使用搜索功能（大多数系统可按 Cmd-F 或 Ctrl-F 键），查找“sorry”这个词。</p>
 </li>
 </ol>
 <div id="listing-home-feed-test" data-type="listing">
@@ -1875,28 +1885,28 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
 <p>商店和网上都有很多 Rails 资源，而且多得让你挑花眼。可喜的是，读完这本书后，你已经可以学习几乎所有其他的知识了。下面是建议你后续学习的资源：</p>
 <ul>
 <li>
-<p><a href="http://learnenough.com/story">The Learn Enough Society</a>：收费订阅服务，提供本书的特别增强版和 15 个小时多的视频课程。我在这些视频中介绍了很多技巧，而且还提供了在线示例，光看本书是得不到这些的。此外，这项服务还包含 <a href="http://learnenough.com/">Learn Enough 系列教程</a>的文字资料和视频。如果你是学生，可以使用教育优惠。</p>
+<p><a href="http://learnenough.com/story" class="external-link">The Learn Enough Society</a>：收费订阅服务，提供本书的特别增强版和 15 个小时多的视频课程。我在这些视频中介绍了很多技巧，而且还提供了在线示例，光看本书是得不到这些的。此外，这项服务还包含 <a href="http://learnenough.com/" class="external-link">Learn Enough 系列教程</a>的文字资料和视频。如果你是学生，可以使用教育优惠。</p>
 </li>
 <li>
-<p><a href="http://launchschool.com/railstutorial">Launch School</a>：近些年涌现了很多开发者现场训练营，我建议在当地参与一个。不过，Launch School 是在线训练营，在任何地方都能参加。如果你希望有人按照结构化课程教你，Launch School 是不错的选择。</p>
+<p><a href="http://launchschool.com/railstutorial" class="external-link">Launch School</a>：近些年涌现了很多开发者现场训练营，我建议在当地参与一个。不过，Launch School 是在线训练营，在任何地方都能参加。如果你希望有人按照结构化课程教你，Launch School 是不错的选择。</p>
 </li>
 <li>
-<p><a href="http://bloc.io/">Bloc</a>：一个在线训练营，有结构化的课程、个人导师，通过具体的项目学习知识。使用 BLOCLOVESHARTL 优惠码报名费可以省 $500。</p>
+<p><a href="http://bloc.io/" class="external-link">Bloc</a>：一个在线训练营，有结构化的课程、个人导师，通过具体的项目学习知识。使用 BLOCLOVESHARTL 优惠码报名费可以省 $500。</p>
 </li>
 <li>
-<p><a href="http://www.thefirehoseproject.com/?tid=HARTL-RAILS-TUT-EB2&amp;pid=HARTL-RAILS-TUT-EB2">Firehose Project</a>：导师制在线编程训练营，专注于具体的编程技能，如测试驱动开发、算法，以及敏捷 Web 应用开发。有两周免费的入门课程。</p>
+<p><a href="http://www.thefirehoseproject.com/?tid=HARTL-RAILS-TUT-EB2&amp;pid=HARTL-RAILS-TUT-EB2" class="external-link">Firehose Project</a>：导师制在线编程训练营，专注于具体的编程技能，如测试驱动开发、算法，以及敏捷 Web 应用开发。有两周免费的入门课程。</p>
 </li>
 <li>
-<p><a href="http://www.thinkful.com/a/railstutorial">Thinkful</a>：在线课程，由专业的工程师辅导开发项目。教授的课程包括 Ruby on Rails、前端开发、Web 设计和数据库科学。</p>
+<p><a href="http://www.thinkful.com/a/railstutorial" class="external-link">Thinkful</a>：在线课程，由专业的工程师辅导开发项目。教授的课程包括 Ruby on Rails、前端开发、Web 设计和数据库科学。</p>
 </li>
 <li>
-<p><a href="https://pragmaticstudio.com/refs/railstutorial">Pragmatic Studio</a>：Mike 和 Nicole Clark 主讲的 Ruby 和 Rails 在线课程。</p>
+<p><a href="https://pragmaticstudio.com/refs/railstutorial" class="external-link">Pragmatic Studio</a>：Mike 和 Nicole Clark 主讲的 Ruby 和 Rails 在线课程。</p>
 </li>
 <li>
-<p><a href="https://tutorials.railsapps.org/hartl">RailsApps</a>：很多针对特定话题的 Rails 项目和教程，说明详细；</p>
+<p><a href="https://tutorials.railsapps.org/hartl" class="external-link">RailsApps</a>：很多针对特定话题的 Rails 项目和教程，说明详细；</p>
 </li>
 <li>
-<p><a href="http://mbsy.co/6VQ8l">Code School</a>：很多交互式编程课程。</p>
+<p><a href="http://mbsy.co/6VQ8l" class="external-link">Code School</a>：很多交互式编程课程。</p>
 </li>
 </ul>
 </section>
@@ -1943,13 +1953,13 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
           <div class="footnotes">
 <ol>
 <li id="fn-1">儿童图像的来源：http://www.flickr.com/photos/john_lustig/2518452221/，发布于 2013 年 12 月 16 日。Copyright © 2008 by John Lustig。未经改动，基于“知识共享 署名 2.0 通用”许可证使用。老虎图像来源：https://www.flickr.com/photos/renemensen/9187111340，发布于 2014 年 8 月 15 日。Copyright © 2013 by Rene Mesen。未经改动，基于“知识共享 署名 2.0 通用”许可证使用。 <a href="#fn-ref-1" class="symbol">&#8617;</a></li>
-<li id="fn-2">简单起见，<a href="#fig-naive-user-has-many-following">图 14.6</a> 省略了 <code>following</code> 表的 <code>id</code> 列。 <a href="#fn-ref-2" class="symbol">&#8617;</a></li>
+<li id="fn-2">简单起见，<a class="xref-link" href="#fig-naive-user-has-many-following">图 14.6</a> 省略了 <code>following</code> 表的 <code>id</code> 列。 <a href="#fn-ref-2" class="symbol">&#8617;</a></li>
 <li id="fn-3">感谢读者 Paul Fioravanti 建议我使用这两个术语。 <a href="#fn-ref-3" class="symbol">&#8617;</a></li>
 <li id="fn-4">严格来说，Rails 使用 <code>classify</code> 方法把 <code>has_many</code> 的参数转换成类名，例如 <code>"foo_bars"</code> 会转换成 <code>"FooBar"</code>。 <a href="#fn-ref-4" class="symbol">&#8617;</a></li>
 <li id="fn-5">严格来说，Rails 使用 <code>underscore</code> 方法把类名转换为 id 列的名字。例如，<code>"FooBar".underscore</code> 的返回值是 <code>"foo_bar"</code>，所以 <code>FooBar</code> 模型的外键是 <code>foo_bar_id</code>。 <a href="#fn-ref-5" class="symbol">&#8617;</a></li>
 <li id="fn-6">当你拥有某个领域大量建模的经验后，总能提前猜到这样的辅助方法。如果没有猜到的话，也经常能发现自己动手写这样的方法可以使测试代码更加整洁。此时，如果你没有猜到的话也很正常。软件开发往往是一个循序渐进的过程，你先埋头编写代码，发现代码很乱时，再重构。为了行文简洁，本书采取的是直捣黄龙的方法。 <a href="#fn-ref-6" class="symbol">&#8617;</a></li>
-<li id="fn-7">路由设定中可以使用的参数详情，参阅 Rails 指南中《<a href="http://guides.rubyonrails.org/routing.html">Rails Routing from the Outside In</a>》一文。 <a href="#fn-ref-7" class="symbol">&#8617;</a></li>
-<li id="fn-8">因为 Ajax 是 Asynchronous JavaScript and XML 的缩写，所以经常被错误的拼写为“AJAX”，不过在<a href="http://www.adaptivepath.com/ideas/essays/archives/000385.php">最初介绍 Ajax 的文章</a>中，通篇都拼写为“Ajax”。 <a href="#fn-ref-8" class="symbol">&#8617;</a></li>
+<li id="fn-7">路由设定中可以使用的参数详情，参阅 Rails 指南中《<a href="http://guides.rubyonrails.org/routing.html" class="external-link">Rails Routing from the Outside In</a>》一文。 <a href="#fn-ref-7" class="symbol">&#8617;</a></li>
+<li id="fn-8">因为 Ajax 是 Asynchronous JavaScript and XML 的缩写，所以经常被错误的拼写为“AJAX”，不过在<a href="http://www.adaptivepath.com/ideas/essays/archives/000385.php" class="external-link">最初介绍 Ajax 的文章</a>中，通篇都拼写为“Ajax”。 <a href="#fn-ref-8" class="symbol">&#8617;</a></li>
 <li id="fn-9">可枚举的对象主要的要求是实现了遍历集合的 <code>each</code> 方法。 <a href="#fn-ref-9" class="symbol">&#8617;</a></li>
 </ol>
 </div>

@@ -9,7 +9,7 @@
   <meta name="keywords" content="ruby, rails, tutorial"/>
   <meta name="author" content="Michael Hartl"/>
   <meta name="translator" content="安道"/>
-  <meta name="generator" content="persie 0.0.2.beta.1"/>
+  <meta name="generator" content="persie 0.0.3.beta.4"/>
   <link rel="stylesheet" type="text/css" href="//railstutorial-china.org/assets/css/main.css"/>
   <link rel="stylesheet" type="text/css" href="book.css"/>
   <script type="text/javascript" src="//railstutorial-china.org/assets/js/global.js"></script>
@@ -59,8 +59,8 @@
           <article class="article">
             <section data-type="chapter" id="account-activation">
 <h1><span class="title-label">第 11 章</span> 激活账户</h1>
-<p>目前，用户注册后立即就能完全控制自己的账户（<a href="chapter7.html#sign-up">第 7 章</a>）。本章，我们将添加一步，激活用户的账户，从而确认用户拥有注册时填写的电子邮件地址。为此，我们要为用户创建激活令牌和摘要，然后给用户发送一封电子邮件，提供包含令牌的链接。用户点击这个链接后，激活自己的账户。在<a href="chapter12.html#password-reset">第 12 章</a>，我们将通过相同的方式让忘记密码的用户重设密码。实现这两个功能都要创建新资源，借此机会我们还能再介绍一下控制器、路由和数据库迁移。在这个过程中，我们将学习如何在开发环境和生产环境中发送电子邮件。</p>
-<p>我们要采取的实现步骤与注册用户（<a href="chapter8.html#logging-in">8.2 节</a>）和记住用户（<a href="chapter9.html#remember-me">9.1 节</a>）差不多，如下所示：</p>
+<p>目前，用户注册后立即就能完全控制自己的账户（<a class="xref-link" href="chapter7.html#sign-up">第 7 章</a>）。本章，我们将添加一步，激活用户的账户，从而确认用户拥有注册时填写的电子邮件地址。为此，我们要为用户创建激活令牌和摘要，然后给用户发送一封电子邮件，提供包含令牌的链接。用户点击这个链接后，激活自己的账户。在<a class="xref-link" href="chapter12.html#password-reset">第 12 章</a>，我们将通过相同的方式让忘记密码的用户重设密码。实现这两个功能都要创建新资源，借此机会我们还能再介绍一下控制器、路由和数据库迁移。在这个过程中，我们将学习如何在开发环境和生产环境中发送电子邮件。</p>
+<p>我们要采取的实现步骤与注册用户（<a class="xref-link" href="chapter8.html#logging-in">8.2 节</a>）和记住用户（<a class="xref-link" href="chapter9.html#remember-me">9.1 节</a>）差不多，如下所示：<sup>[<a id="fn-ref-1" href="#fn-1">1</a>]</sup></p>
 <ol class="arabic">
 <li>
 <p>用户一开始处于“未激活”状态；</p>
@@ -69,7 +69,7 @@
 <p>用户注册后，生成一个激活令牌和对应的激活摘要；</p>
 </li>
 <li>
-<p>把激活摘要存储在数据库中，然后给用户发送一封电子邮件，提供一个包含激活令牌和用户电子邮件地址的链接；<sup>[<a id="fn-ref-1" href="#fn-1">1</a>]</sup></p>
+<p>把激活摘要存储在数据库中，然后给用户发送一封电子邮件，提供一个包含激活令牌和用户电子邮件地址的链接；<sup>[<a id="fn-ref-2" href="#fn-2">2</a>]</sup></p>
 </li>
 <li>
 <p>用户点击那个链接后，使用电子邮件地址查找用户，并且对比令牌和摘要，验证用户的身份；</p>
@@ -78,7 +78,7 @@
 <p>身份验证通过后，把状态由“未激活”改为“已激活”。</p>
 </li>
 </ol>
-<p>因为与密码和记忆令牌类似，实现账户激活（以及密码重设）功能时可以继续使用前面的很多方法，包括 <code>User.digest</code>、<code>User.new_token</code> 和 <code>user.authenticated?</code> 的修改版。这几个功能（包括<a href="chapter12.html#password-reset">第 12 章</a>将实现的密码重设）之间的对比，如<a href="#table-password-token-digest">表 11.1</a> 所示。</p>
+<p>因为与密码和记忆令牌类似，实现账户激活（以及密码重设）功能时可以继续使用前面的很多方法，包括 <code>User.digest</code>、<code>User.new_token</code> 和 <code>user.authenticated?</code> 的修改版。这几个功能（包括<a class="xref-link" href="chapter12.html#password-reset">第 12 章</a>将实现的密码重设）之间的对比，如<a class="xref-link" href="#table-password-token-digest">表 11.1</a> 所示。</p>
 <table id="table-password-token-digest" class="tableblock frame-all grid-all" style="width: 100%;">
 <caption><span class="title-label">表 11.1</span>：登录、记住登录状态、账户激活和密码重设之间的对比</caption>
 <colgroup>
@@ -122,11 +122,11 @@
 </tr>
 </tbody>
 </table>
-<p>在 <a href="#account-activations-resource">11.1 节</a>，我们将为账户激活功能创建一个资源和数据模型；在 <a href="#account-activation-emails">11.2 节</a>，我们将创建一个邮件程序（mailer），发送账户激活电子邮件；在 <a href="#activating-the-account">11.3 节</a>，我们将实现激活账户的具体步骤，届时会定义通用版 <code>authenticated?</code> 方法。</p>
+<p>在 <a class="xref-link" href="#account-activations-resource">11.1 节</a>，我们将为账户激活功能创建一个资源和数据模型；在 <a class="xref-link" href="#account-activation-emails">11.2 节</a>，我们将创建一个邮件程序（mailer），发送账户激活电子邮件；在 <a class="xref-link" href="#activating-the-account">11.3 节</a>，我们将实现激活账户的具体步骤，届时会定义通用版 <code>authenticated?</code> 方法。</p>
 <section data-type="sect1" id="account-activations-resource">
 <h1><span class="title-label">11.1</span> <code>AccountActivations</code> 资源</h1>
-<p>与会话一样（<a href="chapter8.html#sessions">8.1 节</a>），我们要把“账户激活”看做一个资源（<code>AccountActivations</code>），不过这个资源不对应 Active Record 模型，相关的数据（包括激活令牌和激活状态）存储在 <code>User</code> 模型中。</p>
-<p>我们将把“账户激活”看做一个资源，因此要使用标准的 REST URL 与之交互。激活链接要修改用户的激活状态，按照 REST 架构的规定，这种改动要向 <code>update</code> 动作发送 <code>PATCH</code> 请求（<a href="chapter7.html#table-restful-users">表 7.1</a>）。可是激活链接在电子邮件中，必须经由用户点击，因此请求类型是 <code>GET</code>，而不是 <code>PATCH</code>。鉴于此，我们不能使用 <code>update</code> 动作；退而求其次，我们将使用 <code>edit</code> 动作，这个动作用于响应 <code>GET</code> 请求。</p>
+<p>与会话一样（<a class="xref-link" href="chapter8.html#sessions">8.1 节</a>），我们要把“账户激活”看做一个资源（<code>AccountActivations</code>），不过这个资源不对应 Active Record 模型，相关的数据（包括激活令牌和激活状态）存储在 <code>User</code> 模型中。</p>
+<p>我们将把“账户激活”看做一个资源，因此要使用标准的 REST URL 与之交互。激活链接要修改用户的激活状态，按照 REST 架构的规定，这种改动要向 <code>update</code> 动作发送 <code>PATCH</code> 请求（<a class="xref-link" href="chapter7.html#table-restful-users">表 7.1</a>）。可是激活链接在电子邮件中，必须经由用户点击，因此请求类型是 <code>GET</code>，而不是 <code>PATCH</code>。鉴于此，我们不能使用 <code>update</code> 动作；退而求其次，我们将使用 <code>edit</code> 动作，这个动作用于响应 <code>GET</code> 请求。</p>
 <p>和之前一样，我们要在主题分支中开发新功能：</p>
 <div data-type="listing">
 
@@ -136,21 +136,21 @@
 </div>
 <section data-type="sect2" id="account-activations-controller">
 <h2><span class="title-label">11.1.1</span> <code>AccountActivations</code> 控制器</h2>
-<p>与 <code>Users</code> 和 <code>Sessions</code> 资源类似，<code>AccountActivations</code> 资源相关的动作（这里只需要一个）放在 <code>AccountActivations</code> 控制器中。执行下述命令，生成 <code>AccountActivations</code> 控制器：<sup>[<a id="fn-ref-2" href="#fn-2">2</a>]</sup></p>
+<p>与 <code>Users</code> 和 <code>Sessions</code> 资源类似，<code>AccountActivations</code> 资源相关的动作（这里只需要一个）放在 <code>AccountActivations</code> 控制器中。执行下述命令，生成 <code>AccountActivations</code> 控制器：<sup>[<a id="fn-ref-3" href="#fn-3">3</a>]</sup></p>
 <div data-type="listing">
 
 
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate controller AccountActivations
 </code></pre></div>
 </div>
-<p>在 <a href="#mailer-templates">11.2.1 节</a>将看到，我们会使用下面的方法生成一个 URL，放在激活邮件中：</p>
+<p>在 <a class="xref-link" href="#mailer-templates">11.2.1 节</a>将看到，我们会使用下面的方法生成一个 URL，放在激活邮件中：</p>
 <div data-type="listing">
 
 
 <div class="highlight language-ruby"><pre><code><span class="n">edit_account_activation_url</span><span class="p">(</span><span class="n">activation_token</span><span class="p">,</span> <span class="p">.</span><span class="nf">.</span><span class="o">.</span><span class="p">)</span>
 </code></pre></div>
 </div>
-<p>因此，我们要为 <code>edit</code> 动作设定一个具名路由——通过<a href="#listing-account-activations-route">代码清单 11.1</a> 中高亮显示的那行 <code>resources</code> 规则实现。那条规则得到的 REST 式路由见<a href="#table-restful-account-activations">表 11.2</a>。</p>
+<p>因此，我们要为 <code>edit</code> 动作设定一个具名路由——通过<a class="xref-link" href="#listing-account-activations-route">代码清单 11.1</a> 中高亮显示的那行 <code>resources</code> 规则实现。那条规则得到的 REST 式路由见<a class="xref-link" href="#table-restful-account-activations">表 11.2</a>。</p>
 <div id="listing-account-activations-route" data-type="listing">
 <h5><span class="title-label">代码清单 11.1</span>：为 <code>AccountActivations</code> 控制器的 <code>edit</code> 动作添加路由</h5>
 
@@ -171,7 +171,7 @@
 </code></pre></div>
 </div>
 <table id="table-restful-account-activations" class="tableblock frame-all grid-all" style="width: 100%;">
-<caption><span class="title-label">表 11.2</span>：在<a href="#listing-account-activations-route">代码清单 11.1</a> 中添加那条规则后得到的 REST 式路由</caption>
+<caption><span class="title-label">表 11.2</span>：在<a class="xref-link" href="#listing-account-activations-route">代码清单 11.1</a> 中添加那条规则后得到的 REST 式路由</caption>
 <colgroup>
 <col style="width: 15%;" />
 <col style="width: 35%;" />
@@ -195,21 +195,21 @@
 </tr>
 </tbody>
 </table>
-<p>接下来，我们先创建所需的数据模型和邮件程序，<a href="#activation-edit-action">11.3.2 节</a>再定义 <code>edit</code> 动作。</p>
+<p>接下来，我们先创建所需的数据模型和邮件程序，<a class="xref-link" href="#activation-edit-action">11.3.2 节</a>再定义 <code>edit</code> 动作。</p>
 <h5 id="exercises-account-activations-controller" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
 <p>确认测试组件仍能通过。</p>
 </li>
 <li>
-<p><a href="#table-restful-account-activations">表 11.2</a> 为什么列出具名路由的 <code>_url</code> 形式，而不是 <code>_path</code> 形式？提示：我们将在电子邮件中使用链接。</p>
+<p><a class="xref-link" href="#table-restful-account-activations">表 11.2</a> 为什么列出具名路由的 <code>_url</code> 形式，而不是 <code>_path</code> 形式？提示：我们将在电子邮件中使用链接。</p>
 </li>
 </ol>
 </section>
 <section data-type="sect2" id="account-activation-data-model">
 <h2><span class="title-label">11.1.2</span> 数据模型</h2>
-<p>前面说过，我们要在激活邮件中发送一个独一无二的激活令牌。为此，可以在数据库中存储一个字符串，并将其放到激活地址中。可是，这样做有安全隐患，一旦被“脱库”，将造成危害。例如，攻击者获得数据库的访问权后可以立即激活新注册的账户（将以那个用户的身份登录），然后修改密码，获得账户的控制权。<sup>[<a id="fn-ref-3" href="#fn-3">3</a>]</sup></p>
-<p>为了避免这种情况发生，我们将参照密码（<a href="chapter6.html#modeling-users">第 6 章</a>）和记住我功能（<a href="chapter9.html#advanced-login">第 9 章</a>）的实现方式，公开一个虚拟属性的值，并在数据库中存储哈希摘要。这样，我们便能使用下述方法获取激活令牌：</p>
+<p>前面说过，我们要在激活邮件中发送一个独一无二的激活令牌。为此，可以在数据库中存储一个字符串，并将其放到激活地址中。可是，这样做有安全隐患，一旦被“脱库”，将造成危害。例如，攻击者获得数据库的访问权后可以立即激活新注册的账户（将以那个用户的身份登录），然后修改密码，获得账户的控制权。<sup>[<a id="fn-ref-4" href="#fn-4">4</a>]</sup></p>
+<p>为了避免这种情况发生，我们将参照密码（<a class="xref-link" href="chapter6.html#modeling-users">第 6 章</a>）和记住我功能（<a class="xref-link" href="chapter9.html#advanced-login">第 9 章</a>）的实现方式，公开一个虚拟属性的值，并在数据库中存储哈希摘要。这样，我们便能使用下述方法获取激活令牌：</p>
 <div data-type="listing">
 
 
@@ -223,15 +223,15 @@
 <div class="highlight language-ruby"><pre><code><span class="n">user</span><span class="p">.</span><span class="nf">authenticated?</span><span class="p">(</span><span class="ss">:activation</span><span class="p">,</span> <span class="n">token</span><span class="p">)</span>
 </code></pre></div>
 </div>
-<p>（不过得先修改<a href="chapter9.html#listing-authenticated-p">代码清单 9.6</a> 中定义的 <code>authenticated?</code> 方法。）</p>
-<p>我们还将在 <code>User</code> 模型中添加一个布尔值属性 <code>activated</code>，使用自动生成的布尔值方法检查用户是否已经激活（类似 <a href="chapter10.html#administrative-users">10.4.1 节</a>使用的方法）：</p>
+<p>（不过得先修改<a class="xref-link" href="chapter9.html#listing-authenticated-p">代码清单 9.6</a> 中定义的 <code>authenticated?</code> 方法。）</p>
+<p>我们还将在 <code>User</code> 模型中添加一个布尔值属性 <code>activated</code>，使用自动生成的布尔值方法检查用户是否已经激活（类似 <a class="xref-link" href="chapter10.html#administrative-users">10.4.1 节</a>使用的方法）：</p>
 <div data-type="listing">
 
 
 <div class="highlight language-ruby"><pre><code><span class="k">if</span> <span class="n">user</span><span class="p">.</span><span class="nf">activated?</span> <span class="p">.</span><span class="nf">.</span><span class="o">.</span>
 </code></pre></div>
 </div>
-<p>最后，还要记录激活的日期和时间，虽然本书用不到，但说不定你以后需要使用。完整的数据模型如<a href="#fig-user-model-account-activation">图 11.1</a> 所示。</p>
+<p>最后，还要记录激活的日期和时间，虽然本书用不到，但说不定你以后需要使用。完整的数据模型如<a class="xref-link" href="#fig-user-model-account-activation">图 11.1</a> 所示。</p>
 <div id="fig-user-model-account-activation" class="figure"><img src="images/chapter11/user_model_account_activation.png" alt="user model account activation" /><div class="figcaption"><span class="title-label">图 11.1</span>：添加账户激活相关属性后的 <code>User</code> 模型</div></div>
 <p>下面的命令生成一个迁移，添加这些属性。我们在命令行中指定了要添加的三个属性：</p>
 <div data-type="listing">
@@ -241,7 +241,7 @@
 <span class="gp">&gt; </span>activation_digest:string activated:boolean activated_at:datetime
 </code></pre></div>
 </div>
-<p>（<a href="chapter8.html#testing-layout-changes">8.2.4 节</a>说过，第二行开头的 <code>&gt;</code> 是“行接续”符号，是 shell 自动插入的，无需输入。）与 <code>admin</code> 属性一样（<a href="chapter10.html#listing-admin-migration">代码清单 10.54</a>），我们要把 <code>activated</code> 属性的默认值设为 <code>false</code>，如<a href="#listing-add-activation-to-users-migration">代码清单 11.2</a> 所示。</p>
+<p>（<a class="xref-link" href="chapter8.html#testing-layout-changes">8.2.4 节</a>说过，第二行开头的 <code>&gt;</code> 是“行接续”符号，是 shell 自动插入的，无需输入。）与 <code>admin</code> 属性一样（<a class="xref-link" href="chapter10.html#listing-admin-migration">代码清单 10.54</a>），我们要把 <code>activated</code> 属性的默认值设为 <code>false</code>，如<a class="xref-link" href="#listing-add-activation-to-users-migration">代码清单 11.2</a> 所示。</p>
 <div id="listing-add-activation-to-users-migration" data-type="listing">
 <h5><span class="title-label">代码清单 11.2</span>：添加账户激活所需属性的迁移</h5>
 
@@ -265,14 +265,14 @@
 </div>
 <section data-type="sect3" id="activation-token-callback">
 <h3>创建激活令牌的回调</h3>
-<p>因为每个新注册的用户都得激活，所以我们应该在创建用户对象之前为用户分配激活令牌和摘要。类似的操作在 <a href="chapter6.html#uniqueness-validation">6.2.5 节</a>见过，那时我们要在用户存入数据库之前把电子邮件地址转换成小写形式，使用的是 <code>before_save</code> 回调和 <code>downcase</code> 方法（<a href="chapter6.html#listing-email-downcase">代码清单 6.32</a>）。<code>before_save</code> 回调在保存对象之前，包括创建对象和更新对象时自动调用。不过现在我们只想在创建用户之前调用这个回调，创建激活摘要。为此，我们要使用 <code>before_create</code> 回调，按照下面的方式定义：</p>
+<p>因为每个新注册的用户都得激活，所以我们应该在创建用户对象之前为用户分配激活令牌和摘要。类似的操作在 <a class="xref-link" href="chapter6.html#uniqueness-validation">6.2.5 节</a>见过，那时我们要在用户存入数据库之前把电子邮件地址转换成小写形式，使用的是 <code>before_save</code> 回调和 <code>downcase</code> 方法（<a class="xref-link" href="chapter6.html#listing-email-downcase">代码清单 6.32</a>）。<code>before_save</code> 回调在保存对象之前，包括创建对象和更新对象时自动调用。不过现在我们只想在创建用户之前调用这个回调，创建激活摘要。为此，我们要使用 <code>before_create</code> 回调，按照下面的方式定义：</p>
 <div data-type="listing">
 
 
 <div class="highlight language-ruby"><pre><code><span class="n">before_create</span> <span class="ss">:create_activation_digest</span>
 </code></pre></div>
 </div>
-<p>这种写法叫方法引用（method reference），Rails 会寻找一个名为 <code>create_activation_digest</code> 的方法，在创建用户之前调用。（在<a href="chapter6.html#listing-email-downcase">代码清单 6.32</a> 中，我们直接把一个块传给 <code>before_save</code>。不过方法引用是推荐的做法。）<code>create_activation_digest</code> 方法只会在 <code>User</code> 模型内使用，所以没必要公开。如 <a href="chapter7.html#strong-parameters">7.3.2 节</a>所示，在 Ruby 中可以使用 <code>private</code> 关键字实现这个需求：</p>
+<p>这种写法叫方法引用（method reference），Rails 会寻找一个名为 <code>create_activation_digest</code> 的方法，在创建用户之前调用。（在<a class="xref-link" href="chapter6.html#listing-email-downcase">代码清单 6.32</a> 中，我们直接把一个块传给 <code>before_save</code>。不过方法引用是推荐的做法。）<code>create_activation_digest</code> 方法只会在 <code>User</code> 模型内使用，所以没必要公开。如 <a class="xref-link" href="chapter7.html#strong-parameters">7.3.2 节</a>所示，在 Ruby 中可以使用 <code>private</code> 关键字实现这个需求：</p>
 <div data-type="listing">
 
 
@@ -300,7 +300,7 @@ NoMethodError: private method `create_activation_digest' called for #&lt;User&gt
 <span class="nb">self</span><span class="p">.</span><span class="nf">activation_digest</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">digest</span><span class="p">(</span><span class="n">activation_token</span><span class="p">)</span>
 </code></pre></div>
 </div>
-<p>这里用到了实现“记住我”功能时用来生成令牌和摘要的方法。我们可以把这两行代码和<a href="chapter9.html#listing-user-model-remember">代码清单 9.3</a> 中的 <code>remember</code> 方法比较一下：</p>
+<p>这里用到了实现“记住我”功能时用来生成令牌和摘要的方法。我们可以把这两行代码和<a class="xref-link" href="chapter9.html#listing-user-model-remember">代码清单 9.3</a> 中的 <code>remember</code> 方法比较一下：</p>
 <div data-type="listing">
 
 
@@ -311,8 +311,8 @@ NoMethodError: private method `create_activation_digest' called for #&lt;User&gt
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>二者之间的主要区别是，<code>remember</code> 方法中使用的是 <code>update_attribute</code>。因为，创建记忆令牌和摘要时，用户已经存在于数据库中了，而 <code>before_create</code> 回调在创建用户之前执行，没有属性可更新。有了这个回调，使用 <code>User.new</code> 新建用户后（例如用户注册后，参见<a href="chapter7.html#listing-create-action-strong-parameters">代码清单 7.19</a>），会自动为 <code>activation_token</code> 和 <code>activation_digest</code> 属性赋值；而且，因为 <code>activation_digest</code> 对应数据库中的一个列（<a href="#fig-user-model-account-activation">图 11.1</a>），所以保存用户时会自动把属性的值存入数据库。</p>
-<p>综上所述，<code>User</code> 模型如<a href="#listing-user-model-activation-code">代码清单 11.3</a> 所示。因为激活令牌是虚拟属性，所以我们又添加了一个 <code>attr_accessor</code>。注意，我们还把电子邮件地址转换成小写的回调改成了方法引用形式。</p>
+<p>二者之间的主要区别是，<code>remember</code> 方法中使用的是 <code>update_attribute</code>。因为，创建记忆令牌和摘要时，用户已经存在于数据库中了，而 <code>before_create</code> 回调在创建用户之前执行，没有属性可更新。有了这个回调，使用 <code>User.new</code> 新建用户后（例如用户注册后，参见<a class="xref-link" href="chapter7.html#listing-create-action-strong-parameters">代码清单 7.19</a>），会自动为 <code>activation_token</code> 和 <code>activation_digest</code> 属性赋值；而且，因为 <code>activation_digest</code> 对应数据库中的一个列（<a class="xref-link" href="#fig-user-model-account-activation">图 11.1</a>），所以保存用户时会自动把属性的值存入数据库。</p>
+<p>综上所述，<code>User</code> 模型如<a class="xref-link" href="#listing-user-model-activation-code">代码清单 11.3</a> 所示。因为激活令牌是虚拟属性，所以我们又添加了一个 <code>attr_accessor</code>。注意，我们还把电子邮件地址转换成小写的回调改成了方法引用形式。</p>
 <div id="listing-user-model-activation-code" data-type="listing">
 <h5><span class="title-label">代码清单 11.3</span>：在 <code>User</code> 模型中添加账户激活相关的代码 <span class="green">GREEN</span></h5>
 
@@ -344,19 +344,19 @@ NoMethodError: private method `create_activation_digest' called for #&lt;User&gt
 </section>
 <section data-type="sect3" id="seed-and-fixture-users">
 <h3>为用户创建种子数据和固件</h3>
-<p>在继续之前，我们还要修改种子数据，把示例用户和测试用户设为已激活，如<a href="#listing-seed-users-activated">代码清单 11.4</a> 和<a href="#listing-fixture-users-activated">代码清单 11.5</a> 所示。（<code>Time.zone.now</code> 是 Rails 提供的辅助方法，基于服务器使用的时区，返回当前时间戳。）</p>
+<p>在继续之前，我们还要修改种子数据，把示例用户和测试用户设为已激活，如<a class="xref-link" href="#listing-seed-users-activated">代码清单 11.4</a> 和<a class="xref-link" href="#listing-fixture-users-activated">代码清单 11.5</a> 所示。（<code>Time.zone.now</code> 是 Rails 提供的辅助方法，基于服务器使用的时区，返回当前时间戳。）</p>
 <div id="listing-seed-users-activated" data-type="listing">
 <h5><span class="title-label">代码清单 11.4</span>：激活种子数据中的用户</h5>
 
 <div class="source-file">db/seeds.rb</div>
 
 <div class="highlight language-yaml"><pre><code><span class="s">User.create!(name</span><span class="pi">:</span>  <span class="s2">"</span><span class="s">Example</span><span class="nv"> </span><span class="s">User"</span><span class="err">,</span>
-             <span class="s">email</span><span class="pi">:</span> <span class="s2">"</span><span class="s">example@railstutorial.org"</span><span class="err">,</span>
-             <span class="s">password</span><span class="pi">:</span>              <span class="s2">"</span><span class="s">foobar"</span><span class="err">,</span>
-             <span class="s">password_confirmation</span><span class="pi">:</span> <span class="s2">"</span><span class="s">foobar"</span><span class="err">,</span>
-             <span class="s">admin</span><span class="pi">:</span>     <span class="s">true,</span>
-<span class="hll">             <span class="s">activated</span><span class="pi">:</span> <span class="s">true,</span></span>
-<span class="hll">             <span class="s">activated_at</span><span class="pi">:</span> <span class="s">Time.zone.now)</span></span>
+             <span class="na">email</span><span class="pi">:</span> <span class="s2">"</span><span class="s">example@railstutorial.org"</span><span class="err">,</span>
+             <span class="na">password</span><span class="pi">:</span>              <span class="s2">"</span><span class="s">foobar"</span><span class="err">,</span>
+             <span class="na">password_confirmation</span><span class="pi">:</span> <span class="s2">"</span><span class="s">foobar"</span><span class="err">,</span>
+             <span class="na">admin</span><span class="pi">:</span>     <span class="s">true,</span>
+<span class="hll">             <span class="na">activated</span><span class="pi">:</span> <span class="s">true,</span></span>
+<span class="hll">             <span class="na">activated_at</span><span class="pi">:</span> <span class="s">Time.zone.now)</span></span>
 
 <span class="s">99.times do |n|</span>
   <span class="s">name  = Faker::Name.name</span>
@@ -376,46 +376,46 @@ NoMethodError: private method `create_activation_digest' called for #&lt;User&gt
 
 <div class="source-file">test/fixtures/users.yml</div>
 
-<div class="highlight language-yaml"><pre><code><span class="s">michael</span><span class="pi">:</span>
-  <span class="s">name</span><span class="pi">:</span> <span class="s">Michael Example</span>
-  <span class="s">email</span><span class="pi">:</span> <span class="s">michael@example.com</span>
-  <span class="s">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
-  <span class="s">admin</span><span class="pi">:</span> <span class="s">true</span>
-<span class="hll">  <span class="s">activated</span><span class="pi">:</span> <span class="s">true</span></span>
-<span class="hll">  <span class="s">activated_at</span><span class="pi">:</span> <span class="s">&lt;%= Time.zone.now %&gt;</span></span>
+<div class="highlight language-yaml"><pre><code><span class="na">michael</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">Michael Example</span>
+  <span class="na">email</span><span class="pi">:</span> <span class="s">michael@example.com</span>
+  <span class="na">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
+  <span class="na">admin</span><span class="pi">:</span> <span class="s">true</span>
+<span class="hll">  <span class="na">activated</span><span class="pi">:</span> <span class="s">true</span></span>
+<span class="hll">  <span class="na">activated_at</span><span class="pi">:</span> <span class="s">&lt;%= Time.zone.now %&gt;</span></span>
 
-<span class="s">archer</span><span class="pi">:</span>
-  <span class="s">name</span><span class="pi">:</span> <span class="s">Sterling Archer</span>
-  <span class="s">email</span><span class="pi">:</span> <span class="s">duchess@example.gov</span>
-  <span class="s">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
-<span class="hll">  <span class="s">activated</span><span class="pi">:</span> <span class="s">true</span></span>
-<span class="hll">  <span class="s">activated_at</span><span class="pi">:</span> <span class="s">&lt;%= Time.zone.now %&gt;</span></span>
+<span class="na">archer</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">Sterling Archer</span>
+  <span class="na">email</span><span class="pi">:</span> <span class="s">duchess@example.gov</span>
+  <span class="na">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
+<span class="hll">  <span class="na">activated</span><span class="pi">:</span> <span class="s">true</span></span>
+<span class="hll">  <span class="na">activated_at</span><span class="pi">:</span> <span class="s">&lt;%= Time.zone.now %&gt;</span></span>
 
-<span class="s">lana</span><span class="pi">:</span>
-  <span class="s">name</span><span class="pi">:</span> <span class="s">Lana Kane</span>
-  <span class="s">email</span><span class="pi">:</span> <span class="s">hands@example.gov</span>
-  <span class="s">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
-<span class="hll">  <span class="s">activated</span><span class="pi">:</span> <span class="s">true</span></span>
-<span class="hll">  <span class="s">activated_at</span><span class="pi">:</span> <span class="s">&lt;%= Time.zone.now %&gt;</span></span>
+<span class="na">lana</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">Lana Kane</span>
+  <span class="na">email</span><span class="pi">:</span> <span class="s">hands@example.gov</span>
+  <span class="na">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
+<span class="hll">  <span class="na">activated</span><span class="pi">:</span> <span class="s">true</span></span>
+<span class="hll">  <span class="na">activated_at</span><span class="pi">:</span> <span class="s">&lt;%= Time.zone.now %&gt;</span></span>
 
-<span class="s">malory</span><span class="pi">:</span>
-  <span class="s">name</span><span class="pi">:</span> <span class="s">Malory Archer</span>
-  <span class="s">email</span><span class="pi">:</span> <span class="s">boss@example.gov</span>
-  <span class="s">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
-<span class="hll">  <span class="s">activated</span><span class="pi">:</span> <span class="s">true</span></span>
-<span class="hll">  <span class="s">activated_at</span><span class="pi">:</span> <span class="s">&lt;%= Time.zone.now %&gt;</span></span>
+<span class="na">malory</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">Malory Archer</span>
+  <span class="na">email</span><span class="pi">:</span> <span class="s">boss@example.gov</span>
+  <span class="na">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
+<span class="hll">  <span class="na">activated</span><span class="pi">:</span> <span class="s">true</span></span>
+<span class="hll">  <span class="na">activated_at</span><span class="pi">:</span> <span class="s">&lt;%= Time.zone.now %&gt;</span></span>
 
 <span class="s">&lt;% 30.times do |n| %&gt;</span>
 <span class="s">user_&lt;%= n %&gt;</span><span class="pi">:</span>
-  <span class="s">name</span><span class="pi">:</span>  <span class="s">&lt;%= "User</span> <span class="c1">#{n}" %&gt;</span>
-  <span class="s">email</span><span class="pi">:</span> <span class="s">&lt;%= "user-#{n}@example.com" %&gt;</span>
-  <span class="s">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
-<span class="hll">  <span class="s">activated</span><span class="pi">:</span> <span class="s">true</span></span>
-<span class="hll">  <span class="s">activated_at</span><span class="pi">:</span> <span class="s">&lt;%= Time.zone.now %&gt;</span></span>
+  <span class="na">name</span><span class="pi">:</span>  <span class="s">&lt;%= "User</span> <span class="c1">#{n}" %&gt;</span>
+  <span class="na">email</span><span class="pi">:</span> <span class="s">&lt;%= "user-#{n}@example.com" %&gt;</span>
+  <span class="na">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
+<span class="hll">  <span class="na">activated</span><span class="pi">:</span> <span class="s">true</span></span>
+<span class="hll">  <span class="na">activated_at</span><span class="pi">:</span> <span class="s">&lt;%= Time.zone.now %&gt;</span></span>
 <span class="s">&lt;% end %&gt;</span>
 </code></pre></div>
 </div>
-<p>为了让<a href="#listing-seed-users-activated">代码清单 11.4</a> 中的改动生效，我们要还原数据库，然后像之前一样写入种子数据：</p>
+<p>为了让<a class="xref-link" href="#listing-seed-users-activated">代码清单 11.4</a> 中的改动生效，我们要还原数据库，然后像之前一样写入种子数据：</p>
 <div data-type="listing">
 
 
@@ -432,7 +432,7 @@ NoMethodError: private method `create_activation_digest' called for #&lt;User&gt
 <p>在控制台中实例化一个 <code>User</code> 对象，然后调用 <code>create_activation_digest</code> 方法，确认会抛出 <code>NoMethodError</code> 异常（因为它是私有方法）。那个用户的激活摘要是什么？</p>
 </li>
 <li>
-<p>我们在<a href="chapter6.html#listing-downcase-bang">代码清单 6.34</a> 中见过，把电子邮件地址转换成小写的代码可以简写成 <code>email.downcase!</code>（不用赋值）。像这样修改<a href="#listing-user-model-activation-code">代码清单 11.3</a> 中的 <code>downcase_email</code> 方法，然后运行测试组件，确认改得没错。</p>
+<p>我们在<a class="xref-link" href="chapter6.html#listing-downcase-bang">代码清单 6.34</a> 中见过，把电子邮件地址转换成小写的代码可以简写成 <code>email.downcase!</code>（不用赋值）。像这样修改<a class="xref-link" href="#listing-user-model-activation-code">代码清单 11.3</a> 中的 <code>downcase_email</code> 方法，然后运行测试组件，确认改得没错。</p>
 </li>
 </ol>
 </section>
@@ -451,8 +451,8 @@ NoMethodError: private method `create_activation_digest' called for #&lt;User&gt
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate mailer UserMailer account_activation password_reset
 </code></pre></div>
 </div>
-<p>除了这里所需的 <code>account_activation</code> 方法之外，<a href="#listing-generate-user-mailer">代码清单 11.6</a> 还会生成<a href="chapter12.html#password-reset">第 12 章</a>使用的 <code>password_reset</code> 方法。</p>
-<p>生成邮件程序时，Rails 还会为每个邮件程序生成两个视图模板，一个用于纯文本邮件，一个用于 HTML 邮件。账户激活邮件程序的两个视图如<a href="#listing-generated-account-activation-view-text">代码清单 11.7</a> 和<a href="#listing-generated-account-activation-view-html">代码清单 11.8</a> 所示。（密码重设相关的模板在<a href="chapter12.html#password-reset">第 12 章</a>分析。）</p>
+<p>除了这里所需的 <code>account_activation</code> 方法之外，<a class="xref-link" href="#listing-generate-user-mailer">代码清单 11.6</a> 还会生成<a class="xref-link" href="chapter12.html#password-reset">第 12 章</a>使用的 <code>password_reset</code> 方法。</p>
+<p>生成邮件程序时，Rails 还会为每个邮件程序生成两个视图模板，一个用于纯文本邮件，一个用于 HTML 邮件。账户激活邮件程序的两个视图如<a class="xref-link" href="#listing-generated-account-activation-view-text">代码清单 11.7</a> 和<a class="xref-link" href="#listing-generated-account-activation-view-html">代码清单 11.8</a> 所示。（密码重设相关的模板在<a class="xref-link" href="chapter12.html#password-reset">第 12 章</a>分析。）</p>
 <div id="listing-generated-account-activation-view-text" data-type="listing">
 <h5><span class="title-label">代码清单 11.7</span>：生成的账户激活邮件视图，纯文本格式</h5>
 
@@ -475,7 +475,7 @@ NoMethodError: private method `create_activation_digest' called for #&lt;User&gt
 <span class="nt">&lt;/p&gt;</span>
 </code></pre></div>
 </div>
-<p>我们看一下生成的邮件程序，了解它是如何工作的，如<a href="#listing-generated-application-mailer">代码清单 11.9</a> 和<a href="#listing-generated-user-mailer">代码清单 11.10</a>所示。<a href="#listing-generated-application-mailer">代码清单 11.9</a> 设置了一个默认的发件人地址（<code>from</code>），整个应用中的所有邮件程序都会使用这个地址。（<a href="#listing-generated-application-mailer">代码清单 11.9</a> 还设置了各种邮件格式使用的布局。本书不会讨论邮件的布局，生成的 HTML 和纯文本格式邮件布局在 <code>app/views/layouts</code> 文件夹中。）在生成的代码中有一个实例变量 <code>@greeting</code>，这个变量可在邮件程序的视图中使用，就像控制器中的实例变量可以在普通的视图中使用一样。</p>
+<p>我们看一下生成的邮件程序，了解它是如何工作的，如<a class="xref-link" href="#listing-generated-application-mailer">代码清单 11.9</a> 和<a class="xref-link" href="#listing-generated-user-mailer">代码清单 11.10</a>所示。<a class="xref-link" href="#listing-generated-application-mailer">代码清单 11.9</a> 设置了一个默认的发件人地址（<code>from</code>），整个应用中的所有邮件程序都会使用这个地址。（<a class="xref-link" href="#listing-generated-application-mailer">代码清单 11.9</a> 还设置了各种邮件格式使用的布局。本书不会讨论邮件的布局，生成的 HTML 和纯文本格式邮件布局在 <code>app/views/layouts</code> 文件夹中。）在生成的代码中有一个实例变量 <code>@greeting</code>，这个变量可在邮件程序的视图中使用，就像控制器中的实例变量可以在普通的视图中使用一样。</p>
 <div id="listing-generated-application-mailer" data-type="listing">
 <h5><span class="title-label">代码清单 11.9</span>：生成的 <code>Application</code> 邮件程序</h5>
 
@@ -518,7 +518,7 @@ NoMethodError: private method `create_activation_digest' called for #&lt;User&gt
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>为了发送激活邮件，我们首先要修改生成的模板，如<a href="#listing-application-mailer">代码清单 11.11</a> 所示。然后要创建一个实例变量，其值是用户对象，以便在视图中使用，然后把邮件发给 <code>user.email</code>。如<a href="#listing-mail-account-activation">代码清单 11.12</a> 所示，<code>mail</code> 方法还可以接受 <code>subject</code> 参数，指定邮件的主题。</p>
+<p>为了发送激活邮件，我们首先要修改生成的模板，如<a class="xref-link" href="#listing-application-mailer">代码清单 11.11</a> 所示。然后要创建一个实例变量，其值是用户对象，以便在视图中使用，然后把邮件发给 <code>user.email</code>。如<a class="xref-link" href="#listing-mail-account-activation">代码清单 11.12</a> 所示，<code>mail</code> 方法还可以接受 <code>subject</code> 参数，指定邮件的主题。</p>
 <div id="listing-application-mailer" data-type="listing">
 <h5><span class="title-label">代码清单 11.11</span>：在 <code>Application</code> 邮件程序中设定默认的发件人地址</h5>
 
@@ -550,7 +550,7 @@ NoMethodError: private method `create_activation_digest' called for #&lt;User&gt
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>与普通的视图一样，在邮件程序的视图中也可以使用嵌入式 Ruby。在邮件中我们要添加一个针对用户的欢迎消息，以及一个激活链接。我们计划使用电子邮件地址查找用户，然后使用激活令牌认证用户，所以链接中要包含电子邮件地址和令牌。因为我们把“账户激活”视作一个资源（<code>AccountActivations</code>），所以可以把令牌作为参数传给<a href="#listing-account-activations-route">代码清单 11.1</a> 中定义的具名路由：</p>
+<p>与普通的视图一样，在邮件程序的视图中也可以使用嵌入式 Ruby。在邮件中我们要添加一个针对用户的欢迎消息，以及一个激活链接。我们计划使用电子邮件地址查找用户，然后使用激活令牌认证用户，所以链接中要包含电子邮件地址和令牌。因为我们把“账户激活”视作一个资源（<code>AccountActivations</code>），所以可以把令牌作为参数传给<a class="xref-link" href="#listing-account-activations-route">代码清单 11.1</a> 中定义的具名路由：</p>
 <div data-type="listing">
 
 
@@ -571,8 +571,8 @@ NoMethodError: private method `create_activation_digest' called for #&lt;User&gt
 <div class="highlight language-text"><pre><code>http://www.example.com/account_activations/q5lt38hQDc_959PVoo6b7A/edit
 </code></pre></div>
 </div>
-<p>其中，<code>q5lt38hQDc_959PVoo6b7A</code> 是使用 <code>new_token</code> 方法（<a href="chapter9.html#listing-token-method">代码清单 9.2</a>）生成的 base64 字符串，可放心地在 URL 中使用。这个值的作用和 /users/1/edit 中的用户 ID 一样，在 <code>AccountActivations</code> 控制器的 <code>edit</code> 动作中可以通过 <code>params[:id]</code> 获取。</p>
-<p>为了加上电子邮件地址，我们要使用查询参数（query parameter）。查询参数放在 URL 中的问号后面，使用键值对形式指定：<sup>[<a id="fn-ref-4" href="#fn-4">4</a>]</sup></p>
+<p>其中，<code>q5lt38hQDc_959PVoo6b7A</code> 是使用 <code>new_token</code> 方法（<a class="xref-link" href="chapter9.html#listing-token-method">代码清单 9.2</a>）生成的 base64 字符串，可放心地在 URL 中使用。这个值的作用和 /users/1/edit 中的用户 ID 一样，在 <code>AccountActivations</code> 控制器的 <code>edit</code> 动作中可以通过 <code>params[:id]</code> 获取。</p>
+<p>为了加上电子邮件地址，我们要使用查询参数（query parameter）。查询参数放在 URL 中的问号后面，使用键值对形式指定：<sup>[<a id="fn-ref-5" href="#fn-5">5</a>]</sup></p>
 <div data-type="listing">
 
 
@@ -587,7 +587,7 @@ NoMethodError: private method `create_activation_digest' called for #&lt;User&gt
 </code></pre></div>
 </div>
 <p>使用这种方式设定查询参数，Rails 会自动转义所有特殊字符。而且，在控制器中会自动反转义电子邮件地址，通过 <code>params[:email]</code> 可以获取电子邮件地址。</p>
-<p>定义好实例变量 <code>@user</code> 之后（<a href="#listing-mail-account-activation">代码清单 11.12</a>），我们可以使用 <code>edit</code> 动作的具名路由和嵌入式 Ruby 创建所需的链接了，如<a href="#listing-account-activation-view-text">代码清单 11.13</a> 和<a href="#listing-account-activation-view-html">代码清单 11.14</a> 所示。注意，在<a href="#listing-account-activation-view-html">代码清单 11.14</a> 中，我们使用 <code>link_to</code> 方法创建有效的链接。</p>
+<p>定义好实例变量 <code>@user</code> 之后（<a class="xref-link" href="#listing-mail-account-activation">代码清单 11.12</a>），我们可以使用 <code>edit</code> 动作的具名路由和嵌入式 Ruby 创建所需的链接了，如<a class="xref-link" href="#listing-account-activation-view-text">代码清单 11.13</a> 和<a class="xref-link" href="#listing-account-activation-view-html">代码清单 11.14</a> 所示。注意，在<a class="xref-link" href="#listing-account-activation-view-html">代码清单 11.14</a> 中，我们使用 <code>link_to</code> 方法创建有效的链接。</p>
 <div id="listing-account-activation-view-text" data-type="listing">
 <h5><span class="title-label">代码清单 11.13</span>：账户激活邮件的纯文本视图</h5>
 
@@ -620,7 +620,7 @@ Welcome to the Sample App! Click on the link below to activate your account:
 <h5 id="exercises-mailer-templates" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>打开 Rails 控制台，确认 <code>CGI</code> 模块中的 <code>escape</code> 方法能像<a href="#listing-cgi-escape">代码清单 11.15</a> 那样转义电子邮件地址。<code>"Don’t panic!"</code> 这个字符串转义后的值是什么？</p>
+<p>打开 Rails 控制台，确认 <code>CGI</code> 模块中的 <code>escape</code> 方法能像<a class="xref-link" href="#listing-cgi-escape">代码清单 11.15</a> 那样转义电子邮件地址。<code>"Don’t panic!"</code> 这个字符串转义后的值是什么？</p>
 </li>
 </ol>
 <div id="listing-cgi-escape" data-type="listing">
@@ -634,7 +634,7 @@ Welcome to the Sample App! Click on the link below to activate your account:
 </section>
 <section data-type="sect2" id="email-previews">
 <h2><span class="title-label">11.2.2</span> 预览邮件</h2>
-<p>若想查看这两个邮件视图的效果，可以使用邮件预览功能。Rails 提供了一些特殊的 URL，用来预览邮件。首先，我们要在应用的开发环境中添加一些设置，如<a href="#listing-development-email-settings">代码清单 11.16</a> 所示。</p>
+<p>若想查看这两个邮件视图的效果，可以使用邮件预览功能。Rails 提供了一些特殊的 URL，用来预览邮件。首先，我们要在应用的开发环境中添加一些设置，如<a class="xref-link" href="#listing-development-email-settings">代码清单 11.16</a> 所示。</p>
 <div id="listing-development-email-settings" data-type="listing">
 <h5><span class="title-label">代码清单 11.16</span>：开发环境中的邮件设置</h5>
 
@@ -655,7 +655,7 @@ Welcome to the Sample App! Click on the link below to activate your account:
 <span class="nf">end</span>
 </code></pre></div>
 </div>
-<p><a href="#listing-development-email-settings">代码清单 11.16</a> 中设置的主机地址是 <code>'example.com'</code>，如注释所述，你应该使用你开发环境的主机地址。例如，在我的系统中，可以使用下面的地址（包括云端 IDE 和本地服务器）：</p>
+<p><a class="xref-link" href="#listing-development-email-settings">代码清单 11.16</a> 中设置的主机地址是 <code>'example.com'</code>，如注释所述，你应该使用你开发环境的主机地址。例如，在我的系统中，可以使用下面的地址（包括云端 IDE 和本地服务器）：</p>
 <div data-type="listing">
 
 
@@ -668,7 +668,7 @@ Welcome to the Sample App! Click on the link below to activate your account:
 <span class="n">config</span><span class="p">.</span><span class="nf">action_mailer</span><span class="p">.</span><span class="nf">default_url_options</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">host: </span><span class="n">host</span><span class="p">,</span> <span class="ss">protocol: </span><span class="s1">'http'</span> <span class="p">}</span>
 </code></pre></div>
 </div>
-<p>然后重启开发服务器，让<a href="#listing-development-email-settings">代码清单 11.16</a> 中的配置生效。接下来，我们要修改 <code>User</code> 邮件程序的预览文件。<a href="#account-activation-emails">11.2 节</a> 生成邮件程序时已经自动生成了这个文件，如<a href="#listing-generated-user-mailer-previews">代码清单 11.17</a> 所示。</p>
+<p>然后重启开发服务器，让<a class="xref-link" href="#listing-development-email-settings">代码清单 11.16</a> 中的配置生效。接下来，我们要修改 <code>User</code> 邮件程序的预览文件。<a class="xref-link" href="#account-activation-emails">11.2 节</a> 生成邮件程序时已经自动生成了这个文件，如<a class="xref-link" href="#listing-generated-user-mailer-previews">代码清单 11.17</a> 所示。</p>
 <div id="listing-generated-user-mailer-previews" data-type="listing">
 <h5><span class="title-label">代码清单 11.17</span>：生成的 <code>User</code> 邮件预览程序</h5>
 
@@ -692,7 +692,7 @@ Welcome to the Sample App! Click on the link below to activate your account:
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>因为<a href="#listing-mail-account-activation">代码清单 11.12</a> 中定义的 <code>account_activation</code> 方法需要一个有效的用户作为参数，所以<a href="#listing-generated-user-mailer-previews">代码清单 11.17</a> 中的代码现在还不能使用。为了解决这个问题，我们要定义 <code>user</code> 变量，把开发数据库中的第一个用户赋值给它，然后作为参数传给 <code>UserMailer.account_activation</code> 方法，如<a href="#listing-account-activation-preview">代码清单 11.18</a> 所示。注意，在这段代码中，我们还给 <code>user.activation_token</code> 赋了值，因为<a href="#listing-account-activation-view-text">代码清单 11.13</a> 和<a href="#listing-account-activation-view-html">代码清单 11.14</a> 中的模板要使用账户激活令牌。（<code>activation_token</code> 是虚拟属性，所以数据库中的用户并没有激活令牌。）</p>
+<p>因为<a class="xref-link" href="#listing-mail-account-activation">代码清单 11.12</a> 中定义的 <code>account_activation</code> 方法需要一个有效的用户作为参数，所以<a class="xref-link" href="#listing-generated-user-mailer-previews">代码清单 11.17</a> 中的代码现在还不能使用。为了解决这个问题，我们要定义 <code>user</code> 变量，把开发数据库中的第一个用户赋值给它，然后作为参数传给 <code>UserMailer.account_activation</code> 方法，如<a class="xref-link" href="#listing-account-activation-preview">代码清单 11.18</a> 所示。注意，在这段代码中，我们还给 <code>user.activation_token</code> 赋了值，因为<a class="xref-link" href="#listing-account-activation-view-text">代码清单 11.13</a> 和<a class="xref-link" href="#listing-account-activation-view-html">代码清单 11.14</a> 中的模板要使用账户激活令牌。（<code>activation_token</code> 是虚拟属性，所以数据库中的用户并没有激活令牌。）</p>
 <div id="listing-account-activation-preview" data-type="listing">
 <h5><span class="title-label">代码清单 11.18</span>：预览账户激活邮件所需的方法</h5>
 
@@ -717,7 +717,7 @@ Welcome to the Sample App! Click on the link below to activate your account:
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>这样修改之后，我们就可以访问注释中提示的 URL 预览账户激活邮件了。（如果使用云端 IDE，要把 <code>localhost:3000</code> 换成相应的基 URL。）HTML 和纯文本邮件分别如<a href="#fig-account-activation-html-preview">图 11.2</a> 和<a href="#fig-account-activation-text-preview">图 11.3</a> 所示。</p>
+<p>这样修改之后，我们就可以访问注释中提示的 URL 预览账户激活邮件了。（如果使用云端 IDE，要把 <code>localhost:3000</code> 换成相应的基 URL。）HTML 和纯文本邮件分别如<a class="xref-link" href="#fig-account-activation-html-preview">图 11.2</a> 和<a class="xref-link" href="#fig-account-activation-text-preview">图 11.3</a> 所示。</p>
 <div id="fig-account-activation-html-preview" class="figure"><img src="images/chapter11/account_activation_html_preview_4th_ed.png" alt="account activation html preview 4th ed" /><div class="figcaption"><span class="title-label">图 11.2</span>：预览 HTML 格式的账户激活邮件</div></div>
 <div id="fig-account-activation-text-preview" class="figure"><img src="images/chapter11/account_activation_text_preview_4th_ed.png" alt="account activation text preview 4th ed" /><div class="figcaption"><span class="title-label">图 11.3</span>：预览纯文本格式的账户激活邮件</div></div>
 <h5 id="exercises-email-previews" class="discrete">练习</h5>
@@ -729,7 +729,7 @@ Welcome to the Sample App! Click on the link below to activate your account:
 </section>
 <section data-type="sect2" id="email-tests">
 <h2><span class="title-label">11.2.3</span> 测试电子邮件</h2>
-<p>最后，我们要编写一些测试，再次确认邮件的内容。这并不难，因为 Rails 生成了一些有用的测试示例，如<a href="#listing-generated-user-mailer-test">代码清单 11.19</a> 所示。</p>
+<p>最后，我们要编写一些测试，再次确认邮件的内容。这并不难，因为 Rails 生成了一些有用的测试示例，如<a class="xref-link" href="#listing-generated-user-mailer-test">代码清单 11.19</a> 所示。</p>
 <div id="listing-generated-user-mailer-test" data-type="listing">
 <h5><span class="title-label">代码清单 11.19</span>：Rails 为 <code>User</code> 邮件程序生成的测试</h5>
 
@@ -757,7 +757,7 @@ Welcome to the Sample App! Click on the link below to activate your account:
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p><a href="#listing-generated-user-mailer-test">代码清单 11.19</a> 中使用了强大的 <code>assert_match</code> 方法。这个方法既可以匹配字符串，也可以匹配正则表达式：</p>
+<p><a class="xref-link" href="#listing-generated-user-mailer-test">代码清单 11.19</a> 中使用了强大的 <code>assert_match</code> 方法。这个方法既可以匹配字符串，也可以匹配正则表达式：</p>
 <div data-type="listing">
 
 
@@ -767,7 +767,7 @@ Welcome to the Sample App! Click on the link below to activate your account:
 <span class="n">assert_match</span> <span class="sr">/\w+/</span><span class="p">,</span> <span class="s1">'$#!*+@'</span>      <span class="c1"># false</span>
 </code></pre></div>
 </div>
-<p><a href="#listing-real-account-activation-test">代码清单 11.20</a> 使用 <code>assert_match</code> 方法检查邮件正文中是否有用户的名字、激活令牌和转义后的电子邮件地址。注意，转义用户电子邮件地址使用的方法是 <code>CGI::escape(user.email)</code>。<sup>[<a id="fn-ref-5" href="#fn-5">5</a>]</sup></p>
+<p><a class="xref-link" href="#listing-real-account-activation-test">代码清单 11.20</a> 使用 <code>assert_match</code> 方法检查邮件正文中是否有用户的名字、激活令牌和转义后的电子邮件地址。注意，转义用户电子邮件地址使用的方法是 <code>CGI::escape(user.email)</code>。<sup>[<a id="fn-ref-6" href="#fn-6">6</a>]</sup></p>
 <div id="listing-real-account-activation-test" data-type="listing">
 <h5><span class="title-label">代码清单 11.20</span>：测试当前的电子邮件实现 <span class="red">RED</span></h5>
 
@@ -791,8 +791,8 @@ Welcome to the Sample App! Click on the link below to activate your account:
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>注意，我们在<a href="#listing-real-account-activation-test">代码清单 11.20</a> 中为固件中的一个用户指定了激活令牌，否则这个值为空。（<a href="#listing-real-account-activation-test">代码清单 11.20</a> 还删除了生成的密码重设测试，我们会在 <a href="chapter12.html#reset-email-tests">12.2.2 节</a>添加相关的测试。）</p>
-<p>为了让这个测试通过，我们要修改测试环境的配置，设定正确的主机地址，如<a href="#listing-test-domain-host">代码清单 11.21</a> 所示。</p>
+<p>注意，我们在<a class="xref-link" href="#listing-real-account-activation-test">代码清单 11.20</a> 中为固件中的一个用户指定了激活令牌，否则这个值为空。（<a class="xref-link" href="#listing-real-account-activation-test">代码清单 11.20</a> 还删除了生成的密码重设测试，我们会在 <a class="xref-link" href="chapter12.html#reset-email-tests">12.2.2 节</a>添加相关的测试。）</p>
+<p>为了让这个测试通过，我们要修改测试环境的配置，设定正确的主机地址，如<a class="xref-link" href="#listing-test-domain-host">代码清单 11.21</a> 所示。</p>
 <div id="listing-test-domain-host" data-type="listing">
 <h5><span class="title-label">代码清单 11.21</span>：设定测试环境的主机地址</h5>
 
@@ -824,13 +824,13 @@ Welcome to the Sample App! Click on the link below to activate your account:
 <p>确认整个测试组件仍然能通过。</p>
 </li>
 <li>
-<p>在<a href="#listing-real-account-activation-test">代码清单 11.20</a> 中不要调用 <code>CGI.escape</code> 方法，确认测试会失败。</p>
+<p>在<a class="xref-link" href="#listing-real-account-activation-test">代码清单 11.20</a> 中不要调用 <code>CGI.escape</code> 方法，确认测试会失败。</p>
 </li>
 </ol>
 </section>
 <section data-type="sect2" id="updating-create">
 <h2><span class="title-label">11.2.4</span> 更新 <code>Users</code> 控制器的 <code>create</code> 动作</h2>
-<p>若要在我们的应用中使用这个邮件程序，只需在处理用户注册的 <code>create</code> 动作中添加几行代码，如<a href="#listing-user-signup-with-account-activation">代码清单 11.23</a> 所示。注意，<a href="#listing-user-signup-with-account-activation">代码清单 11.23</a> 修改了注册后的重定向地址。之前，我们把用户重定向到资料页面（<a href="chapter7.html#successful-signups">7.4 节</a>），可是现在需要先激活，再转向这个页面就不合理了，所以把重定向地址改成了根地址。</p>
+<p>若要在我们的应用中使用这个邮件程序，只需在处理用户注册的 <code>create</code> 动作中添加几行代码，如<a class="xref-link" href="#listing-user-signup-with-account-activation">代码清单 11.23</a> 所示。注意，<a class="xref-link" href="#listing-user-signup-with-account-activation">代码清单 11.23</a> 修改了注册后的重定向地址。之前，我们把用户重定向到资料页面（<a class="xref-link" href="chapter7.html#successful-signups">7.4 节</a>），可是现在需要先激活，再转向这个页面就不合理了，所以把重定向地址改成了根地址。</p>
 <div id="listing-user-signup-with-account-activation" data-type="listing">
 <h5><span class="title-label">代码清单 11.23</span>：在注册过程中添加账户激活 <span class="red">RED</span></h5>
 
@@ -856,7 +856,7 @@ Welcome to the Sample App! Click on the link below to activate your account:
 <span class="nf">end</span>
 </code></pre></div>
 </div>
-<p>因为现在重定向到根地址而不是资料页面，而且不会像之前那样自动登入用户，所以测试组件无法通过，不过应用能按照我们设计的方式运行。我们暂时把导致失败的测试注释掉，如<a href="#listing-comment-out-failing-tests">代码清单 11.24</a> 所示。我们会在 <a href="#activation-test-and-refactoring">11.3.3 节</a>去掉注释，并且为账户激活编写能通过的测试。</p>
+<p>因为现在重定向到根地址而不是资料页面，而且不会像之前那样自动登入用户，所以测试组件无法通过，不过应用能按照我们设计的方式运行。我们暂时把导致失败的测试注释掉，如<a class="xref-link" href="#listing-comment-out-failing-tests">代码清单 11.24</a> 所示。我们会在 <a class="xref-link" href="#activation-test-and-refactoring">11.3.3 节</a>去掉注释，并且为账户激活编写能通过的测试。</p>
 <div id="listing-comment-out-failing-tests" data-type="listing">
 <h5><span class="title-label">代码清单 11.24</span>：临时注释掉失败的测试 <span class="green">GREEN</span></h5>
 
@@ -894,7 +894,7 @@ Welcome to the Sample App! Click on the link below to activate your account:
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>如果现在注册，重定向后显示的页面如<a href="#fig-redirected-not-activated">图 11.4</a> 所示，而且会生成一封邮件，如<a href="#listing-account-activation-email">代码清单 11.25</a> 所示。注意，在开发环境中并不会真发送邮件，不过能在服务器的日志中看到（可能要往上滚动才能看到）。<a href="#email-in-production">11.4 节</a>讨论如何在生产环境中发送邮件。</p>
+<p>如果现在注册，重定向后显示的页面如<a class="xref-link" href="#fig-redirected-not-activated">图 11.4</a> 所示，而且会生成一封邮件，如<a class="xref-link" href="#listing-account-activation-email">代码清单 11.25</a> 所示。注意，在开发环境中并不会真发送邮件，不过能在服务器的日志中看到（可能要往上滚动才能看到）。<a class="xref-link" href="#email-in-production">11.4 节</a>讨论如何在生产环境中发送邮件。</p>
 <div id="listing-account-activation-email" data-type="listing">
 <h5><span class="title-label">代码清单 11.25</span>：在服务器日志中看到的账户激活邮件</h5>
 
@@ -970,10 +970,10 @@ Welcome to the Sample App! Click on the link below to activate your account:
 </section>
 <section data-type="sect1" id="activating-the-account">
 <h1><span class="title-label">11.3</span> 激活账户</h1>
-<p>现在可以正确生成电子邮件了（<a href="#listing-account-activation-email">代码清单 11.25</a>），接下来我们要编写 <code>AccountActivations</code> 控制器的 <code>edit</code> 动作，激活用户。与之前一样，我们将为这个动作编写一个测试，等测试通过后再重构，把一些代码移出 <code>AccountActivations</code> 控制器，移到 <code>User</code> 模型中。</p>
+<p>现在可以正确生成电子邮件了（<a class="xref-link" href="#listing-account-activation-email">代码清单 11.25</a>），接下来我们要编写 <code>AccountActivations</code> 控制器的 <code>edit</code> 动作，激活用户。与之前一样，我们将为这个动作编写一个测试，等测试通过后再重构，把一些代码移出 <code>AccountActivations</code> 控制器，移到 <code>User</code> 模型中。</p>
 <section data-type="sect2" id="generalizing-the-authenticated-method">
 <h2><span class="title-label">11.3.1</span> 通用的 <code>authenticated?</code> 方法</h2>
-<p><a href="#mailer-templates">11.2.1 节</a>说过，激活令牌和电子邮件地址可以分别通过 <code>params[:id]</code> 和 <code>params[:email]</code> 获取。参照密码（<a href="chapter8.html#listing-find-authenticate-user">代码清单 8.7</a>）和记忆令牌（<a href="chapter9.html#listing-persistent-current-user">代码清单 9.9</a>）的实现方式，我们计划使用下面的代码查找和验证用户：</p>
+<p><a class="xref-link" href="#mailer-templates">11.2.1 节</a>说过，激活令牌和电子邮件地址可以分别通过 <code>params[:id]</code> 和 <code>params[:email]</code> 获取。参照密码（<a class="xref-link" href="chapter8.html#listing-find-authenticate-user">代码清单 8.7</a>）和记忆令牌（<a class="xref-link" href="chapter9.html#listing-persistent-current-user">代码清单 9.9</a>）的实现方式，我们计划使用下面的代码查找和验证用户：</p>
 <div data-type="listing">
 
 
@@ -982,7 +982,7 @@ Welcome to the Sample App! Click on the link below to activate your account:
 </code></pre></div>
 </div>
 <p>（稍后会看到，上述代码还缺一个判断条件。看看你能否猜到缺了什么。）</p>
-<p>上述代码使用 <code>authenticated?</code> 方法检查账户激活的摘要和指定的令牌是否匹配，但是现在不起作用，因为 <code>authenticated?</code> 方法是专门用来验证记忆令牌的（<a href="chapter9.html#listing-authenticated-p">代码清单 9.6</a>）：</p>
+<p>上述代码使用 <code>authenticated?</code> 方法检查账户激活的摘要和指定的令牌是否匹配，但是现在不起作用，因为 <code>authenticated?</code> 方法是专门用来验证记忆令牌的（<a class="xref-link" href="chapter9.html#listing-authenticated-p">代码清单 9.6</a>）：</p>
 <div data-type="listing">
 
 
@@ -1031,7 +1031,7 @@ Welcome to the Sample App! Click on the link below to activate your account:
 <span class="hll">=&gt; "$2a$10$4e6TFzEJAVNyjLv8Q5u22ensMt28qEkx0roaZvtRcp6UZKRM6N9Ae"</span>
 </code></pre></div>
 </div>
-<p>注意最后一种调用方式，我们定义了一个 <code>attribute</code> 变量，其值为符号 <code>:activation</code>，然后使用字符串插值构建传给 <code>send</code> 方法的参数。<code>attribute</code> 变量的值使用字符串 <code>'activation'</code> 也行，不过符号更便利。不管使用什么，插值后，<code>"#{attribute}_digest"</code> 的结果都是 <code>"activation_digest"</code>。（<a href="chapter7.html#the-flash">7.4.2 节</a>说过，插值时会把符号转换成字符串。）</p>
+<p>注意最后一种调用方式，我们定义了一个 <code>attribute</code> 变量，其值为符号 <code>:activation</code>，然后使用字符串插值构建传给 <code>send</code> 方法的参数。<code>attribute</code> 变量的值使用字符串 <code>'activation'</code> 也行，不过符号更便利。不管使用什么，插值后，<code>"#{attribute}_digest"</code> 的结果都是 <code>"activation_digest"</code>。（<a class="xref-link" href="chapter7.html#the-flash">7.4.2 节</a>说过，插值时会把符号转换成字符串。）</p>
 <p>基于上述对 <code>send</code> 方法的讨论，我们可以把 <code>authenticated?</code> 方法改写成：</p>
 <div data-type="listing">
 
@@ -1072,7 +1072,7 @@ Welcome to the Sample App! Click on the link below to activate your account:
 <div class="highlight language-ruby"><pre><code><span class="n">user</span><span class="p">.</span><span class="nf">authenticated?</span><span class="p">(</span><span class="ss">:remember</span><span class="p">,</span> <span class="n">remember_token</span><span class="p">)</span>
 </code></pre></div>
 </div>
-<p>把修改后的 <code>authenticated?</code> 方法写入 <code>User</code> 模型，如<a href="#listing-generalized-authenticated-p">代码清单 11.26</a> 所示。</p>
+<p>把修改后的 <code>authenticated?</code> 方法写入 <code>User</code> 模型，如<a class="xref-link" href="#listing-generalized-authenticated-p">代码清单 11.26</a> 所示。</p>
 <div id="listing-generalized-authenticated-p" data-type="listing">
 <h5><span class="title-label">代码清单 11.26</span>：通用的 <code>authenticated?</code> 方法 <span class="red">RED</span></h5>
 
@@ -1094,7 +1094,7 @@ Welcome to the Sample App! Click on the link below to activate your account:
 <span class="nf">end</span>
 </code></pre></div>
 </div>
-<p>如<a href="#listing-generalized-authenticated-p">代码清单 11.26</a> 的标题所示，测试组件无法通过：</p>
+<p>如<a class="xref-link" href="#listing-generalized-authenticated-p">代码清单 11.26</a> 的标题所示，测试组件无法通过：</p>
 <div data-type="listing">
 <h5><span class="title-label">代码清单 11.27</span>：<strong class="red">RED</strong></h5>
 
@@ -1102,7 +1102,7 @@ Welcome to the Sample App! Click on the link below to activate your account:
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
-<p>失败的原因是，<code>current_user</code> 方法（<a href="chapter9.html#listing-persistent-current-user">代码清单 9.9</a>）和摘要为 <code>nil</code> 的测试（<a href="chapter9.html#listing-test-authenticated-invalid-token">代码清单 9.17</a>）使用的都是旧版 <code>authenticated?</code>，期望传入的是一个参数而不是两个。因此，我们只需修改这两个地方，换用修改后的 <code>authenticated?</code> 方法就能解决这个问题，如<a href="#listing-generalized-current-user">代码清单 11.28</a> 和<a href="#listing-test-authenticated-invalid-token-updated">代码清单 11.29</a> 所示。</p>
+<p>失败的原因是，<code>current_user</code> 方法（<a class="xref-link" href="chapter9.html#listing-persistent-current-user">代码清单 9.9</a>）和摘要为 <code>nil</code> 的测试（<a class="xref-link" href="chapter9.html#listing-test-authenticated-invalid-token">代码清单 9.17</a>）使用的都是旧版 <code>authenticated?</code>，期望传入的是一个参数而不是两个。因此，我们只需修改这两个地方，换用修改后的 <code>authenticated?</code> 方法就能解决这个问题，如<a class="xref-link" href="#listing-generalized-current-user">代码清单 11.28</a> 和<a class="xref-link" href="#listing-test-authenticated-invalid-token-updated">代码清单 11.29</a> 所示。</p>
 <div id="listing-generalized-current-user" data-type="listing">
 <h5><span class="title-label">代码清单 11.28</span>：在 <code>current_user</code> 方法中使用通用版 <code>authenticated?</code> 方法 <span class="red">RED</span></h5>
 
@@ -1160,20 +1160,20 @@ Welcome to the Sample App! Click on the link below to activate your account:
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
-<p>没有坚实的测试组件做后盾，像这样的重构很容易出错，所以我们才要在 <a href="chapter9.html#login-with-remembering">9.1.2 节</a>和 <a href="chapter9.html#remember-tests">9.3 节</a>排除万难编写测试。</p>
+<p>没有坚实的测试组件做后盾，像这样的重构很容易出错，所以我们才要在 <a class="xref-link" href="chapter9.html#login-with-remembering">9.1.2 节</a>和 <a class="xref-link" href="chapter9.html#remember-tests">9.3 节</a>排除万难编写测试。</p>
 <h5 id="exercises-generalizing-the-authenticated-method" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
 <p>在 Rails 控制台中创建并记住一个用户，他的记忆令牌和激活令牌分别是什么？对应的摘要呢？</p>
 </li>
 <li>
-<p>使用<a href="#listing-generalized-authenticated-p">代码清单 11.26</a> 中定义的通用版 <code>authenticated?</code> 方法，确认使用记忆令牌和激活令牌都能验证用户的身份。</p>
+<p>使用<a class="xref-link" href="#listing-generalized-authenticated-p">代码清单 11.26</a> 中定义的通用版 <code>authenticated?</code> 方法，确认使用记忆令牌和激活令牌都能验证用户的身份。</p>
 </li>
 </ol>
 </section>
 <section data-type="sect2" id="activation-edit-action">
 <h2><span class="title-label">11.3.2</span> 编写激活账户的 <code>edit</code> 动作</h2>
-<p>有了<a href="#listing-generalized-authenticated-p">代码清单 11.26</a> 中定义的 <code>authenticated?</code> 方法，现在我们可以编写 <code>edit</code> 动作，验证 <code>params</code> 散列中电子邮件地址对应的用户了。我们要使用的判断条件如下所示：</p>
+<p>有了<a class="xref-link" href="#listing-generalized-authenticated-p">代码清单 11.26</a> 中定义的 <code>authenticated?</code> 方法，现在我们可以编写 <code>edit</code> 动作，验证 <code>params</code> 散列中电子邮件地址对应的用户了。我们要使用的判断条件如下所示：</p>
 <div data-type="listing">
 
 
@@ -1181,7 +1181,7 @@ Welcome to the Sample App! Click on the link below to activate your account:
 </code></pre></div>
 </div>
 <p>注意，这里加入了 <code>!user.activated?</code>，就是前面提到的那个缺失的条件，其作用是避免激活已经激活的用户。这个条件很重要，因为激活后我们要登入用户，但是不能让获得激活链接的攻击者以这个用户的身份登录。</p>
-<p>如果通过上述判断条件，我们要激活这个用户，并且更新 <code>activated_at</code> 时间戳：<sup>[<a id="fn-ref-6" href="#fn-6">6</a>]</sup></p>
+<p>如果通过上述判断条件，我们要激活这个用户，并且更新 <code>activated_at</code> 时间戳：<sup>[<a id="fn-ref-7" href="#fn-7">7</a>]</sup></p>
 <div data-type="listing">
 
 
@@ -1189,7 +1189,7 @@ Welcome to the Sample App! Click on the link below to activate your account:
 <span class="n">user</span><span class="p">.</span><span class="nf">update_attribute</span><span class="p">(</span><span class="ss">:activated_at</span><span class="p">,</span> <span class="no">Time</span><span class="p">.</span><span class="nf">zone</span><span class="p">.</span><span class="nf">now</span><span class="p">)</span>
 </code></pre></div>
 </div>
-<p>据此，写出的 <code>edit</code> 动作如<a href="#listing-account-activation-edit-action">代码清单 11.31</a> 所示。注意，在<a href="#listing-account-activation-edit-action">代码清单 11.31</a> 中，我们还处理了激活令牌无效的情况。这种情况极少发生，但处理起来也很容易，直接重定向到根地址即可。</p>
+<p>据此，写出的 <code>edit</code> 动作如<a class="xref-link" href="#listing-account-activation-edit-action">代码清单 11.31</a> 所示。注意，在<a class="xref-link" href="#listing-account-activation-edit-action">代码清单 11.31</a> 中，我们还处理了激活令牌无效的情况。这种情况极少发生，但处理起来也很容易，直接重定向到根地址即可。</p>
 <div id="listing-account-activation-edit-action" data-type="listing">
 <h5><span class="title-label">代码清单 11.31</span>：在 <code>edit</code> 动作中激活账户</h5>
 
@@ -1213,7 +1213,7 @@ Welcome to the Sample App! Click on the link below to activate your account:
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>然后，复制粘贴<a href="#listing-account-activation-email">代码清单 11.25</a> 中的地址，应该就可以激活对应的用户了。例如，在我的系统中，我访问的地址是：</p>
+<p>然后，复制粘贴<a class="xref-link" href="#listing-account-activation-email">代码清单 11.25</a> 中的地址，应该就可以激活对应的用户了。例如，在我的系统中，我访问的地址是：</p>
 <div data-type="listing">
 
 
@@ -1221,9 +1221,9 @@ Welcome to the Sample App! Click on the link below to activate your account:
 fFb_F94mgQtmlSvRFGsITw/edit?email=michael%40michaelhartl.com
 </code></pre></div>
 </div>
-<p>此时会看到如<a href="#fig-activated-user">图 11.5</a> 所示的页面。</p>
+<p>此时会看到如<a class="xref-link" href="#fig-activated-user">图 11.5</a> 所示的页面。</p>
 <div id="fig-activated-user" class="figure"><img src="images/chapter11/activated_user_4th_ed.png" alt="activated user 4th ed" /><div class="figcaption"><span class="title-label">图 11.5</span>：成功激活后显示的资料页面</div></div>
-<p>当然，现在激活用户后没有什么实际效果，因为我们还没修改用户的登录方式。为了让账户激活有实际意义，只能允许已经激活的用户登录，即 <code>user.activated?</code> 返回 <code>true</code> 时才能像之前那样登录，否则重定向到根地址，并且显示一个提醒消息（<a href="#fig-not-activated-warning">图 11.6</a>），如<a href="#listing-preventing-unactivated-logins">代码清单 11.32</a> 所示。</p>
+<p>当然，现在激活用户后没有什么实际效果，因为我们还没修改用户的登录方式。为了让账户激活有实际意义，只能允许已经激活的用户登录，即 <code>user.activated?</code> 返回 <code>true</code> 时才能像之前那样登录，否则重定向到根地址，并且显示一个提醒消息（<a class="xref-link" href="#fig-not-activated-warning">图 11.6</a>），如<a class="xref-link" href="#listing-preventing-unactivated-logins">代码清单 11.32</a> 所示。</p>
 <div id="listing-preventing-unactivated-logins" data-type="listing">
 <h5><span class="title-label">代码清单 11.32</span>：禁止未激活的用户登录</h5>
 
@@ -1261,11 +1261,11 @@ fFb_F94mgQtmlSvRFGsITw/edit?email=michael%40michaelhartl.com
 </code></pre></div>
 </div>
 <div id="fig-not-activated-warning" class="figure"><img src="images/chapter11/not_activated_warning.png" alt="not activated warning" /><div class="figcaption"><span class="title-label">图 11.6</span>：未激活的用户试图登录后看到的提醒消息</div></div>
-<p>至此，激活用户的功能基本完成了，不过还有个地方可以改进。（可以改进的是，不显示未激活的用户。这个改进留作<a href="#exercises-activation-test-and-refactoring">练习</a>。）<a href="#activation-test-and-refactoring">11.3.3 节</a>会编写一些测试，再做一些重构，完成整个功能。</p>
+<p>至此，激活用户的功能基本完成了，不过还有个地方可以改进。（可以改进的是，不显示未激活的用户。这个改进留作<a class="xref-link" href="#exercises-activation-test-and-refactoring">练习</a>。）<a class="xref-link" href="#activation-test-and-refactoring">11.3.3 节</a>会编写一些测试，再做一些重构，完成整个功能。</p>
 <h5 id="exercises-activation-edit-action" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>复制粘贴 <a href="#updating-create">11.2.4 节</a>生成的电子邮件中的激活 URL，看激活令牌是什么？</p>
+<p>复制粘贴 <a class="xref-link" href="#updating-create">11.2.4 节</a>生成的电子邮件中的激活 URL，看激活令牌是什么？</p>
 </li>
 <li>
 <p>在 Rails 控制台中确认，使用前一题获得的激活令牌能验证用户的身份。现在，这个用户激活了没有？</p>
@@ -1274,7 +1274,7 @@ fFb_F94mgQtmlSvRFGsITw/edit?email=michael%40michaelhartl.com
 </section>
 <section data-type="sect2" id="activation-test-and-refactoring">
 <h2><span class="title-label">11.3.3</span> 测试和重构</h2>
-<p>本节，我们要为账户激活功能添加一些集成测试。我们已经为提交有效信息的注册过程编写了测试，所以我们要把这个测试添加到 <a href="chapter7.html#a-test-for-valid-submission">7.4.4 节</a>编写的测试中（<a href="chapter7.html#listing-a-test-for-valid-submission">代码清单 7.33</a>）。在测试中，我们要添加好多步，不过意图都很明确，看看你是否能理解<a href="#listing-signup-with-account-activation-test">代码清单 11.33</a> 中的测试。（<a href="#listing-signup-with-account-activation-test">代码清单 11.33</a> 中高亮的那几行特别重要，而且容易忘记；除此之外还新增了几行，一定要全部添加。）</p>
+<p>本节，我们要为账户激活功能添加一些集成测试。我们已经为提交有效信息的注册过程编写了测试，所以我们要把这个测试添加到 <a class="xref-link" href="chapter7.html#a-test-for-valid-submission">7.4.4 节</a>编写的测试中（<a class="xref-link" href="chapter7.html#listing-a-test-for-valid-submission">代码清单 7.33</a>）。在测试中，我们要添加好多步，不过意图都很明确，看看你是否能理解<a class="xref-link" href="#listing-signup-with-account-activation-test">代码清单 11.33</a> 中的测试。（<a class="xref-link" href="#listing-signup-with-account-activation-test">代码清单 11.33</a> 中高亮的那几行特别重要，而且容易忘记；除此之外还新增了几行，一定要全部添加。）</p>
 <div id="listing-signup-with-account-activation-test" data-type="listing">
 <h5><span class="title-label">代码清单 11.33</span>：在用户注册的测试文件中添加账户激活的测试 <span class="green">GREEN</span></h5>
 
@@ -1338,7 +1338,7 @@ fFb_F94mgQtmlSvRFGsITw/edit?email=michael%40michaelhartl.com
 <div class="highlight language-ruby"><pre><code><span class="n">assert_equal</span> <span class="mi">1</span><span class="p">,</span> <span class="no">ActionMailer</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">deliveries</span><span class="p">.</span><span class="nf">size</span>
 </code></pre></div>
 </div>
-<p>这行代码确认只发送了一封邮件。<code>deliveries</code> 是一个数组，用于统计所有发出的邮件，所以我们要在 <code>setup</code> 方法中把它清空，以防其他测试发送了邮件（<a href="chapter12.html#password-reset-test">12.3.3 节</a>就会这么做）。<a href="#listing-signup-with-account-activation-test">代码清单 11.33</a> 还第一次在本书正文中使用了 <code>assigns</code> 方法。<a href="chapter9.html#testing-the-remember-me-box">9.3.1 节</a>的<a href="chapter9.html#exercises-testing-the-remember-me-box">练习</a>说过，<code>assigns</code> 的作用是获取相应动作中的实例变量。例如，<code>Users</code> 控制器的 <code>create</code> 动作中定义了一个 <code>@user</code> 变量，那么我们可以在测试中使用 <code>assigns(:user)</code> 获取这个变量的值。最后，注意，<a href="#listing-signup-with-account-activation-test">代码清单 11.33</a> 把<a href="#listing-comment-out-failing-tests">代码清单 11.24</a> 中的注释去掉了。</p>
+<p>这行代码确认只发送了一封邮件。<code>deliveries</code> 是一个数组，用于统计所有发出的邮件，所以我们要在 <code>setup</code> 方法中把它清空，以防其他测试发送了邮件（<a class="xref-link" href="chapter12.html#password-reset-test">12.3.3 节</a>就会这么做）。<a class="xref-link" href="#listing-signup-with-account-activation-test">代码清单 11.33</a> 还第一次在本书正文中使用了 <code>assigns</code> 方法。<a class="xref-link" href="chapter9.html#testing-the-remember-me-box">9.3.1 节</a>的<a class="xref-link" href="chapter9.html#exercises-testing-the-remember-me-box">练习</a>说过，<code>assigns</code> 的作用是获取相应动作中的实例变量。例如，<code>Users</code> 控制器的 <code>create</code> 动作中定义了一个 <code>@user</code> 变量，那么我们可以在测试中使用 <code>assigns(:user)</code> 获取这个变量的值。最后，注意，<a class="xref-link" href="#listing-signup-with-account-activation-test">代码清单 11.33</a> 把<a class="xref-link" href="#listing-comment-out-failing-tests">代码清单 11.24</a> 中的注释去掉了。</p>
 <p>现在，测试组件应该可以通过：</p>
 <div data-type="listing">
 <h5><span class="title-label">代码清单 11.34</span>：<strong class="green">GREEN</strong></h5>
@@ -1347,7 +1347,7 @@ fFb_F94mgQtmlSvRFGsITw/edit?email=michael%40michaelhartl.com
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
-<p>有了<a href="#listing-signup-with-account-activation-test">代码清单 11.33</a> 中的测试做后盾，接下来我们可以稍微重构一下：把处理用户的代码从控制器中移出，放入模型。我们会定义一个 <code>activate</code> 方法，用来更新用户激活相关的属性；还要定义一个 <code>send_activation_email</code> 方法，发送激活邮件。这两个方法的定义如<a href="#listing-user-activation-methods">代码清单 11.35</a> 所示，重构后的应用代码如<a href="#listing-user-signup-refactored">代码清单 11.36</a> 和<a href="#listing-account-activation-refactored">代码清单 11.37</a> 所示。</p>
+<p>有了<a class="xref-link" href="#listing-signup-with-account-activation-test">代码清单 11.33</a> 中的测试做后盾，接下来我们可以稍微重构一下：把处理用户的代码从控制器中移出，放入模型。我们会定义一个 <code>activate</code> 方法，用来更新用户激活相关的属性；还要定义一个 <code>send_activation_email</code> 方法，发送激活邮件。这两个方法的定义如<a class="xref-link" href="#listing-user-activation-methods">代码清单 11.35</a> 所示，重构后的应用代码如<a class="xref-link" href="#listing-user-signup-refactored">代码清单 11.36</a> 和<a class="xref-link" href="#listing-account-activation-refactored">代码清单 11.37</a> 所示。</p>
 <div id="listing-user-activation-methods" data-type="listing">
 <h5><span class="title-label">代码清单 11.35</span>：在 <code>User</code> 模型中添加账户激活相关的方法</h5>
 
@@ -1422,7 +1422,7 @@ fFb_F94mgQtmlSvRFGsITw/edit?email=michael%40michaelhartl.com
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>注意，在<a href="#listing-user-activation-methods">代码清单 11.35</a> 中没有使用 <code>user.</code>。如果还像之前那样写就会出错，因为 <code>User</code> 模型中没有这个变量：</p>
+<p>注意，在<a class="xref-link" href="#listing-user-activation-methods">代码清单 11.35</a> 中没有使用 <code>user.</code>。如果还像之前那样写就会出错，因为 <code>User</code> 模型中没有这个变量：</p>
 <div data-type="listing">
 
 
@@ -1432,7 +1432,7 @@ fFb_F94mgQtmlSvRFGsITw/edit?email=michael%40michaelhartl.com
 <span class="gi">+update_attribute(:activated_at, Time.zone.now)</span>
 </code></pre></div>
 </div>
-<p>（也可以把 <code>user</code> 换成 <code>self</code>，但 <a href="chapter6.html#uniqueness-validation">6.2.5 节</a>说过，在模型内可以不加 <code>self</code>。）调用 <code>UserMailer</code> 时，我们还把 <code>@user</code> 改成了 <code>self</code>：</p>
+<p>（也可以把 <code>user</code> 换成 <code>self</code>，但 <a class="xref-link" href="chapter6.html#uniqueness-validation">6.2.5 节</a>说过，在模型内可以不加 <code>self</code>。）调用 <code>UserMailer</code> 时，我们还把 <code>@user</code> 改成了 <code>self</code>：</p>
 <div data-type="listing">
 
 
@@ -1451,10 +1451,10 @@ fFb_F94mgQtmlSvRFGsITw/edit?email=michael%40michaelhartl.com
 <h5 id="exercises-activation-test-and-refactoring" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>在<a href="#listing-user-activation-methods">代码清单 11.35</a> 中，<code>activate</code> 方法调用了两次 <code>update_attribute</code> 方法，每一次调用都要单独执行一个数据库事务（transaction）。填写<a href="#listing-update-columns">代码清单 11.39</a> 中缺少的代码，把两个 <code>update_attribute</code> 调用换成一个 <code>update_columns</code> 调用，这样修改后只会与数据库交互一次。改完后运行测试组件，确保仍能通过。</p>
+<p>在<a class="xref-link" href="#listing-user-activation-methods">代码清单 11.35</a> 中，<code>activate</code> 方法调用了两次 <code>update_attribute</code> 方法，每一次调用都要单独执行一个数据库事务（transaction）。填写<a class="xref-link" href="#listing-update-columns">代码清单 11.39</a> 中缺少的代码，把两个 <code>update_attribute</code> 调用换成一个 <code>update_columns</code> 调用，这样修改后只会与数据库交互一次。改完后运行测试组件，确保仍能通过。</p>
 </li>
 <li>
-<p>现在，用户列表页面会显示所有用户，而且各个用户可以通过 /users/:id 查看。不过，更合理的做法是只显示已激活的用户。填写<a href="#listing-show-only-active-users-exercise">代码清单 11.40</a> 中缺少的代码，实现这一需求。<sup>[<a id="fn-ref-7" href="#fn-7">7</a>]</sup>（这段代码中使用了 Active Record 提供的 <code>where</code> 方法，<a href="chapter13.html#a-proto-feed">13.3.3 节</a>会详细介绍。）</p>
+<p>现在，用户列表页面会显示所有用户，而且各个用户可以通过 /users/:id 查看。不过，更合理的做法是只显示已激活的用户。填写<a class="xref-link" href="#listing-show-only-active-users-exercise">代码清单 11.40</a> 中缺少的代码，实现这一需求。<sup>[<a id="fn-ref-8" href="#fn-8">8</a>]</sup>（这段代码中使用了 Active Record 提供的 <code>where</code> 方法，<a class="xref-link" href="chapter13.html#a-proto-feed">13.3.3 节</a>会详细介绍。）</p>
 </li>
 <li>
 <p>为 /users 和 /users/:id 编写集成测试，测试前一题编写的代码。</p>
@@ -1524,8 +1524,8 @@ fFb_F94mgQtmlSvRFGsITw/edit?email=michael%40michaelhartl.com
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>heroku addons:create sendgrid:starter
 </code></pre></div>
 </div>
-<p>（如果你使用的是 Heroku 的旧版命令行接口，这个命令可能无法执行。这个问题有两种解决方法：其一，<a href="https://toolbelt.heroku.com/">升级到最新的 Heroku 工具包</a>；其二，使用旧句法 <code>heroku addons:add sendgrid:starter</code>。）</p>
-<p>为了让应用使用 SendGrid 发送邮件，我们要在生产环境中配置 <a href="https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol">SMTP</a>，还要定义一个 <code>host</code> 变量，设置生产环境中网站的地址，如<a href="#listing-sendgrid-config">代码清单 11.41</a> 所示。</p>
+<p>（如果你使用的是 Heroku 的旧版命令行接口，这个命令可能无法执行。这个问题有两种解决方法：其一，<a href="https://toolbelt.heroku.com/" class="external-link">升级到最新的 Heroku 工具包</a>；其二，使用旧句法 <code>heroku addons:add sendgrid:starter</code>。）</p>
+<p>为了让应用使用 SendGrid 发送邮件，我们要在生产环境中配置 <a href="https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol" class="external-link">SMTP</a>，还要定义一个 <code>host</code> 变量，设置生产环境中网站的地址，如<a class="xref-link" href="#listing-sendgrid-config">代码清单 11.41</a> 所示。</p>
 <div id="listing-sendgrid-config" data-type="listing">
 <h5><span class="title-label">代码清单 11.41</span>：配置应用，在生产环境中使用 SendGrid</h5>
 
@@ -1554,7 +1554,7 @@ fFb_F94mgQtmlSvRFGsITw/edit?email=michael%40michaelhartl.com
 <span class="nf">end</span>
 </code></pre></div>
 </div>
-<p><a href="#listing-sendgrid-config">代码清单 11.41</a> 中设置了 SendGrid 账户的用户名（<code>user_name</code>）和密码（<code>password</code>），但是注意，这两个值是从 <code>ENV</code> 环境变量中获取的，而没有直接写入代码。这是生产环境应用的最佳实践，为了安全，绝不能在源码中写入敏感信息，例如原始密码。这两个值由 SendGrid 扩展自动设置，<a href="chapter13.html#image-upload-in-production">13.4.4 节</a>会介绍如何自己定义。如果好奇，可以使用下面的命令查看这两个环境变量的值：</p>
+<p><a class="xref-link" href="#listing-sendgrid-config">代码清单 11.41</a> 中设置了 SendGrid 账户的用户名（<code>user_name</code>）和密码（<code>password</code>），但是注意，这两个值是从 <code>ENV</code> 环境变量中获取的，而没有直接写入代码。这是生产环境应用的最佳实践，为了安全，绝不能在源码中写入敏感信息，例如原始密码。这两个值由 SendGrid 扩展自动设置，<a class="xref-link" href="chapter13.html#image-upload-in-production">13.4.4 节</a>会介绍如何自己定义。如果好奇，可以使用下面的命令查看这两个环境变量的值：</p>
 <div data-type="listing">
 
 
@@ -1583,7 +1583,7 @@ fFb_F94mgQtmlSvRFGsITw/edit?email=michael%40michaelhartl.com
 <span class="gp">$ </span>heroku run rails db:migrate
 </code></pre></div>
 </div>
-<p>部署到 Heroku 中之后，在生产环境的演示应用中使用你的电子邮件注册试试。你应该会收到一封激活邮件，如<a href="#fig-activation-email-production">图 11.7</a> 所示。点击邮件中的链接后应该能激活账户，如<a href="#fig-activated-in-production">图 11.8</a> 所示。</p>
+<p>部署到 Heroku 中之后，在生产环境的演示应用中使用你的电子邮件注册试试。你应该会收到一封激活邮件，如<a class="xref-link" href="#fig-activation-email-production">图 11.7</a> 所示。点击邮件中的链接后应该能激活账户，如<a class="xref-link" href="#fig-activated-in-production">图 11.8</a> 所示。</p>
 <div id="fig-activation-email-production" class="figure has-border"><img src="images/chapter11/activation_email_production_4th_ed.png" alt="activation email production 4th ed" /><div class="figcaption"><span class="title-label">图 11.7</span>：生产环境中的应用发送的账户激活邮件</div></div>
 <div id="fig-activated-in-production" class="figure"><img src="images/chapter11/activated_in_production.png" alt="activated in production" /><div class="figcaption"><span class="title-label">图 11.8</span>：在生产环境中成功激活账户</div></div>
 <h4 id="exercises-email-in-production" class="discrete">练习</h4>
@@ -1598,7 +1598,7 @@ fFb_F94mgQtmlSvRFGsITw/edit?email=michael%40michaelhartl.com
 </section>
 <section data-type="sect1" id="account-activation-conclusion">
 <h1><span class="title-label">11.5</span> 小结</h1>
-<p>实现账户激活功能后，我们的演示应用已经基本实现了“注册-登录-退出”机制。现在还剩下密码重设功能没实现。读到<a href="chapter12.html#password-reset">第 12 章</a>你会发现，密码重设功能的实现方式与账户激活有很多相似之处，因此能用到本章学到的很多知识。</p>
+<p>实现账户激活功能后，我们的演示应用已经基本实现了“注册-登录-退出”机制。现在还剩下密码重设功能没实现。读到<a class="xref-link" href="chapter12.html#password-reset">第 12 章</a>你会发现，密码重设功能的实现方式与账户激活有很多相似之处，因此能用到本章学到的很多知识。</p>
 <section data-type="sect2" id="account-activation-learned">
 <h2><span class="title-label">11.5.1</span> 本章所学</h2>
 <ul>
@@ -1646,13 +1646,14 @@ fFb_F94mgQtmlSvRFGsITw/edit?email=michael%40michaelhartl.com
 
           <div class="footnotes">
 <ol>
-<li id="fn-1">也可以使用用户的 ID，因为应用的 URL 已经暴露了 ID，但是电子邮件地址更灵活，说不定以后你想隐藏 ID 呢（例如，防止竞争对手知道你的应用中有多少用户）。 <a href="#fn-ref-1" class="symbol">&#8617;</a></li>
-<li id="fn-2">我们将使用 <code>edit</code> 动作，因此可以在命令行中加上 <code>edit</code>；但是，这样做还会生成 <code>edit</code> 视图和测试文件，而我们并不需要。 <a href="#fn-ref-2" class="symbol">&#8617;</a></li>
-<li id="fn-3">鉴于这个原因，我们不会使用 Rails 5 新增的 <code>has_secure_token</code> 方法（名字容易让人误会），因为它在数据库中存储令牌的<a href="https://en.wikipedia.org/wiki/Cleartext">明文</a>。 <a href="#fn-ref-3" class="symbol">&#8617;</a></li>
-<li id="fn-4">一个 URL 中可以有多个查询参数，多个键值对之间使用 <code>&amp;</code> 符号连接，例如 <code>/edit?name=Foo%20Bar&amp;email=foo%40example.com</code>。 <a href="#fn-ref-4" class="symbol">&#8617;</a></li>
-<li id="fn-5">一开始撰写本章时，我一时想不起在 Rails 中该如何转义 URL，让我体会到了技术是复杂的。为了查明该怎么做，我在 Google 中搜索“ruby rails escape url”，找到了<a href="http://stackoverflow.com/questions/6714196/ruby-url-encoding-string">两种主要方法</a>：<code>URI::encode(str)</code> 和 <code>CGI.escape(str)</code>。一一试过之后，我发现需要的是第二个方法。（其实还有第三种方法，<code>ERB::Util</code> 库提供的 <a href="http://apidock.com/ruby/ERB/Util/url_encode"><code>url_encode</code> 方法</a>，具有同样的效果。） <a href="#fn-ref-5" class="symbol">&#8617;</a></li>
-<li id="fn-6">这里，我们分两次调用 <code>update_attribute</code> 方法，而不是调用一次 <code>update_attributes</code> 方法，因为后者会执行数据验证。这里没有提供密码，验证会失败。 <a href="#fn-ref-6" class="symbol">&#8617;</a></li>
-<li id="fn-7">注意，<a href="#listing-show-only-active-users-exercise">代码清单 11.40</a> 中使用的是 <code>and</code> 而不是 <code>&amp;&amp;</code>。二者作用基本一样，但 <code>&amp;&amp;</code> 的<a href="http://en.wikipedia.org/wiki/Order_of_operations#Programming_languages">优先级</a>较高，与 <code>root_url</code> 绑定得太紧。我们也可以把 <code>redirect_to root_url</code> 放在括号里，不过习惯写法是使用 <code>and</code>。 <a href="#fn-ref-7" class="symbol">&#8617;</a></li>
+<li id="fn-1">除了这里所述的基本步骤之外，还可以加上重新发送账户激活邮件的功能，以防最初的确认邮件丢失了，或者被当做垃圾邮件了。你可能要等到读完本书之后才有能力添加这样一个功能。此外，也可以考虑使用自带重新发送确认邮件功能的解决方案，如 <a href="https://github.com/plataformatec/devise" class="external-link">Devise</a>。 <a href="#fn-ref-1" class="symbol">&#8617;</a></li>
+<li id="fn-2">也可以使用用户的 ID，因为应用的 URL 已经暴露了 ID，但是电子邮件地址更灵活，说不定以后你想隐藏 ID 呢（例如，防止竞争对手知道你的应用中有多少用户）。 <a href="#fn-ref-2" class="symbol">&#8617;</a></li>
+<li id="fn-3">我们将使用 <code>edit</code> 动作，因此可以在命令行中加上 <code>edit</code>；但是，这样做还会生成 <code>edit</code> 视图和测试文件，而我们并不需要。 <a href="#fn-ref-3" class="symbol">&#8617;</a></li>
+<li id="fn-4">鉴于这个原因，我们不会使用 Rails 5 新增的 <code>has_secure_token</code> 方法（名字容易让人误会），因为它在数据库中存储令牌的<a href="https://en.wikipedia.org/wiki/Cleartext" class="external-link">明文</a>。 <a href="#fn-ref-4" class="symbol">&#8617;</a></li>
+<li id="fn-5">一个 URL 中可以有多个查询参数，多个键值对之间使用 <code>&amp;</code> 符号连接，例如 <code>/edit?name=Foo%20Bar&amp;email=foo%40example.com</code>。 <a href="#fn-ref-5" class="symbol">&#8617;</a></li>
+<li id="fn-6">一开始撰写本章时，我一时想不起在 Rails 中该如何转义 URL，让我体会到了技术是复杂的。为了查明该怎么做，我在 Google 中搜索“ruby rails escape url”，找到了<a href="http://stackoverflow.com/questions/6714196/ruby-url-encoding-string" class="external-link">两种主要方法</a>：<code>URI::encode(str)</code> 和 <code>CGI.escape(str)</code>。一一试过之后，我发现需要的是第二个方法。（其实还有第三种方法，<code>ERB::Util</code> 库提供的 <a href="http://apidock.com/ruby/ERB/Util/url_encode" class="external-link"><code>url_encode</code> 方法</a>，具有同样的效果。） <a href="#fn-ref-6" class="symbol">&#8617;</a></li>
+<li id="fn-7">这里，我们分两次调用 <code>update_attribute</code> 方法，而不是调用一次 <code>update_attributes</code> 方法，因为后者会执行数据验证。这里没有提供密码，验证会失败。 <a href="#fn-ref-7" class="symbol">&#8617;</a></li>
+<li id="fn-8">注意，<a class="xref-link" href="#listing-show-only-active-users-exercise">代码清单 11.40</a> 中使用的是 <code>and</code> 而不是 <code>&amp;&amp;</code>。二者作用基本一样，但 <code>&amp;&amp;</code> 的<a href="http://en.wikipedia.org/wiki/Order_of_operations#Programming_languages" class="external-link">优先级</a>较高，与 <code>root_url</code> 绑定得太紧。我们也可以把 <code>redirect_to root_url</code> 放在括号里，不过习惯写法是使用 <code>and</code>。 <a href="#fn-ref-8" class="symbol">&#8617;</a></li>
 </ol>
 </div>
         </div>

@@ -9,7 +9,7 @@
   <meta name="keywords" content="ruby, rails, tutorial"/>
   <meta name="author" content="Michael Hartl"/>
   <meta name="translator" content="安道"/>
-  <meta name="generator" content="persie 0.0.2.beta.1"/>
+  <meta name="generator" content="persie 0.0.3.beta.4"/>
   <link rel="stylesheet" type="text/css" href="//railstutorial-china.org/assets/css/main.css"/>
   <link rel="stylesheet" type="text/css" href="book.css"/>
   <script type="text/javascript" src="//railstutorial-china.org/assets/js/global.js"></script>
@@ -59,14 +59,14 @@
           <article class="article">
             <section data-type="chapter" id="password-reset">
 <h1><span class="title-label">第 12 章</span> 重设密码</h1>
-<p>完成账户激活功能后（从而确认了用户的电子邮件地址可用），我们可以实现密码重设功能了，以防用户忘记密码。我们将看到，密码重设的很多步骤和账户激活类似，所以这里会用到<a href="chapter11.html#account-activation">第 11 章</a>学到的知识。不过，开头不一样，与账户激活功能不同的是，密码重设要修改一个视图，还要创建两个新表单（用于提交电子邮件地址和设定新密码）。</p>
-<p>编写代码之前，我们先构思要实现的重设密码步骤。首先，我们要在演示应用的登录表单中添加“forgot password”（忘记密码）链接，如<a href="#fig-login-forgot-password-mockup">图 12.1</a> 所示。</p>
+<p>完成账户激活功能后（从而确认了用户的电子邮件地址可用），我们可以实现密码重设功能了，以防用户忘记密码。我们将看到，密码重设的很多步骤和账户激活类似，所以这里会用到<a class="xref-link" href="chapter11.html#account-activation">第 11 章</a>学到的知识。不过，开头不一样，与账户激活功能不同的是，密码重设要修改一个视图，还要创建两个新表单（用于提交电子邮件地址和设定新密码）。</p>
+<p>编写代码之前，我们先构思要实现的重设密码步骤。首先，我们要在演示应用的登录表单中添加“forgot password”（忘记密码）链接，如<a class="xref-link" href="#fig-login-forgot-password-mockup">图 12.1</a> 所示。</p>
 <div id="fig-login-forgot-password-mockup" class="figure"><img src="images/chapter12/login_forgot_password_mockup.png" alt="login forgot password mockup" /><div class="figcaption"><span class="title-label">图 12.1</span>：“forgot password”链接的构思图</div></div>
-<p>点击“forgot password”链接后打开一个页面，这个页面中有一个表单，要求输入电子邮件地址，用户提交之后，应用向这个地址发送一封包含密码重设链接的邮件，如<a href="#fig-forgot-password-form-mockup">图 12.2</a> 所示。</p>
+<p>点击“forgot password”链接后打开一个页面，这个页面中有一个表单，要求输入电子邮件地址，用户提交之后，应用向这个地址发送一封包含密码重设链接的邮件，如<a class="xref-link" href="#fig-forgot-password-form-mockup">图 12.2</a> 所示。</p>
 <div id="fig-forgot-password-form-mockup" class="figure"><img src="images/chapter12/forgot_password_form_mockup.png" alt="forgot password form mockup" /><div class="figcaption"><span class="title-label">图 12.2</span>：“Forgot password”表单的构思图</div></div>
-<p>点击密码重设链接会打开一个表单，用户在这个表单中重设密码（还要填写密码确认），如<a href="#fig-reset-password-form-mockup">图 12.3</a> 所示。</p>
+<p>点击密码重设链接会打开一个表单，用户在这个表单中重设密码（还要填写密码确认），如<a class="xref-link" href="#fig-reset-password-form-mockup">图 12.3</a> 所示。</p>
 <div id="fig-reset-password-form-mockup" class="figure"><img src="images/chapter12/reset_password_form_mockup.png" alt="reset password form mockup" /><div class="figcaption"><span class="title-label">图 12.3</span>：“Reset password”表单的构思图</div></div>
-<p>如果你读完了<a href="chapter11.html#account-activation">第 11 章</a>，已经有了密码重设邮件程序（<a href="chapter11.html#listing-generate-user-mailer">代码清单 11.6</a>）。本节将完成剩下的工作，为密码重设功能添加资源和数据模型。重设密码功能在 <a href="#resetting-the-password">12.3 节</a>实现。</p>
+<p>如果你读完了<a class="xref-link" href="chapter11.html#account-activation">第 11 章</a>，已经有了密码重设邮件程序（<a class="xref-link" href="chapter11.html#listing-generate-user-mailer">代码清单 11.6</a>）。本节将完成剩下的工作，为密码重设功能添加资源和数据模型。重设密码功能在 <a class="xref-link" href="#resetting-the-password">12.3 节</a>实现。</p>
 <p>与账户激活功能一样，我们要把“密码重设”看做一个资源，每个重设密码操作都有一个重设令牌和对应的摘要。主要的步骤如下：</p>
 <ol class="arabic">
 <li>
@@ -87,7 +87,7 @@
 </ol>
 <section data-type="sect1" id="password-resets-resource">
 <h1><span class="title-label">12.1</span> <code>PasswordResets</code> 资源</h1>
-<p>与会话（<a href="chapter8.html#sessions">8.1 节</a>）和账户激活（<a href="chapter11.html#account-activation">第 11 章</a>）一样，我们要把“密码重设”看做一个资源（<code>PasswordResets</code>），不过这个资源不对应 Active Record 模型，相关的数据（包括重设令牌）存储在 <code>User</code> 模型中。</p>
+<p>与会话（<a class="xref-link" href="chapter8.html#sessions">8.1 节</a>）和账户激活（<a class="xref-link" href="chapter11.html#account-activation">第 11 章</a>）一样，我们要把“密码重设”看做一个资源（<code>PasswordResets</code>），不过这个资源不对应 Active Record 模型，相关的数据（包括重设令牌）存储在 <code>User</code> 模型中。</p>
 <p>我们将把“密码重设”看做一个资源，因此要使用标准的 REST URL 与之交互。处理激活链接只需 <code>edit</code> 一个动作，而这里要渲染 <code>new</code> 和 <code>edit</code> 表单，处理密码重设请求，还要创建和更新密码，因此最终共计要使用四个 REST 式路由。</p>
 <p>与之前一样，我们要在主题分支中实现这个新功能：</p>
 <div data-type="listing">
@@ -105,8 +105,8 @@
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate controller PasswordResets new edit --no-test-framework
 </code></pre></div>
 </div>
-<p>注意，我们指定了一个旗标，不让 Rails 生成测试。这是因为我们不需要控制器测试，而将继续使用 <a href="chapter11.html#activation-test-and-refactoring">11.3.3 节</a>编写的集成测试。</p>
-<p>我们需要两个表单，一个请求重设密码（<a href="#fig-forgot-password-form-mockup">图 12.2</a>），一个修改 <code>User</code> 模型中的密码（<a href="#fig-reset-password-form-mockup">图 12.3</a>），所以需要为 <code>new</code>、<code>create</code>、<code>edit</code> 和 <code>update</code> 四个动作定义路由——通过<a href="#listing-password-resets-resource">代码清单 12.1</a> 中高亮显示的那条 <code>resources</code> 规则实现。</p>
+<p>注意，我们指定了一个旗标，不让 Rails 生成测试。这是因为我们不需要控制器测试，而将继续使用 <a class="xref-link" href="chapter11.html#activation-test-and-refactoring">11.3.3 节</a>编写的集成测试。</p>
+<p>我们需要两个表单，一个请求重设密码（<a class="xref-link" href="#fig-forgot-password-form-mockup">图 12.2</a>），一个修改 <code>User</code> 模型中的密码（<a class="xref-link" href="#fig-reset-password-form-mockup">图 12.3</a>），所以需要为 <code>new</code>、<code>create</code>、<code>edit</code> 和 <code>update</code> 四个动作定义路由——通过<a class="xref-link" href="#listing-password-resets-resource">代码清单 12.1</a> 中高亮显示的那条 <code>resources</code> 规则实现。</p>
 <div id="listing-password-resets-resource" data-type="listing">
 <h5><span class="title-label">代码清单 12.1</span>：添加 <code>PasswordResets</code> 资源的路由</h5>
 
@@ -127,9 +127,9 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>添加这个规则后，得到了<a href="#table-restful-password-resets">表 12.1</a> 中的 REST 式路由。</p>
+<p>添加这个规则后，得到了<a class="xref-link" href="#table-restful-password-resets">表 12.1</a> 中的 REST 式路由。</p>
 <table id="table-restful-password-resets" class="tableblock frame-all grid-all" style="width: 100%;">
-<caption><span class="title-label">表 12.1</span>：在<a href="#listing-password-resets-resource">代码清单 12.1</a> 中添加那条规则后得到的 REST 式路由</caption>
+<caption><span class="title-label">表 12.1</span>：在<a class="xref-link" href="#listing-password-resets-resource">代码清单 12.1</a> 中添加那条规则后得到的 REST 式路由</caption>
 <colgroup>
 <col style="width: 15%;" />
 <col style="width: 35%;" />
@@ -178,7 +178,7 @@
 <div class="highlight language-ruby"><pre><code><span class="n">new_password_reset_path</span>
 </code></pre></div>
 </div>
-<p>把这个链接添加到登录表单，如<a href="#listing-log-in-password-reset">代码清单 12.2</a> 所示。添加后的效果如<a href="#fig-forgot-password-link">图 12.4</a> 所示。</p>
+<p>把这个链接添加到登录表单，如<a class="xref-link" href="#listing-log-in-password-reset">代码清单 12.2</a> 所示。添加后的效果如<a class="xref-link" href="#fig-forgot-password-link">图 12.4</a> 所示。</p>
 <div id="listing-log-in-password-reset" data-type="listing">
 <h5><span class="title-label">代码清单 12.2</span>：添加打开忘记密码表单的链接</h5>
 
@@ -218,13 +218,13 @@
 <p>确认测试组件仍能通过。</p>
 </li>
 <li>
-<p><a href="#table-restful-password-resets">表 12.1</a> 为什么列出具名路由的 <code>_url</code> 形式，而不是 <code>_path</code> 形式？提示：我们将在电子邮件中使用链接。</p>
+<p><a class="xref-link" href="#table-restful-password-resets">表 12.1</a> 为什么列出具名路由的 <code>_url</code> 形式，而不是 <code>_path</code> 形式？提示：我们将在电子邮件中使用链接。</p>
 </li>
 </ol>
 </section>
 <section data-type="sect2" id="new-password-resets">
 <h2><span class="title-label">12.1.2</span> 请求重设密码</h2>
-<p>请求重设密码之前，我们要定义数据模型。密码重设所需的数据模型与账户激活的类似（<a href="chapter11.html#fig-user-model-account-activation">图 11.1</a>）。参照“记住我”功能（<a href="chapter9.html#remember-me">9.1 节</a>）和账户激活功能（<a href="chapter11.html#account-activation">第 11 章</a>），密码重设需要一个虚拟的重设令牌属性，在重设密码的邮件中使用，以及对应的重设摘要，用于检索用户。如果存储未哈希的令牌，能访问数据库的攻击者就能发送一封重设密码邮件给用户，然后使用令牌和邮件地址访问对应的密码重设链接，从而获得账户控制权。因此，必须存储令牌的摘要。为了进一步保障安全，我们还计划过几个小时后让重设链接失效，所以要记录重设邮件发送的时间。据此，我们要添加两个属性：<code>reset_digest</code> 和 <code>reset_sent_at</code>，如<a href="#fig-user-model-password-reset">图 12.5</a> 所示。</p>
+<p>请求重设密码之前，我们要定义数据模型。密码重设所需的数据模型与账户激活的类似（<a class="xref-link" href="chapter11.html#fig-user-model-account-activation">图 11.1</a>）。参照“记住我”功能（<a class="xref-link" href="chapter9.html#remember-me">9.1 节</a>）和账户激活功能（<a class="xref-link" href="chapter11.html#account-activation">第 11 章</a>），密码重设需要一个虚拟的重设令牌属性，在重设密码的邮件中使用，以及对应的重设摘要，用于检索用户。如果存储未哈希的令牌，能访问数据库的攻击者就能发送一封重设密码邮件给用户，然后使用令牌和邮件地址访问对应的密码重设链接，从而获得账户控制权。因此，必须存储令牌的摘要。为了进一步保障安全，我们还计划过几个小时后让重设链接失效，所以要记录重设邮件发送的时间。据此，我们要添加两个属性：<code>reset_digest</code> 和 <code>reset_sent_at</code>，如<a class="xref-link" href="#fig-user-model-password-reset">图 12.5</a> 所示。</p>
 <div id="fig-user-model-password-reset" class="figure"><img src="images/chapter12/user_model_password_reset.png" alt="user model password reset" /><div class="figcaption"><span class="title-label">图 12.5</span>：添加密码重设相关属性后的 <code>User</code> 模型</div></div>
 <p>执行下面的命令，创建添加这两个属性的迁移：</p>
 <div data-type="listing">
@@ -242,7 +242,7 @@
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails db:migrate
 </code></pre></div>
 </div>
-<p>我们要参照前面为没有模型的资源编写表单的方式，即创建新会话的登录表单（<a href="chapter8.html#listing-login-form">代码清单 8.4</a>），编写请求重设密码的表单。为了便于参考，我们再把那个表单列出来，如<a href="#listing-login-form-redux">代码清单 12.3</a> 所示。</p>
+<p>我们要参照前面为没有模型的资源编写表单的方式，即创建新会话的登录表单（<a class="xref-link" href="chapter8.html#listing-login-form">代码清单 8.4</a>），编写请求重设密码的表单。为了便于参考，我们再把那个表单列出来，如<a class="xref-link" href="#listing-login-form-redux">代码清单 12.3</a> 所示。</p>
 <div id="listing-login-form-redux" data-type="listing">
 <h5><span class="title-label">代码清单 12.3</span>：登录表单的代码</h5>
 
@@ -274,7 +274,7 @@
 <span class="nt">&lt;/div&gt;</span>
 </code></pre></div>
 </div>
-<p>请求重设密码的表单和<a href="#listing-login-form-redux">代码清单 12.3</a> 有很多共通之处，二者之间最大的区别是，<code>form_for</code> 中的资源和地址不一样，而且也没有密码字段。请求重设密码的表单如<a href="#listing-new-password-reset">代码清单 12.4</a> 所示，渲染的结果如<a href="#fig-forgot-password-form">图 12.6</a> 所示。</p>
+<p>请求重设密码的表单和<a class="xref-link" href="#listing-login-form-redux">代码清单 12.3</a> 有很多共通之处，二者之间最大的区别是，<code>form_for</code> 中的资源和地址不一样，而且也没有密码字段。请求重设密码的表单如<a class="xref-link" href="#listing-new-password-reset">代码清单 12.4</a> 所示，渲染的结果如<a class="xref-link" href="#fig-forgot-password-form">图 12.6</a> 所示。</p>
 <div id="listing-new-password-reset" data-type="listing">
 <h5><span class="title-label">代码清单 12.4</span>：请求重设密码页面的视图</h5>
 
@@ -299,13 +299,13 @@
 <h5 id="exercises-new-password-resets" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>在<a href="#listing-new-password-reset">代码清单 12.4</a> 中，传给 <code>form_for</code> 的为什么是 <code>:password_reset</code>，而不是 <code>@password_reset</code>？</p>
+<p>在<a class="xref-link" href="#listing-new-password-reset">代码清单 12.4</a> 中，传给 <code>form_for</code> 的为什么是 <code>:password_reset</code>，而不是 <code>@password_reset</code>？</p>
 </li>
 </ol>
 </section>
 <section data-type="sect2" id="password-reset-create-action">
 <h2><span class="title-label">12.1.3</span> <code>PasswordResets</code> 控制器的 <code>create</code> 动作</h2>
-<p>提交<a href="#fig-forgot-password-form">图 12.6</a> 中的表单后，我们要通过电子邮件地址查找用户，更新这个用户的 <code>reset_token</code>、<code>reset_digest</code> 和 <code>reset_sent_at</code> 属性，然后重定向到根地址，并显示一个闪现消息。与登录一样（<a href="chapter8.html#listing-correct-login-failure">代码清单 8.11</a>），如果提交的数据无效，我们要重新渲染页面，并且使用 <code>flash.now</code> 显示一个闪现消息。据此写出的 <code>create</code> 动作如<a href="#listing-create-password-reset">代码清单 12.5</a> 所示。</p>
+<p>提交<a class="xref-link" href="#fig-forgot-password-form">图 12.6</a> 中的表单后，我们要通过电子邮件地址查找用户，更新这个用户的 <code>reset_token</code>、<code>reset_digest</code> 和 <code>reset_sent_at</code> 属性，然后重定向到根地址，并显示一个闪现消息。与登录一样（<a class="xref-link" href="chapter8.html#listing-correct-login-failure">代码清单 8.11</a>），如果提交的数据无效，我们要重新渲染页面，并且使用 <code>flash.now</code> 显示一个闪现消息。<sup>[<a id="fn-ref-1" href="#fn-1">1</a>]</sup>据此写出的 <code>create</code> 动作如<a class="xref-link" href="#listing-create-password-reset">代码清单 12.5</a> 所示。</p>
 <div id="listing-create-password-reset" data-type="listing">
 <h5><span class="title-label">代码清单 12.5</span>：<code>PasswordResets</code> 控制器的 <code>create</code> 动作</h5>
 
@@ -334,7 +334,7 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p><code>User</code> 模型中的代码与 <code>before_create</code> 回调中使用的 <code>create_activation_digest</code> 方法（<a href="chapter11.html#listing-user-model-activation-code">代码清单 11.3</a>）类似，如<a href="#listing-user-model-password-reset">代码清单 12.6</a> 所示。</p>
+<p><code>User</code> 模型中的代码与 <code>before_create</code> 回调中使用的 <code>create_activation_digest</code> 方法（<a class="xref-link" href="chapter11.html#listing-user-model-activation-code">代码清单 11.3</a>）类似，如<a class="xref-link" href="#listing-user-model-password-reset">代码清单 12.6</a> 所示。</p>
 <div id="listing-user-model-password-reset" data-type="listing">
 <h5><span class="title-label">代码清单 12.6</span>：在 <code>User</code> 模型中添加重设密码所需的方法</h5>
 
@@ -377,12 +377,12 @@
 <span class="nf">end</span>
 </code></pre></div>
 </div>
-<p>如<a href="#fig-invalid-email-password-reset">图 12.7</a> 所示，提交无效的电子邮件地址时，应用的表现正常。为了让提交有效地址时应用也能正常运行，我们要定义发送密码重设邮件的方法。</p>
+<p>如<a class="xref-link" href="#fig-invalid-email-password-reset">图 12.7</a> 所示，提交无效的电子邮件地址时，应用的表现正常。为了让提交有效地址时应用也能正常运行，我们要定义发送密码重设邮件的方法。</p>
 <div id="fig-invalid-email-password-reset" class="figure"><img src="images/chapter12/invalid_email_password_reset.png" alt="invalid email password reset" /><div class="figcaption"><span class="title-label">图 12.7</span>：提交无效电子邮件地址后显示的“Forgot Password”表单</div></div>
 <h5 id="exercises-password-reset-create-action" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>在<a href="#fig-forgot-password-form">图 12.6</a> 所示的表单中提交有效的电子邮件地址，会看到什么错误消息？</p>
+<p>在<a class="xref-link" href="#fig-forgot-password-form">图 12.6</a> 所示的表单中提交有效的电子邮件地址，会看到什么错误消息？</p>
 </li>
 <li>
 <p>在 Rails 控制台中确认，虽然前一题有错误，但是 <code>reset_digest</code> 和 <code>reset_sent_at</code> 属性有值了。这两个属性的值是什么？</p>
@@ -393,17 +393,17 @@
 <section data-type="sect1" id="password-reset-emails">
 <h1><span class="title-label">12.2</span> 密码重设邮件</h1>
 <p>前一节在 <code>PasswordResets</code> 控制器中定义的 <code>create</code> 动作基本可用，但是发送密码重设邮件的方法还没有。</p>
-<p>如果你跟着 <a href="chapter11.html#account-activations-resource">11.1 节</a>做了，<code>app/mailers/user_mailer.rb</code> 文件中应该有一个默认生成的 <code>password_reset</code> 方法，这是<a href="chapter11.html#listing-generate-user-mailer">代码清单 11.6</a> 生成 <code>User</code> 邮件程序时生成的。如果你跳过了<a href="chapter11.html#account-activation">第 11 章</a>，可以直接复制下面的代码（不含 <code>account_activation</code> 及相关的方法），并且创建缺少的文件。</p>
+<p>如果你跟着 <a class="xref-link" href="chapter11.html#account-activations-resource">11.1 节</a>做了，<code>app/mailers/user_mailer.rb</code> 文件中应该有一个默认生成的 <code>password_reset</code> 方法，这是<a class="xref-link" href="chapter11.html#listing-generate-user-mailer">代码清单 11.6</a> 生成 <code>User</code> 邮件程序时生成的。如果你跳过了<a class="xref-link" href="chapter11.html#account-activation">第 11 章</a>，可以直接复制下面的代码（不含 <code>account_activation</code> 及相关的方法），并且创建缺少的文件。</p>
 <section data-type="sect2" id="password-reset-mailer">
 <h2><span class="title-label">12.2.1</span> 密码重设邮件程序和模板</h2>
-<p>在<a href="#listing-user-model-password-reset">代码清单 12.6</a> 中我们用到了 <a href="chapter11.html#activation-test-and-refactoring">11.3.3 节</a>重构的成果，直接在 <code>User</code> 模型中使用 <code>User</code> 邮件程序：</p>
+<p>在<a class="xref-link" href="#listing-user-model-password-reset">代码清单 12.6</a> 中我们用到了 <a class="xref-link" href="chapter11.html#activation-test-and-refactoring">11.3.3 节</a>重构的成果，直接在 <code>User</code> 模型中使用 <code>User</code> 邮件程序：</p>
 <div data-type="listing">
 
 
 <div class="highlight language-ruby"><pre><code><span class="no">UserMailer</span><span class="p">.</span><span class="nf">password_reset</span><span class="p">(</span><span class="nb">self</span><span class="p">).</span><span class="nf">deliver_now</span>
 </code></pre></div>
 </div>
-<p>让这个邮件程序运作起来所需的代码几乎与 <a href="chapter11.html#account-activation-emails">11.2 节</a>的账户激活邮件程序一样。我们首先在 <code>UserMailer</code> 中定义 <code>password_reset</code> 方法（<a href="#listing-mail-password-reset">代码清单 12.7</a>），然后编写邮件的纯文本视图（<a href="#listing-password-reset-text">代码清单 12.8</a>）和 HTML 视图（<a href="#listing-password-reset-html">代码清单 12.9</a>）。</p>
+<p>让这个邮件程序运作起来所需的代码几乎与 <a class="xref-link" href="chapter11.html#account-activation-emails">11.2 节</a>的账户激活邮件程序一样。我们首先在 <code>UserMailer</code> 中定义 <code>password_reset</code> 方法（<a class="xref-link" href="#listing-mail-password-reset">代码清单 12.7</a>），然后编写邮件的纯文本视图（<a class="xref-link" href="#listing-password-reset-text">代码清单 12.8</a>）和 HTML 视图（<a class="xref-link" href="#listing-password-reset-html">代码清单 12.9</a>）。</p>
 <div id="listing-mail-password-reset" data-type="listing">
 <h5><span class="title-label">代码清单 12.7</span>：发送密码重设链接</h5>
 
@@ -458,7 +458,7 @@ your password will stay as it is.
 <span class="nt">&lt;/p&gt;</span>
 </code></pre></div>
 </div>
-<p>与账户激活邮件一样（<a href="chapter11.html#account-activation-emails">11.2 节</a>），我们可以使用 Rails 提供的邮件预览程序预览密码重设邮件。参照<a href="chapter11.html#listing-account-activation-preview">代码清单 11.18</a>，密码重设邮件的预览程序如<a href="#listing-password-reset-preview">代码清单 12.10</a> 所示。</p>
+<p>与账户激活邮件一样（<a class="xref-link" href="chapter11.html#account-activation-emails">11.2 节</a>），我们可以使用 Rails 提供的邮件预览程序预览密码重设邮件。参照<a class="xref-link" href="chapter11.html#listing-account-activation-preview">代码清单 11.18</a>，密码重设邮件的预览程序如<a class="xref-link" href="#listing-password-reset-preview">代码清单 12.10</a> 所示。</p>
 <div id="listing-password-reset-preview" data-type="listing">
 <h5><span class="title-label">代码清单 12.10</span>：预览密码重设邮件所需的方法</h5>
 
@@ -485,9 +485,9 @@ your password will stay as it is.
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>然后就可以预览密码重设邮件了，HTML 格式和纯文本格式分别如<a href="#fig-password-reset-html-preview">图 12.8</a> 和<a href="#fig-password-reset-text-preview">图 12.9</a> 所示。</p>
+<p>然后就可以预览密码重设邮件了，HTML 格式和纯文本格式分别如<a class="xref-link" href="#fig-password-reset-html-preview">图 12.8</a> 和<a class="xref-link" href="#fig-password-reset-text-preview">图 12.9</a> 所示。</p>
 <div id="fig-password-reset-html-preview" class="figure"><img src="images/chapter12/password_reset_html_preview_4th_ed.png" alt="password reset html preview 4th ed" /><div class="figcaption"><span class="title-label">图 12.8</span>：预览 HTML 格式的密码重设邮件</div></div>
-<p>现在，提交有效的电子邮件地址后会看到如<a href="#fig-valid-email-password-reset">图 12.10</a> 所示的页面。服务器日志中会显示相应的邮件，如<a href="#listing-password-reset-email">代码清单 12.11</a> 所示。</p>
+<p>现在，提交有效的电子邮件地址后会看到如<a class="xref-link" href="#fig-valid-email-password-reset">图 12.10</a> 所示的页面。服务器日志中会显示相应的邮件，如<a class="xref-link" href="#listing-password-reset-email">代码清单 12.11</a> 所示。</p>
 <div id="fig-password-reset-text-preview" class="figure"><img src="images/chapter12/password_reset_text_preview_4th_ed.png" alt="password reset text preview 4th ed" /><div class="figcaption"><span class="title-label">图 12.9</span>：预览纯文本格式的密码重设邮件</div></div>
 <div id="fig-valid-email-password-reset" class="figure"><img src="images/chapter12/valid_email_password_reset.png" alt="valid email password reset" /><div class="figcaption"><span class="title-label">图 12.10</span>：提交有效电子邮件地址后看到的页面</div></div>
 <div id="listing-password-reset-email" data-type="listing">
@@ -558,7 +558,7 @@ your password will stay as it is.
 </section>
 <section data-type="sect2" id="reset-email-tests">
 <h2><span class="title-label">12.2.2</span> 测试电子邮件</h2>
-<p>参照账户激活邮件程序的测试（<a href="chapter11.html#listing-real-account-activation-test">代码清单 11.20</a>），下面为密码重设邮件程序编写一个测试，如<a href="#listing-password-reset-mailer-test">代码清单 12.12</a> 所示。</p>
+<p>参照账户激活邮件程序的测试（<a class="xref-link" href="chapter11.html#listing-real-account-activation-test">代码清单 11.20</a>），下面为密码重设邮件程序编写一个测试，如<a class="xref-link" href="#listing-password-reset-mailer-test">代码清单 12.12</a> 所示。</p>
 <div id="listing-password-reset-mailer-test" data-type="listing">
 <h5><span class="title-label">代码清单 12.12</span>：添加密码重设邮件程序的测试 <span class="green">GREEN</span></h5>
 
@@ -607,14 +607,14 @@ your password will stay as it is.
 <p>只运行邮件程序的测试，能通过吗？</p>
 </li>
 <li>
-<p>把<a href="#listing-password-reset-mailer-test">代码清单 12.12</a> 中第二个测试里的 <code>CGI.escape</code> 去掉，确认测试会失败。</p>
+<p>把<a class="xref-link" href="#listing-password-reset-mailer-test">代码清单 12.12</a> 中第二个测试里的 <code>CGI.escape</code> 去掉，确认测试会失败。</p>
 </li>
 </ol>
 </section>
 </section>
 <section data-type="sect1" id="resetting-the-password">
 <h1><span class="title-label">12.3</span> 重设密码</h1>
-<p>现在能正确生成邮件了（<a href="#listing-password-reset-email">代码清单 12.11</a>），接下来我们要编写 <code>PasswordResets</code> 控制器的 <code>edit</code> 动作，重设用户的密码。与 <a href="chapter11.html#activation-test-and-refactoring">11.3.3 节</a>一样，我们将编写完整的集成测试。</p>
+<p>现在能正确生成邮件了（<a class="xref-link" href="#listing-password-reset-email">代码清单 12.11</a>），接下来我们要编写 <code>PasswordResets</code> 控制器的 <code>edit</code> 动作，重设用户的密码。与 <a class="xref-link" href="chapter11.html#activation-test-and-refactoring">11.3.3 节</a>一样，我们将编写完整的集成测试。</p>
 <section data-type="sect2" id="reset-edit-action">
 <h2><span class="title-label">12.3.1</span> <code>PasswordResets</code> 控制器的 <code>edit</code> 动作</h2>
 <p>密码重设邮件中有类似下面这种形式的链接：</p>
@@ -624,8 +624,8 @@ your password will stay as it is.
 <div class="highlight language-text"><pre><code>https://example.com/password_resets/3BdBrXeQZSWqFIDRN8cxHA/edit?email=foo%40bar.com
 </code></pre></div>
 </div>
-<p>为了让这种形式的链接生效，我们要编写一个表单，重设密码。这个表单的目的与编辑用户资料的表单（<a href="chapter10.html#listing-user-edit-view">代码清单 10.2</a>）类似，不过现在只需更新密码和密码确认两个字段。</p>
-<p>不过，这一次处理起来有点复杂，因为我们希望通过电子邮件地址查找用户。也就是说，在 <code>edit</code> 动作和 <code>update</code> 动作中都需要使用邮件地址。在 <code>edit</code> 动作中可以轻易地获取邮件地址，因为链接中有。可是提交表单后，邮件地址就没有了。为了解决这个问题，我们可以使用一个隐藏字段，把它的值设为邮件地址（不会显示），和表单中的其他数据一起提交给 <code>update</code> 动作，如<a href="#listing-password-reset-form">代码清单 12.14</a> 所示。</p>
+<p>为了让这种形式的链接生效，我们要编写一个表单，重设密码。这个表单的目的与编辑用户资料的表单（<a class="xref-link" href="chapter10.html#listing-user-edit-view">代码清单 10.2</a>）类似，不过现在只需更新密码和密码确认两个字段。</p>
+<p>不过，这一次处理起来有点复杂，因为我们希望通过电子邮件地址查找用户。也就是说，在 <code>edit</code> 动作和 <code>update</code> 动作中都需要使用邮件地址。在 <code>edit</code> 动作中可以轻易地获取邮件地址，因为链接中有。可是提交表单后，邮件地址就没有了。为了解决这个问题，我们可以使用一个隐藏字段，把它的值设为邮件地址（不会显示），和表单中的其他数据一起提交给 <code>update</code> 动作，如<a class="xref-link" href="#listing-password-reset-form">代码清单 12.14</a> 所示。</p>
 <div id="listing-password-reset-form" data-type="listing">
 <h5><span class="title-label">代码清单 12.14</span>：重设密码的表单</h5>
 
@@ -653,7 +653,7 @@ your password will stay as it is.
 <span class="nt">&lt;/div&gt;</span>
 </code></pre></div>
 </div>
-<p>注意，在<a href="#listing-password-reset-form">代码清单 12.14</a> 中，使用的表单标签辅助方法是</p>
+<p>注意，在<a class="xref-link" href="#listing-password-reset-form">代码清单 12.14</a> 中，使用的表单标签辅助方法是</p>
 <div data-type="listing">
 
 
@@ -666,7 +666,7 @@ your password will stay as it is.
 <pre class="highlight language-erb"><code>f.hidden_field :email, @user.email</code></pre>
 </div>
 <p>因为在重设密码的链接中，邮件地址在 <code>params[:email]</code> 中，如果使用后者，会把邮件地址放入 <code>params[:user][:email]</code> 中。</p>
-<p>为了正确渲染这个表单，我们要在 <code>PasswordResets</code> 控制器的 <code>edit</code> 动作中定义 <code>@user</code> 变量。与账户激活一样（<a href="chapter11.html#listing-account-activation-edit-action">代码清单 11.31</a>），我们要找到 <code>params[:email]</code> 中电子邮件地址对应的用户，确认这个用户已经激活，然后使用<a href="chapter11.html#listing-generalized-authenticated-p">代码清单 11.26</a> 中定义的通用版 <code>authenticated?</code> 方法验证 <code>params[:id]</code> 中的重设令牌。因为在 <code>edit</code> 和 <code>update</code> 动作中都要使用 <code>@user</code>，所以我们要把查找用户和验证令牌的代码写入一个前置过滤器中，如<a href="#listing-password-reset-edit-action">代码清单 12.15</a> 所示。</p>
+<p>为了正确渲染这个表单，我们要在 <code>PasswordResets</code> 控制器的 <code>edit</code> 动作中定义 <code>@user</code> 变量。与账户激活一样（<a class="xref-link" href="chapter11.html#listing-account-activation-edit-action">代码清单 11.31</a>），我们要找到 <code>params[:email]</code> 中电子邮件地址对应的用户，确认这个用户已经激活，然后使用<a class="xref-link" href="chapter11.html#listing-generalized-authenticated-p">代码清单 11.26</a> 中定义的通用版 <code>authenticated?</code> 方法验证 <code>params[:id]</code> 中的重设令牌。因为在 <code>edit</code> 和 <code>update</code> 动作中都要使用 <code>@user</code>，所以我们要把查找用户和验证令牌的代码写入一个前置过滤器中，如<a class="xref-link" href="#listing-password-reset-edit-action">代码清单 12.15</a> 所示。</p>
 <div id="listing-password-reset-edit-action" data-type="listing">
 <h5><span class="title-label">代码清单 12.15</span>：<code>PasswordResets</code> 控制器的 <code>edit</code> 动作</h5>
 
@@ -697,13 +697,13 @@ your password will stay as it is.
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p><a href="#listing-password-reset-edit-action">代码清单 12.15</a> 中的 <code>authenticated?(:reset, params[:id])</code>，<a href="chapter11.html#listing-generalized-current-user">代码清单 11.28</a> 中的 <code>authenticated?(:remember, cookies[:remember_token])</code>，以及<a href="chapter11.html#listing-account-activation-edit-action">代码清单 11.31</a> 中的 <code>authenticated?(:activation, params[:id])</code>，就是<a href="chapter11.html#table-password-token-digest">表 11.1</a> 中 <code>authenticated?</code> 方法的三个用例。</p>
-<p>现在，点击<a href="#listing-password-reset-email">代码清单 12.11</a> 中的链接后，会显示密码重设表单，如<a href="#fig-password-reset-form">图 12.11</a> 所示。</p>
+<p><a class="xref-link" href="#listing-password-reset-edit-action">代码清单 12.15</a> 中的 <code>authenticated?(:reset, params[:id])</code>，<a class="xref-link" href="chapter11.html#listing-generalized-current-user">代码清单 11.28</a> 中的 <code>authenticated?(:remember, cookies[:remember_token])</code>，以及<a class="xref-link" href="chapter11.html#listing-account-activation-edit-action">代码清单 11.31</a> 中的 <code>authenticated?(:activation, params[:id])</code>，就是<a class="xref-link" href="chapter11.html#table-password-token-digest">表 11.1</a> 中 <code>authenticated?</code> 方法的三个用例。</p>
+<p>现在，点击<a class="xref-link" href="#listing-password-reset-email">代码清单 12.11</a> 中的链接后，会显示密码重设表单，如<a class="xref-link" href="#fig-password-reset-form">图 12.11</a> 所示。</p>
 <div id="fig-password-reset-form" class="figure"><img src="images/chapter12/password_reset_form.png" alt="password reset form" /><div class="figcaption"><span class="title-label">图 12.11</span>：密码重设表单</div></div>
 <h5 id="exercises-reset-edit-action" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>点击服务器日志中的密码重设链接，看能不能正确渲染如<a href="#fig-password-reset-form">图 12.11</a> 所示的表单。</p>
+<p>点击服务器日志中的密码重设链接，看能不能正确渲染如<a class="xref-link" href="#fig-password-reset-form">图 12.11</a> 所示的表单。</p>
 </li>
 <li>
 <p>提交前一题看到的表单会发生什么？</p>
@@ -735,20 +735,12 @@ your password will stay as it is.
 <div class="highlight language-ruby"><pre><code><span class="n">before_action</span> <span class="ss">:check_expiration</span><span class="p">,</span> <span class="ss">only: </span><span class="p">[</span><span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="p">]</span>    <span class="c1"># 第一种情况</span>
 </code></pre></div>
 </div>
-<p>为此，我们要定义私有的 <code>check_expiration</code> 方法。与此同时，我们还将定义 <code>valid_user</code> 过滤器，确保用户已经激活：</p>
+<p>为此，我们要定义私有的 <code>check_expiration</code> 方法：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-ruby"><pre><code><span class="c1"># 确保是有效用户</span>
-<span class="k">def</span> <span class="nf">valid_user</span>
-<span class="hll">  <span class="k">unless</span> <span class="p">(</span><span class="vi">@user</span> <span class="o">&amp;&amp;</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">activated?</span> <span class="o">&amp;&amp;</span></span>
-          <span class="vi">@user</span><span class="p">.</span><span class="nf">authenticated?</span><span class="p">(</span><span class="ss">:reset</span><span class="p">,</span> <span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">]))</span>
-    <span class="n">redirect_to</span> <span class="n">root_url</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-
-<span class="c1"># 检查重设令牌是否过期</span>
-<span class="hll"><span class="k">def</span> <span class="nf">check_expiration</span></span>
+<div class="highlight language-ruby"><pre><code><span class="c1"># 检查重设令牌是否过期</span>
+<span class="k">def</span> <span class="nf">check_expiration</span>
   <span class="k">if</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">password_reset_expired?</span>
     <span class="n">flash</span><span class="p">[</span><span class="ss">:danger</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"Password reset has expired."</span>
     <span class="n">redirect_to</span> <span class="n">new_password_reset_url</span>
@@ -757,15 +749,16 @@ your password will stay as it is.
 </code></pre></div>
 </div>
 <p>在 <code>check_expiration</code> 方法中，我们把过期检查交给实例方法 <code>password_reset_expired?</code> 去做。这个方法有点难定义，稍后再讲。</p>
-<p><a href="#listing-password-reset-update-action">代码清单 12.16</a> 给出了这两个过滤器的实现，还给出了涵盖第二第三和第四种情况的 <code>update</code> 动作。第二种情况会导致更新失败，然后重新渲染 <code>edit</code> 视图，显示错误消息（使用<a href="#listing-password-reset-form">代码清单 12.14</a> 中共用的局部视图）。第四种情况是成功更新密码，处理方式与成功登录类似（<a href="chapter8.html#listing-login-upon-signup">代码清单 8.25</a>）。</p>
-<p>第二种情况没有处理密码为空（即第三种情况），而现在 <code>User</code> 模型允许密码为空（<a href="chapter10.html#listing-allow-blank-password">代码清单 10.13</a>），所以我们要捕获这个问题，然后单独处理。<sup>[<a id="fn-ref-1" href="#fn-1">1</a>]</sup>为了处理这种情况，我们使用 <code>errors.add</code> 方法直接为 <code>@user</code> 对象添加错误消息：</p>
+<p><a class="xref-link" href="#listing-password-reset-update-action">代码清单 12.16</a> 给出了这两个过滤器的实现，还给出了涵盖第二第三和第四种情况的 <code>update</code> 动作。第二种情况会导致更新失败，然后重新渲染 <code>edit</code> 视图，显示错误消息（使用<a class="xref-link" href="#listing-password-reset-form">代码清单 12.14</a> 中共用的局部视图）。第四种情况是成功更新密码，处理方式与成功登录类似（<a class="xref-link" href="chapter8.html#listing-login-upon-signup">代码清单 8.25</a>）。</p>
+<p>第二种情况没有处理密码为空（即第三种情况），而现在 <code>User</code> 模型允许密码为空（<a class="xref-link" href="chapter10.html#listing-allow-blank-password">代码清单 10.13</a>），所以我们要捕获这个问题，然后单独处理。<sup>[<a id="fn-ref-2" href="#fn-2">2</a>]</sup>为了处理这种情况，我们使用 <code>errors.add</code> 方法直接为 <code>@user</code> 对象添加错误消息：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-ruby"><pre><code><span class="vi">@user</span><span class="p">.</span><span class="nf">errors</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="ss">:password</span><span class="p">,</span> <span class="s2">"can't be empty"</span><span class="p">)</span>
+<div class="highlight language-ruby"><pre><code><span class="vi">@user</span><span class="p">.</span><span class="nf">errors</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="ss">:password</span><span class="p">,</span> <span class="ss">:blank</span><span class="p">)</span>
 </code></pre></div>
 </div>
-<p>综上，处理四种情况的 <code>update</code> 动作如<a href="#listing-password-reset-update-action">代码清单 12.16</a> 所示。</p>
+<p>密码为空时，上述代码使用没有内容时的默认消息。<sup>[<a id="fn-ref-3" href="#fn-3">3</a>]</sup></p>
+<p>综上，处理四种情况的 <code>update</code> 动作如<a class="xref-link" href="#listing-password-reset-update-action">代码清单 12.16</a> 所示。</p>
 <div id="listing-password-reset-update-action" data-type="listing">
 <h5><span class="title-label">代码清单 12.16</span>：重设密码的 <code>update</code> 动作</h5>
 
@@ -821,7 +814,7 @@ your password will stay as it is.
     <span class="k">end</span>
 
     <span class="c1"># 确保是有效用户</span>
-<span class="hll">    <span class="k">def</span> <span class="nf">valid_user</span></span>
+    <span class="k">def</span> <span class="nf">valid_user</span>
       <span class="k">unless</span> <span class="p">(</span><span class="vi">@user</span> <span class="o">&amp;&amp;</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">activated?</span> <span class="o">&amp;&amp;</span>
               <span class="vi">@user</span><span class="p">.</span><span class="nf">authenticated?</span><span class="p">(</span><span class="ss">:reset</span><span class="p">,</span> <span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">]))</span>
         <span class="n">redirect_to</span> <span class="n">root_url</span>
@@ -846,14 +839,14 @@ your password will stay as it is.
 <div class="highlight language-ruby"><pre><code><span class="vi">@user</span><span class="p">.</span><span class="nf">password_reset_expired?</span>
 </code></pre></div>
 </div>
-<p>所以，我们要定义 <code>password_reset_expired?</code> 方法。如 <a href="#password-reset-mailer">12.2.1 节</a>的邮件模板所示，如果邮件发出后两个小时内没重设密码，就认为此次请求超时了。这个限制可以通过下面的 Ruby 代码实现：</p>
+<p>所以，我们要定义 <code>password_reset_expired?</code> 方法。如 <a class="xref-link" href="#password-reset-mailer">12.2.1 节</a>的邮件模板所示，如果邮件发出后两个小时内没重设密码，就认为此次请求超时了。这个限制可以通过下面的 Ruby 代码实现：</p>
 <div data-type="listing">
 
 
 <div class="highlight language-ruby"><pre><code><span class="n">reset_sent_at</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">.</span><span class="nf">hours</span><span class="p">.</span><span class="nf">ago</span>
 </code></pre></div>
 </div>
-<p>如果你把 <code>&lt;</code> 当成小于号，读成“密码重设邮件发出少于两小时”就错了，这和想表达的意思正好相反。这里，最好把 <code>&lt;</code> 理解成“超过”，读成“密码重设邮件已经发出超过两小时”，这才是我们想表达的意思。<code>password_reset_expired?</code> 方法的定义如<a href="#listing-user-model-password-reset-expired">代码清单 12.17</a> 所示。（对这个比较算式的证明参见 <a href="#proof-of-expiration-comparison">12.6 节</a>。）</p>
+<p>如果你把 <code>&lt;</code> 当成小于号，读成“密码重设邮件发出少于两小时”就错了，这和想表达的意思正好相反。这里，最好把 <code>&lt;</code> 理解成“超过”，读成“密码重设邮件已经发出超过两小时”，这才是我们想表达的意思。<code>password_reset_expired?</code> 方法的定义如<a class="xref-link" href="#listing-user-model-password-reset-expired">代码清单 12.17</a> 所示。（对这个比较算式的证明参见 <a class="xref-link" href="#proof-of-expiration-comparison">12.6 节</a>。）</p>
 <div id="listing-user-model-password-reset-expired" data-type="listing">
 <h5><span class="title-label">代码清单 12.17</span>：在 <code>User</code> 模型中定义 <code>password_reset_expired?</code> 方法</h5>
 
@@ -875,14 +868,14 @@ your password will stay as it is.
 <span class="nf">end</span>
 </code></pre></div>
 </div>
-<p>现在，<a href="#listing-password-reset-update-action">代码清单 12.16</a> 中的 <code>update</code> 动作可以使用了。密码重设失败和成功后显示的页面分别如<a href="#fig-password-reset-failure">图 12.12</a> 和<a href="#fig-password-reset-success">图 12.13</a> 所示。（你可能不想等两个小时再确认效果，<a href="#exercises-updating-the-reset">本节的练习</a>中有一题，为第三个分支编写测试。）</p>
+<p>现在，<a class="xref-link" href="#listing-password-reset-update-action">代码清单 12.16</a> 中的 <code>update</code> 动作可以使用了。密码重设失败和成功后显示的页面分别如<a class="xref-link" href="#fig-password-reset-failure">图 12.12</a> 和<a class="xref-link" href="#fig-password-reset-success">图 12.13</a> 所示。（你可能不想等两个小时再确认效果，<a class="xref-link" href="#exercises-updating-the-reset">本节的练习</a>中有一题，为第三个分支编写测试。）</p>
 <h5 id="exercises-updating-the-reset" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
 <p>打开邮件中的链接，在页面中填写不一致的密码，会看到什么错误消息？</p>
 </li>
 <li>
-<p>在 Rails 控制台中找到邮件中链接对应的用户，获取 <code>password_digest</code> 属性的值。然后在如<a href="#fig-password-reset-failure">图 12.12</a> 所示的表单中填写匹配的密码，提交后有什么效果？对 <code>password_digest</code> 属性的值有什么影响？提示：使用 <code>user.reload</code> 方法加载新值。</p>
+<p>在 Rails 控制台中找到邮件中链接对应的用户，获取 <code>password_digest</code> 属性的值。然后在如<a class="xref-link" href="#fig-password-reset-failure">图 12.12</a> 所示的表单中填写匹配的密码，提交后有什么效果？对 <code>password_digest</code> 属性的值有什么影响？提示：使用 <code>user.reload</code> 方法加载新值。</p>
 </li>
 </ol>
 <div id="fig-password-reset-failure" class="figure"><img src="images/chapter12/password_reset_failure_4th_ed.png" alt="password reset failure 4th ed" /><div class="figcaption"><span class="title-label">图 12.12</span>：密码重设失败</div></div>
@@ -890,7 +883,7 @@ your password will stay as it is.
 </section>
 <section data-type="sect2" id="password-reset-test">
 <h2><span class="title-label">12.3.3</span> 测试密码重设功能</h2>
-<p>本节，我们要编写一个集成测试，覆盖<a href="#listing-password-reset-update-action">代码清单 12.16</a> 中的两个分支：重设失败和重设成功。（前面说过，第三个分支的测试留作练习。）首先，为重设密码功能生成一个测试文件：</p>
+<p>本节，我们要编写一个集成测试，覆盖<a class="xref-link" href="#listing-password-reset-update-action">代码清单 12.16</a> 中的两个分支：重设失败和重设成功。（前面说过，第三个分支的测试留作练习。）首先，为重设密码功能生成一个测试文件：</p>
 <div data-type="listing">
 
 
@@ -899,7 +892,7 @@ your password will stay as it is.
       create    <span class="nb">test</span>/integration/password_resets_test.rb
 </code></pre></div>
 </div>
-<p>这个测试的步骤大致与<a href="chapter11.html#listing-signup-with-account-activation-test">代码清单 11.33</a> 中的账户激活测试差不多，不过开头有点不同。首先访问“Forgot password”表单，分别提交有效和无效的电子邮件地址，电子邮件地址有效时要创建密码重设令牌，并且发送重设邮件。然后，访问邮件中的链接，分别提交无效和有效的密码，验证各自的行为是否正确。最终写出的测试如<a href="#listing-password-reset-integration-test">代码清单 12.18</a> 所示。这是一个不错的练习，可以锻炼阅读代码的能力。</p>
+<p>这个测试的步骤大致与<a class="xref-link" href="chapter11.html#listing-signup-with-account-activation-test">代码清单 11.33</a> 中的账户激活测试差不多，不过开头有点不同。首先访问“Forgot password”表单，分别提交有效和无效的电子邮件地址，电子邮件地址有效时要创建密码重设令牌，并且发送重设邮件。然后，访问邮件中的链接，分别提交无效和有效的密码，验证各自的行为是否正确。最终写出的测试如<a class="xref-link" href="#listing-password-reset-integration-test">代码清单 12.18</a> 所示。这是一个不错的练习，可以锻炼阅读代码的能力。</p>
 <div id="listing-password-reset-integration-test" data-type="listing">
 <h5><span class="title-label">代码清单 12.18</span>：密码重设功能的集成测试</h5>
 
@@ -969,7 +962,7 @@ your password will stay as it is.
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p><a href="#listing-password-reset-integration-test">代码清单 12.18</a> 中的大多数用法前面都见过，但是针对 <code>input</code> 标签的测试有点陌生：</p>
+<p><a class="xref-link" href="#listing-password-reset-integration-test">代码清单 12.18</a> 中的大多数用法前面都见过，但是针对 <code>input</code> 标签的测试有点陌生：</p>
 <div data-type="listing">
 
 
@@ -994,16 +987,16 @@ your password will stay as it is.
 <h5 id="exercises-password-reset-test" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>在<a href="#listing-user-model-password-reset">代码清单 12.6</a> 中，<code>create_reset_digest</code> 方法调用了两次 <code>update_attribute</code> 方法，每一次调用都要单独执行一个数据库事务。填写<a href="#listing-update-columns-redux">代码清单 12.20</a> 中缺少的代码，把两个 <code>update_attribute</code> 调用换成一个 <code>update_columns</code> 调用，这样修改后只会与数据库交互一次。改完后运行测试组件，确保仍能通过。（<a href="#listing-update-columns-redux">代码清单 12.20</a> 中包含<a href="chapter11.html#listing-update-columns">代码清单 11.39</a> 的解答。）</p>
+<p>在<a class="xref-link" href="#listing-user-model-password-reset">代码清单 12.6</a> 中，<code>create_reset_digest</code> 方法调用了两次 <code>update_attribute</code> 方法，每一次调用都要单独执行一个数据库事务。填写<a class="xref-link" href="#listing-update-columns-redux">代码清单 12.20</a> 中缺少的代码，把两个 <code>update_attribute</code> 调用换成一个 <code>update_columns</code> 调用，这样修改后只会与数据库交互一次。改完后运行测试组件，确保仍能通过。（<a class="xref-link" href="#listing-update-columns-redux">代码清单 12.20</a> 中包含<a class="xref-link" href="chapter11.html#listing-update-columns">代码清单 11.39</a> 的解答。）</p>
 </li>
 <li>
-<p>填写<a href="#listing-password-reset-expire-test">代码清单 12.21</a> 中缺少的代码，为<a href="#listing-password-reset-update-action">代码清单 12.16</a> 中的密码重设请求超时分支编写集成测试。（这里使用的 <code>response.body</code> 用于获取返回页面中的 HTML。）检查是否过期有很多方法，这里使用的方法是，检查响应主体中是否包含单词“expired”（不区分大小写）。</p>
+<p>填写<a class="xref-link" href="#listing-password-reset-expire-test">代码清单 12.21</a> 中缺少的代码，为<a class="xref-link" href="#listing-password-reset-update-action">代码清单 12.16</a> 中的密码重设请求超时分支编写集成测试。（这里使用的 <code>response.body</code> 用于获取返回页面中的 HTML。）检查是否过期有很多方法，这里使用的方法是，检查响应主体中是否包含单词“expired”（不区分大小写）。</p>
 </li>
 <li>
-<p>几小时后让密码重设请求过期是个不错的安全防护措施，可是对使用公共电脑的用户来说，安全隐患更大。这是因为密码重设链接的有效期是 2 小时，而在这段时间内，即便用户已经退出，重设链接仍能使用。如果用户在公共电脑上重设密码，任何人都能点击后退按钮，然后再次重设密码（从而使用新密码登录）。为了避免这个问题，添加<a href="#listing-update-clear-reset">代码清单 12.22</a> 中的代码，在用户成功修改密码后清除重设摘要。<sup>[<a id="fn-ref-2" href="#fn-2">2</a>]</sup></p>
+<p>几小时后让密码重设请求过期是个不错的安全防护措施，可是对使用公共电脑的用户来说，安全隐患更大。这是因为密码重设链接的有效期是 2 小时，而在这段时间内，即便用户已经退出，重设链接仍能使用。如果用户在公共电脑上重设密码，任何人都能点击后退按钮，然后再次重设密码（从而使用新密码登录）。为了避免这个问题，添加<a class="xref-link" href="#listing-update-clear-reset">代码清单 12.22</a> 中的代码，在用户成功修改密码后清除重设摘要。<sup>[<a id="fn-ref-4" href="#fn-4">4</a>]</sup></p>
 </li>
 <li>
-<p>在<a href="#listing-password-reset-integration-test">代码清单 12.18</a> 中添加一行代码，测试前一题实现的重设摘要清除功能。提示：使用 <code>assert_nil</code> 和 <code>user.reload</code> 直接测试 <code>reset_digest</code> 属性。</p>
+<p>在<a class="xref-link" href="#listing-password-reset-integration-test">代码清单 12.18</a> 中添加一行代码，测试前一题实现的重设摘要清除功能。提示：使用 <code>assert_nil</code> 和 <code>user.reload</code> 直接测试 <code>reset_digest</code> 属性。</p>
 </li>
 </ol>
 <div id="listing-update-columns-redux" data-type="listing">
@@ -1105,7 +1098,7 @@ your password will stay as it is.
 </section>
 <section data-type="sect1" id="email-in-production-take-two">
 <h1><span class="title-label">12.4</span> 在生产环境中发送邮件（再谈）</h1>
-<p>我们已经在开发环境实现了密码重设功能，本节要配置应用，让它在生产环境中能真正地发送邮件。相关的步骤与实现账户激活功能时一样，如果你已经按照 <a href="chapter11.html#email-in-production">11.4 节</a>所讲的做了，可以直接跳到<a href="#listing-merge-password-reset">代码清单 12.24</a>。</p>
+<p>我们已经在开发环境实现了密码重设功能，本节要配置应用，让它在生产环境中能真正地发送邮件。相关的步骤与实现账户激活功能时一样，如果你已经按照 <a class="xref-link" href="chapter11.html#email-in-production">11.4 节</a>所讲的做了，可以直接跳到<a class="xref-link" href="#listing-merge-password-reset">代码清单 12.24</a>。</p>
 <p>我们要在生产环境中使用 SendGrid 服务发送邮件。这个服务是 Heroku 的扩展，只有通过认证的账户才能使用。（要在 Heroku 的账户中填写信用卡信息，不过认证不收费。）对我们的应用来说，入门套餐就够了（免费，写作本书时限制每天最多发送 400 封邮件）。我们可以使用下面的命令添加这个扩展：</p>
 <div data-type="listing">
 
@@ -1113,8 +1106,8 @@ your password will stay as it is.
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>heroku addons:create sendgrid:starter
 </code></pre></div>
 </div>
-<p>（如果你使用的是 Heroku 的旧版命令行接口，这个命令可能无法执行。这个问题有两种解决方法：其一，<a href="https://toolbelt.heroku.com/">升级到最新的 Heroku 工具包</a>；其二，使用旧句法 <code>heroku addons:add sendgrid:starter</code>。）</p>
-<p>为了让应用使用 SendGrid 发送邮件，我们要在生产环境中配置 <a href="https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol">SMTP</a>，还要定义一个 <code>host</code> 变量，设置生产环境中网站的地址，如<a href="#listing-sendgrid-config-redux">代码清单 12.23</a> 所示。</p>
+<p>（如果你使用的是 Heroku 的旧版命令行接口，这个命令可能无法执行。这个问题有两种解决方法：其一，<a href="https://toolbelt.heroku.com/" class="external-link">升级到最新的 Heroku 工具包</a>；其二，使用旧句法 <code>heroku addons:add sendgrid:starter</code>。）</p>
+<p>为了让应用使用 SendGrid 发送邮件，我们要在生产环境中配置 <a href="https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol" class="external-link">SMTP</a>，还要定义一个 <code>host</code> 变量，设置生产环境中网站的地址，如<a class="xref-link" href="#listing-sendgrid-config-redux">代码清单 12.23</a> 所示。</p>
 <div id="listing-sendgrid-config-redux" data-type="listing">
 <h5><span class="title-label">代码清单 12.23</span>：配置应用，在生产环境中使用 SendGrid</h5>
 
@@ -1143,7 +1136,7 @@ your password will stay as it is.
 <span class="nf">end</span>
 </code></pre></div>
 </div>
-<p><a href="#listing-sendgrid-config-redux">代码清单 12.23</a> 中设置了 SendGrid 账户的用户名（<code>user_name</code>）和密码（<code>password</code>），但是注意，这两个值是从 <code>ENV</code> 环境变量中获取的，而没有直接写入代码。这是生产环境应用的最佳实践，为了安全，绝不能在源码中写入敏感信息，例如原始密码。这两个值由 SendGrid 扩展自动设置，<a href="chapter13.html#image-upload-in-production">13.4.4 节</a>会介绍如何自己定义。</p>
+<p><a class="xref-link" href="#listing-sendgrid-config-redux">代码清单 12.23</a> 中设置了 SendGrid 账户的用户名（<code>user_name</code>）和密码（<code>password</code>），但是注意，这两个值是从 <code>ENV</code> 环境变量中获取的，而没有直接写入代码。这是生产环境应用的最佳实践，为了安全，绝不能在源码中写入敏感信息，例如原始密码。这两个值由 SendGrid 扩展自动设置，<a class="xref-link" href="chapter13.html#image-upload-in-production">13.4.4 节</a>会介绍如何自己定义。</p>
 <p>现在，应该把主题分支合并到主分支中：</p>
 <div id="listing-merge-password-reset" data-type="listing">
 <h5><span class="title-label">代码清单 12.24</span>：把 <code>password-reset</code> 分支合并到 <code>master</code> 分支</h5>
@@ -1166,7 +1159,7 @@ your password will stay as it is.
 <span class="gp">$ </span>heroku run rails db:migrate
 </code></pre></div>
 </div>
-<p>部署到 Heroku 中之后，可以点击“forgot password”链接（<a href="#fig-forgot-password-link">图 12.4</a>）重设密码。你会收到一封重设邮件，如<a href="#fig-reset-email-production">图 12.14</a> 所示。点击邮件中的链接，输入有效密码或无效密码，效果应该同生产环境中一样（<a href="#fig-password-reset-failure">图 12.12</a> 和<a href="#fig-password-reset-success">图 12.13</a>）。</p>
+<p>部署到 Heroku 中之后，可以点击“forgot password”链接（<a class="xref-link" href="#fig-forgot-password-link">图 12.4</a>）重设密码。你会收到一封重设邮件，如<a class="xref-link" href="#fig-reset-email-production">图 12.14</a> 所示。点击邮件中的链接，输入有效密码或无效密码，效果应该同生产环境中一样（<a class="xref-link" href="#fig-password-reset-failure">图 12.12</a> 和<a class="xref-link" href="#fig-password-reset-success">图 12.13</a>）。</p>
 <div id="fig-reset-email-production" class="figure has-border"><img src="images/chapter12/reset_email_production_4th_ed.png" alt="reset email production 4th ed" /><div class="figcaption"><span class="title-label">图 12.14</span>：生产环境中的应用发送的密码重设邮件</div></div>
 <h5 id="exercises-email-in-production" class="discrete">练习</h5>
 <ol class="arabic">
@@ -1183,7 +1176,7 @@ your password will stay as it is.
 </section>
 <section data-type="sect1" id="password-reset-conclusion">
 <h1><span class="title-label">12.5</span> 小结</h1>
-<p>实现密码重设功能后，我们的演示应用已经完整实现了“注册-登录-退出”机制，而且是专业级的。本书剩下的章节将以此为基础，实现类似 Twitter 的微博（<a href="chapter13.html#user-microposts">第 13 章</a>）和所关注用户的微博动态流（<a href="chapter14.html#following-users">第 14 章</a>）。在实现的过程中，我们会学到一些 Rails 提供的强大功能，例如使用 <code>has_many</code> 和 <code>has_many :through</code> 实现的高级数据模型。</p>
+<p>实现密码重设功能后，我们的演示应用已经完整实现了“注册-登录-退出”机制，而且是专业级的。本书剩下的章节将以此为基础，实现类似 Twitter 的微博（<a class="xref-link" href="chapter13.html#user-microposts">第 13 章</a>）和所关注用户的微博动态流（<a class="xref-link" href="chapter14.html#following-users">第 14 章</a>）。在实现的过程中，我们会学到一些 Rails 提供的强大功能，例如使用 <code>has_many</code> 和 <code>has_many :through</code> 实现的高级数据模型。</p>
 <section data-type="sect2" id="password-reset-learned">
 <h2><span class="title-label">12.5.1</span> 本章所学</h2>
 <ul>
@@ -1216,7 +1209,7 @@ your password will stay as it is.
 </section>
 <section data-type="sect1" id="proof-of-expiration-comparison">
 <h1><span class="title-label">12.6</span> 证明超时比较算式</h1>
-<p>我们在 <a href="#resetting-the-password">12.3 节</a>讲过，确定密码重设请求是否超时的比较算式是：</p>
+<p>我们在 <a class="xref-link" href="#resetting-the-password">12.3 节</a>讲过，确定密码重设请求是否超时的比较算式是：</p>
 <div data-type="listing">
 
 
@@ -1490,7 +1483,7 @@ your password will stay as it is.
  <use transform="scale(0.707)" xlink:href="#E1-MJMATHI-65" x="517" y="-213"></use>
 </g>
 </svg>
- = 2.hours.ago 代入这个不等式后就能得到<a href="#listing-user-model-password-reset-expired">代码清单 12.17</a> 中的 <code>password_reset_expired?</code> 方法：</p>
+ = 2.hours.ago 代入这个不等式后就能得到<a class="xref-link" href="#listing-user-model-password-reset-expired">代码清单 12.17</a> 中的 <code>password_reset_expired?</code> 方法：</p>
 <div data-type="listing">
 
 
@@ -1499,7 +1492,7 @@ your password will stay as it is.
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p><a href="#resetting-the-password">12.3 节</a>说过，如果把 <code>&lt;</code> 理解成“超过”而不是“小于”的话，就能得到一个符合人类逻辑的句子：“密码重设邮件已经发出超过两小时”。</p>
+<p><a class="xref-link" href="#resetting-the-password">12.3 节</a>说过，如果把 <code>&lt;</code> 理解成“超过”而不是“小于”的话，就能得到一个符合人类逻辑的句子：“密码重设邮件已经发出超过两小时”。</p>
 </section>
 </section>
           </article>
@@ -1518,8 +1511,10 @@ your password will stay as it is.
 
           <div class="footnotes">
 <ol>
-<li id="fn-1">我们只需处理密码为空的情况，因为密码确认为空时会被二次确认验证捕获（密码为空时不会做这个验证），然后显示一个相关的错误消息。 <a href="#fn-ref-1" class="symbol">&#8617;</a></li>
-<li id="fn-2">感谢读者 Tristan Ludowyk 提出这个建议，并且提供详细说明和实现方式。 <a href="#fn-ref-2" class="symbol">&#8617;</a></li>
+<li id="fn-1">不要觉得显示电子邮件地址不安全。网上随处可见不允许使用已经被用过的电子邮件地址注册的网站，在密码重设过程中指明电子邮件不可用不会给攻击者留下可利用的信息。 <a href="#fn-ref-1" class="symbol">&#8617;</a></li>
+<li id="fn-2">我们只需处理密码为空的情况，因为密码确认为空时会被二次确认验证捕获（密码为空时不会做这个验证），然后显示一个相关的错误消息。 <a href="#fn-ref-2" class="symbol">&#8617;</a></li>
+<li id="fn-3">细心的读者 Khaled Teilab 发现，使用 <code>errors.add(:password, :blank)</code> 的好处是，使用 <code>rails-i18n</code> gem 时得到的消息自动使用正确的语言渲染。 <a href="#fn-ref-3" class="symbol">&#8617;</a></li>
+<li id="fn-4">感谢读者 Tristan Ludowyk 提出这个建议，并且提供详细说明和实现方式。 <a href="#fn-ref-4" class="symbol">&#8617;</a></li>
 </ol>
 </div>
         </div>

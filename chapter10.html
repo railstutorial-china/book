@@ -9,7 +9,7 @@
   <meta name="keywords" content="ruby, rails, tutorial"/>
   <meta name="author" content="Michael Hartl"/>
   <meta name="translator" content="安道"/>
-  <meta name="generator" content="persie 0.0.2.beta.1"/>
+  <meta name="generator" content="persie 0.0.3.beta.4"/>
   <link rel="stylesheet" type="text/css" href="//railstutorial-china.org/assets/css/main.css"/>
   <link rel="stylesheet" type="text/css" href="book.css"/>
   <script type="text/javascript" src="//railstutorial-china.org/assets/js/global.js"></script>
@@ -59,10 +59,10 @@
           <article class="article">
             <section data-type="chapter" id="updating-showing-and-deleting-users">
 <h1><span class="title-label">第 10 章</span> 更新、显示和删除用户</h1>
-<p>本章我们要完成 <code>Users</code> 资源的 REST 动作（<a href="chapter7.html#table-restful-users">表 7.1</a>），添加 <code>edit</code>、<code>update</code>、<code>index</code> 和 <code>destroy</code> 四个动作。首先我们要实现更新用户个人资料的功能，并借此实现权限机制（基于<a href="chapter8.html#basic-login">第 8 章</a>实现的身份验证系统）。然后创建一个页面，列出所有用户（也需要验证身份），期间会介绍如何使用示例数据和分页。最后，我们要实现删除用户的功能，从数据库中删除用户记录。我们不会为所有用户都提供这种强大的功能，而是创建管理员，授权他们来删除其他用户。</p>
+<p>本章我们要完成 <code>Users</code> 资源的 REST 动作（<a class="xref-link" href="chapter7.html#table-restful-users">表 7.1</a>），添加 <code>edit</code>、<code>update</code>、<code>index</code> 和 <code>destroy</code> 四个动作。首先我们要实现更新用户个人资料的功能，并借此实现权限机制（基于<a class="xref-link" href="chapter8.html#basic-login">第 8 章</a>实现的身份验证系统）。然后创建一个页面，列出所有用户（也需要验证身份），期间会介绍如何使用示例数据和分页。最后，我们要实现删除用户的功能，从数据库中删除用户记录。我们不会为所有用户都提供这种强大的功能，而是创建管理员，授权他们来删除其他用户。</p>
 <section data-type="sect1" id="updating-users">
 <h1><span class="title-label">10.1</span> 更新用户</h1>
-<p>编辑用户信息的方法和创建新用户差不多（参见<a href="chapter7.html#sign-up">第 7 章</a>），创建新用户的页面在 <code>new</code> 动作中渲染，而编辑用户的页面在 <code>edit</code> 动作中渲染；创建用户的过程在 <code>create</code> 动作中处理 <code>POST</code> 请求，编辑用户要在 <code>update</code> 动作中处理 <code>PATCH</code> 请求（<a href="chapter3.html#aside-get-etc">旁注 3.2</a>）。二者之间最大的区别是，任何人都可以注册，但只有当前用户才能更新自己的信息。我们可以使用<a href="chapter8.html#basic-login">第 8 章</a>实现的身份验证机制，通过前置过滤器（before filter）实现访问限制。</p>
+<p>编辑用户信息的方法和创建新用户差不多（参见<a class="xref-link" href="chapter7.html#sign-up">第 7 章</a>），创建新用户的页面在 <code>new</code> 动作中渲染，而编辑用户的页面在 <code>edit</code> 动作中渲染；创建用户的过程在 <code>create</code> 动作中处理 <code>POST</code> 请求，编辑用户要在 <code>update</code> 动作中处理 <code>PATCH</code> 请求（<a class="xref-link" href="chapter3.html#aside-get-etc">旁注 3.2</a>）。二者之间最大的区别是，任何人都可以注册，但只有当前用户才能更新自己的信息。我们可以使用<a class="xref-link" href="chapter8.html#basic-login">第 8 章</a>实现的身份验证机制，通过前置过滤器（before filter）实现访问限制。</p>
 <p>开始实现之前，我们先切换到 <code>updating-users</code> 主题分支：</p>
 <div data-type="listing">
 
@@ -72,7 +72,7 @@
 </div>
 <section data-type="sect2" id="edit-form">
 <h2><span class="title-label">10.1.1</span> 编辑表单</h2>
-<p>我们先来创建编辑表单，构思图如<a href="#fig-edit-user-mockup">图 10.1</a> 所示。<sup>[<a id="fn-ref-1" href="#fn-1">1</a>]</sup>为了把这个构思图转换成可以使用的页面，我们既要编写 <code>Users</code> 控制器的 <code>edit</code> 动作，还要创建编辑用户的视图。我们先来编写 <code>edit</code> 动作。在 <code>edit</code> 动作中我们要从数据库中读取相应的用户。由<a href="chapter7.html#table-restful-users">表 7.1</a> 得知，用户的编辑页面地址是 /users/1/edit（假设用户的 ID 是 1）。我们知道用户的 ID 可以通过 <code>params[:id]</code> 获取，因此可以使用<a href="#listing-initial-edit-action">代码清单 10.1</a> 中的代码查找用户。</p>
+<p>我们先来创建编辑表单，构思图如<a class="xref-link" href="#fig-edit-user-mockup">图 10.1</a> 所示。<sup>[<a id="fn-ref-1" href="#fn-1">1</a>]</sup>为了把这个构思图转换成可以使用的页面，我们既要编写 <code>Users</code> 控制器的 <code>edit</code> 动作，还要创建编辑用户的视图。我们先来编写 <code>edit</code> 动作。在 <code>edit</code> 动作中我们要从数据库中读取相应的用户。由<a class="xref-link" href="chapter7.html#table-restful-users">表 7.1</a> 得知，用户的编辑页面地址是 /users/1/edit（假设用户的 ID 是 1）。我们知道用户的 ID 可以通过 <code>params[:id]</code> 获取，因此可以使用<a class="xref-link" href="#listing-initial-edit-action">代码清单 10.1</a> 中的代码查找用户。</p>
 <div id="listing-initial-edit-action" data-type="listing">
 <h5><span class="title-label">代码清单 10.1</span>：<code>Users</code> 控制器的 <code>edit</code> 动作</h5>
 
@@ -113,7 +113,7 @@
 </code></pre></div>
 </div>
 <div id="fig-edit-user-mockup" class="figure"><img src="images/chapter10/edit_user_mockup_bootstrap.png" alt="edit user mockup bootstrap" /><div class="figcaption"><span class="title-label">图 10.1</span>：用户编辑页面的构思图</div></div>
-<p>用户编辑页面的视图（要手动创建这个文件）如<a href="#listing-user-edit-view">代码清单 10.2</a> 所示。注意，这个视图和<a href="chapter7.html#listing-signup-form">代码清单 7.15</a> 中新建用户的视图相似，有很多重复的代码，所以可以重构，把共用的代码放到局部视图中，这个任务留作<a href="#exercises-edit-form">练习</a>。</p>
+<p>用户编辑页面的视图（要手动创建这个文件）如<a class="xref-link" href="#listing-user-edit-view">代码清单 10.2</a> 所示。注意，这个视图和<a class="xref-link" href="chapter7.html#listing-signup-form">代码清单 7.15</a> 中新建用户的视图相似，有很多重复的代码，所以可以重构，把共用的代码放到局部视图中，这个任务留作<a class="xref-link" href="#exercises-edit-form">练习</a>。</p>
 <div id="listing-user-edit-view" data-type="listing">
 <h5><span class="title-label">代码清单 10.2</span>：用户编辑页面的视图</h5>
 
@@ -150,12 +150,12 @@
 <span class="nt">&lt;/div&gt;</span>
 </code></pre></div>
 </div>
-<p>这里再次用到了 <a href="chapter7.html#signup-error-messages">7.3.3 节</a>创建的 <code>error_messages</code> 局部视图。顺便说一下，修改 Gravatar 头像的链接用到了 <code>target="_blank"</code>，目的是在新窗口或新标签页中打开网页。链接到第三方网站时有时会这么做。（这样打开网页有个安全隐患，对这个问题的处理留作<a href="#exercises-edit-form">练习</a>。）</p>
-<p><a href="#listing-initial-edit-action">代码清单 10.1</a> 中定义了 <code>@user</code> 实例变量，所以编辑页面可以正确渲染，如<a href="#fig-edit-page">图 10.2</a> 所示。从“Name”和“Email”字段可以看出，Rails 会自动使用 <code>@user</code> 变量的属性值填写相应的字段。</p>
+<p>这里再次用到了 <a class="xref-link" href="chapter7.html#signup-error-messages">7.3.3 节</a>创建的 <code>error_messages</code> 局部视图。顺便说一下，修改 Gravatar 头像的链接用到了 <code>target="_blank"</code>，目的是在新窗口或新标签页中打开网页。链接到第三方网站时有时会这么做。（这样打开网页有个安全隐患，对这个问题的处理留作<a class="xref-link" href="#exercises-edit-form">练习</a>。）</p>
+<p><a class="xref-link" href="#listing-initial-edit-action">代码清单 10.1</a> 中定义了 <code>@user</code> 实例变量，所以编辑页面可以正确渲染，如<a class="xref-link" href="#fig-edit-page">图 10.2</a> 所示。从“Name”和“Email”字段可以看出，Rails 会自动使用 <code>@user</code> 变量的属性值填写相应的字段。</p>
 <div id="fig-edit-page" class="figure"><img src="images/chapter10/edit_page_3rd_edition.png" alt="edit page 3rd edition" /><div class="figcaption"><span class="title-label">图 10.2</span>：编辑页面的初始版本，名字和电子邮件地址自动填入了值</div></div>
-<p>查看用户编辑页面的 HTML 源码，会看到预期的表单标签，如<a href="#listing-edit-form-html">代码清单 10.3</a> 所示（某些细节可能不同）。</p>
+<p>查看用户编辑页面的 HTML 源码，会看到预期的表单标签，如<a class="xref-link" href="#listing-edit-form-html">代码清单 10.3</a> 所示（某些细节可能不同）。</p>
 <div id="listing-edit-form-html" data-type="listing">
-<h5><span class="title-label">代码清单 10.3</span>：<a href="#listing-user-edit-view">代码清单 10.2</a> 定义的编辑表单生成的 HTML</h5>
+<h5><span class="title-label">代码清单 10.3</span>：<a class="xref-link" href="#listing-user-edit-view">代码清单 10.2</a> 定义的编辑表单生成的 HTML</h5>
 
 
 <div class="highlight language-html"><pre><code><span class="nt">&lt;form</span> <span class="na">accept-charset=</span><span class="s">"UTF-8"</span> <span class="na">action=</span><span class="s">"/users/1"</span> <span class="na">class=</span><span class="s">"edit_user"</span>
@@ -174,8 +174,8 @@
 <div class="highlight language-html"><pre><code><span class="nt">&lt;input</span> <span class="na">name=</span><span class="s">"_method"</span> <span class="na">type=</span><span class="s">"hidden"</span> <span class="na">value=</span><span class="s">"patch"</span> <span class="nt">/&gt;</span>
 </code></pre></div>
 </div>
-<p>因为 Web 浏览器不支持发送 <code>PATCH</code> 请求（<a href="chapter7.html#table-restful-users">表 7.1</a> 中的 REST 动作要用），所以 Rails 在 <code>POST</code> 请求中使用这个隐藏字段把它伪装成 <code>PATCH</code> 请求。<sup>[<a id="fn-ref-2" href="#fn-2">2</a>]</sup></p>
-<p>还有一个细节需要注意一下：<a href="#listing-user-edit-view">代码清单 10.2</a> 和<a href="chapter7.html#listing-signup-form">代码清单 7.15</a> 都使用了相同的 <code>form_for(@user)</code> 来构建表单，那么 Rails 是怎么知道创建新用户要发送 <code>POST</code> 请求，而编辑用户时要发送 <code>PATCH</code> 请求的呢？这个问题的答案是，通过 Active Record 提供的 <code>new_record?</code> 布尔值方法检测用户是新创建的还是已经存在于数据库中：</p>
+<p>因为 Web 浏览器不支持发送 <code>PATCH</code> 请求（<a class="xref-link" href="chapter7.html#table-restful-users">表 7.1</a> 中的 REST 动作要用），所以 Rails 在 <code>POST</code> 请求中使用这个隐藏字段把它伪装成 <code>PATCH</code> 请求。<sup>[<a id="fn-ref-2" href="#fn-2">2</a>]</sup></p>
+<p>还有一个细节需要注意一下：<a class="xref-link" href="#listing-user-edit-view">代码清单 10.2</a> 和<a class="xref-link" href="chapter7.html#listing-signup-form">代码清单 7.15</a> 都使用了相同的 <code>form_for(@user)</code> 来构建表单，那么 Rails 是怎么知道创建新用户要发送 <code>POST</code> 请求，而编辑用户时要发送 <code>PATCH</code> 请求的呢？这个问题的答案是，通过 Active Record 提供的 <code>new_record?</code> 布尔值方法检测用户是新创建的还是已经存在于数据库中：</p>
 <div data-type="listing">
 
 
@@ -187,14 +187,14 @@
 </code></pre></div>
 </div>
 <p>所以使用 <code>form_for(@user)</code> 构建表单时，如果 <code>@user.new_record?</code> 返回 <code>true</code>，Rails 发送 <code>POST</code> 请求，否则发送 <code>PATCH</code> 请求。</p>
-<p>最后，我们要把导航栏中指向编辑用户页面的链接换成真实的地址。很简单，我们直接使用<a href="chapter7.html#table-restful-users">表 7.1</a> 中列出的 <code>edit_user_path</code> 具名路由，并把参数设为<a href="chapter9.html#listing-persistent-current-user">代码清单 9.9</a> 中定义的 <code>current_user</code> 辅助方法：</p>
+<p>最后，我们要把导航栏中指向编辑用户页面的链接换成真实的地址。很简单，我们直接使用<a class="xref-link" href="chapter7.html#table-restful-users">表 7.1</a> 中列出的 <code>edit_user_path</code> 具名路由，并把参数设为<a class="xref-link" href="chapter9.html#listing-persistent-current-user">代码清单 9.9</a> 中定义的 <code>current_user</code> 辅助方法：</p>
 <div data-type="listing">
 
 
 <div class="highlight language-erb"><pre><code><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Settings"</span><span class="p">,</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">current_user</span><span class="p">)</span> <span class="cp">%&gt;</span>
 </code></pre></div>
 </div>
-<p>完整的视图如<a href="#listing-settings-link">代码清单 10.4</a> 所示。</p>
+<p>完整的视图如<a class="xref-link" href="#listing-settings-link">代码清单 10.4</a> 所示。</p>
 <div id="listing-settings-link" data-type="listing">
 <h5><span class="title-label">代码清单 10.4</span>：在网站布局中添加“Settings”链接的地址</h5>
 
@@ -218,7 +218,7 @@
 <span class="hll">              <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Settings"</span><span class="p">,</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">current_user</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span></span>
               <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"divider"</span><span class="nt">&gt;&lt;/li&gt;</span>
               <span class="nt">&lt;li&gt;</span>
-                <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Log out"</span><span class="p">,</span> <span class="n">logout_path</span><span class="p">,</span> <span class="ss">method: </span><span class="s2">"delete"</span> <span class="cp">%&gt;</span>
+                <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Log out"</span><span class="p">,</span> <span class="n">logout_path</span><span class="p">,</span> <span class="ss">method: :delete</span> <span class="cp">%&gt;</span>
               <span class="nt">&lt;/li&gt;</span>
             <span class="nt">&lt;/ul&gt;</span>
           <span class="nt">&lt;/li&gt;</span>
@@ -234,10 +234,10 @@
 <h5 id="exercises-edit-form" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>前面说过，使用 <code>target="_blank"</code> 打开 URL 有个小安全隐患：打开的窗口获得了 HTML 文档对应的 <code>window</code> 对象。这样在新窗口中可以插入恶意内容，发起<a href="https://zh.wikipedia.org/wiki/%E9%92%93%E9%B1%BC%E5%BC%8F%E6%94%BB%E5%87%BB">钓鱼攻击</a>。链接著名的网站（如 Gravatar）基本上不存在这种隐患，不过我们可以在链接标签中把 <code>rel</code>（“relationship”）属性设为 <code>"noopener"</code>，完全避免这个问题。在<a href="#listing-user-edit-view">代码清单 10.2</a> 中的 Gravatar 头像编辑链接中添加这个属性。</p>
+<p>前面说过，使用 <code>target="_blank"</code> 打开 URL 有个小安全隐患：打开的窗口获得了 HTML 文档对应的 <code>window</code> 对象。这样在新窗口中可以插入恶意内容，发起<a href="https://zh.wikipedia.org/wiki/%E9%92%93%E9%B1%BC%E5%BC%8F%E6%94%BB%E5%87%BB" class="external-link">钓鱼攻击</a>。链接著名的网站（如 Gravatar）基本上不存在这种隐患，不过我们可以在链接标签中把 <code>rel</code>（“relationship”）属性设为 <code>"noopener"</code>，完全避免这个问题。在<a class="xref-link" href="#listing-user-edit-view">代码清单 10.2</a> 中的 Gravatar 头像编辑链接中添加这个属性。</p>
 </li>
 <li>
-<p>重构 <code>new.html.erb</code> 和 <code>edit.html.erb</code> 视图，使用<a href="#listing-new-edit-partial">代码清单 10.5</a> 中的局部视图去除表单中的重复代码。重构后的视图如<a href="#listing-new-user-with-partial">代码清单 10.6</a> 和<a href="#listing-edit-user-with-partial">代码清单 10.7</a> 所示。注意，我们使用 <code>provide</code> 方法（<a href="chapter3.html#layouts-and-embedded-ruby">3.4.3 节</a>用过）把布局中的重复去除了。<sup>[<a id="fn-ref-3" href="#fn-3">3</a>]</sup>（如果你做了<a href="chapter7.html#listing-post-signup-form">代码清单 7.27</a> 对应的练习，无法像题中所说的那样做，请自己设法解决。我建议你使用<a href="#listing-new-edit-partial">代码清单 10.5</a> 中传递变量的方式，把<a href="#listing-new-user-with-partial">代码清单 10.6</a> 和<a href="#listing-edit-user-with-partial">代码清单 10.7</a> 所需的 URL 传给<a href="#listing-new-edit-partial">代码清单 10.5</a> 中的表单。）</p>
+<p>重构 <code>new.html.erb</code> 和 <code>edit.html.erb</code> 视图，使用<a class="xref-link" href="#listing-new-edit-partial">代码清单 10.5</a> 中的局部视图去除表单中的重复代码。重构后的视图如<a class="xref-link" href="#listing-new-user-with-partial">代码清单 10.6</a> 和<a class="xref-link" href="#listing-edit-user-with-partial">代码清单 10.7</a> 所示。注意，我们使用 <code>provide</code> 方法（<a class="xref-link" href="chapter3.html#layouts-and-embedded-ruby">3.4.3 节</a>用过）把布局中的重复去除了。<sup>[<a id="fn-ref-3" href="#fn-3">3</a>]</sup>（如果你做了<a class="xref-link" href="chapter7.html#listing-post-signup-form">代码清单 7.27</a> 对应的练习，无法像题中所说的那样做，请自己设法解决。我建议你使用<a class="xref-link" href="#listing-new-edit-partial">代码清单 10.5</a> 中传递变量的方式，把<a class="xref-link" href="#listing-new-user-with-partial">代码清单 10.6</a> 和<a class="xref-link" href="#listing-edit-user-with-partial">代码清单 10.7</a> 所需的 URL 传给<a class="xref-link" href="#listing-new-edit-partial">代码清单 10.5</a> 中的表单。）</p>
 </li>
 </ol>
 <div id="listing-new-edit-partial" data-type="listing">
@@ -301,7 +301,7 @@
 </section>
 <section data-type="sect2" id="unsuccessful-edits">
 <h2><span class="title-label">10.1.2</span> 编辑失败</h2>
-<p>本节我们要处理编辑失败的情况，过程与处理注册失败差不多（<a href="chapter7.html#unsuccessful-signups">7.3 节</a>）。我们要先定义 <code>update</code> 动作，把提交的 <code>params</code> 散列传给 <code>update_attributes</code> 方法（<a href="chapter6.html#updating-user-objects">6.1.5 节</a>），更新用户，如<a href="#listing-user-update-action-unsuccessful">代码清单 10.8</a> 所示。如果提交的数据无效，更新操作会返回 <code>false</code>，由 <code>else</code> 分支处理，重新渲染编辑页面。我们之前用过类似的处理方式，代码结构和第一个版 <code>create</code> 动作类似（<a href="chapter7.html#listing-first-create-action">代码清单 7.18</a>）。</p>
+<p>本节我们要处理编辑失败的情况，过程与处理注册失败差不多（<a class="xref-link" href="chapter7.html#unsuccessful-signups">7.3 节</a>）。我们要先定义 <code>update</code> 动作，把提交的 <code>params</code> 散列传给 <code>update_attributes</code> 方法（<a class="xref-link" href="chapter6.html#updating-user-objects">6.1.5 节</a>），更新用户，如<a class="xref-link" href="#listing-user-update-action-unsuccessful">代码清单 10.8</a> 所示。如果提交的数据无效，更新操作会返回 <code>false</code>，由 <code>else</code> 分支处理，重新渲染编辑页面。我们之前用过类似的处理方式，代码结构和第一个版 <code>create</code> 动作类似（<a class="xref-link" href="chapter7.html#listing-first-create-action">代码清单 7.18</a>）。</p>
 <div id="listing-user-update-action-unsuccessful" data-type="listing">
 <h5><span class="title-label">代码清单 10.8</span>：<code>update</code> 动作的初始版本</h5>
 
@@ -350,8 +350,8 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>注意调用 <code>update_attributes</code> 方法时指定的 <code>user_params</code> 参数，这是健壮参数（strong parameter），可以避免批量赋值带来的安全隐患（参见 <a href="chapter7.html#strong-parameters">7.3.2 节</a>）。</p>
-<p>因为 <code>User</code> 模型中定义了验证规则，而且<a href="#listing-user-edit-view">代码清单 10.2</a> 渲染了错误消息局部视图，所以提交无效信息后会显示一些有用的错误消息，如<a href="#fig-buggy-edit-with-invalid-information">图 10.3</a> 所示。</p>
+<p>注意调用 <code>update_attributes</code> 方法时指定的 <code>user_params</code> 参数，这是健壮参数（strong parameter），可以避免批量赋值带来的安全隐患（参见 <a class="xref-link" href="chapter7.html#strong-parameters">7.3.2 节</a>）。</p>
+<p>因为 <code>User</code> 模型中定义了验证规则，而且<a class="xref-link" href="#listing-user-edit-view">代码清单 10.2</a> 渲染了错误消息局部视图，所以提交无效信息后会显示一些有用的错误消息，如<a class="xref-link" href="#fig-buggy-edit-with-invalid-information">图 10.3</a> 所示。</p>
 <div id="fig-buggy-edit-with-invalid-information" class="figure"><img src="images/chapter10/edit_with_invalid_information_3rd_edition.png" alt="edit with invalid information 3rd edition" /><div class="figcaption"><span class="title-label">图 10.3</span>：提交编辑表单后显示的错误消息</div></div>
 <h5 id="exercises-unssuccessful-edits" class="discrete">练习</h5>
 <ol class="arabic">
@@ -362,7 +362,7 @@
 </section>
 <section data-type="sect2" id="testing-unsuccessful-edits">
 <h2><span class="title-label">10.1.3</span> 编辑失败的测试</h2>
-<p><a href="#unsuccessful-edits">10.1.2 节</a>结束时编辑表单已经可以使用，按照<a href="chapter3.html#aside-when-to-test">旁注 3.3</a> 中的测试指导方针，现在我们要编写集成测试捕获回归。和之前一样，首先要生成一个集成测试文件：</p>
+<p><a class="xref-link" href="#unsuccessful-edits">10.1.2 节</a>结束时编辑表单已经可以使用，按照<a class="xref-link" href="chapter3.html#aside-when-to-test">旁注 3.3</a> 中的测试指导方针，现在我们要编写集成测试捕获回归。和之前一样，首先要生成一个集成测试文件：</p>
 <div data-type="listing">
 
 
@@ -371,7 +371,7 @@
       create    <span class="nb">test</span>/integration/users_edit_test.rb
 </code></pre></div>
 </div>
-<p>然后为编辑失败编写一个简单的测试，如<a href="#listing-unsuccessful-edit-test">代码清单 10.9</a> 所示。在这段测试中，我们检查提交无效信息后是否重新渲染编辑模板，以此确认行为是否正确。注意，这里使用 <code>patch</code> 方法发送 <code>PATCH</code> 请求，它的用法与 <code>get</code>、<code>post</code> 和 <code>delete</code> 类似。</p>
+<p>然后为编辑失败编写一个简单的测试，如<a class="xref-link" href="#listing-unsuccessful-edit-test">代码清单 10.9</a> 所示。在这段测试中，我们检查提交无效信息后是否重新渲染编辑模板，以此确认行为是否正确。注意，这里使用 <code>patch</code> 方法发送 <code>PATCH</code> 请求，它的用法与 <code>get</code>、<code>post</code> 和 <code>delete</code> 类似。</p>
 <div id="listing-unsuccessful-edit-test" data-type="listing">
 <h5><span class="title-label">代码清单 10.9</span>：编辑失败的测试 <span class="green">GREEN</span></h5>
 
@@ -409,16 +409,16 @@
 <h5 id="exercises-testing-unsuccessful-edits" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>在<a href="#listing-unsuccessful-edit-test">代码清单 10.9</a> 中添加一行代码，确认错误消息的数量正确。提示：使用 <code>assert_select</code> 方法（<a href="chapter5.html#table-assert-select">表 5.2</a>）确认 CSS 类为 <code>alert</code> 的 <code>div</code> 标签中有没有文本“The form contains 4 errors”。</p>
+<p>在<a class="xref-link" href="#listing-unsuccessful-edit-test">代码清单 10.9</a> 中添加一行代码，确认错误消息的数量正确。提示：使用 <code>assert_select</code> 方法（<a class="xref-link" href="chapter5.html#table-assert-select">表 5.2</a>）确认 CSS 类为 <code>alert</code> 的 <code>div</code> 标签中有没有文本“The form contains 4 errors”。</p>
 </li>
 </ol>
 </section>
 <section data-type="sect2" id="successful-edits">
 <h2><span class="title-label">10.1.4</span> 编辑成功（使用 TDD）</h2>
-<p>现在我们要让编辑表单能正常使用。编辑头像的功能已经有了，因为我们把上传头像的操作交由 Gravatar 处理，如需更换头像，点击<a href="#fig-edit-page">图 10.2</a> 中的“change”链接就可以了，如<a href="#fig-gravatar-cropper">图 10.4</a> 所示。下面我们来实现编辑其他信息的功能。</p>
-<div id="fig-gravatar-cropper" class="figure"><img src="images/chapter10/gravatar_cropper.png" alt="gravatar cropper" /><div class="figcaption"><span class="title-label">图 10.4</span>：Gravatar 的图像裁切界面，上传了一位<a href="http://www.michaelhartl.com/">帅哥</a>的图片</div></div>
+<p>现在我们要让编辑表单能正常使用。编辑头像的功能已经有了，因为我们把上传头像的操作交由 Gravatar 处理，如需更换头像，点击<a class="xref-link" href="#fig-edit-page">图 10.2</a> 中的“change”链接就可以了，如<a class="xref-link" href="#fig-gravatar-cropper">图 10.4</a> 所示。下面我们来实现编辑其他信息的功能。</p>
+<div id="fig-gravatar-cropper" class="figure"><img src="images/chapter10/gravatar_cropper.png" alt="gravatar cropper" /><div class="figcaption"><span class="title-label">图 10.4</span>：Gravatar 的图像裁切界面，上传了一位<a href="http://www.michaelhartl.com/" class="external-link">帅哥</a>的图片</div></div>
 <p>上手测试后，你可能会发现，编写应用代码之前编写测试比之后再写更有用。针对现在这种情况，我们要编写的是验收测试（acceptance test），由测试的结果决定某个功能是否完成。为了演示如何编写验收测试，我们将使用测试驱动开发技术完成用户编辑功能。</p>
-<p>我们要编写与<a href="#listing-unsuccessful-edit-test">代码清单 10.9</a> 类似的测试，确认更新用户的操作行为正确，只不过这一次我们会提交有效的信息。然后检查显示了闪现消息，而且成功重定向到了用户的资料页面，同时还要确认数据库中保存的用户信息也正确更新了。这个测试如<a href="#listing-successful-edit-test">代码清单 10.11</a> 所示。注意，在<a href="#listing-successful-edit-test">代码清单 10.11</a> 中，密码和密码确认都为空值，因为修改用户名和电子邮件地址时并不想修改密码。还要注意，我们使用 <code>@user.reload</code>（<a href="chapter6.html#updating-user-objects">6.1.5 节</a>首次用到）重新加载数据库中存储的值，以此确认成功更新了信息。（新手很容易忘记这个操作，这就是为什么必须要有一定的经验才能编写有效的验收测试（以及 TDD）的原因。）</p>
+<p>我们要编写与<a class="xref-link" href="#listing-unsuccessful-edit-test">代码清单 10.9</a> 类似的测试，确认更新用户的操作行为正确，只不过这一次我们会提交有效的信息。然后检查显示了闪现消息，而且成功重定向到了用户的资料页面，同时还要确认数据库中保存的用户信息也正确更新了。这个测试如<a class="xref-link" href="#listing-successful-edit-test">代码清单 10.11</a> 所示。注意，在<a class="xref-link" href="#listing-successful-edit-test">代码清单 10.11</a> 中，密码和密码确认都为空值，因为修改用户名和电子邮件地址时并不想修改密码。还要注意，我们使用 <code>@user.reload</code>（<a class="xref-link" href="chapter6.html#updating-user-objects">6.1.5 节</a>首次用到）重新加载数据库中存储的值，以此确认成功更新了信息。（新手很容易忘记这个操作，这就是为什么必须要有一定的经验才能编写有效的验收测试（以及 TDD）的原因。）</p>
 <div id="listing-successful-edit-test" data-type="listing">
 <h5><span class="title-label">代码清单 10.11</span>：编辑成功的测试 <span class="red">RED</span></h5>
 
@@ -452,7 +452,7 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>要让<a href="#listing-successful-edit-test">代码清单 10.11</a> 中的测试通过，我们可以参照最终版 <code>create</code> 动作（<a href="chapter8.html#listing-login-upon-signup">代码清单 8.25</a>）编写 <code>update</code> 动作，如<a href="#listing-user-update-action">代码清单 10.12</a> 所示。</p>
+<p>要让<a class="xref-link" href="#listing-successful-edit-test">代码清单 10.11</a> 中的测试通过，我们可以参照最终版 <code>create</code> 动作（<a class="xref-link" href="chapter8.html#listing-login-upon-signup">代码清单 8.25</a>）编写 <code>update</code> 动作，如<a class="xref-link" href="#listing-user-update-action">代码清单 10.12</a> 所示。</p>
 <div id="listing-user-update-action" data-type="listing">
 <h5><span class="title-label">代码清单 10.12</span>：<code>Users</code> 控制器的 <code>update</code> 动作 <span class="red">RED</span></h5>
 
@@ -477,7 +477,7 @@
 <span class="nf">end</span>
 </code></pre></div>
 </div>
-<p>如<a href="#listing-user-update-action">代码清单 10.12</a> 的标题所示，测试组件无法通过，因为密码长度验证（<a href="chapter6.html#listing-password-implementation">代码清单 6.42</a>）失败了，这是因为<a href="#listing-successful-edit-test">代码清单 10.11</a> 中密码和密码确认都是空值。为了让测试通过，我们要在密码为空值时特殊处理最短长度验证，方法是把 <code>allow_nil: true</code> 选项传给 <code>validates</code> 方法，如<a href="#listing-allow-blank-password">代码清单 10.13</a> 所示。</p>
+<p>如<a class="xref-link" href="#listing-user-update-action">代码清单 10.12</a> 的标题所示，测试组件无法通过，因为密码长度验证（<a class="xref-link" href="chapter6.html#listing-password-implementation">代码清单 6.42</a>）失败了，这是因为<a class="xref-link" href="#listing-successful-edit-test">代码清单 10.11</a> 中密码和密码确认都是空值。为了让测试通过，我们要在密码为空值时特殊处理最短长度验证，方法是把 <code>allow_nil: true</code> 选项传给 <code>validates</code> 方法，如<a class="xref-link" href="#listing-allow-blank-password">代码清单 10.13</a> 所示。</p>
 <div id="listing-allow-blank-password" data-type="listing">
 <h5><span class="title-label">代码清单 10.13</span>：更新时允许密码为空 <span class="green">GREEN</span></h5>
 
@@ -499,8 +499,8 @@
 <span class="nf">end</span>
 </code></pre></div>
 </div>
-<p>你可能担心这么改用户注册时可以把密码设为空值，其实不然，<a href="chapter6.html#minimum-password-standards">6.3.3 节</a>说过，创建对象时，<code>has_secure_password</code> 会执行存在性验证，捕获密码为 <code>nil</code> 的情况。（密码为 <code>nil</code> 时能通过存在性验证，可是会被 <code>has_secure_password</code> 方法的验证捕获，因此修正了 <a href="chapter7.html#signup-error-messages">7.3.3 节</a>提到的错误消息重复问题。）</p>
-<p>至此，用户编辑页面应该可以正常使用了，如<a href="#fig-edit-form-working">图 10.5</a> 所示。你也可以运行测试组件确认一下，应该可以通过。</p>
+<p>你可能担心这么改用户注册时可以把密码设为空值，其实不然，<a class="xref-link" href="chapter6.html#minimum-password-standards">6.3.3 节</a>说过，创建对象时，<code>has_secure_password</code> 会执行存在性验证，捕获密码为 <code>nil</code> 的情况。（密码为 <code>nil</code> 时能通过存在性验证，可是会被 <code>has_secure_password</code> 方法的验证捕获，因此修正了 <a class="xref-link" href="chapter7.html#signup-error-messages">7.3.3 节</a>提到的错误消息重复问题。）</p>
+<p>至此，用户编辑页面应该可以正常使用了，如<a class="xref-link" href="#fig-edit-form-working">图 10.5</a> 所示。你也可以运行测试组件确认一下，应该可以通过。</p>
 <div data-type="listing">
 <h5><span class="title-label">代码清单 10.14</span>：<strong class="green">GREEN</strong></h5>
 
@@ -522,13 +522,13 @@
 </section>
 <section data-type="sect1" id="authorization">
 <h1><span class="title-label">10.2</span> 权限系统</h1>
-<p>在 Web 应用中，身份验证系统的功能是识别网站的用户，而权限系统是控制用户可以做什么操作。<a href="chapter8.html#basic-login">第 8 章</a>实现的身份验证机制有一个很好的作用——可以实现权限系统。</p>
-<p>虽然 <a href="#updating-users">10.1 节</a>已经完成了 <code>edit</code> 和 <code>update</code> 动作，但是却有一个荒唐的安全隐患：任何人（甚至是未登录的用户）都可以访问这两个动作，而且登录后的用户可以更新所有其他用户的资料。本节我们要实现一种安全机制，限制用户必须先登录才能更新自己的资料，而且不能更新别人的资料。</p>
-<p><a href="#requiring-logged-in-users">10.2.1 节</a>将处理未登录用户试图访问有权访问的保护页面。因为在使用应用的过程中经常会发生这种情况，所以我们将把这些用户转向登录页面，而且会显示一个帮助消息，构思图如<a href="#fig-login-page-protected-mockup">图 10.6</a> 所示。另一种情况是，用户尝试访问没有权限查看的页面（例如已登录的用户试图访问其他用户的编辑页面），此时将把用户重定向到根地址（<a href="#requiring-the-right-user">10.2.2 节</a>）。</p>
+<p>在 Web 应用中，身份验证系统的功能是识别网站的用户，而权限系统是控制用户可以做什么操作。<a class="xref-link" href="chapter8.html#basic-login">第 8 章</a>实现的身份验证机制有一个很好的作用——可以实现权限系统。</p>
+<p>虽然 <a class="xref-link" href="#updating-users">10.1 节</a>已经完成了 <code>edit</code> 和 <code>update</code> 动作，但是却有一个荒唐的安全隐患：任何人（甚至是未登录的用户）都可以访问这两个动作，更新任何用户的资料。本节我们要实现一种安全机制，限制用户必须先登录才能更新自己的资料，而且不能更新别人的资料。</p>
+<p><a class="xref-link" href="#requiring-logged-in-users">10.2.1 节</a>将处理未登录用户试图访问有权访问的保护页面。因为在使用应用的过程中经常会发生这种情况，所以我们将把这些用户转向登录页面，而且会显示一个帮助消息，构思图如<a class="xref-link" href="#fig-login-page-protected-mockup">图 10.6</a> 所示。另一种情况是，用户尝试访问没有权限查看的页面（例如已登录的用户试图访问其他用户的编辑页面），此时将把用户重定向到根地址（<a class="xref-link" href="#requiring-the-right-user">10.2.2 节</a>）。</p>
 <div id="fig-login-page-protected-mockup" class="figure"><img src="images/chapter10/login_page_protected_mockup.png" alt="login page protected mockup" /><div class="figcaption"><span class="title-label">图 10.6</span>：访问受保护页面时看到的页面构思图</div></div>
 <section data-type="sect2" id="requiring-logged-in-users">
 <h2><span class="title-label">10.2.1</span> 必须先登录</h2>
-<p>为了实现<a href="#fig-login-page-protected-mockup">图 10.6</a> 中的转向行为，我们要在 <code>Users</code> 控制器中使用前置过滤器。前置过滤器通过 <code>before_action</code> 方法设定，指定在某个动作运行前调用某个方法。<sup>[<a id="fn-ref-4" href="#fn-4">4</a>]</sup>为了实现要求用户先登录的限制，我们将定义一个名为 <code>logged_in_user</code> 的方法，然后使用 <code>before_action :logged_in_user</code> 调用这个方法，如<a href="#listing-authorize-before-filter">代码清单 10.15</a> 所示。</p>
+<p>为了实现<a class="xref-link" href="#fig-login-page-protected-mockup">图 10.6</a> 中的转向行为，我们要在 <code>Users</code> 控制器中使用前置过滤器。前置过滤器通过 <code>before_action</code> 方法设定，指定在某个动作运行前调用某个方法。<sup>[<a id="fn-ref-4" href="#fn-4">4</a>]</sup>为了实现要求用户先登录的限制，我们将定义一个名为 <code>logged_in_user</code> 的方法，然后使用 <code>before_action :logged_in_user</code> 调用这个方法，如<a class="xref-link" href="#listing-authorize-before-filter">代码清单 10.15</a> 所示。</p>
 <div id="listing-authorize-before-filter" data-type="listing">
 <h5><span class="title-label">代码清单 10.15</span>：添加 <code>logged_in_user</code> 前置过滤器 <span class="red">RED</span></h5>
 
@@ -559,8 +559,8 @@
 </code></pre></div>
 </div>
 <p>默认情况下，前置过滤器会应用于控制器中的所有动作，所以在上述代码中我们传入了 <code>:only</code> 选项，指定只应用在 <code>edit</code> 和 <code>update</code> 两个动作上。</p>
-<p>退出后再访问用户编辑页面 /users/1/edit，可以看到这个前置过滤器的效果，如<a href="#fig-protected-log-in">图 10.7</a> 所示。</p>
-<p>如<a href="#listing-authorize-before-filter">代码清单 10.15</a> 的标题所示，现在测试组件无法通过：</p>
+<p>退出后再访问用户编辑页面 /users/1/edit，可以看到这个前置过滤器的效果，如<a class="xref-link" href="#fig-protected-log-in">图 10.7</a> 所示。</p>
+<p>如<a class="xref-link" href="#listing-authorize-before-filter">代码清单 10.15</a> 的标题所示，现在测试组件无法通过：</p>
 <div data-type="listing">
 <h5><span class="title-label">代码清单 10.16</span>：<strong class="red">RED</strong></h5>
 
@@ -569,7 +569,7 @@
 </code></pre></div>
 </div>
 <p>这是因为现在 <code>edit</code> 和 <code>update</code> 动作都需要用户先登录，而在相应的测试中没有已登录的用户。</p>
-<p>所以，在测试中访问 <code>edit</code> 和 <code>update</code> 动作之前，要先登入用户。这个操作可以通过 <a href="chapter9.html#remember-tests">9.3 节</a>定义的 <code>log_in_as</code> 辅助方法（<a href="chapter9.html#listing-test-helper-log-in">代码清单 9.24</a>）轻易实现，如<a href="#listing-edit-tests-logged-in">代码清单 10.17</a> 所示。</p>
+<p>所以，在测试中访问 <code>edit</code> 和 <code>update</code> 动作之前，要先登入用户。这个操作可以通过 <a class="xref-link" href="chapter9.html#remember-tests">9.3 节</a>定义的 <code>log_in_as</code> 辅助方法（<a class="xref-link" href="chapter9.html#listing-test-helper-log-in">代码清单 9.24</a>）轻易实现，如<a class="xref-link" href="#listing-edit-tests-logged-in">代码清单 10.17</a> 所示。</p>
 <div id="fig-protected-log-in" class="figure"><img src="images/chapter10/protected_log_in_3rd_edition.png" alt="protected log in 3rd edition" /><div class="figcaption"><span class="title-label">图 10.7</span>：尝试访问受保护页面后显示的登录表单</div></div>
 <div id="listing-edit-tests-logged-in" data-type="listing">
 <h5><span class="title-label">代码清单 10.17</span>：登入测试用户 <span class="green">GREEN</span></h5>
@@ -602,7 +602,7 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>（可以把登入测试用户的代码放在 <code>setup</code> 方法中，去除一些重复。但是，在 <a href="#friendly-forwarding">10.2.3 节</a>我们要修改其中一个测试，在登录前访问编辑页面，如果把登录操作放在 <code>setup</code> 方法中就不能先访问其他页面了。）</p>
+<p>（可以把登入测试用户的代码放在 <code>setup</code> 方法中，去除一些重复。但是，在 <a class="xref-link" href="#friendly-forwarding">10.2.3 节</a>我们要修改其中一个测试，在登录前访问编辑页面，如果把登录操作放在 <code>setup</code> 方法中就不能先访问其他页面了。）</p>
 <p>现在，测试组件应该可以通过了：</p>
 <div data-type="listing">
 <h5><span class="title-label">代码清单 10.18</span>：<strong class="green">GREEN</strong></h5>
@@ -611,7 +611,7 @@
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
-<p>测试组件虽然通过了，但是对前置过滤器的测试还没完，因为即便把安全防护去掉，测试也能通过。你可以把前置过滤器注释掉确认一下，如<a href="#listing-commented-out-before-filter">代码清单 10.19</a> 所示。这可不妙！在测试组件能捕获的所有回归中，重大安全漏洞或许是最重要的。按照<a href="#listing-commented-out-before-filter">代码清单 10.19</a> 的方式修改后，绝对不能让测试通过。下面我们编写测试捕获这个问题。</p>
+<p>测试组件虽然通过了，但是对前置过滤器的测试还没完，因为即便把安全防护去掉，测试也能通过。你可以把前置过滤器注释掉确认一下，如<a class="xref-link" href="#listing-commented-out-before-filter">代码清单 10.19</a> 所示。这可不妙！在测试组件能捕获的所有回归中，重大安全漏洞或许是最重要的。按照<a class="xref-link" href="#listing-commented-out-before-filter">代码清单 10.19</a> 的方式修改后，绝对不能让测试通过。下面我们编写测试捕获这个问题。</p>
 <div id="listing-commented-out-before-filter" data-type="listing">
 <h5><span class="title-label">代码清单 10.19</span>：注释掉前置过滤器，测试安全防护措施 <span class="green">GREEN</span></h5>
 
@@ -625,7 +625,7 @@
 <span class="nf">end</span>
 </code></pre></div>
 </div>
-<p>前置过滤器应用在指定的各个动作上，因此我们要在 <code>Users</code> 控制器的测试中编写相应的测试。我们计划使用正确的请求方法访问 <code>edit</code> 和 <code>update</code> 动作，然后确认把用户重定向到了登录路径。由<a href="chapter7.html#table-restful-users">表 7.1</a> 得知，正确的请求方法分别是 <code>GET</code> 和 <code>PATCH</code>，所以在测试中要使用 <code>get</code> 和 <code>patch</code> 方法，如<a href="#listing-edit-update-redirect-tests">代码清单 10.20</a> 所示。</p>
+<p>前置过滤器应用在指定的各个动作上，因此我们要在 <code>Users</code> 控制器的测试中编写相应的测试。我们计划使用正确的请求方法访问 <code>edit</code> 和 <code>update</code> 动作，然后确认把用户重定向到了登录路径。由<a class="xref-link" href="chapter7.html#table-restful-users">表 7.1</a> 得知，正确的请求方法分别是 <code>GET</code> 和 <code>PATCH</code>，所以在测试中要使用 <code>get</code> 和 <code>patch</code> 方法，如<a class="xref-link" href="#listing-edit-update-redirect-tests">代码清单 10.20</a> 所示。</p>
 <div id="listing-edit-update-redirect-tests" data-type="listing">
 <h5><span class="title-label">代码清单 10.20</span>：测试 <code>edit</code> 和 <code>update</code> 动作是受保护的 <span class="red">RED</span></h5>
 
@@ -656,8 +656,8 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>注意，<a href="#listing-edit-update-redirect-tests">代码清单 10.20</a> 中的第二个测试使用 <code>patch</code> 方法向 <code>user_path(@user)</code> 发送 <code>PATCH</code> 请求。根据<a href="chapter7.html#table-restful-users">表 7.1</a>，这个请求由 <code>Users</code> 控制器的 <code>update</code> 动作处理。</p>
-<p>测试组件现在无法通过，和我们预期的一样。为了让测试通过，我们只需把前置过滤器的注释去掉，如<a href="#listing-uncommented-before-filter">代码清单 10.21</a> 所示。</p>
+<p>注意，<a class="xref-link" href="#listing-edit-update-redirect-tests">代码清单 10.20</a> 中的第二个测试使用 <code>patch</code> 方法向 <code>user_path(@user)</code> 发送 <code>PATCH</code> 请求。根据<a class="xref-link" href="chapter7.html#table-restful-users">表 7.1</a>，这个请求由 <code>Users</code> 控制器的 <code>update</code> 动作处理。</p>
+<p>测试组件现在无法通过，和我们预期的一样。为了让测试通过，我们只需把前置过滤器的注释去掉，如<a class="xref-link" href="#listing-uncommented-before-filter">代码清单 10.21</a> 所示。</p>
 <div id="listing-uncommented-before-filter" data-type="listing">
 <h5><span class="title-label">代码清单 10.21</span>：去掉前置过滤器的注释 <span class="green">GREEN</span></h5>
 
@@ -683,31 +683,31 @@
 <h5 id="exercises-requiring-logged-in-users" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>前面说过，前置过滤器默认应用到控制器中的全部动作上。如果这样，会导致我们的应用出错（例如登录后才能访问注册页面，这显然是不对的）。把<a href="#listing-authorize-before-filter">代码清单 10.15</a> 中的 <code>only:</code> 散列注释掉，确认测试组件能捕获这个问题。</p>
+<p>前面说过，前置过滤器默认应用到控制器中的全部动作上。如果这样，会导致我们的应用出错（例如登录后才能访问注册页面，这显然是不对的）。把<a class="xref-link" href="#listing-authorize-before-filter">代码清单 10.15</a> 中的 <code>only:</code> 散列注释掉，确认测试组件能捕获这个问题。</p>
 </li>
 </ol>
 </section>
 <section data-type="sect2" id="requiring-the-right-user">
 <h2><span class="title-label">10.2.2</span> 用户只能编辑自己的资料</h2>
-<p>当然，要求用户必须先登录还不够，用户必须只能编辑自己的资料。由 <a href="#requiring-logged-in-users">10.2.1 节</a>得知，测试组件很容易漏掉基本的安全缺陷，所以我们将使用测试驱动开发技术确保写出的代码能正确实现安全机制。为此，我们要在 <code>Users</code> 控制器的测试中添加一些测试，完善<a href="#listing-edit-update-redirect-tests">代码清单 10.20</a>。</p>
-<p>为了确保用户不能编辑其他用户的信息，我们需要登入第二个用户。为此，要在用户固件文件中再添加一个用户，如<a href="#listing-fixture-second-user">代码清单 10.23</a> 所示。</p>
+<p>当然，要求用户必须先登录还不够，用户必须只能编辑自己的资料。由 <a class="xref-link" href="#requiring-logged-in-users">10.2.1 节</a>得知，测试组件很容易漏掉基本的安全缺陷，所以我们将使用测试驱动开发技术确保写出的代码能正确实现安全机制。为此，我们要在 <code>Users</code> 控制器的测试中添加一些测试，完善<a class="xref-link" href="#listing-edit-update-redirect-tests">代码清单 10.20</a>。</p>
+<p>为了确保用户不能编辑其他用户的信息，我们需要登入第二个用户。为此，要在用户固件文件中再添加一个用户，如<a class="xref-link" href="#listing-fixture-second-user">代码清单 10.23</a> 所示。</p>
 <div id="listing-fixture-second-user" data-type="listing">
 <h5><span class="title-label">代码清单 10.23</span>：在固件文件中添加第二个用户</h5>
 
 <div class="source-file">test/fixtures/users.yml</div>
 
-<div class="highlight language-yaml"><pre><code><span class="s">michael</span><span class="pi">:</span>
-  <span class="s">name</span><span class="pi">:</span> <span class="s">Michael Example</span>
-  <span class="s">email</span><span class="pi">:</span> <span class="s">michael@example.com</span>
-  <span class="s">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
+<div class="highlight language-yaml"><pre><code><span class="na">michael</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">Michael Example</span>
+  <span class="na">email</span><span class="pi">:</span> <span class="s">michael@example.com</span>
+  <span class="na">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
 
-<span class="hll"><span class="s">archer</span><span class="pi">:</span></span>
-<span class="hll">  <span class="s">name</span><span class="pi">:</span> <span class="s">Sterling Archer</span></span>
-<span class="hll">  <span class="s">email</span><span class="pi">:</span> <span class="s">duchess@example.gov</span></span>
-<span class="hll">  <span class="s">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span></span>
+<span class="hll"><span class="na">archer</span><span class="pi">:</span></span>
+<span class="hll">  <span class="na">name</span><span class="pi">:</span> <span class="s">Sterling Archer</span></span>
+<span class="hll">  <span class="na">email</span><span class="pi">:</span> <span class="s">duchess@example.gov</span></span>
+<span class="hll">  <span class="na">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span></span>
 </code></pre></div>
 </div>
-<p>使用<a href="chapter9.html#listing-test-helper-log-in">代码清单 9.24</a> 中定义的 <code>log_in_as</code> 方法，我们可以使用<a href="#listing-edit-update-wrong-user-tests">代码清单 10.24</a> 中的代码测试 <code>edit</code> 和 <code>update</code> 动作。注意，这里没有重定向到登录路径，而是根地址，因为试图编辑其他用户资料的用户已经登录了。</p>
+<p>使用<a class="xref-link" href="chapter9.html#listing-test-helper-log-in">代码清单 9.24</a> 中定义的 <code>log_in_as</code> 方法，我们可以使用<a class="xref-link" href="#listing-edit-update-wrong-user-tests">代码清单 10.24</a> 中的代码测试 <code>edit</code> 和 <code>update</code> 动作。注意，这里没有重定向到登录路径，而是根地址，因为试图编辑其他用户资料的用户已经登录了。</p>
 <div id="listing-edit-update-wrong-user-tests" data-type="listing">
 <h5><span class="title-label">代码清单 10.24</span>：尝试编辑其他用户资料的测试 <span class="red">RED</span></h5>
 
@@ -741,7 +741,7 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>为了重定向试图编辑其他用户资料的用户，我们要定义一个名为 <code>correct_user</code> 的方法，然后设定一个前置过滤器调用这个方法，如<a href="#listing-correct-user-before-filter">代码清单 10.25</a> 所示。注意，<code>correct_user</code> 中定义了 <code>@user</code> 变量，所以可以把 <code>edit</code> 和 <code>update</code> 动作中的 <code>@user</code> 赋值语句删掉。</p>
+<p>为了重定向试图编辑其他用户资料的用户，我们要定义一个名为 <code>correct_user</code> 的方法，然后设定一个前置过滤器调用这个方法，如<a class="xref-link" href="#listing-correct-user-before-filter">代码清单 10.25</a> 所示。注意，<code>correct_user</code> 中定义了 <code>@user</code> 变量，所以可以把 <code>edit</code> 和 <code>update</code> 动作中的 <code>@user</code> 赋值语句删掉。</p>
 <div id="listing-correct-user-before-filter" data-type="listing">
 <h5><span class="title-label">代码清单 10.25</span>：保护 <code>edit</code> 和 <code>update</code> 动作的 <code>correct_user</code> 前置过滤器 <span class="green">GREEN</span></h5>
 
@@ -800,7 +800,7 @@
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
-<p>最后，我们还要重构一下。我们要遵守一般的约定，定义 <code>current_user?</code> 方法，返回布尔值，然后在 <code>correct_user</code> 中调用。我们要在 <code>Sessions</code> 辅助模块中定义这个方法，如<a href="#listing-current-user-p">代码清单 10.27</a> 所示。 然后我们就可以把</p>
+<p>最后，我们还要重构一下。我们要遵守一般的约定，定义 <code>current_user?</code> 方法，返回布尔值，然后在 <code>correct_user</code> 中调用。我们要在 <code>Sessions</code> 辅助模块中定义这个方法，如<a class="xref-link" href="#listing-current-user-p">代码清单 10.27</a> 所示。 然后我们就可以把</p>
 <div data-type="listing">
 
 
@@ -843,7 +843,7 @@
 <span class="nf">end</span>
 </code></pre></div>
 </div>
-<p>把直接比较的代码换成返回布尔值的方法后，得到的代码如<a href="#listing-correct-user-before-filter-boolean">代码清单 10.28</a> 所示。</p>
+<p>把直接比较的代码换成返回布尔值的方法后，得到的代码如<a class="xref-link" href="#listing-correct-user-before-filter-boolean">代码清单 10.28</a> 所示。</p>
 <div id="listing-correct-user-before-filter-boolean" data-type="listing">
 <h5><span class="title-label">代码清单 10.28</span>：<code>correct_user</code> 前置过滤器的最终版本 <span class="green">GREEN</span></h5>
 
@@ -907,7 +907,7 @@
 <section data-type="sect2" id="friendly-forwarding">
 <h2><span class="title-label">10.2.3</span> 友好的转向</h2>
 <p>网站的权限系统完成了，但是还有一个小瑕疵：不管用户尝试访问的是哪个受保护的页面，登录后都会重定向到资料页面。也就是说，如果未登录的用户访问了编辑资料页面，网站要求先登录，登录后会重定向到 /users/1，而不是 /users/1/edit。如果登录后能重定向到用户之前想访问的页面就更好了。</p>
-<p>实现这种需求所需的应用代码有点儿复杂，不过测试很简单，我们只需把<a href="#listing-edit-tests-logged-in">代码清单 10.17</a> 中登录和访问编辑页面两个操作调换顺序即可。如<a href="#listing-friendly-forwarding-test">代码清单 10.29</a> 所示，最终写出的测试先访问编辑页面，然后登录，最后确认把用户重定向到了编辑页面，而不是默认的资料页面。</p>
+<p>实现这种需求所需的应用代码有点儿复杂，不过测试很简单，我们只需把<a class="xref-link" href="#listing-edit-tests-logged-in">代码清单 10.17</a> 中登录和访问编辑页面两个操作调换顺序即可。如<a class="xref-link" href="#listing-friendly-forwarding-test">代码清单 10.29</a> 所示，最终写出的测试先访问编辑页面，然后登录，最后确认把用户重定向到了编辑页面，而不是默认的资料页面。</p>
 <div id="listing-friendly-forwarding-test" data-type="listing">
 <h5><span class="title-label">代码清单 10.29</span>：测试友好的转向 <span class="red">RED</span></h5>
 
@@ -942,7 +942,7 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>有了一个失败测试，现在可以实现友好的转向了。<sup>[<a id="fn-ref-5" href="#fn-5">5</a>]</sup>要转向用户真正想访问的页面，我们要在某个地方存储页面的地址，登录后再重定向到那个页面。我们将通过两个方法来实现这个过程，<code>store_location</code> 和 <code>redirect_back_or</code>，它们都在 <code>Sessions</code> 辅助模块中定义，如<a href="#listing-friendly-forwarding-code">代码清单 10.30</a> 所示。</p>
+<p>有了一个失败测试，现在可以实现友好的转向了。<sup>[<a id="fn-ref-5" href="#fn-5">5</a>]</sup>要转向用户真正想访问的页面，我们要在某个地方存储页面的地址，登录后再重定向到那个页面。我们将通过两个方法来实现这个过程，<code>store_location</code> 和 <code>redirect_back_or</code>，它们都在 <code>Sessions</code> 辅助模块中定义，如<a class="xref-link" href="#listing-friendly-forwarding-code">代码清单 10.30</a> 所示。</p>
 <div id="listing-friendly-forwarding-code" data-type="listing">
 <h5><span class="title-label">代码清单 10.30</span>：实现友好的转向 <span class="red">RED</span></h5>
 
@@ -965,9 +965,9 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>我们使用 <code>session</code> 存储转向地址，这与 <a href="chapter8.html#the-log-in-method">8.2.1 节</a>登入用户的方式类似。<a href="#listing-friendly-forwarding-code">代码清单 10.30</a> 还用到了 <code>request</code> 对象，获取所请求页面的地址（<code>request.original_url</code>）。</p>
+<p>我们使用 <code>session</code> 存储转向地址，这与 <a class="xref-link" href="chapter8.html#the-log-in-method">8.2.1 节</a>登入用户的方式类似。<a class="xref-link" href="#listing-friendly-forwarding-code">代码清单 10.30</a> 还用到了 <code>request</code> 对象，获取所请求页面的地址（<code>request.original_url</code>）。</p>
 <p>在 <code>store_location</code> 方法中，把请求的地址存储在 <code>session[:forwarding_url]</code> 中，而且只当请求是 <code>GET</code> 请求时才存储。这么做，当未登录的用户提交表单时，不会存储转向地址（这种情况虽然罕见，但在提交表单前，如果用户手动删除了会话，还是会发生的）。如果存储了，那么本来期望接收 <code>POST</code>、<code>PATCH</code> 或 <code>DELETE</code> 请求的动作实际收到的是 <code>GET</code> 请求，从而导致错误。加上 <code>if request.get?</code> 能避免这种问题。<sup>[<a id="fn-ref-6" href="#fn-6">6</a>]</sup></p>
-<p>若想使用 <code>store_location</code> 方法，我们要把它加入 <code>logged_in_user</code> 前置过滤器中，如<a href="#listing-add-store-location">代码清单 10.31</a> 所示。</p>
+<p>若想使用 <code>store_location</code> 方法，我们要把它加入 <code>logged_in_user</code> 前置过滤器中，如<a class="xref-link" href="#listing-add-store-location">代码清单 10.31</a> 所示。</p>
 <div id="listing-add-store-location" data-type="listing">
 <h5><span class="title-label">代码清单 10.31</span>：把 <code>store_location</code> 方法添加到 <code>logged_in_user</code> 前置过滤器中 <span class="red">RED</span></h5>
 
@@ -1010,14 +1010,14 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>为了实现转向操作，要在 <code>Sessions</code> 控制器的 <code>create</code> 动作中调用 <code>redirect_back_or</code> 方法，如果存储了之前请求的地址，就重定向到那个地址，否则重定向到一个默认的地址，如<a href="#listing-friendly-session-create">代码清单 10.32</a> 所示。<code>redirect_back_or</code> 方法用到了或运算符 <code>||</code>：</p>
+<p>为了实现转向操作，要在 <code>Sessions</code> 控制器的 <code>create</code> 动作中调用 <code>redirect_back_or</code> 方法，如果存储了之前请求的地址，就重定向到那个地址，否则重定向到一个默认的地址，如<a class="xref-link" href="#listing-friendly-session-create">代码清单 10.32</a> 所示。<code>redirect_back_or</code> 方法用到了或运算符 <code>||</code>：</p>
 <div data-type="listing">
 
 
 <div class="highlight language-ruby"><pre><code><span class="n">session</span><span class="p">[</span><span class="ss">:forwarding_url</span><span class="p">]</span> <span class="o">||</span> <span class="n">default</span>
 </code></pre></div>
 </div>
-<p>如果 <code>session[:forwarding_url]</code> 的值不为 <code>nil</code>，就返回其中存储的值，否则返回默认的地址。注意，<a href="#listing-friendly-forwarding-code">代码清单 10.30</a> 处理得很谨慎，删除了转向地址。如果不删除，后续登录会不断重定向到受保护的页面，用户只能关闭浏览器。（针对这个行为的测试留作<a href="#exercises-friendly-forwarding">练习</a>。）还要注意，即便先重定向了，还是会删除会话中的转向地址，因为除非明确使用了 <code>return</code> 或者到了方法的末尾，否则重定向之后的代码仍然会执行。</p>
+<p>如果 <code>session[:forwarding_url]</code> 的值不为 <code>nil</code>，就返回其中存储的值，否则返回默认的地址。注意，<a class="xref-link" href="#listing-friendly-forwarding-code">代码清单 10.30</a> 处理得很谨慎，删除了转向地址。如果不删除，后续登录会不断重定向到受保护的页面，用户只能关闭浏览器。（针对这个行为的测试留作<a class="xref-link" href="#exercises-friendly-forwarding">练习</a>。）还要注意，即便先重定向了，还是会删除会话中的转向地址，因为除非明确使用了 <code>return</code> 或者到了方法的末尾，否则重定向之后的代码仍然会执行。</p>
 <div id="listing-friendly-session-create" data-type="listing">
 <h5><span class="title-label">代码清单 10.32</span>：加入友好转向后的 <code>create</code> 动作 <span class="green">GREEN</span></h5>
 
@@ -1044,7 +1044,7 @@
 <span class="nf">end</span>
 </code></pre></div>
 </div>
-<p>现在，<a href="#listing-friendly-forwarding-test">代码清单 10.29</a> 中针对友好转向的集成测试应该可以通过了。而且，基本的用户认证和页面保护机制也完成了。和之前一样，在继续之前，最好运行测试组件，确认可以通过：</p>
+<p>现在，<a class="xref-link" href="#listing-friendly-forwarding-test">代码清单 10.29</a> 中针对友好转向的集成测试应该可以通过了。而且，基本的用户认证和页面保护机制也完成了。和之前一样，在继续之前，最好运行测试组件，确认可以通过：</p>
 <div data-type="listing">
 <h5><span class="title-label">代码清单 10.33</span>：<strong class="green">GREEN</strong></h5>
 
@@ -1055,22 +1055,22 @@
 <h5 id="exercises-friendly-forwarding" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>编写一个测试，确保友好转向只会在首次登录后转向指定的地址，以后再尝试登录都会转向默认地址（即资料页面）。提示：把这个测试添加到<a href="#listing-friendly-forwarding-test">代码清单 10.29</a> 中，检查 <code>session[:forwarding_url]</code> 中是否保存了正确的值。</p>
+<p>编写一个测试，确保友好转向只会在首次登录后转向指定的地址，以后再尝试登录都会转向默认地址（即资料页面）。提示：把这个测试添加到<a class="xref-link" href="#listing-friendly-forwarding-test">代码清单 10.29</a> 中，检查 <code>session[:forwarding_url]</code> 中是否保存了正确的值。</p>
 </li>
 <li>
-<p>把 <code>debugger</code> 方法（<a href="chapter7.html#debugger">7.1.3 节</a>）添加到 <code>Sessions</code> 控制器的 <code>new</code> 动作中，然后退出，再访问 /users/1/edit。在调试器中确认 <code>session[:forwarding_url]</code> 的值是正确的。<code>new</code> 动作中 <code>request.get?</code> 的值是什么？（使用调试器时，终端有时会假死，或者行为怪异，请自行设法解决。）</p>
+<p>把 <code>debugger</code> 方法（<a class="xref-link" href="chapter7.html#debugger">7.1.3 节</a>）添加到 <code>Sessions</code> 控制器的 <code>new</code> 动作中，然后退出，再访问 /users/1/edit。在调试器中确认 <code>session[:forwarding_url]</code> 的值是正确的。<code>new</code> 动作中 <code>request.get?</code> 的值是什么？（使用调试器时，终端有时会假死，或者行为怪异，请自行设法解决。）</p>
 </li>
 </ol>
 </section>
 </section>
 <section data-type="sect1" id="showing-all-users">
 <h1><span class="title-label">10.3</span> 列出所有用户</h1>
-<p>本节，我们要添加 <code>Users</code> 控制器中的倒数第二个动作，<code>index</code>。<code>index</code> 动作不是显示某一个用户，而是显示所有用户。在这个过程中，我们将学习如何在数据库中生成示例用户数据，以及如何分页显示用户列表，让用户列表以灵活的方式显示大量用户。用户列表、分页链接和导航栏中的“Users”链接的构思图如<a href="#fig-user-index-mockup">图 10.8</a> 所示。<sup>[<a id="fn-ref-7" href="#fn-7">7</a>]</sup><a href="#deleting-users">10.4 节</a>将添加管理功能，用来删除用户。</p>
+<p>本节，我们要添加 <code>Users</code> 控制器中的倒数第二个动作，<code>index</code>。<code>index</code> 动作不是显示某一个用户，而是显示所有用户。在这个过程中，我们将学习如何在数据库中生成示例用户数据，以及如何分页显示用户列表，让用户列表以灵活的方式显示大量用户。用户列表、分页链接和导航栏中的“Users”链接的构思图如<a class="xref-link" href="#fig-user-index-mockup">图 10.8</a> 所示。<sup>[<a id="fn-ref-7" href="#fn-7">7</a>]</sup><a class="xref-link" href="#deleting-users">10.4 节</a>将添加管理功能，用来删除用户。</p>
 <div id="fig-user-index-mockup" class="figure"><img src="images/chapter10/user_index_mockup_bootstrap.png" alt="user index mockup bootstrap" /><div class="figcaption"><span class="title-label">图 10.8</span>：用户列表页面的构思图</div></div>
 <section data-type="sect2" id="users-index">
 <h2><span class="title-label">10.3.1</span> 用户列表</h2>
 <p>创建用户列表之前，我们先要实现一个安全机制。单个用户的资料页面对网站的所有访问者开放，但要限制用户列表页面，只让已登录的用户查看，减少未注册用户能看到的信息量。<sup>[<a id="fn-ref-8" href="#fn-8">8</a>]</sup></p>
-<p>为了限制访问 <code>index</code> 动作，我们先编写一个简短的测试，确认访问 <code>index</code> 动作时能正确地重定向，如<a href="#listing-index-action-redirected-test">代码清单 10.34</a> 所示。</p>
+<p>为了限制访问 <code>index</code> 动作，我们先编写一个简短的测试，确认访问 <code>index</code> 动作时能正确地重定向，如<a class="xref-link" href="#listing-index-action-redirected-test">代码清单 10.34</a> 所示。</p>
 <div id="listing-index-action-redirected-test" data-type="listing">
 <h5><span class="title-label">代码清单 10.34</span>：测试 <code>index</code> 动作的重定向 <span class="red">RED</span></h5>
 
@@ -1095,7 +1095,7 @@
 <span class="nf">end</span>
 </code></pre></div>
 </div>
-<p>然后我们要定义 <code>index</code> 动作，并把它加入被 <code>logged_in_user</code> 前置过滤器保护的动作列表中，如<a href="#listing-logged-in-user-index">代码清单 10.35</a> 所示。</p>
+<p>然后我们要定义 <code>index</code> 动作，并把它加入被 <code>logged_in_user</code> 前置过滤器保护的动作列表中，如<a class="xref-link" href="#listing-logged-in-user-index">代码清单 10.35</a> 所示。</p>
 <div id="listing-logged-in-user-index" data-type="listing">
 <h5><span class="title-label">代码清单 10.35</span>：访问 <code>index</code> 动作要先登录 <span class="green">GREEN</span></h5>
 
@@ -1117,7 +1117,7 @@
 <span class="nf">end</span>
 </code></pre></div>
 </div>
-<p>为了显示用户列表，我们要定义一个变量，存储网站中的所有用户，然后在 <code>index</code> 动作的视图中遍历，显示各个用户。你可能还记得玩具应用中相应的动作（<a href="chapter2.html#listing-demo-index-action">代码清单 2.8</a>），我们可以使用 <code>User.all</code> 从数据库中读取所有用户，然后把这些用户赋值给实例变量 <code>@users</code>，以便在视图中使用，如<a href="#listing-user-index">代码清单 10.36</a> 所示。（你可能会觉得一次列出所有用户不太好，你是对的，我们会在 <a href="#pagination">10.3.3 节</a>改进。）</p>
+<p>为了显示用户列表，我们要定义一个变量，存储网站中的所有用户，然后在 <code>index</code> 动作的视图中遍历，显示各个用户。你可能还记得玩具应用中相应的动作（<a class="xref-link" href="chapter2.html#listing-demo-index-action">代码清单 2.8</a>），我们可以使用 <code>User.all</code> 从数据库中读取所有用户，然后把这些用户赋值给实例变量 <code>@users</code>，以便在视图中使用，如<a class="xref-link" href="#listing-user-index">代码清单 10.36</a> 所示。（你可能会觉得一次列出所有用户不太好，你是对的，我们会在 <a class="xref-link" href="#pagination">10.3.3 节</a>改进。）</p>
 <div id="listing-user-index" data-type="listing">
 <h5><span class="title-label">代码清单 10.36</span>：<code>Users</code> 控制器的 <code>index</code> 动作</h5>
 
@@ -1137,7 +1137,7 @@
 <span class="nf">end</span>
 </code></pre></div>
 </div>
-<p>为了显示用户列表页面，我们要创建一个视图（要自己动手创建视图文件），遍历所有用户，把每个用户包含在一个 <code>li</code> 标签中。我们要使用 <code>each</code> 方法遍历所有用户，显示用户的 Gravatar 头像和名字，然后把所有用户包含在一个无序列表 <code>ul</code> 标签中，如<a href="#listing-user-index-view">代码清单 10.37</a> 所示。</p>
+<p>为了显示用户列表页面，我们要创建一个视图（要自己动手创建视图文件），遍历所有用户，把每个用户包含在一个 <code>li</code> 标签中。我们要使用 <code>each</code> 方法遍历所有用户，显示用户的 Gravatar 头像和名字，然后把所有用户包含在一个无序列表 <code>ul</code> 标签中，如<a class="xref-link" href="#listing-user-index-view">代码清单 10.37</a> 所示。</p>
 <div id="listing-user-index-view" data-type="listing">
 <h5><span class="title-label">代码清单 10.37</span>：用户列表视图</h5>
 
@@ -1156,7 +1156,7 @@
 <span class="nt">&lt;/ul&gt;</span>
 </code></pre></div>
 </div>
-<p>在<a href="#listing-user-index-view">代码清单 10.37</a> 中，我们用到了 <a href="chapter7.html#a-gravatar-image-and-a-sidebar">7.1.4 节</a>的<a href="chapter7.html#exercises-a-gravatar-image-and-a-sidebar">练习</a>中<a href="chapter7.html#listing-gravatar-option">代码清单 7.12</a> 的成果，向 Gravatar 辅助方法传入第二个参数，指定头像的大小。如果你之前没有做这个练习，在继续阅读之前请参照<a href="#listing-gravatar-option-redux">代码清单 10.38</a>，更新 <code>Users</code> 辅助模块文件。（也可以使用<a href="chapter7.html#listing-gravatar-keyword">代码清单 7.13</a> 中使用关键字参数那个版本。）</p>
+<p>在<a class="xref-link" href="#listing-user-index-view">代码清单 10.37</a> 中，我们用到了 <a class="xref-link" href="chapter7.html#a-gravatar-image-and-a-sidebar">7.1.4 节</a>的<a class="xref-link" href="chapter7.html#exercises-a-gravatar-image-and-a-sidebar">练习</a>中<a class="xref-link" href="chapter7.html#listing-gravatar-option">代码清单 7.12</a> 的成果，向 Gravatar 辅助方法传入第二个参数，指定头像的大小。如果你之前没有做这个练习，在继续阅读之前请参照<a class="xref-link" href="#listing-gravatar-option-redux">代码清单 10.38</a>，更新 <code>Users</code> 辅助模块文件。（也可以使用<a class="xref-link" href="chapter7.html#listing-gravatar-keyword">代码清单 7.13</a> 中使用关键字参数那个版本。）</p>
 <div id="listing-gravatar-option-redux" data-type="listing">
 <h5><span class="title-label">代码清单 10.38</span>：为 <code>gravatar_for</code> 辅助方法添加一个散列选项</h5>
 
@@ -1174,7 +1174,7 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>然后再添加一些 CSS 样式（确切地说是 SCSS），如<a href="#listing-user-index-css">代码清单 10.39</a> 所示。</p>
+<p>然后再添加一些 CSS 样式（确切地说是 SCSS），如<a class="xref-link" href="#listing-user-index-css">代码清单 10.39</a> 所示。</p>
 <div id="listing-user-index-css" data-type="listing">
 <h5><span class="title-label">代码清单 10.39</span>：用户列表页面的 CSS</h5>
 
@@ -1196,7 +1196,7 @@
 <span class="p">}</span>
 </code></pre></div>
 </div>
-<p>最后，我们还要把页头导航栏中用户列表页面的链接地址换成 <code>users_path</code>，这是<a href="chapter7.html#table-restful-users">表 7.1</a> 中还没用到的最后一个具名路由，如<a href="#listing-users-link">代码清单 10.40</a> 所示。</p>
+<p>最后，我们还要把页头导航栏中用户列表页面的链接地址换成 <code>users_path</code>，这是<a class="xref-link" href="chapter7.html#table-restful-users">表 7.1</a> 中还没用到的最后一个具名路由，如<a class="xref-link" href="#listing-users-link">代码清单 10.40</a> 所示。</p>
 <div id="listing-users-link" data-type="listing">
 <h5><span class="title-label">代码清单 10.40</span>：添加用户列表页面的链接地址</h5>
 
@@ -1220,7 +1220,7 @@
               <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Settings"</span><span class="p">,</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">current_user</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
               <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"divider"</span><span class="nt">&gt;&lt;/li&gt;</span>
               <span class="nt">&lt;li&gt;</span>
-                <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Log out"</span><span class="p">,</span> <span class="n">logout_path</span><span class="p">,</span> <span class="ss">method: </span><span class="s2">"delete"</span> <span class="cp">%&gt;</span>
+                <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Log out"</span><span class="p">,</span> <span class="n">logout_path</span><span class="p">,</span> <span class="ss">method: :delete</span> <span class="cp">%&gt;</span>
               <span class="nt">&lt;/li&gt;</span>
             <span class="nt">&lt;/ul&gt;</span>
           <span class="nt">&lt;/li&gt;</span>
@@ -1241,28 +1241,28 @@
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
-<p>不过，如<a href="#fig-user-index-only-one">图 10.9</a> 所示，页面中只显示了一个用户，有点孤单。下面，我们来改变这种悲惨状况。</p>
+<p>不过，如<a class="xref-link" href="#fig-user-index-only-one">图 10.9</a> 所示，页面中只显示了一个用户，有点孤单。下面，我们来改变这种悲惨状况。</p>
 <div id="fig-user-index-only-one" class="figure"><img src="images/chapter10/user_index_only_one_3rd_edition.png" alt="user index only one 3rd edition" /><div class="figcaption"><span class="title-label">图 10.9</span>：用户列表页面，只显示了一个用户</div></div>
 <h5 id="exercises-user-index" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>至此，网站布局中的链接都设定好了。为这些链接编写一个集成测试，包括登录前后用户看到的链接。提示：使用 <code>log_in_as</code> 辅助方法，把测试添加到<a href="chapter5.html#listing-layout-links-test">代码清单 5.32</a> 中。</p>
+<p>至此，网站布局中的链接都设定好了。为这些链接编写一个集成测试，包括登录前后用户看到的链接。提示：使用 <code>log_in_as</code> 辅助方法，把测试添加到<a class="xref-link" href="chapter5.html#listing-layout-links-test">代码清单 5.32</a> 中。</p>
 </li>
 </ol>
 </section>
 <section data-type="sect2" id="sample-users">
 <h2><span class="title-label">10.3.2</span> 示例用户</h2>
 <p>本节，我们要为应用添加更多的用户。为了让用户列表看上去像个“列表”，我们可以在浏览器中访问注册页面，一个一个地注册用户。不过还有更好的方法，我们可以使用 Ruby 代码创建用户。</p>
-<p>首先，我们要在 <code>Gemfile</code> 文件中加入 <code>faker</code> gem，如<a href="#listing-faker-gemfile">代码清单 10.42</a> 所示。这个 gem 会使用半真实的名字和电子邮件地址创建示例用户。（通常，可能只需在开发环境中安装 <code>faker</code> gem，但是对这个演示应用来说，生产环境也要使用 <code>faker</code>，参见 <a href="#updating-showing-and-deleting-users-conclusion">10.5 节</a>。）</p>
+<p>首先，我们要在 <code>Gemfile</code> 文件中加入 <code>faker</code> gem，如<a class="xref-link" href="#listing-faker-gemfile">代码清单 10.42</a> 所示。这个 gem 会使用半真实的名字和电子邮件地址创建示例用户。（通常，可能只需在开发环境中安装 <code>faker</code> gem，但是对这个演示应用来说，生产环境也要使用 <code>faker</code>，参见 <a class="xref-link" href="#updating-showing-and-deleting-users-conclusion">10.5 节</a>。）</p>
 <div id="listing-faker-gemfile" data-type="listing">
 <h5><span class="title-label">代码清单 10.42</span>：在 <code>Gemfile</code> 文件中加入 <code>faker</code> gem</h5>
 
 
 <div class="highlight language-ruby"><pre><code><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
 
-<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>          <span class="s1">'5.0.1'</span>
-<span class="n">gem</span> <span class="s1">'bcrypt'</span><span class="p">,</span>         <span class="s1">'3.1.11'</span>
-<span class="hll"><span class="n">gem</span> <span class="s1">'faker'</span><span class="p">,</span>          <span class="s1">'1.6.6'</span></span>
+<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>                   <span class="s1">'5.1.2'</span>
+<span class="n">gem</span> <span class="s1">'bcrypt'</span><span class="p">,</span>                  <span class="s1">'3.1.11'</span>
+<span class="hll"><span class="n">gem</span> <span class="s1">'faker'</span><span class="p">,</span>                   <span class="s1">'1.7.3'</span></span>
 <span class="p">.</span>
 <span class="nf">.</span>
 <span class="o">.</span>
@@ -1275,7 +1275,7 @@
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>bundle install
 </code></pre></div>
 </div>
-<p>接下来，我们要添加一些 Ruby 代码，向数据库中添加示例用户。Rails 使用一个标准文件 <code>db/seeds.rb</code> 完成这种操作，如<a href="#listing-db-seed">代码清单 10.43</a> 所示。（这段代码涉及一些高级知识，现在不必太关注细节。）</p>
+<p>接下来，我们要添加一些 Ruby 代码，向数据库中添加示例用户。Rails 使用一个标准文件 <code>db/seeds.rb</code> 完成这种操作，如<a class="xref-link" href="#listing-db-seed">代码清单 10.43</a> 所示。（这段代码涉及一些高级知识，现在不必太关注细节。）</p>
 <div id="listing-db-seed" data-type="listing">
 <h5><span class="title-label">代码清单 10.43</span>：向数据库中添加示例用户的 Ruby 代码</h5>
 
@@ -1297,7 +1297,7 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>在<a href="#listing-db-seed">代码清单 10.43</a> 中，我们首先使用现有用户的名字和电子邮件地址创建一个示例用户，然后创建 99 个示例用户。其中，<code>create!</code> 方法和 <code>create</code> 方法的作用类似，只不过遇到无效数据时会抛出异常，而不是返回 <code>false</code>。这么做是防止出错时不报错，有利于调试。</p>
+<p>在<a class="xref-link" href="#listing-db-seed">代码清单 10.43</a> 中，我们首先使用现有用户的名字和电子邮件地址创建一个示例用户，然后创建 99 个示例用户。其中，<code>create!</code> 方法和 <code>create</code> 方法的作用类似，只不过遇到无效数据时会抛出异常，而不是返回 <code>false</code>。这么做是防止出错时不报错，有利于调试。</p>
 <p>然后，我们可以执行下述命令，还原数据库，再执行 <code>db:seed</code> 命令：</p>
 <div data-type="listing">
 
@@ -1307,30 +1307,30 @@
 </code></pre></div>
 </div>
 <p>向数据库中添加数据的操作可能很慢，在某些系统中可能要花上几分钟。此外，有些读者反馈说，Rails 服务器运行的过程中无法执行 <code>reset</code> 命令，因此，可能要先停止服务器，然后再执行上述命令。</p>
-<p>执行完 <code>db:seed</code> 命令后，我们的应用中就有 100 个用户了，如<a href="#fig-user-index-all">图 10.10</a> 所示。我牺牲了一点个人时间，为前几个用户上传了头像，这样就不会都显示默认的 Gravatar 头像了。</p>
+<p>执行完 <code>db:seed</code> 命令后，我们的应用中就有 100 个用户了，如<a class="xref-link" href="#fig-user-index-all">图 10.10</a> 所示。我牺牲了一点个人时间，为前几个用户上传了头像，这样就不会都显示默认的 Gravatar 头像了。</p>
 <div id="fig-user-index-all" class="figure"><img src="images/chapter10/user_index_all_3rd_edition.png" alt="user index all 3rd edition" /><div class="figcaption"><span class="title-label">图 10.10</span>：用户列表页面，显示了 100 个示例用户</div></div>
 <h5 id="exercises-sample-users" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>访问另一个用户的个人资料编辑页面，确认会像 <a href="#requiring-the-right-user">10.2.2 节</a>所说的那样重定向。</p>
+<p>访问另一个用户的个人资料编辑页面，确认会像 <a class="xref-link" href="#requiring-the-right-user">10.2.2 节</a>所说的那样重定向。</p>
 </li>
 </ol>
 </section>
 <section data-type="sect2" id="pagination">
 <h2><span class="title-label">10.3.3</span> 分页</h2>
 <p>现在，最初的那个用户不再孤单了，但是又出现了新问题：用户太多，全在一个页面中显示。现在的用户数量是 100 个，算是少的了，在真实的网站中，这个数量可能是以千计的。为了避免在一页中显示过多的用户，我们可以分页，一页只显示 30 个用户（只是举个例子）。</p>
-<p>在 Rails 中有很多实现分页的方法，我们将使用其中一个最简单也最完善的，叫 <a href="http://wiki.github.com/mislav/will_paginate/">will_paginate</a>。为此，我们要使用 <code>will_paginate</code> 和 <code>bootstrap-will_paginate</code> 两个 gem。其中，<code>bootstrap-will_paginate</code> 的作用是让 <code>will_paginate</code> 使用 Bootstrap 提供的分页样式。修改后的 <code>Gemfile</code> 文件如<a href="#listing-will-paginate-gem">代码清单 10.44</a> 所示。</p>
+<p>在 Rails 中有很多实现分页的方法，我们将使用其中一个最简单也最完善的，叫 <a href="http://wiki.github.com/mislav/will_paginate/" class="external-link">will_paginate</a>。为此，我们要使用 <code>will_paginate</code> 和 <code>bootstrap-will_paginate</code> 两个 gem。其中，<code>bootstrap-will_paginate</code> 的作用是让 <code>will_paginate</code> 使用 Bootstrap 提供的分页样式。修改后的 <code>Gemfile</code> 文件如<a class="xref-link" href="#listing-will-paginate-gem">代码清单 10.44</a> 所示。</p>
 <div id="listing-will-paginate-gem" data-type="listing">
 <h5><span class="title-label">代码清单 10.44</span>：在 <code>Gemfile</code> 文件中加入 <code>will_paginate</code> gem</h5>
 
 
 <div class="highlight language-ruby"><pre><code><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
 
-<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>                   <span class="s1">'5.0.1'</span>
+<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>                   <span class="s1">'5.1.2'</span>
 <span class="n">gem</span> <span class="s1">'bcrypt'</span><span class="p">,</span>                  <span class="s1">'3.1.11'</span>
-<span class="n">gem</span> <span class="s1">'faker'</span><span class="p">,</span>                   <span class="s1">'1.6.6'</span>
-<span class="hll"><span class="n">gem</span> <span class="s1">'will_paginate'</span><span class="p">,</span>           <span class="s1">'3.1.0'</span></span>
-<span class="hll"><span class="n">gem</span> <span class="s1">'bootstrap-will_paginate'</span><span class="p">,</span> <span class="s1">'0.0.10'</span></span>
+<span class="n">gem</span> <span class="s1">'faker'</span><span class="p">,</span>                   <span class="s1">'1.7.3'</span>
+<span class="hll"><span class="n">gem</span> <span class="s1">'will_paginate'</span><span class="p">,</span>           <span class="s1">'3.1.5'</span></span>
+<span class="hll"><span class="n">gem</span> <span class="s1">'bootstrap-will_paginate'</span><span class="p">,</span> <span class="s1">'1.0.0'</span></span>
 <span class="p">.</span>
 <span class="nf">.</span>
 <span class="o">.</span>
@@ -1344,7 +1344,7 @@
 </code></pre></div>
 </div>
 <p>安装后还要重启 Web 服务器，确保正确加载这两个新 gem。</p>
-<p>为了实现分页，我们要在 <code>index</code> 视图中加入一些代码，让 Rails 分页显示用户，而且要把 <code>index</code> 动作中的 <code>User.all</code> 换成知道如何分页的方法。我们先在视图中加入特殊的 <code>will_paginate</code> 方法，如<a href="#listing-will-paginate-index-view">代码清单 10.45</a> 所示。稍后我们会看到为什么要在用户列表的前后都加入这个方法。</p>
+<p>为了实现分页，我们要在 <code>index</code> 视图中加入一些代码，让 Rails 分页显示用户，而且要把 <code>index</code> 动作中的 <code>User.all</code> 换成知道如何分页的方法。我们先在视图中加入特殊的 <code>will_paginate</code> 方法，如<a class="xref-link" href="#listing-will-paginate-index-view">代码清单 10.45</a> 所示。稍后我们会看到为什么要在用户列表的前后都加入这个方法。</p>
 <div id="listing-will-paginate-index-view" data-type="listing">
 <h5><span class="title-label">代码清单 10.45</span>：在 <code>index</code> 视图中加入分页</h5>
 
@@ -1367,7 +1367,7 @@
 <span class="hll"><span class="cp">&lt;%=</span> <span class="n">will_paginate</span> <span class="cp">%&gt;</span></span>
 </code></pre></div>
 </div>
-<p><code>will_paginate</code> 方法有点小神奇，在 <code>Users</code> 控制器的视图中，它会自动寻找名为 <code>@users</code> 的对象，然后显示一个分页导航链接。<a href="#listing-will-paginate-index-view">代码清单 10.45</a> 中的视图现在还不能正确显示分页，因为 <code>@users</code> 的值是通过 <code>User.all</code> 方法获取的（<a href="#listing-user-index">代码清单 10.36</a>），而 <code>will_paginate</code> 要求调用 <code>paginate</code> 方法才能分页：</p>
+<p><code>will_paginate</code> 方法有点小神奇，在 <code>Users</code> 控制器的视图中，它会自动寻找名为 <code>@users</code> 的对象，然后显示一个分页导航链接。<a class="xref-link" href="#listing-will-paginate-index-view">代码清单 10.45</a> 中的视图现在还不能正确显示分页，因为 <code>@users</code> 的值是通过 <code>User.all</code> 方法获取的（<a class="xref-link" href="#listing-user-index">代码清单 10.36</a>），而 <code>will_paginate</code> 要求调用 <code>paginate</code> 方法才能分页：</p>
 <div data-type="listing">
 
 
@@ -1379,7 +1379,7 @@
 </code></pre></div>
 </div>
 <p>注意，<code>paginate</code> 方法可以接受一个散列参数，其中 <code>:page</code> 键的值指定显示第几页。<code>User.paginate</code> 方法根据 <code>:page</code> 的值，一次取回一组用户（默认为 30 个）。所以，第一页显示的是第 1-30 个用户，第二页显示的是第 31-60 个用户，以此类推。如果 <code>:page</code> 的值为 <code>nil</code>，<code>paginate</code> 会显示第一页。</p>
-<p>我们可以把 <code>index</code> 动作中的 <code>all</code> 方法换成 <code>paginate</code> 方法，如<a href="#listing-will-paginate-index-action">代码清单 10.46</a> 所示，这样就能分页显示用户了。<code>paginate</code> 方法所需的 <code>:page</code> 参数由 <code>params[:page]</code> 指定，<code>params</code> 中的这个键由 <code>will_pagenate</code> 自动生成。</p>
+<p>我们可以把 <code>index</code> 动作中的 <code>all</code> 方法换成 <code>paginate</code> 方法，如<a class="xref-link" href="#listing-will-paginate-index-action">代码清单 10.46</a> 所示，这样就能分页显示用户了。<code>paginate</code> 方法所需的 <code>:page</code> 参数由 <code>params[:page]</code> 指定，<code>params</code> 中的这个键由 <code>will_pagenate</code> 自动生成。</p>
 <div id="listing-will-paginate-index-action" data-type="listing">
 <h5><span class="title-label">代码清单 10.46</span>：在 <code>index</code> 动作中分页取回用户</h5>
 
@@ -1399,9 +1399,9 @@
 <span class="nf">end</span>
 </code></pre></div>
 </div>
-<p>现在，用户列表页面应该可以显示分页了，如<a href="#fig-user-index-pagination">图 10.11</a> 所示。（在某些系统中，可能需要重启 Rails 服务器。）因为我们在用户列表前后都加入了 <code>will_paginate</code> 方法，所以这两个地方都会显示分页链接。</p>
+<p>现在，用户列表页面应该可以显示分页了，如<a class="xref-link" href="#fig-user-index-pagination">图 10.11</a> 所示。（在某些系统中，可能需要重启 Rails 服务器。）因为我们在用户列表前后都加入了 <code>will_paginate</code> 方法，所以这两个地方都会显示分页链接。</p>
 <div id="fig-user-index-pagination" class="figure"><img src="images/chapter10/user_index_pagination_3rd_edition.png" alt="user index pagination 3rd edition" /><div class="figcaption"><span class="title-label">图 10.11</span>：分页显示的用户列表页面</div></div>
-<p>如果点击链接“2”，或者“Next”，会显示第二页，如<a href="#fig-user-index-page-two-rails-3">图 10.12</a> 所示。</p>
+<p>如果点击链接“2”，或者“Next”，会显示第二页，如<a class="xref-link" href="#fig-user-index-page-two-rails-3">图 10.12</a> 所示。</p>
 <div id="fig-user-index-page-two-rails-3" class="figure"><img src="images/chapter10/user_index_page_two_3rd_edition.png" alt="user index page two 3rd edition" /><div class="figcaption"><span class="title-label">图 10.12</span>：用户列表的第二页</div></div>
 <h5 id="exercises-pagination" class="discrete">练习</h5>
 <ol class="arabic">
@@ -1416,37 +1416,37 @@
 <section data-type="sect2" id="users-index-test">
 <h2><span class="title-label">10.3.4</span> 用户列表页面的测试</h2>
 <p>现在用户列表页面可以正常使用了，接下来要为这个页面编写一些简单的测试，其中一个测试前一节实现的分页。测试的步骤是，先登录，然后访问用户列表页面，确认第一页显示了一些用户，而且还显示了分页链接。为此，测试数据库中要有足够数量的用户，足以分页才行，即超过 30 个。</p>
-<p>我们在<a href="#listing-fixture-second-user">代码清单 10.23</a> 中创建了第二个用户固件，但手动创建 30 多个用户，工作量有点大。不过，由固件中的 <code>password_digest</code> 属性得知，固件文件支持嵌入式 Ruby，所以我们可以使用<a href="#listing-users-fixtures-extra-users">代码清单 10.47</a> 中的代码，再创建 30 个用户。（<a href="#listing-users-fixtures-extra-users">代码清单 10.47</a> 还多创建了几个用户，以备后用。）</p>
+<p>我们在<a class="xref-link" href="#listing-fixture-second-user">代码清单 10.23</a> 中创建了第二个用户固件，但手动创建 30 多个用户，工作量有点大。不过，由固件中的 <code>password_digest</code> 属性得知，固件文件支持嵌入式 Ruby，所以我们可以使用<a class="xref-link" href="#listing-users-fixtures-extra-users">代码清单 10.47</a> 中的代码，再创建 30 个用户。（<a class="xref-link" href="#listing-users-fixtures-extra-users">代码清单 10.47</a> 还多创建了几个用户，以备后用。）</p>
 <div id="listing-users-fixtures-extra-users" data-type="listing">
 <h5><span class="title-label">代码清单 10.47</span>：在固件中再创建 30 个用户</h5>
 
 <div class="source-file">test/fixtures/users.yml</div>
 
-<div class="highlight language-yaml"><pre><code><span class="s">michael</span><span class="pi">:</span>
-  <span class="s">name</span><span class="pi">:</span> <span class="s">Michael Example</span>
-  <span class="s">email</span><span class="pi">:</span> <span class="s">michael@example.com</span>
-  <span class="s">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
+<div class="highlight language-yaml"><pre><code><span class="na">michael</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">Michael Example</span>
+  <span class="na">email</span><span class="pi">:</span> <span class="s">michael@example.com</span>
+  <span class="na">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
 
-<span class="s">archer</span><span class="pi">:</span>
-  <span class="s">name</span><span class="pi">:</span> <span class="s">Sterling Archer</span>
-  <span class="s">email</span><span class="pi">:</span> <span class="s">duchess@example.gov</span>
-  <span class="s">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
+<span class="na">archer</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">Sterling Archer</span>
+  <span class="na">email</span><span class="pi">:</span> <span class="s">duchess@example.gov</span>
+  <span class="na">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
 
-<span class="s">lana</span><span class="pi">:</span>
-  <span class="s">name</span><span class="pi">:</span> <span class="s">Lana Kane</span>
-  <span class="s">email</span><span class="pi">:</span> <span class="s">hands@example.gov</span>
-  <span class="s">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
+<span class="na">lana</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">Lana Kane</span>
+  <span class="na">email</span><span class="pi">:</span> <span class="s">hands@example.gov</span>
+  <span class="na">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
 
-<span class="s">malory</span><span class="pi">:</span>
-  <span class="s">name</span><span class="pi">:</span> <span class="s">Malory Archer</span>
-  <span class="s">email</span><span class="pi">:</span> <span class="s">boss@example.gov</span>
-  <span class="s">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
+<span class="na">malory</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">Malory Archer</span>
+  <span class="na">email</span><span class="pi">:</span> <span class="s">boss@example.gov</span>
+  <span class="na">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
 
 <span class="s">&lt;% 30.times do |n| %&gt;</span>
 <span class="s">user_&lt;%= n %&gt;</span><span class="pi">:</span>
-  <span class="s">name</span><span class="pi">:</span>  <span class="s">&lt;%= "User</span> <span class="c1">#{n}" %&gt;</span>
-  <span class="s">email</span><span class="pi">:</span> <span class="s">&lt;%= "user-#{n}@example.com" %&gt;</span>
-  <span class="s">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
+  <span class="na">name</span><span class="pi">:</span>  <span class="s">&lt;%= "User</span> <span class="c1">#{n}" %&gt;</span>
+  <span class="na">email</span><span class="pi">:</span> <span class="s">&lt;%= "user-#{n}@example.com" %&gt;</span>
+  <span class="na">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
 <span class="s">&lt;% end %&gt;</span>
 </code></pre></div>
 </div>
@@ -1459,7 +1459,7 @@
       create    <span class="nb">test</span>/integration/users_index_test.rb
 </code></pre></div>
 </div>
-<p>在测试中，我们要检查是否有一个类为 <code>pagination</code> 的 <code>div</code> 标签，以及第一页中是否显示了相应的用户，如<a href="#listing-user-index-test">代码清单 10.48</a> 所示。</p>
+<p>在测试中，我们要检查是否有一个类为 <code>pagination</code> 的 <code>div</code> 标签，以及第一页中是否显示了相应的用户，如<a class="xref-link" href="#listing-user-index-test">代码清单 10.48</a> 所示。</p>
 <div id="listing-user-index-test" data-type="listing">
 <h5><span class="title-label">代码清单 10.48</span>：用户列表及分页的测试 <span class="green">GREEN</span></h5>
 
@@ -1496,17 +1496,17 @@
 <h5 id="exercises-user-index-test" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>把<a href="#listing-will-paginate-index-view">代码清单 10.45</a> 中的分页链接注释掉，确认<a href="#listing-user-index-test">代码清单 10.48</a> 中的测试会失败。</p>
+<p>把<a class="xref-link" href="#listing-will-paginate-index-view">代码清单 10.45</a> 中的分页链接注释掉，确认<a class="xref-link" href="#listing-user-index-test">代码清单 10.48</a> 中的测试会失败。</p>
 </li>
 <li>
-<p>确认只注释掉一个 <code>will_paginate</code> 调用时测试可以通过。那么，如何测试有两个分页链接呢？提示：使用 <code>count</code> 参数（<a href="chapter5.html#table-assert-select">表 5.2</a>）。</p>
+<p>确认只注释掉一个 <code>will_paginate</code> 调用时测试可以通过。那么，如何测试有两个分页链接呢？提示：使用 <code>count</code> 参数（<a class="xref-link" href="chapter5.html#table-assert-select">表 5.2</a>）。</p>
 </li>
 </ol>
 </section>
 <section data-type="sect2" id="partial-refactoring">
 <h2><span class="title-label">10.3.5</span> 使用局部视图重构</h2>
 <p>用户列表页面现在已经可以显示分页了，但是有个地方可以改进，我不得不讲一下。Rails 提供了一些很巧妙的方法，可以精简视图的结构。本节我们要利用这些方法重构一下用户列表页面。因为我们已经做了很好的测试，所以可以放心重构，不必担心会破坏网站的功能。</p>
-<p>重构的第一步，把<a href="#listing-will-paginate-index-view">代码清单 10.45</a> 中的 <code>li</code> 换成 <code>render</code> 方法调用，如<a href="#listing-index-view-first-refactoring">代码清单 10.50</a> 所示。</p>
+<p>重构的第一步，把<a class="xref-link" href="#listing-will-paginate-index-view">代码清单 10.45</a> 中的 <code>li</code> 换成 <code>render</code> 方法调用，如<a class="xref-link" href="#listing-index-view-first-refactoring">代码清单 10.50</a> 所示。</p>
 <div id="listing-index-view-first-refactoring" data-type="listing">
 <h5><span class="title-label">代码清单 10.50</span>：重构 <code>index</code> 视图的第一步</h5>
 
@@ -1526,7 +1526,7 @@
 <span class="cp">&lt;%=</span> <span class="n">will_paginate</span> <span class="cp">%&gt;</span>
 </code></pre></div>
 </div>
-<p>在上述代码中，<code>render</code> 的参数不再是指定局部视图的字符串，而是代表 <code>User</code> 类的变量 <code>user</code>。<sup>[<a id="fn-ref-9" href="#fn-9">9</a>]</sup>此时，Rails 会自动寻找一个名为 <code>_user.html.erb</code> 的局部视图。我们要手动创建这个视图，然后写入<a href="#listing-user-partial">代码清单 10.51</a> 中的内容。</p>
+<p>在上述代码中，<code>render</code> 的参数不再是指定局部视图的字符串，而是代表 <code>User</code> 类的变量 <code>user</code>。<sup>[<a id="fn-ref-9" href="#fn-9">9</a>]</sup>此时，Rails 会自动寻找一个名为 <code>_user.html.erb</code> 的局部视图。我们要手动创建这个视图，然后写入<a class="xref-link" href="#listing-user-partial">代码清单 10.51</a> 中的内容。</p>
 <div id="listing-user-partial" data-type="listing">
 <h5><span class="title-label">代码清单 10.51</span>：渲染单个用户的局部视图</h5>
 
@@ -1538,7 +1538,7 @@
 <span class="nt">&lt;/li&gt;</span>
 </code></pre></div>
 </div>
-<p>这个改进不错，不过我们还可以做得更好。我们可以直接把 <code>@users</code> 变量传给 <code>render</code> 方法，如<a href="#listing-index-final-refactoring">代码清单 10.52</a> 所示。</p>
+<p>这个改进不错，不过我们还可以做得更好。我们可以直接把 <code>@users</code> 变量传给 <code>render</code> 方法，如<a class="xref-link" href="#listing-index-final-refactoring">代码清单 10.52</a> 所示。</p>
 <div id="listing-index-final-refactoring" data-type="listing">
 <h5><span class="title-label">代码清单 10.52</span>：完全重构后的 <code>index</code> 视图 <span class="green">GREEN</span></h5>
 
@@ -1556,7 +1556,7 @@
 <span class="cp">&lt;%=</span> <span class="n">will_paginate</span> <span class="cp">%&gt;</span>
 </code></pre></div>
 </div>
-<p>Rails 会把 <code>@users</code> 当作一个 <code>User</code> 对象列表，传给 <code>render</code> 方法后，Rails 会自动遍历这个列表，然后使用局部视图 <code>_user.html.erb</code> 渲染每个对象（Rails 从类名中推断出局部视图的名称）。重构后，我们得到了如<a href="#listing-index-final-refactoring">代码清单 10.52</a> 这样简洁的代码。</p>
+<p>Rails 会把 <code>@users</code> 当作一个 <code>User</code> 对象列表，传给 <code>render</code> 方法后，Rails 会自动遍历这个列表，然后使用局部视图 <code>_user.html.erb</code> 渲染每个对象（Rails 从类名中推断出局部视图的名称）。重构后，我们得到了如<a class="xref-link" href="#listing-index-final-refactoring">代码清单 10.52</a> 这样简洁的代码。</p>
 <p>每次重构修改应用代码后，都要运行测试组件确认仍能通过：</p>
 <div data-type="listing">
 <h5><span class="title-label">代码清单 10.53</span>：<strong class="green">GREEN</strong></h5>
@@ -1568,18 +1568,18 @@
 <h5 id="exercises-partial-refactoring" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>把<a href="#listing-index-final-refactoring">代码清单 10.52</a> 中的 <code>render</code> 那行注释掉，确认测试无法通过。</p>
+<p>把<a class="xref-link" href="#listing-index-final-refactoring">代码清单 10.52</a> 中的 <code>render</code> 那行注释掉，确认测试无法通过。</p>
 </li>
 </ol>
 </section>
 </section>
 <section data-type="sect1" id="deleting-users">
 <h1><span class="title-label">10.4</span> 删除用户</h1>
-<p>至此，用户列表页面完成了。符合 REST 架构的 <code>Users</code> 资源只剩下最后一个动作了，即 <code>destroy</code> 动作。本节，我们会先添加删除用户的链接（构思图如<a href="#fig-user-index-delete-links-mockup">图 10.13</a> 所示），然后再编写 <code>destroy</code> 动作，完成删除操作。不过，在此之前我们要先创建管理员级别的用户，并授权这些用户执行删除操作。</p>
+<p>至此，用户列表页面完成了。符合 REST 架构的 <code>Users</code> 资源只剩下最后一个动作了，即 <code>destroy</code> 动作。本节，我们会先添加删除用户的链接（构思图如<a class="xref-link" href="#fig-user-index-delete-links-mockup">图 10.13</a> 所示），然后再编写 <code>destroy</code> 动作，完成删除操作。不过，在此之前我们要先创建管理员级别的用户，并授权这些用户执行删除操作。</p>
 <div id="fig-user-index-delete-links-mockup" class="figure"><img src="images/chapter10/user_index_delete_links_mockup_bootstrap.png" alt="user index delete links mockup bootstrap" /><div class="figcaption"><span class="title-label">图 10.13</span>：显示有删除链接的用户列表页面构思图</div></div>
 <section data-type="sect2" id="administrative-users">
 <h2><span class="title-label">10.4.1</span> 管理员</h2>
-<p>我们要通过 <code>User</code> 模型中一个名为 <code>admin</code> 的属性来判断用户是否具有管理员权限。<code>admin</code> 属性的类型为布尔值，Active Record 会自动生成一个 <code>admin?</code> 布尔值方法，判断用户是否为管理员。添加 <code>admin</code> 属性后，<code>User</code> 数据模型如<a href="#fig-user-model-admin">图 10.14</a> 所示。</p>
+<p>我们要通过 <code>User</code> 模型中一个名为 <code>admin</code> 的属性来判断用户是否具有管理员权限。<code>admin</code> 属性的类型为布尔值，Active Record 会自动生成一个 <code>admin?</code> 布尔值方法，判断用户是否为管理员。添加 <code>admin</code> 属性后，<code>User</code> 数据模型如<a class="xref-link" href="#fig-user-model-admin">图 10.14</a> 所示。</p>
 <div id="fig-user-model-admin" class="figure"><img src="images/chapter10/user_model_admin_3rd_edition.png" alt="user model admin 3rd edition" /><div class="figcaption"><span class="title-label">图 10.14</span>：添加 <code>admin</code> 布尔值属性后的 <code>User</code> 模型</div></div>
 <p>和之前一样，我们要使用迁移添加 <code>admin</code> 属性，并且在命令行中指定其类型为 <code>boolean</code>：</p>
 <div data-type="listing">
@@ -1588,7 +1588,7 @@
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate migration add_admin_to_users admin:boolean
 </code></pre></div>
 </div>
-<p>这个迁移会在 <code>users</code> 表中添加 <code>admin</code> 列，如<a href="#listing-admin-migration">代码清单 10.54</a> 所示。注意，在<a href="#listing-admin-migration">代码清单 10.54</a> 中，我们在 <code>add_column</code> 方法中指定了 <code>default: false</code> 参数，意思是默认情况下用户不是管理员。（如果不指定 <code>default: false</code> 参数，<code>admin</code> 的默认值是 <code>nil</code>，也是假值，所以这个参数并不是必须的。不过，指定这个参数，可以更明确地向 Rails 以及代码的阅读者表明这段代码的意图。）</p>
+<p>这个迁移会在 <code>users</code> 表中添加 <code>admin</code> 列，如<a class="xref-link" href="#listing-admin-migration">代码清单 10.54</a> 所示。注意，在<a class="xref-link" href="#listing-admin-migration">代码清单 10.54</a> 中，我们在 <code>add_column</code> 方法中指定了 <code>default: false</code> 参数，意思是默认情况下用户不是管理员。（如果不指定 <code>default: false</code> 参数，<code>admin</code> 的默认值是 <code>nil</code>，也是假值，所以这个参数并不是必须的。不过，指定这个参数，可以更明确地向 Rails 以及代码的阅读者表明这段代码的意图。）</p>
 <div id="listing-admin-migration" data-type="listing">
 <h5><span class="title-label">代码清单 10.54</span>：向 <code>User</code> 模型中添加 <code>admin</code> 属性的迁移</h5>
 
@@ -1623,7 +1623,7 @@
 </code></pre></div>
 </div>
 <p>这里，我们使用 <code>toggle!</code> 方法把 <code>admin</code> 属性的值由 <code>false</code> 改为 <code>true</code>。</p>
-<p>最后，我们要修改种子数据，把第一个用户设为管理员，如<a href="#listing-populator-with-admin">代码清单 10.55</a> 所示。</p>
+<p>最后，我们要修改种子数据，把第一个用户设为管理员，如<a class="xref-link" href="#listing-populator-with-admin">代码清单 10.55</a> 所示。</p>
 <div id="listing-populator-with-admin" data-type="listing">
 <h5><span class="title-label">代码清单 10.55</span>：在种子数据中把第一个用户设为管理员</h5>
 
@@ -1656,7 +1656,7 @@
 </div>
 <section data-type="sect3" id="revisiting-strong-parameters">
 <h3>健壮参数再探</h3>
-<p>你可能注意到了，在<a href="#listing-populator-with-admin">代码清单 10.55</a> 中，我们在初始化散列参数中指定了 <code>admin: true</code>，把用户设为管理员。这么做的后果是，用户对象暴露在网络中了，如果在请求中提供初始化参数，恶意用户就可以发送如下的 <code>PATCH</code> 请求：<sup>[<a id="fn-ref-10" href="#fn-10">10</a>]</sup></p>
+<p>你可能注意到了，在<a class="xref-link" href="#listing-populator-with-admin">代码清单 10.55</a> 中，我们在初始化散列参数中指定了 <code>admin: true</code>，把用户设为管理员。这么做的后果是，用户对象暴露在网络中了，如果在请求中提供初始化参数，恶意用户就可以发送如下的 <code>PATCH</code> 请求：<sup>[<a id="fn-ref-10" href="#fn-10">10</a>]</sup></p>
 <div data-type="listing">
 
 
@@ -1664,7 +1664,7 @@
 </code></pre></div>
 </div>
 <p>这个请求会把 17 号用户设为管理员——这是个严重的潜在安全隐患。</p>
-<p>鉴于此，必须只允许通过请求传入可安全编辑的属性。我们在 <a href="chapter7.html#strong-parameters">7.3.2 节</a>说过，可以使用健壮参数实现这一限制，即在 <code>params</code> 散列上调用 <code>require</code> 和 <code>permit</code> 方法：</p>
+<p>鉴于此，必须只允许通过请求传入可安全编辑的属性。我们在 <a class="xref-link" href="chapter7.html#strong-parameters">7.3.2 节</a>说过，可以使用健壮参数实现这一限制，即在 <code>params</code> 散列上调用 <code>require</code> 和 <code>permit</code> 方法：</p>
 <div data-type="listing">
 
 
@@ -1674,11 +1674,11 @@
     <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>注意，<code>admin</code> 并不在允许的属性列表中。这样就可以避免用户取得网站的管理权。因为这一步很重要，最好再为不可编辑的属性编写一个测试。针对 <code>admin</code> 属性的测试留作<a href="#exercises-administrative-users">练习</a>。</p>
+<p>注意，<code>admin</code> 并不在允许的属性列表中。这样就可以避免用户取得网站的管理权。因为这一步很重要，最好再为不可编辑的属性编写一个测试。针对 <code>admin</code> 属性的测试留作<a class="xref-link" href="#exercises-administrative-users">练习</a>。</p>
 <h5 id="exercises-administrative-users" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>参照<a href="#listing-forbidden-admin-test">代码清单 10.56</a>，直接向 <code>update</code> 动作发送 <code>PATCH</code> 请求，确认无法修改 <code>admin</code> 属性。为了确保测试写得正确，首先应该把 <code>admin</code> 添加到允许修改的参数列表 <code>user_params</code> 中，确认在此之前测试组件无法通过。</p>
+<p>参照<a class="xref-link" href="#listing-forbidden-admin-test">代码清单 10.56</a>，直接向 <code>update</code> 动作发送 <code>PATCH</code> 请求，确认无法修改 <code>admin</code> 属性。为了确保测试写得正确，首先应该把 <code>admin</code> 添加到允许修改的参数列表 <code>user_params</code> 中，确认在此之前测试组件无法通过。</p>
 </li>
 </ol>
 <div id="listing-forbidden-admin-test" data-type="listing">
@@ -1723,7 +1723,7 @@
 </section>
 <section data-type="sect2" id="the-destroy-action">
 <h2><span class="title-label">10.4.2</span> <code>destroy</code> 动作</h2>
-<p>完成 <code>Users</code> 资源的最后一步是，添加删除链接和 <code>destroy</code> 动作。我们先在用户列表页面中的每个用户后面加入一个删除链接，而且限制只有管理员才能执行删除操作。只有当前用户是管理员才能看到删除链接。视图如<a href="#listing-delete-links">代码清单 10.57</a> 所示。</p>
+<p>完成 <code>Users</code> 资源的最后一步是，添加删除链接和 <code>destroy</code> 动作。我们先在用户列表页面中的每个用户后面加入一个删除链接，而且限制只有管理员才能执行删除操作。只有当前用户是管理员才能看到删除链接。视图如<a class="xref-link" href="#listing-delete-links">代码清单 10.57</a> 所示。</p>
 <div id="listing-delete-links" data-type="listing">
 <h5><span class="title-label">代码清单 10.57</span>：删除用户的链接（只有管理员能看到）</h5>
 
@@ -1739,10 +1739,10 @@
 <span class="nt">&lt;/li&gt;</span>
 </code></pre></div>
 </div>
-<p>注意 <code>method: :delete</code> 参数，它指明点击链接后发送的是 <code>DELETE</code> 请求。我们还把链接放在 <code>if</code> 语句中，这样就只有管理员才能看到删除用户的链接。管理员看到的页面如<a href="#fig-index-delete-links-rails-3">图 10.15</a> 所示。</p>
+<p>注意 <code>method: :delete</code> 参数，它指明点击链接后发送的是 <code>DELETE</code> 请求。我们还把链接放在 <code>if</code> 语句中，这样就只有管理员才能看到删除用户的链接。管理员看到的页面如<a class="xref-link" href="#fig-index-delete-links-rails-3">图 10.15</a> 所示。</p>
 <div id="fig-index-delete-links-rails-3" class="figure"><img src="images/chapter10/index_delete_links_3rd_edition.png" alt="index delete links 3rd edition" /><div class="figcaption"><span class="title-label">图 10.15</span>：显示有删除链接的用户列表页面</div></div>
 <p>Web 浏览器不能发送 <code>DELETE</code> 请求，Rails 是通过 JavaScript 模拟的。也就是说，如果用户禁用了 JavaScript，那么删除用户的链接就不可用了。如果必须要支持没启用 JavaScript 的浏览器，可以使用一个发送 <code>POST</code> 请求的表单来模拟 <code>DELETE</code> 请求，这样即使禁用了 JavaScript，删除用户的链接仍能使用。<sup>[<a id="fn-ref-11" href="#fn-11">11</a>]</sup></p>
-<p>为了让删除链接起作用，我们要定义 <code>destroy</code> 动作（<a href="chapter7.html#table-restful-users">表 7.1</a>）。在 <code>destroy</code> 动作中，先找到要删除的用户，然后使用 Active Record 提供的 <code>destroy</code> 方法将其删除，最后再重定向到用户列表页面，如<a href="#listing-destroy-action">代码清单 10.58</a> 所示。因为登录后才能删除用户，所以<a href="#listing-destroy-action">代码清单 10.58</a> 还在 <code>logged_in_user</code> 前置过滤器中添加了 <code>:destroy</code>。</p>
+<p>为了让删除链接起作用，我们要定义 <code>destroy</code> 动作（<a class="xref-link" href="chapter7.html#table-restful-users">表 7.1</a>）。在 <code>destroy</code> 动作中，先找到要删除的用户，然后使用 Active Record 提供的 <code>destroy</code> 方法将其删除，最后再重定向到用户列表页面，如<a class="xref-link" href="#listing-destroy-action">代码清单 10.58</a> 所示。因为登录后才能删除用户，所以<a class="xref-link" href="#listing-destroy-action">代码清单 10.58</a> 还在 <code>logged_in_user</code> 前置过滤器中添加了 <code>:destroy</code>。</p>
 <div id="listing-destroy-action" data-type="listing">
 <h5><span class="title-label">代码清单 10.58</span>：添加 <code>destroy</code> 动作</h5>
 
@@ -1775,7 +1775,7 @@
 </code></pre></div>
 </div>
 <p>理论上，只有管理员才能看到删除用户的链接，所以只有管理员才能删除用户。但实际上还是存在一个严重的安全漏洞：只要攻击者有足够的经验，就可以在命令行中发送 <code>DELETE</code> 请求，删除网站中的任何用户。为了保障网站的安全，我们还要限制对 <code>destroy</code> 动作的访问，只允许管理员删除用户。</p>
-<p>与 <a href="#requiring-logged-in-users">10.2.1 节</a>和 <a href="#requiring-the-right-user">10.2.2 节</a>的做法一样，我们要使用前置过滤器限制访问。这一次，我们要限制只有管理员才能访问 <code>destroy</code> 动作。我们要定义一个名为 <code>admin_user</code> 的前置过滤器，如<a href="#listing-admin-destroy-before-filter">代码清单 10.59</a> 所示。</p>
+<p>与 <a class="xref-link" href="#requiring-logged-in-users">10.2.1 节</a>和 <a class="xref-link" href="#requiring-the-right-user">10.2.2 节</a>的做法一样，我们要使用前置过滤器限制访问。这一次，我们要限制只有管理员才能访问 <code>destroy</code> 动作。我们要定义一个名为 <code>admin_user</code> 的前置过滤器，如<a class="xref-link" href="#listing-admin-destroy-before-filter">代码清单 10.59</a> 所示。</p>
 <div id="listing-admin-destroy-before-filter" data-type="listing">
 <h5><span class="title-label">代码清单 10.59</span>：限制只有管理员才能访问 <code>destroy</code> 动作的前置过滤器</h5>
 
@@ -1808,23 +1808,23 @@
 </section>
 <section data-type="sect2" id="user-destroy-tests">
 <h2><span class="title-label">10.4.3</span> 删除用户的测试</h2>
-<p>像删除用户这种危险的操作，一定要编写测试，确保行为与预期一致。首先，我们把一个用户固件设为管理员，如<a href="#listing-fixture-user-admin">代码清单 10.60</a> 所示。</p>
+<p>像删除用户这种危险的操作，一定要编写测试，确保行为与预期一致。首先，我们把一个用户固件设为管理员，如<a class="xref-link" href="#listing-fixture-user-admin">代码清单 10.60</a> 所示。</p>
 <div id="listing-fixture-user-admin" data-type="listing">
 <h5><span class="title-label">代码清单 10.60</span>：把固件中的一个用户设为管理员</h5>
 
 <div class="source-file">test/fixtures/users.yml</div>
 
-<div class="highlight language-yaml"><pre><code><span class="s">michael</span><span class="pi">:</span>
-  <span class="s">name</span><span class="pi">:</span> <span class="s">Michael Example</span>
-  <span class="s">email</span><span class="pi">:</span> <span class="s">michael@example.com</span>
-  <span class="s">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
-<span class="hll">  <span class="s">admin</span><span class="pi">:</span> <span class="s">true</span></span>
+<div class="highlight language-yaml"><pre><code><span class="na">michael</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">Michael Example</span>
+  <span class="na">email</span><span class="pi">:</span> <span class="s">michael@example.com</span>
+  <span class="na">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
+<span class="hll">  <span class="na">admin</span><span class="pi">:</span> <span class="s">true</span></span>
 <span class="s">.</span>
 <span class="s">.</span>
 <span class="s">.</span>
 </code></pre></div>
 </div>
-<p>按照 <a href="#requiring-logged-in-users">10.2.1 节</a>的做法，我们会把限制访问动作的测试放在 <code>Users</code> 控制器的测试文件中。和<a href="chapter8.html#listing-user-logout-test">代码清单 8.31</a> 一样，我们要使用 <code>delete</code> 方法直接向 <code>destroy</code> 动作发送 <code>DELETE</code> 请求。我们要检查两种情况：其一，没登录的用户会重定向到登录页面；其二，已经登录的用户，但不是管理员，会重定向到首页。测试如<a href="#listing-action-tests-admin">代码清单 10.61</a> 所示。</p>
+<p>按照 <a class="xref-link" href="#requiring-logged-in-users">10.2.1 节</a>的做法，我们会把限制访问动作的测试放在 <code>Users</code> 控制器的测试文件中。和<a class="xref-link" href="chapter8.html#listing-user-logout-test">代码清单 8.31</a> 一样，我们要使用 <code>delete</code> 方法直接向 <code>destroy</code> 动作发送 <code>DELETE</code> 请求。我们要检查两种情况：其一，没登录的用户会重定向到登录页面；其二，已经登录的用户，但不是管理员，会重定向到首页。测试如<a class="xref-link" href="#listing-action-tests-admin">代码清单 10.61</a> 所示。</p>
 <div id="listing-action-tests-admin" data-type="listing">
 <h5><span class="title-label">代码清单 10.61</span>：测试只有管理员能访问的动作 <span class="green">GREEN</span></h5>
 
@@ -1858,8 +1858,8 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>注意，在<a href="#listing-action-tests-admin">代码清单 10.61</a> 中，我们使用 <code>assert_no_difference</code> 方法（<a href="chapter7.html#listing-a-test-for-invalid-submission">代码清单 7.23</a> 中用过）确认用户的数量没有变化。</p>
-<p><a href="#listing-action-tests-admin">代码清单 10.61</a> 中的测试确认了未授权的用户（非管理员）不能删除用户，不过我们还要确认管理员点击删除链接后能成功删除用户。因为删除链接在用户列表页面，所以我们要把这个测试添加到用户列表页面的测试中（<a href="#listing-user-index-test">代码清单 10.48</a>）。这个测试唯一需要一点技巧的代码是，管理员点击删除链接后如何确认用户被删除了。我们可以使用下面的代码实现：</p>
+<p>注意，在<a class="xref-link" href="#listing-action-tests-admin">代码清单 10.61</a> 中，我们使用 <code>assert_no_difference</code> 方法（<a class="xref-link" href="chapter7.html#listing-a-test-for-invalid-submission">代码清单 7.23</a> 中用过）确认用户的数量没有变化。</p>
+<p><a class="xref-link" href="#listing-action-tests-admin">代码清单 10.61</a> 中的测试确认了未授权的用户（非管理员）不能删除用户，不过我们还要确认管理员点击删除链接后能成功删除用户。因为删除链接在用户列表页面，所以我们要把这个测试添加到用户列表页面的测试中（<a class="xref-link" href="#listing-user-index-test">代码清单 10.48</a>）。这个测试唯一需要一点技巧的代码是，管理员点击删除链接后如何确认用户被删除了。我们可以使用下面的代码实现：</p>
 <div data-type="listing">
 
 
@@ -1868,8 +1868,8 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>我们使用<a href="chapter7.html#listing-a-test-for-valid-submission">代码清单 7.33</a> 中检查创建了一个用户的 <code>assert_difference</code> 方法，不过这一次要确认向相应的地址发送 <code>DELETE</code> 请求后，<code>User.count</code> 的变化量是 <code>-1</code>，从而确认用户被删除了。</p>
-<p>综上所述，针对分页和删除操作的测试如<a href="#listing-delete-link-integration-test">代码清单 10.62</a> 所示，这段代码既测试了管理员执行的删除操作，也测试了非管理员执行的删除操作。</p>
+<p>我们使用<a class="xref-link" href="chapter7.html#listing-a-test-for-valid-submission">代码清单 7.33</a> 中检查创建了一个用户的 <code>assert_difference</code> 方法，不过这一次要确认向相应的地址发送 <code>DELETE</code> 请求后，<code>User.count</code> 的变化量是 <code>-1</code>，从而确认用户被删除了。</p>
+<p>综上所述，针对分页和删除操作的测试如<a class="xref-link" href="#listing-delete-link-integration-test">代码清单 10.62</a> 所示，这段代码既测试了管理员执行的删除操作，也测试了非管理员执行的删除操作。</p>
 <div id="listing-delete-link-integration-test" data-type="listing">
 <h5><span class="title-label">代码清单 10.62</span>：删除链接和删除用户操作的集成测试 <span class="green">GREEN</span></h5>
 
@@ -1909,7 +1909,7 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>注意，<a href="#listing-delete-link-integration-test">代码清单 10.62</a> 检查了每个用户旁都有删除链接，而且如果用户是管理员，就不做这个检查（因为管理员旁不会显示删除链接，参见<a href="#listing-delete-links">代码清单 10.57</a>）。</p>
+<p>注意，<a class="xref-link" href="#listing-delete-link-integration-test">代码清单 10.62</a> 检查了每个用户旁都有删除链接，而且如果用户是管理员，就不做这个检查（因为管理员旁不会显示删除链接，参见<a class="xref-link" href="#listing-delete-links">代码清单 10.57</a>）。</p>
 <p>现在，删除用户的代码有了良好的测试，而且测试组件应该能通过：</p>
 <div data-type="listing">
 <h5><span class="title-label">代码清单 10.63</span>：<strong class="green">GREEN</strong></h5>
@@ -1921,15 +1921,15 @@
 <h5 id="exercises-user-destroy-tests" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>把<a href="#listing-admin-destroy-before-filter">代码清单 10.59</a> 中的 <code>admin_user</code> 前置过滤器注释掉，确认测试会失败。</p>
+<p>把<a class="xref-link" href="#listing-admin-destroy-before-filter">代码清单 10.59</a> 中的 <code>admin_user</code> 前置过滤器注释掉，确认测试会失败。</p>
 </li>
 </ol>
 </section>
 </section>
 <section data-type="sect1" id="updating-showing-and-deleting-users-conclusion">
 <h1><span class="title-label">10.5</span> 小结</h1>
-<p>我们用了好几章介绍如何实现 <code>Users</code> 控制器，在 <a href="chapter5.html#user-signup">5.4 节</a>用户还不能注册，而现在不仅可以注册，还可以登录、退出、查看个人信息、修改信息，还能浏览网站中所有用户的列表，某些用户甚至可以删除其他用户。</p>
-<p>现阶段实现的演示应用建立了坚实的基础，完全可以用于任何需要验证用户身份和权限系统的网站。<a href="chapter11.html#account-activation">第 11 章</a>和<a href="chapter12.html#password-reset">第 12 章</a>将实现两个附加功能：向新注册的用户发送账户激活链接（同时验证电子邮件地址有效），以及密码重设功能，为忘记密码的用户提供帮助。</p>
+<p>我们用了好几章介绍如何实现 <code>Users</code> 控制器，在 <a class="xref-link" href="chapter5.html#user-signup">5.4 节</a>用户还不能注册，而现在不仅可以注册，还可以登录、退出、查看个人信息、修改信息，还能浏览网站中所有用户的列表，某些用户甚至可以删除其他用户。</p>
+<p>现阶段实现的演示应用建立了坚实的基础，完全可以用于任何需要验证用户身份和权限系统的网站。<a class="xref-link" href="chapter11.html#account-activation">第 11 章</a>和<a class="xref-link" href="chapter12.html#password-reset">第 12 章</a>将实现两个附加功能：向新注册的用户发送账户激活链接（同时验证电子邮件地址有效），以及密码重设功能，为忘记密码的用户提供帮助。</p>
 <p>在继续阅读之前，先把本章所做的改动合并到主分支：</p>
 <div data-type="listing">
 
@@ -1953,7 +1953,7 @@
 <span class="gp">$ </span>heroku restart
 </code></pre></div>
 </div>
-<p>当然，在真实的网站中你或许并不想向数据库中添加示例数据，我加入这个操作只是为了查看生产环境中的效果（<a href="#fig-heroku-sample-users">图 10.16</a>）。生产环境显示的示例用户顺序各异，我的网站显示的顺序就和本地不同（<a href="#fig-user-index-pagination">图 10.11</a>）。这是因为，我们没有指定从数据库中取回用户的顺序，所以目前的顺序由数据库决定。这对用户而言没什么问题，但微博就不同了，我们会在 <a href="chapter13.html#micropost-refinements">13.1.4 节</a>解决这个问题。</p>
+<p>当然，在真实的网站中你或许并不想向数据库中添加示例数据，我加入这个操作只是为了查看生产环境中的效果（<a class="xref-link" href="#fig-heroku-sample-users">图 10.16</a>）。生产环境显示的示例用户顺序各异，我的网站显示的顺序就和本地不同（<a class="xref-link" href="#fig-user-index-pagination">图 10.11</a>）。这是因为，我们没有指定从数据库中取回用户的顺序，所以目前的顺序由数据库决定。这对用户而言没什么问题，但微博就不同了，我们会在 <a class="xref-link" href="chapter13.html#micropost-refinements">13.1.4 节</a>解决这个问题。</p>
 <div id="fig-heroku-sample-users" class="figure"><img src="images/chapter10/heroku_sample_users.png" alt="heroku sample users" /><div class="figcaption"><span class="title-label">图 10.16</span>：生产环境显示的示例用户</div></div>
 <section data-type="sect2" id="updating-showing-and-deleting-users-learned">
 <h2><span class="title-label">10.5.1</span> 本章所学</h2>
@@ -2018,13 +2018,13 @@
 <li id="fn-2">不要担心实现的细节。具体的实现方式是 Rails 框架的开发者需要关注的，Rails 应用开发者无需关心。 <a href="#fn-ref-2" class="symbol">&#8617;</a></li>
 <li id="fn-3">感谢 Jose Carlos Montero Gómez 建议使用这个方法进一步去除重复。 <a href="#fn-ref-3" class="symbol">&#8617;</a></li>
 <li id="fn-4">设定前置过滤器的方法以前是 <code>before_filter</code>，但为了强调过滤器在控制器的动作之前运行，Rails 核心开发团队决定使用这个新名称。 <a href="#fn-ref-4" class="symbol">&#8617;</a></li>
-<li id="fn-5">本节使用的代码摘自 <a href="http://thoughtbot.com/">thoughtbot</a> 开发的 <a href="http://github.com/thoughtbot/clearance">Clearance</a> gem。 <a href="#fn-ref-5" class="symbol">&#8617;</a></li>
+<li id="fn-5">本节使用的代码摘自 <a href="http://thoughtbot.com/" class="external-link">thoughtbot</a> 开发的 <a href="http://github.com/thoughtbot/clearance" class="external-link">Clearance</a> gem。 <a href="#fn-ref-5" class="symbol">&#8617;</a></li>
 <li id="fn-6">感谢读者 Yoel Adler 指出这个小问题，并和我讨论解决办法。 <a href="#fn-ref-6" class="symbol">&#8617;</a></li>
-<li id="fn-7">婴儿的图片出自 <a href="http://www.flickr.com/photos/glasgows/338937124/%EF%BC%8C%E5%8F%91%E5%B8%83%E4%BA%8E" class="bare">http://www.flickr.com/photos/glasgows/338937124/，发布于</a> 2014 年 8 月 25 日。Copyright © 2008 by M&amp;R Glasgow。未经改动，基于“知识共享 署名 2.0 通用”许可证使用。 <a href="#fn-ref-7" class="symbol">&#8617;</a></li>
+<li id="fn-7">婴儿的图片出自 <a href="http://www.flickr.com/photos/glasgows/338937124/%EF%BC%8C%E5%8F%91%E5%B8%83%E4%BA%8E" class="external-link bare">http://www.flickr.com/photos/glasgows/338937124/，发布于</a> 2014 年 8 月 25 日。Copyright © 2008 by M&amp;R Glasgow。未经改动，基于“知识共享 署名 2.0 通用”许可证使用。 <a href="#fn-ref-7" class="symbol">&#8617;</a></li>
 <li id="fn-8">Twitter 也是这么做的。 <a href="#fn-ref-8" class="symbol">&#8617;</a></li>
 <li id="fn-9">变量名并不是一定要使用 <code>user</code>，遍历时如果用的是 <code>@users.each do |foobar|</code>，那么就要用 <code>render foobar</code>。关键是要知道对象的类，也就是 <code>User</code>。 <a href="#fn-ref-9" class="symbol">&#8617;</a></li>
 <li id="fn-10"><code>curl</code> 等命令行工具可以发送这种 <code>PATCH</code> 请求。 <a href="#fn-ref-10" class="symbol">&#8617;</a></li>
-<li id="fn-11">详情请观看 RailsCasts 中的“<a href="http://railscasts.com/episodes/77-destroy-without-javascript">Destroy Without JavaScript</a>”。 <a href="#fn-ref-11" class="symbol">&#8617;</a></li>
+<li id="fn-11">详情请观看 RailsCasts 中的“<a href="http://railscasts.com/episodes/77-destroy-without-javascript" class="external-link">Destroy Without JavaScript</a>”。 <a href="#fn-ref-11" class="symbol">&#8617;</a></li>
 </ol>
 </div>
         </div>

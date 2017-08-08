@@ -9,7 +9,7 @@
   <meta name="keywords" content="ruby, rails, tutorial"/>
   <meta name="author" content="Michael Hartl"/>
   <meta name="translator" content="安道"/>
-  <meta name="generator" content="persie 0.0.2.beta.1"/>
+  <meta name="generator" content="persie 0.0.3.beta.4"/>
   <link rel="stylesheet" type="text/css" href="//railstutorial-china.org/assets/css/main.css"/>
   <link rel="stylesheet" type="text/css" href="book.css"/>
   <script type="text/javascript" src="//railstutorial-china.org/assets/js/global.js"></script>
@@ -59,21 +59,21 @@
           <article class="article">
             <section data-type="chapter" id="rails-flavored-ruby">
 <h1><span class="title-label">第 4 章</span> Rails 背后的 Ruby</h1>
-<p>有了<a href="chapter3.html#mostly-static-pages">第 3 章</a>的例子做铺垫，本章要介绍一些对 Rails 来说很重要的 Ruby 知识。Ruby 语言的知识点很多，不过对 Rails 开发者而言需要掌握的很少。我们采用的方式有别于常规的 Ruby 学习过程。本章的目标是，不管你有没有 Ruby 编程经验，都得让你掌握编写 Rails 应用所需的 Ruby 知识。这一章的内容很多，第一次阅读不能完全掌握也没关系。后续的章节会经常提到本章的内容。</p>
+<p>有了<a class="xref-link" href="chapter3.html#mostly-static-pages">第 3 章</a>的例子做铺垫，本章要介绍一些对 Rails 来说很重要的 Ruby 知识。Ruby 语言的知识点很多，不过对 Rails 开发者而言需要掌握的很少。我们采用的方式有别于常规的 Ruby 学习过程。本章的目标是，不管你有没有 Ruby 编程经验，都得让你掌握编写 Rails 应用所需的 Ruby 知识。这一章的内容很多，第一次阅读不能完全掌握也没关系。后续的章节会经常提到本章的内容。</p>
 <section data-type="sect1" id="motivation">
 <h1><span class="title-label">4.1</span> 导言</h1>
 <p>从前一章得知，即使完全不懂 Ruby 语言，我们也可以创建 Rails 应用的骨架，以及编写测试。我们依赖于书中提供的测试代码，得到错误信息，然后让测试组件通过。但是我们不能总是这样，所以这一章暂时不讲网站开发，而要正视我们的短肋——Ruby 语言。</p>
-<p>与 <a href="chapter3.html#static-pages">3.2 节</a>一样，我们将在单独的主题分支中修改：</p>
+<p>与 <a class="xref-link" href="chapter3.html#static-pages">3.2 节</a>一样，我们将在单独的主题分支中修改：</p>
 <div data-type="listing">
 
 
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>git checkout -b rails-flavored-ruby
 </code></pre></div>
 </div>
-<p>到 <a href="#rails-flavored-ruby-conclusion">4.5 节</a>，我们再合并到 <code>master</code> 分支。</p>
+<p>到 <a class="xref-link" href="#rails-flavored-ruby-conclusion">4.5 节</a>，我们再合并到 <code>master</code> 分支。</p>
 <section data-type="sect2" id="built-in-helpers">
 <h2><span class="title-label">4.1.1</span> 内置的辅助方法</h2>
-<p>前一章末尾我们修改了几乎是静态内容的页面，让它们使用 Rails 布局，把视图中的重复去掉了。我们使用的布局如<a href="#listing-application-layout-redux">代码清单 4.1</a> 所示（和<a href="chapter3.html#listing-application-layout">代码清单 3.35</a> 一样）。</p>
+<p>前一章末尾我们修改了几乎是静态内容的页面，让它们使用 Rails 布局，把视图中的重复去掉了。我们使用的布局如<a class="xref-link" href="#listing-application-layout-redux">代码清单 4.1</a> 所示（和<a class="xref-link" href="chapter3.html#listing-application-layout">代码清单 3.35</a> 一样）。</p>
 <div id="listing-application-layout-redux" data-type="listing">
 <h5><span class="title-label">代码清单 4.1</span>：演示应用的网站布局</h5>
 
@@ -103,11 +103,11 @@
                                        <span class="s1">'data-turbolinks-track'</span><span class="p">:</span> <span class="s1">'reload'</span> <span class="cp">%&gt;</span>
 </code></pre></div>
 </div>
-<p>这行代码使用 Rails 内置的 <code>stylesheet_link_tag</code> 方法（详细信息参见 <a href="http://api.rubyonrails.org/classes/ActionView/Helpers/AssetTagHelper.html#method-i-stylesheet_link_tag">Rails API 文档</a>），在所有<a href="http://www.w3.org/TR/CSS2/media.html">媒介类型</a>中引入 <code>application.css</code>。对有经验的 Rails 开发者来说，这行代码看起来很简单，但是其中至少有四个 Ruby 知识点可能会让你困惑：内置的 Rails 方法，调用方法时不用括号，符号（Symbol）和散列（Hash）。这几点本章都会介绍。</p>
+<p>这行代码使用 Rails 内置的 <code>stylesheet_link_tag</code> 方法（详细信息参见 <a href="http://api.rubyonrails.org/classes/ActionView/Helpers/AssetTagHelper.html#method-i-stylesheet_link_tag" class="external-link">Rails API 文档</a>），在所有<a href="http://www.w3.org/TR/CSS2/media.html" class="external-link">媒介类型</a>中引入 <code>application.css</code>。对有经验的 Rails 开发者来说，这行代码看起来很简单，但是其中至少有四个 Ruby 知识点可能会让你困惑：内置的 Rails 方法，调用方法时不用括号，符号（Symbol）和散列（Hash）。这几点本章都会介绍。</p>
 </section>
 <section data-type="sect2" id="custom-helpers">
 <h2><span class="title-label">4.1.2</span> 自定义辅助方法</h2>
-<p>Rails 除了提供很多内置的方法供我们在视图中使用之外，还允许我们自己定义。这种方法叫辅助方法（helper）。为了说明如何自己定义辅助方法，我们来看看<a href="#listing-application-layout-redux">代码清单 4.1</a> 中标题那一行：</p>
+<p>Rails 除了提供很多内置的方法供我们在视图中使用之外，还允许我们自己定义。这种方法叫辅助方法（helper）。为了说明如何自己定义辅助方法，我们来看看<a class="xref-link" href="#listing-application-layout-redux">代码清单 4.1</a> 中标题那一行：</p>
 <div data-type="listing">
 
 
@@ -135,7 +135,7 @@
 </code></pre></div>
 </div>
 <p>也就是说，标题中有公共部分，但前面还显示了竖线。</p>
-<p>为了解决这个问题，我们要自定义一个辅助方法，名为 <code>full_title</code>。如果视图中没有定义页面的标题，<code>full_title</code> 返回标题的公共部分，即“Ruby on Rails Tutorial Sample App”；如果定义了，则在变动部分后面加上一个竖线，如<a href="#listing-title-helper">代码清单 4.2</a> 所示。<sup>[<a id="fn-ref-1" href="#fn-1">1</a>]</sup></p>
+<p>为了解决这个问题，我们要自定义一个辅助方法，名为 <code>full_title</code>。如果视图中没有定义页面的标题，<code>full_title</code> 返回标题的公共部分，即“Ruby on Rails Tutorial Sample App”；如果定义了，则在变动部分后面加上一个竖线，如<a class="xref-link" href="#listing-title-helper">代码清单 4.2</a> 所示。<sup>[<a id="fn-ref-1" href="#fn-1">1</a>]</sup></p>
 <div id="listing-title-helper" data-type="listing">
 <h5><span class="title-label">代码清单 4.2</span>：定义 <code>full_title</code> 辅助方法</h5>
 
@@ -169,7 +169,7 @@
 <div class="highlight language-erb"><pre><code><span class="nt">&lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="n">full_title</span><span class="p">(</span><span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">))</span> <span class="cp">%&gt;</span><span class="nt">&lt;/title&gt;</span>
 </code></pre></div>
 </div>
-<p>如<a href="#listing-application-layout-full-title">代码清单 4.3</a> 所示。</p>
+<p>如<a class="xref-link" href="#listing-application-layout-full-title">代码清单 4.3</a> 所示。</p>
 <div id="listing-application-layout-full-title" data-type="listing">
 <h5><span class="title-label">代码清单 4.3</span>：使用 <code>full_title</code> 辅助方法的网站布局 <span class="green">GREEN</span></h5>
 
@@ -190,7 +190,7 @@
 <span class="nt">&lt;/html&gt;</span>
 </code></pre></div>
 </div>
-<p>为了让这个辅助方法起作用，我们要在首页的视图中把不必要的单词“Home”删掉，只保留标题的公共部分。首先，我们要修改测试代码，如<a href="#listing-home-base-title-spec">代码清单 4.4</a> 所示，确认标题中没有字符串 <code>"Home"</code>。</p>
+<p>为了让这个辅助方法起作用，我们要在首页的视图中把不必要的单词“Home”删掉，只保留标题的公共部分。首先，我们要修改测试代码，如<a class="xref-link" href="#listing-home-base-title-spec">代码清单 4.4</a> 所示，确认标题中没有字符串 <code>"Home"</code>。</p>
 <div id="listing-home-base-title-spec" data-type="listing">
 <h5><span class="title-label">代码清单 4.4</span>：修改首页的标题测试 <span class="red">RED</span></h5>
 
@@ -228,7 +228,7 @@
 3 tests, 6 assertions, 1 failures, 0 errors, 0 skips
 </code></pre></div>
 </div>
-<p>为了让测试通过，我们要把首页视图中的 <code>provide</code> 那行删除，如<a href="#listing-home-page-base-title">代码清单 4.6</a> 所示。</p>
+<p>为了让测试通过，我们要把首页视图中的 <code>provide</code> 那行删除，如<a class="xref-link" href="#listing-home-page-base-title">代码清单 4.6</a> 所示。</p>
 <div id="listing-home-page-base-title" data-type="listing">
 <h5><span class="title-label">代码清单 4.6</span>：没定义页面标题的首页视图 <span class="green">GREEN</span></h5>
 
@@ -251,12 +251,12 @@
 </code></pre></div>
 </div>
 <p>（注意，之前运行 <code>rails test</code> 时都显示了通过和失败测试的数量，为了行文简洁，从这以后都会省略这些信息。）</p>
-<p>与 <a href="#built-in-helpers">4.1.1 节</a>引入应用的样式表那行代码一样，<a href="#listing-title-helper">代码清单 4.2</a> 的内容对有经验的 Rails 开发者来说也很简单，但其中有很多重要的 Ruby 知识：模块、方法定义、可选的方法参数、注释、局部变量赋值、布尔值、流程控制、字符串拼接和返回值。本章会一一介绍这些知识。</p>
+<p>与 <a class="xref-link" href="#built-in-helpers">4.1.1 节</a>引入应用的样式表那行代码一样，<a class="xref-link" href="#listing-title-helper">代码清单 4.2</a> 的内容对有经验的 Rails 开发者来说也很简单，但其中有很多重要的 Ruby 知识：模块、方法定义、可选的方法参数、注释、局部变量赋值、布尔值、流程控制、字符串拼接和返回值。本章会一一介绍这些知识。</p>
 </section>
 </section>
 <section data-type="sect1" id="strings-and-methods">
 <h1><span class="title-label">4.2</span> 字符串和方法</h1>
-<p>我们学习 Ruby 主要使用的工具是 Rails 控制台，它是用来与 Rails 应用交互的命令行工具，在 <a href="chapter2.html#a-user-has-many-microposts">2.3.3 节</a>介绍过。控制台基于 Ruby 的交互程序（<code>irb</code>）开发，因此能使用 Ruby 语言的全部功能。（<a href="#a-controller-class">4.4.4 节</a>会介绍，控制台还可以访问 Rails 环境。）</p>
+<p>我们学习 Ruby 主要使用的工具是 Rails 控制台，它是用来与 Rails 应用交互的命令行工具，在 <a class="xref-link" href="chapter2.html#a-user-has-many-microposts">2.3.3 节</a>介绍过。控制台基于 Ruby 的交互程序（<code>irb</code>）开发，因此能使用 Ruby 语言的全部功能。（<a class="xref-link" href="#a-controller-class">4.4.4 节</a>会介绍，控制台还可以访问 Rails 环境。）</p>
 <p>如果使用云端 IDE，我建议添加几个 irb 配置参数。使用简单的 <code>nano</code> 文本编辑器打开家目录中的 <code>.irbrc</code> 文件：</p>
 <div data-type="listing">
 
@@ -264,7 +264,7 @@
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>nano ~/.irbrc
 </code></pre></div>
 </div>
-<p>然后写入<a href="#listing-irbrc">代码清单 4.8</a> 中的内容。<sup>[<a id="fn-ref-2" href="#fn-2">2</a>]</sup>这段代码的作用是简化 irb 提示符，以及禁用一些烦人的自动缩进行为。</p>
+<p>然后写入<a class="xref-link" href="#listing-irbrc">代码清单 4.8</a> 中的内容。<sup>[<a id="fn-ref-2" href="#fn-2">2</a>]</sup>这段代码的作用是简化 irb 提示符，以及禁用一些烦人的自动缩进行为。</p>
 <div id="listing-irbrc" data-type="listing">
 <h5><span class="title-label">代码清单 4.8</span>：添加几个 irb 配置</h5>
 
@@ -284,9 +284,9 @@ Loading development environment
 &gt;&gt;
 </code></pre></div>
 </div>
-<p>默认情况下，控制台在开发环境中启动，这是 Rails 定义的三个独立环境之一（另外两个是测试环境和生产环境）。这三个环境的区别对本章不重要，但是对后文就重要了，我们将在 <a href="chapter7.html#rails-environments">7.1.1 节</a>详细介绍。</p>
+<p>默认情况下，控制台在开发环境中启动，这是 Rails 定义的三个独立环境之一（另外两个是测试环境和生产环境）。这三个环境的区别对本章不重要，但是对后文就重要了，我们将在 <a class="xref-link" href="chapter7.html#rails-environments">7.1.1 节</a>详细介绍。</p>
 <p>控制台是学习的好工具，请尽情探索它的用法。别担心，你（几乎）不会破坏任何东西。如果在控制台中遇到问题，可以按 Ctrl-C 键结束当前执行的操作，或者按 Ctrl-D 键直接退出。与常规的 shell 终端一样，我们可以使用上箭头获取前一个命令，这能节省不少时间。</p>
-<p>在阅读本章后续内容的过程中，你会发现查阅 <a href="http://ruby-doc.org/">Ruby API</a> 很有帮助。API 中有很多信息（或许太多了），例如，如果想进一步了解 Ruby 字符串，可以查看 <code>String</code> 类的文档。</p>
+<p>在阅读本章后续内容的过程中，你会发现查阅 <a href="http://ruby-doc.org/" class="external-link">Ruby API</a> 很有帮助。API 中有很多信息（或许太多了），例如，如果想进一步了解 Ruby 字符串，可以查看 <code>String</code> 类的文档。</p>
 <section data-type="sect2" id="comments">
 <h2><span class="title-label">4.2.1</span> 注释</h2>
 <p>Ruby 中的注释以井号 <code>#</code>（也叫“散列符号”，或者更诗意一点，叫“散列字元”）开头，一直到行尾结束。Ruby 会忽略注释，但是注释对人类读者（往往也包括代码的编写者）很有用。在下面的代码中</p>
@@ -372,7 +372,7 @@ foo
 =&gt; nil
 </code></pre></div>
 </div>
-<p><code>puts</code> 方法还有一个副作用：<code>puts "foo"</code> 先把字符串打印到屏幕上，然后返回<a href="http://www.answers.com/nil">空值字面量</a>——<code>nil</code> 在 Ruby 中是个特殊值，表示“什么都没有”。（为了行文简洁，后续内容会省略 <code>=&gt; nil</code>。）</p>
+<p><code>puts</code> 方法还有一个副作用：<code>puts "foo"</code> 先把字符串打印到屏幕上，然后返回<a href="http://www.answers.com/nil" class="external-link">空值字面量</a>——<code>nil</code> 在 Ruby 中是个特殊值，表示“什么都没有”。（为了行文简洁，后续内容会省略 <code>=&gt; nil</code>。）</p>
 <p>从前面的例子可以看出，<code>puts</code> 方法会自动在输出的字符串后面换行。功能类似的 <code>print</code> 方法则不会：</p>
 <div data-type="listing">
 
@@ -449,7 +449,7 @@ foo
 </section>
 <section data-type="sect2" id="objects-and-message-passing">
 <h2><span class="title-label">4.2.3</span> 对象和消息传送</h2>
-<p>在 Ruby 中，一切皆对象，包括字符串和 <code>nil</code> 都是。我们会在 <a href="#class-inheritance">4.4.2 节</a>介绍对象在技术层面上的意义，不过一般很难通过阅读一本书就理解对象，你要多看一些例子才能建立对对象的感性认识。</p>
+<p>在 Ruby 中，一切皆对象，包括字符串和 <code>nil</code> 都是。我们会在 <a class="xref-link" href="#class-inheritance">4.4.2 节</a>介绍对象在技术层面上的意义，不过一般很难通过阅读一本书就理解对象，你要多看一些例子才能建立对对象的感性认识。</p>
 <p>对象的作用说起来很简单：响应消息。例如，字符串对象可以响应 <code>length</code> 消息，返回字符串中包含的字符数量：</p>
 <div data-type="listing">
 
@@ -589,7 +589,7 @@ The string 'foobar' is nonempty.
 <p>把字符串“racecar”赋值给变量 <code>s</code>。使用比较运算符 <code>==</code> 确认 <code>s</code> 与 <code>s.reverse</code> 相等。</p>
 </li>
 <li>
-<p><a href="#listing-palindrome-if">代码清单 4.9</a>的运行结果是什么？如果把 <code>s</code> 变量的值改成“onomatopoeia”呢？提示：使用上箭头获取前一个命令，然后编辑。</p>
+<p><a class="xref-link" href="#listing-palindrome-if">代码清单 4.9</a>的运行结果是什么？如果把 <code>s</code> 变量的值改成“onomatopoeia”呢？提示：使用上箭头获取前一个命令，然后编辑。</p>
 </li>
 </ol>
 <div id="listing-palindrome-if" data-type="listing">
@@ -602,7 +602,7 @@ The string 'foobar' is nonempty.
 </section>
 <section data-type="sect2" id="method-definitions">
 <h2><span class="title-label">4.2.4</span> 定义方法</h2>
-<p>在控制台中，可以像定义 <code>home</code> 动作（<a href="chapter3.html#listing-static-pages-controller">代码清单 3.8</a>）和 <code>full_title</code> 辅助方法（<a href="#listing-title-helper">代码清单 4.2</a>）一样定义方法。（在控制台中定义方法有点麻烦，我们通常在文件中定义，这里只是为了演示。）例如，我们要定义一个名为 <code>string_message</code> 的方法，它有一个参数，返回值取决于参数是否为空：</p>
+<p>在控制台中，可以像定义 <code>home</code> 动作（<a class="xref-link" href="chapter3.html#listing-static-pages-controller">代码清单 3.8</a>）和 <code>full_title</code> 辅助方法（<a class="xref-link" href="#listing-title-helper">代码清单 4.2</a>）一样定义方法。（在控制台中定义方法有点麻烦，我们通常在文件中定义，这里只是为了演示。）例如，我们要定义一个名为 <code>string_message</code> 的方法，它有一个参数，返回值取决于参数是否为空：</p>
 <div data-type="listing">
 
 
@@ -655,7 +655,7 @@ The string is nonempty.
 <h5 id="exercises-method-definitions" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>把<a href="#listing-palindrome-tester">代码清单 4.10</a> 中的 <code>FILL_IN</code> 换成正确的比较表达式，定义一个测试回文的方法。提示：使用<a href="#listing-palindrome-if">代码清单 4.9</a> 中的比较表达式。</p>
+<p>把<a class="xref-link" href="#listing-palindrome-tester">代码清单 4.10</a> 中的 <code>FILL_IN</code> 换成正确的比较表达式，定义一个测试回文的方法。提示：使用<a class="xref-link" href="#listing-palindrome-if">代码清单 4.9</a> 中的比较表达式。</p>
 </li>
 <li>
 <p>使用前一题定义的方法测试“racecar”和“onomatopoeia”，确认第一个词是回文，而第二个词不是。</p>
@@ -680,7 +680,7 @@ The string is nonempty.
 </section>
 <section data-type="sect2" id="back-to-the-title-helper">
 <h2><span class="title-label">4.2.5</span> 回顾标题的辅助方法</h2>
-<p>下面我们来理解一下<a href="#listing-title-helper">代码清单 4.2</a> 中的 <code>full_title</code> 辅助方法，<sup>[<a id="fn-ref-6" href="#fn-6">6</a>]</sup>在其中加上注解之后如<a href="#listing-annotated-title-helper">代码清单 4.11</a> 所示：</p>
+<p>下面我们来理解一下<a class="xref-link" href="#listing-title-helper">代码清单 4.2</a> 中的 <code>full_title</code> 辅助方法，<sup>[<a id="fn-ref-6" href="#fn-6">6</a>]</sup>在其中加上注解之后如<a class="xref-link" href="#listing-annotated-title-helper">代码清单 4.11</a> 所示：</p>
 <div id="listing-annotated-title-helper" data-type="listing">
 <h5><span class="title-label">代码清单 4.11</span>：注解 <code>full_title</code> 方法</h5>
 
@@ -700,7 +700,7 @@ The string is nonempty.
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>我们把方法定义、变量赋值、布尔测试、流程控制和字符串拼接<sup>[<a id="fn-ref-7" href="#fn-7">7</a>]</sup>利用起来，定义了一个可以在网站布局中使用的辅助方法。这里还有一个知识点——<code>module ApplicationHelper</code>：模块为我们提供了一种把相关方法组织在一起的方式，我们可以使用 <code>include</code> 把模块插入其他类中。编写普通的 Ruby 程序时，你要自己定义模块，然后再显式将其引入类中，但是辅助方法所在的模块会由 Rails 为我们引入，结果是，<code>full_title</code> 方法<a href="http://catb.org/jargon/html/A/automagically.html">自动</a>在所有视图中可用。</p>
+<p>我们把方法定义、变量赋值、布尔测试、流程控制和字符串拼接<sup>[<a id="fn-ref-7" href="#fn-7">7</a>]</sup>利用起来，定义了一个可以在网站布局中使用的辅助方法。这里还有一个知识点——<code>module ApplicationHelper</code>：模块为我们提供了一种把相关方法组织在一起的方式，我们可以使用 <code>include</code> 把模块插入其他类中。编写普通的 Ruby 程序时，你要自己定义模块，然后再显式将其引入类中，但是辅助方法所在的模块会由 Rails 为我们引入，结果是，<code>full_title</code> 方法<a href="http://catb.org/jargon/html/A/automagically.html" class="external-link">自动</a>在所有视图中可用。</p>
 </section>
 </section>
 <section data-type="sect1" id="other-data-structures">
@@ -708,7 +708,7 @@ The string is nonempty.
 <p>虽然 Web 应用最终都是处理字符串，但也需要其他的数据类型来生成字符串。本节介绍一些对开发 Rails 应用很重要的其他 Ruby 数据类型。</p>
 <section data-type="sect2" id="arrays-and-ranges">
 <h2><span class="title-label">4.3.1</span> 数组和值域</h2>
-<p>数组是一组具有特定顺序的元素。前面还没用过数组，不过理解数组对理解散列有很大帮助（<a href="#hashes-and-symbols">4.3.3 节</a>），也有助于理解 Rails 中的数据模型（例如 <a href="chapter2.html#a-user-has-many-microposts">2.3.3 节</a>用到的 <code>has_many</code> 关联，<a href="chapter13.html#user-micropost-associations">13.1.3 节</a>会做详细介绍）。</p>
+<p>数组是一组具有特定顺序的元素。前面还没用过数组，不过理解数组对理解散列有很大帮助（<a class="xref-link" href="#hashes-and-symbols">4.3.3 节</a>），也有助于理解 Rails 中的数据模型（例如 <a class="xref-link" href="chapter2.html#a-user-has-many-microposts">2.3.3 节</a>用到的 <code>has_many</code> 关联，<a class="xref-link" href="chapter13.html#user-micropost-associations">13.1.3 节</a>会做详细介绍）。</p>
 <p>目前，我们已经花了很多时间理解字符串，从字符串过渡到数组可以从 <code>split</code> 方法开始：</p>
 <div data-type="listing">
 
@@ -884,7 +884,7 @@ NoMethodError: undefined method `to_a' for 9:Fixnum
 <p>不指定连接符，把 <code>a</code> 连接起来，然后把结果赋值给变量 <code>s</code>。</p>
 </li>
 <li>
-<p>在空白处分拆 <code>s</code>，然后再连接起来。使用<a href="#listing-palindrome-tester">代码清单 4.10</a> 中的方法确认得到的结果不是回文。使用 <code>downcase</code> 方法，确认 <code>s.downcase</code> 是回文。</p>
+<p>在空白处分拆 <code>s</code>，然后再连接起来。使用<a class="xref-link" href="#listing-palindrome-tester">代码清单 4.10</a> 中的方法确认得到的结果不是回文。使用 <code>downcase</code> 方法，确认 <code>s.downcase</code> 是回文。</p>
 </li>
 <li>
 <p>创建字母 <code>a</code> 到 <code>z</code> 的值域，第 7 个元素是什么？ 把值域反过来呢？提示：两次都要把值域转换成数组。</p>
@@ -973,8 +973,8 @@ NoMethodError: undefined method `to_a' for 9:Fixnum
 =&gt; ["a", "b", "c"]
 </code></pre></div>
 </div>
-<p>（简写形式看起来有点儿奇怪，其中用到了符号，<a href="#hashes-and-symbols">4.3.3 节</a>会介绍。）这种写法比较有趣，一开始是由 Rails 扩展实现的，但人们太喜欢了，现在已经集成到 Ruby 核心代码中。</p>
-<p>最后再看一个使用块的例子。我们看一下<a href="#listing-home-base-title-spec">代码清单 4.4</a> 中的一个测试用例：</p>
+<p>（简写形式看起来有点儿奇怪，其中用到了符号，<a class="xref-link" href="#hashes-and-symbols">4.3.3 节</a>会介绍。）这种写法比较有趣，一开始是由 Rails 扩展实现的，但人们太喜欢了，现在已经集成到 Ruby 核心代码中。</p>
+<p>最后再看一个使用块的例子。我们看一下<a class="xref-link" href="#listing-home-base-title-spec">代码清单 4.4</a> 中的一个测试用例：</p>
 <div data-type="listing">
 
 
@@ -986,7 +986,7 @@ NoMethodError: undefined method `to_a' for 9:Fixnum
 </code></pre></div>
 </div>
 <p>现在不需要理解细节（其实我也不懂），从 <code>do</code> 关键字可以看出，测试的主体其实就是个块。<code>test</code> 方法的参数是一个字符串（测试的描述）和一个块，运行测试组件时会执行块中的内容。</p>
-<p>现在我们来分析一下我在 <a href="chapter1.html#heroku-commands">1.5.4 节</a>生成随机二级域名时使用的那行 Ruby 代码：</p>
+<p>现在我们来分析一下我在 <a class="xref-link" href="chapter1.html#heroku-commands">1.5.4 节</a>生成随机二级域名时使用的那行 Ruby 代码：</p>
 <div data-type="listing">
 
 
@@ -1021,7 +1021,7 @@ NoMethodError: undefined method `to_a' for 9:Fixnum
 <p>定义一个名为 <code>random_subdomain</code> 的方法，返回八个随机字母组成的字符串。</p>
 </li>
 <li>
-<p>把<a href="#listing-string-shuffle">代码清单 4.12</a> 中的问号换成正确的方法，结合 <code>split</code>、<code>shuffle</code> 和 <code>join</code> 方法，把指定字符串中的字符打乱。</p>
+<p>把<a class="xref-link" href="#listing-string-shuffle">代码清单 4.12</a> 中的问号换成正确的方法，结合 <code>split</code>、<code>shuffle</code> 和 <code>join</code> 方法，把指定字符串中的字符打乱。</p>
 </li>
 </ol>
 <div id="listing-string-shuffle" data-type="listing">
@@ -1122,7 +1122,7 @@ SyntaxError
 </code></pre></div>
 </div>
 <p>这种形式更好地沿袭了其他语言（例如 JavaScript）中散列的表示方式，在 Rails 社区中也越来越受欢迎。这两种方式现在都在使用，所以你要能识别它们。可是，新句法有点让人困惑，因为 <code>:name</code> 本身是一种数据类型（符号），但 <code>name:</code> 却没有意义。不过在散列字面量中，<code>:name =&gt;</code> 和 <code>name:</code> 作用一样。因此，<code>{ :name =&gt; "Michael Hartl" }</code> 和 <code>{ name: "Michael Hartl" }</code> 是等效的。如果要表示符号，只能使用 <code>:name</code>（冒号在前面）。</p>
-<p>散列中元素的值可以是任何对象，甚至是另一个散列，如<a href="#listing-nested-hashes">代码清单 4.13</a> 所示。</p>
+<p>散列中元素的值可以是任何对象，甚至是另一个散列，如<a class="xref-link" href="#listing-nested-hashes">代码清单 4.13</a> 所示。</p>
 <div id="listing-nested-hashes" data-type="listing">
 <h5><span class="title-label">代码清单 4.13</span>：嵌套散列</h5>
 
@@ -1137,7 +1137,7 @@ SyntaxError
 =&gt; "mhartl@example.com"
 </code></pre></div>
 </div>
-<p>Rails 大量使用这种散列中有散列的形式（或称为“嵌套散列”），我们从 <a href="chapter7.html#unsuccessful-signups">7.3 节</a>起会接触到。</p>
+<p>Rails 大量使用这种散列中有散列的形式（或称为“嵌套散列”），我们从 <a class="xref-link" href="chapter7.html#unsuccessful-signups">7.3 节</a>起会接触到。</p>
 <p>与数组和值域一样，散列也能响应 <code>each</code> 方法。例如，下面是一个名为 <code>flash</code> 的散列，它的键是两个判断条件，<code>:success</code> 和 <code>:danger</code>：</p>
 <div data-type="listing">
 
@@ -1204,7 +1204,7 @@ It worked!
 </section>
 <section data-type="sect2" id="css-revisited">
 <h2><span class="title-label">4.3.4</span> 重温引入 CSS 的代码</h2>
-<p>现在我们要重新认识一下<a href="#listing-application-layout-redux">代码清单 4.1</a> 中在布局中引入层叠样式表的代码：</p>
+<p>现在我们要重新认识一下<a class="xref-link" href="#listing-application-layout-redux">代码清单 4.1</a> 中在布局中引入层叠样式表的代码：</p>
 <div data-type="listing">
 
 
@@ -1212,7 +1212,7 @@ It worked!
                                        <span class="s1">'data-turbolinks-track'</span><span class="p">:</span> <span class="s1">'reload'</span> <span class="cp">%&gt;</span>
 </code></pre></div>
 </div>
-<p>我们现在基本上可以理解这行代码了。<a href="#motivation">4.1 节</a>简单提到过，Rails 定义了一个特殊的函数用于引入样式表，下面的代码</p>
+<p>我们现在基本上可以理解这行代码了。<a class="xref-link" href="#motivation">4.1 节</a>简单提到过，Rails 定义了一个特殊的函数用于引入样式表，下面的代码</p>
 <div data-type="listing">
 
 
@@ -1259,7 +1259,7 @@ It worked!
                                    <span class="s1">'data-turbolinks-track'</span><span class="p">:</span> <span class="s1">'reload'</span>
 </code></pre></div>
 </div>
-<p>调用了 <code>stylesheet_link_tag</code> 函数，并且传入两个参数：一个是字符串，指明样式表的路径；另一个是散列，包含两个元素，第一个指明媒介类型，第二个启用 Rails 4.0 增加的 <a href="https://github.com/rails/turbolinks">Turbolink</a> 功能。因为使用的是 <code>&lt;%= %&gt;</code>，函数的执行结果会通过 ERb 插入模板中。如果在浏览器中查看网页的源码，会看到引入样式表所用的 HTML，如<a href="#listing-scss-source">代码清单 4.14</a> 所示。（你可能会在 CSS 的文件名后看到额外的字符，例如 <code>?body=1</code>。这是 Rails 加入的，用以确保修改 CSS 后浏览器会重新加载。）</p>
+<p>调用了 <code>stylesheet_link_tag</code> 函数，并且传入两个参数：一个是字符串，指明样式表的路径；另一个是散列，包含两个元素，第一个指明媒介类型，第二个启用 Rails 4.0 增加的 <a href="https://github.com/rails/turbolinks" class="external-link">Turbolink</a> 功能。因为使用的是 <code>&lt;%= %&gt;</code>，函数的执行结果会通过 ERb 插入模板中。如果在浏览器中查看网页的源码，会看到引入样式表所用的 HTML，如<a class="xref-link" href="#listing-scss-source">代码清单 4.14</a> 所示。（你可能会在 CSS 的文件名后看到额外的字符，例如 <code>?body=1</code>。这是 Rails 加入的，用以确保修改 CSS 后浏览器会重新加载。）</p>
 <div id="listing-scss-source" data-type="listing">
 <h5><span class="title-label">代码清单 4.14</span>：引入 CSS 的代码生成的 HTML</h5>
 
@@ -1353,7 +1353,7 @@ It worked!
 =&gt; nil
 </code></pre></div>
 </div>
-<p>这个继承关系如<a href="#fig-string-inheritance-ruby-1-9">图 4.1</a> 所示。可以看到，<code>String</code> 的父类是 <code>Object</code>，<code>Object</code> 的父类是 <code>BasicObject</code>，但是 <code>BasicObject</code> 就没有父类了。这样的关系对每个 Ruby 对象都适用：只要在类的继承关系上往上多走几层，就会发现 Ruby 中的每个类最终都继承自 <code>BasicObject</code>，而它本身没有父类。这就是“Ruby 中一切皆对象”在技术层面上的意义。</p>
+<p>这个继承关系如<a class="xref-link" href="#fig-string-inheritance-ruby-1-9">图 4.1</a> 所示。可以看到，<code>String</code> 的父类是 <code>Object</code>，<code>Object</code> 的父类是 <code>BasicObject</code>，但是 <code>BasicObject</code> 就没有父类了。这样的关系对每个 Ruby 对象都适用：只要在类的继承关系上往上多走几层，就会发现 Ruby 中的每个类最终都继承自 <code>BasicObject</code>，而它本身没有父类。这就是“Ruby 中一切皆对象”在技术层面上的意义。</p>
 <div id="fig-string-inheritance-ruby-1-9" class="figure"><img src="images/chapter4/string_inheritance_ruby_1_9.png" alt="string inheritance ruby 1 9" /><div class="figcaption"><span class="title-label">图 4.1</span>：<code>String</code> 类的继承关系</div></div>
 <p>要想更深入地理解类，最好的方法是自己动手编写一个。我们来定义一个名为 <code>Word</code> 的类，其中有一个名为 <code>palindrome?</code> 的方法，如果单词顺读和反读都一样就返回 <code>true</code>：</p>
 <div data-type="listing">
@@ -1379,7 +1379,7 @@ It worked!
 =&gt; true
 </code></pre></div>
 </div>
-<p>如果你觉得这个例子有点大题小做，很好，我的目的达到了。定义一个新类，可是只创建一个接受一个字符串作为参数的方法，这么做很古怪。既然单词是字符串，让 <code>Word</code> 继承 <code>String</code> 不就行了，如<a href="#listing-word-class">代码清单 4.15</a> 所示。（你要退出控制台，然后在控制台中输入这些代码，这样才能把之前定义的 <code>Word</code> 类清除掉。）</p>
+<p>如果你觉得这个例子有点大题小做，很好，我的目的达到了。定义一个新类，可是只创建一个接受一个字符串作为参数的方法，这么做很古怪。既然单词是字符串，让 <code>Word</code> 继承 <code>String</code> 不就行了，如<a class="xref-link" href="#listing-word-class">代码清单 4.15</a> 所示。（你要退出控制台，然后在控制台中输入这些代码，这样才能把之前定义的 <code>Word</code> 类清除掉。）</p>
 <div id="listing-word-class" data-type="listing">
 <h5><span class="title-label">代码清单 4.15</span>：在控制台中定义 <code>Word</code> 类</h5>
 
@@ -1393,7 +1393,7 @@ It worked!
 =&gt; nil
 </code></pre></div>
 </div>
-<p>其中，<code>Word &lt; String</code> 在 Ruby 中表示继承（<a href="chapter3.html#static-pages">3.2 节</a>简介过），这样除了定义 <code>palindrome?</code> 方法之外，<code>Word</code> 还拥有所有字符串拥有的方法：</p>
+<p>其中，<code>Word &lt; String</code> 在 Ruby 中表示继承（<a class="xref-link" href="chapter3.html#static-pages">3.2 节</a>简介过），这样除了定义 <code>palindrome?</code> 方法之外，<code>Word</code> 还拥有所有字符串拥有的方法：</p>
 <div data-type="listing">
 
 
@@ -1417,9 +1417,9 @@ It worked!
 =&gt; Object
 </code></pre></div>
 </div>
-<p>这个继承关系如<a href="#fig-word-inheritance-ruby-1-9">图 4.2</a> 所示。</p>
-<div id="fig-word-inheritance-ruby-1-9" class="figure"><img src="images/chapter4/word_inheritance_ruby_1_9.png" alt="word inheritance ruby 1 9" /><div class="figcaption"><span class="title-label">图 4.2</span>：<a href="#listing-word-class">代码清单 4.15</a> 中定义的 <code>Word</code> 类（非内置类）的继承关系</div></div>
-<p>注意，在<a href="#listing-word-class">代码清单 4.15</a> 中检查单词和单词的反转是否相同时，要在 <code>Word</code> 类中访问单词。这在 Ruby 中使用 <code>self</code> 关键字<sup>[<a id="fn-ref-16" href="#fn-16">16</a>]</sup>引用：在 <code>Word</code> 类中，<code>self</code> 代表的是对象本身。所以我们可以使用</p>
+<p>这个继承关系如<a class="xref-link" href="#fig-word-inheritance-ruby-1-9">图 4.2</a> 所示。</p>
+<div id="fig-word-inheritance-ruby-1-9" class="figure"><img src="images/chapter4/word_inheritance_ruby_1_9.png" alt="word inheritance ruby 1 9" /><div class="figcaption"><span class="title-label">图 4.2</span>：<a class="xref-link" href="#listing-word-class">代码清单 4.15</a> 中定义的 <code>Word</code> 类（非内置类）的继承关系</div></div>
+<p>注意，在<a class="xref-link" href="#listing-word-class">代码清单 4.15</a> 中检查单词和单词的反转是否相同时，要在 <code>Word</code> 类中访问单词。这在 Ruby 中使用 <code>self</code> 关键字<sup>[<a id="fn-ref-16" href="#fn-16">16</a>]</sup>引用：在 <code>Word</code> 类中，<code>self</code> 代表的是对象本身。所以我们可以使用</p>
 <div data-type="listing">
 
 
@@ -1439,7 +1439,7 @@ It worked!
 <p>值域的类继承关系是怎样的？散列和符号呢？</p>
 </li>
 <li>
-<p>把<a href="#listing-word-class">代码清单 4.15</a> 中的 <code>self.reverse</code> 换成 <code>reverse</code>，确认 <code>palindrome?</code> 方法依然可用。</p>
+<p>把<a class="xref-link" href="#listing-word-class">代码清单 4.15</a> 中的 <code>self.reverse</code> 换成 <code>reverse</code>，确认 <code>palindrome?</code> 方法依然可用。</p>
 </li>
 </ol>
 </section>
@@ -1469,7 +1469,7 @@ NoMethodError: undefined method `palindrome?' for "level":String
 </code></pre></div>
 </div>
 <p>（我不知道哪一个更牛：Ruby 允许向内置的类中添加方法，或 <code>"deified"</code> 是个回文。）</p>
-<p>修改内置的类是个很强大的功能，不过功能强大意味着责任也大，如果没有很好的理由，向内置的类中添加方法是不好的习惯。Rails 自然有很好的理由。例如，在 Web 应用中我们经常要避免变量的值是空白的（blank），像用户名之类的就不应该是空格或<a href="http://en.wikipedia.org/wiki/Whitespace_(computer_science)">空白</a>，所以 Rails 为 Ruby 添加了一个 <code>blank?</code> 方法。Rails 控制台会自动加载 Rails 添加的功能，下面看几个例子（在 <code>irb</code> 中不可以）：</p>
+<p>修改内置的类是个很强大的功能，不过功能强大意味着责任也大，如果没有很好的理由，向内置的类中添加方法是不好的习惯。Rails 自然有很好的理由。例如，在 Web 应用中我们经常要避免变量的值是空白的（blank），像用户名之类的就不应该是空格或<a href="http://en.wikipedia.org/wiki/Whitespace_(computer_science)" class="external-link">空白</a>，所以 Rails 为 Ruby 添加了一个 <code>blank?</code> 方法。Rails 控制台会自动加载 Rails 添加的功能，下面看几个例子（在 <code>irb</code> 中不可以）：</p>
 <div data-type="listing">
 
 
@@ -1483,17 +1483,17 @@ NoMethodError: undefined method `palindrome?' for "level":String
 =&gt; true
 </code></pre></div>
 </div>
-<p>可以看出，一个包含空格的字符串不是空的（empty），却是空白的（blank）。还要注意，<code>nil</code> 也是空白的。因为 <code>nil</code> 不是字符串，所以上面的代码说明了 Rails 其实是把 <code>blank?</code> 添加到 <code>String</code> 的基类 <code>Object</code> 中的。<a href="chapter9.html#remember-me">9.1 节</a>会再介绍一些 Rails 扩展 Ruby 类的例子。</p>
+<p>可以看出，一个包含空格的字符串不是空的（empty），却是空白的（blank）。还要注意，<code>nil</code> 也是空白的。因为 <code>nil</code> 不是字符串，所以上面的代码说明了 Rails 其实是把 <code>blank?</code> 添加到 <code>String</code> 的基类 <code>Object</code> 中的。<a class="xref-link" href="chapter9.html#remember-me">9.1 节</a>会再介绍一些 Rails 扩展 Ruby 类的例子。</p>
 <h5 id="exercises-modifying-built-in-classes" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
 <p>验证“racecar”是回文，而“onomatopoeia”不是。印度南部方言“Malayalam”是回文吗？提示：先变成小写。</p>
 </li>
 <li>
-<p>以<a href="#listing-string-shuffle-two">代码清单 4.16</a> 为模板，为 <code>String</code> 类添加 <code>shuffle</code> 方法。提示：参照<a href="#listing-string-shuffle">代码清单 4.12</a>。</p>
+<p>以<a class="xref-link" href="#listing-string-shuffle-two">代码清单 4.16</a> 为模板，为 <code>String</code> 类添加 <code>shuffle</code> 方法。提示：参照<a class="xref-link" href="#listing-string-shuffle">代码清单 4.12</a>。</p>
 </li>
 <li>
-<p>删掉 <code>self.</code>，确认<a href="#listing-string-shuffle-two">代码清单 4.16</a> 依然可用。</p>
+<p>删掉 <code>self.</code>，确认<a class="xref-link" href="#listing-string-shuffle-two">代码清单 4.16</a> 依然可用。</p>
 </li>
 </ol>
 <div id="listing-string-shuffle-two" data-type="listing">
@@ -1512,7 +1512,7 @@ NoMethodError: undefined method `palindrome?' for "level":String
 </section>
 <section data-type="sect2" id="a-controller-class">
 <h2><span class="title-label">4.4.4</span> 控制器类</h2>
-<p>讨论类和继承时你可能觉得似曾相识，不错，我们之前见过，在 <code>StaticPages</code> 控制器中（<a href="chapter3.html#listing-adding-the-about-page">代码清单 3.20</a>）：</p>
+<p>讨论类和继承时你可能觉得似曾相识，不错，我们之前见过，在 <code>StaticPages</code> 控制器中（<a class="xref-link" href="chapter3.html#listing-adding-the-about-page">代码清单 3.20</a>）：</p>
 <div data-type="listing">
 
 
@@ -1549,7 +1549,7 @@ NoMethodError: undefined method `palindrome?' for "level":String
 =&gt; Object
 </code></pre></div>
 </div>
-<p>这个继承关系如<a href="#fig-static-pages-controller-inheritance">图 4.3</a> 所示。</p>
+<p>这个继承关系如<a class="xref-link" href="#fig-static-pages-controller-inheritance">图 4.3</a> 所示。</p>
 <p>我们还可以在控制台中调用控制器的动作，动作其实就是方法：</p>
 <div data-type="listing">
 
@@ -1559,13 +1559,13 @@ NoMethodError: undefined method `palindrome?' for "level":String
 </code></pre></div>
 </div>
 <p><code>home</code> 动作的返回值为 <code>nil</code>，因为它是空的。</p>
-<p>注意，动作没有返回值，或至少没返回真正需要的值。如我们在<a href="chapter3.html#mostly-static-pages">第 3 章</a>看到的，<code>home</code> 动作的目的是渲染网页，而不是返回一个值。但是，我记得没在任何地方调用过 <code>StaticPagesController.new</code>，到底怎么回事呢？</p>
+<p>注意，动作没有返回值，或至少没返回真正需要的值。如我们在<a class="xref-link" href="chapter3.html#mostly-static-pages">第 3 章</a>看到的，<code>home</code> 动作的目的是渲染网页，而不是返回一个值。但是，我记得没在任何地方调用过 <code>StaticPagesController.new</code>，到底怎么回事呢？</p>
 <p>原因在于，Rails 是用 Ruby 编写的，但 Rails 不是 Ruby。有些 Rails 类就像普通的 Ruby 类一样，不过也有些则得益于 Rails 的强大功能。Rails 是单独的一门学问，应该跟 Ruby 分开学习和理解。</p>
 <div id="fig-static-pages-controller-inheritance" class="figure"><img src="images/chapter4/static_pages_controller_inheritance.png" alt="static pages controller inheritance" /><div class="figcaption"><span class="title-label">图 4.3</span>：<code>StaticPagesController</code> 类的继承关系</div></div>
 <h5 id="exercises-a-controller-class" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>在<a href="chapter2.html#a-toy-app">第 2 章</a>创建的玩具应用中运行 Rails 控制台，确认可以使用 <code>User.new</code> 创建用户对象。</p>
+<p>在<a class="xref-link" href="chapter2.html#a-toy-app">第 2 章</a>创建的玩具应用中运行 Rails 控制台，确认可以使用 <code>User.new</code> 创建用户对象。</p>
 </li>
 <li>
 <p>找出那个用户对象的类继承关系。</p>
@@ -1574,8 +1574,8 @@ NoMethodError: undefined method `palindrome?' for "level":String
 </section>
 <section data-type="sect2" id="a-user-class">
 <h2><span class="title-label">4.4.5</span> <code>User</code> 类</h2>
-<p>我们将自己定义一个类，以此结束对 Ruby 的介绍。这个类名为 <code>User</code>，目的是实现 <a href="chapter6.html#modeling-users">第 6 章</a>用到的 <code>User</code> 模型。</p>
-<p>到目前为止，我们都在控制台中定义类，这样很快捷，但也有点不爽。现在我们要在应用的根目录中创建一个名为 <code>example_user.rb</code> 的文件，然后写入<a href="#listing-example-user">代码清单 4.17</a> 中的内容。</p>
+<p>我们将自己定义一个类，以此结束对 Ruby 的介绍。这个类名为 <code>User</code>，目的是实现 <a class="xref-link" href="chapter6.html#modeling-users">第 6 章</a>用到的 <code>User</code> 模型。</p>
+<p>到目前为止，我们都在控制台中定义类，这样很快捷，但也有点不爽。现在我们要在应用的根目录中创建一个名为 <code>example_user.rb</code> 的文件，然后写入<a class="xref-link" href="#listing-example-user">代码清单 4.17</a> 中的内容。</p>
 <div id="listing-example-user" data-type="listing">
 <h5><span class="title-label">代码清单 4.17</span>：定义 <code>User</code> 类</h5>
 
@@ -1602,7 +1602,7 @@ NoMethodError: undefined method `palindrome?' for "level":String
 <div class="highlight language-ruby"><pre><code>  <span class="kp">attr_accessor</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span>
 </code></pre></div>
 </div>
-<p>这行代码为用户的名字和电子邮件地址创建属性访问器存取方法（attribute accessor），也就是定义读值方法（getter）和设值方法（setter），用于读取和设定 <code>@name</code> 和 <code>@email</code> 实例变量（<a href="chapter2.html#mvc-in-action">2.2.2 节</a>和 <a href="chapter3.html#adding-page-titles">3.4.2 节</a>的<a href="chapter3.html#exercises-adding-page-titles">练习</a>简介过）。在 Rails 中，实例变量的意义在于，它们自动在视图中可用。而通常实例变量的作用是在 Ruby 类中不同的方法之间传递值。（稍后会更详细地说明这一点。）实例变量都以 <code>@</code> 符号开头，如果未定义，值为 <code>nil</code>。</p>
+<p>这行代码为用户的名字和电子邮件地址创建属性访问器存取方法（attribute accessor），也就是定义读值方法（getter）和设值方法（setter），用于读取和设定 <code>@name</code> 和 <code>@email</code> 实例变量（<a class="xref-link" href="chapter2.html#mvc-in-action">2.2.2 节</a>和 <a class="xref-link" href="chapter3.html#adding-page-titles">3.4.2 节</a>的<a class="xref-link" href="chapter3.html#exercises-adding-page-titles">练习</a>简介过）。在 Rails 中，实例变量的意义在于，它们自动在视图中可用。而通常实例变量的作用是在 Ruby 类中不同的方法之间传递值。（稍后会更详细地说明这一点。）实例变量都以 <code>@</code> 符号开头，如果未定义，值为 <code>nil</code>。</p>
 <p>第一个方法，<code>initialize</code>，在 Ruby 中有特殊的意义：执行 <code>User.new</code> 时会调用它。这个 <code>initialize</code> 方法接受一个参数，<code>attributes</code>：</p>
 <div data-type="listing">
 
@@ -1613,7 +1613,7 @@ NoMethodError: undefined method `palindrome?' for "level":String
   <span class="k">end</span>
 </code></pre></div>
 </div>
-<p><code>attributes</code> 参数的默认值是一个空散列，所以我们可以定义一个没有名字或没有电子邮件地址的用户。（回想一下 <a href="#hashes-and-symbols">4.3.3 节</a>的内容，如果键不存在会返回 <code>nil</code>，所以如果没定义 <code>:name</code> 键，<code>attributes[:name]</code> 返回 <code>nil</code>，<code>attributes[:email]</code> 也是一样。）</p>
+<p><code>attributes</code> 参数的默认值是一个空散列，所以我们可以定义一个没有名字或没有电子邮件地址的用户。（回想一下 <a class="xref-link" href="#hashes-and-symbols">4.3.3 节</a>的内容，如果键不存在会返回 <code>nil</code>，所以如果没定义 <code>:name</code> 键，<code>attributes[:name]</code> 返回 <code>nil</code>，<code>attributes[:email]</code> 也是一样。）</p>
 <p>最后，类中定义了一个名为 <code>formatted_email</code> 的方法，使用被赋了值的 <code>@name</code> 和 <code>@email</code> 变量进行插值，组成一个格式良好的电子邮件地址：</p>
 <div data-type="listing">
 
@@ -1643,7 +1643,7 @@ NoMethodError: undefined method `palindrome?' for "level":String
 </code></pre></div>
 </div>
 <p>这段代码中的点号 <code>.</code>，在 Unix 中指“当前目录”，<code>'./example_user'</code> 告诉 Ruby 在当前目录中寻找这个文件。接下来的代码创建一个空用户，然后通过直接赋值给相应的属性来提供名字和电子邮件地址（因为有 <code>attr_accessor</code> 所以才能赋值）。我们输入 <code>example.name = "Example User"</code> 时，Ruby 会把 <code>@name</code> 变量的值设为 <code>"Example User"</code>（<code>email</code> 属性类似），然后就可以在 <code>formatted_email</code> 中使用。</p>
-<p><a href="#css-revisited">4.3.4 节</a>介绍过，如果最后一个参数是散列，可以省略花括号。我们可以把一个预先定义好的散列传给 <code>initialize</code> 方法，再创建一个用户：</p>
+<p><a class="xref-link" href="#css-revisited">4.3.4 节</a>介绍过，如果最后一个参数是散列，可以省略花括号。我们可以把一个预先定义好的散列传给 <code>initialize</code> 方法，再创建一个用户：</p>
 <div data-type="listing">
 
 
@@ -1653,7 +1653,7 @@ NoMethodError: undefined method `palindrome?' for "level":String
 =&gt; "Michael Hartl &lt;mhartl@example.com&gt;"
 </code></pre></div>
 </div>
-<p>从<a href="chapter7.html#sign-up">第 7 章</a>开始，我们会使用散列初始化对象，这种技术叫做批量赋值（mass assignment），在 Rails 中很常见。</p>
+<p>从<a class="xref-link" href="chapter7.html#sign-up">第 7 章</a>开始，我们会使用散列初始化对象，这种技术叫做批量赋值（mass assignment），在 Rails 中很常见。</p>
 <h5 id="exercises-a-user-object" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
@@ -1670,8 +1670,8 @@ NoMethodError: undefined method `palindrome?' for "level":String
 </section>
 <section data-type="sect1" id="rails-flavored-ruby-conclusion">
 <h1><span class="title-label">4.5</span> 小结</h1>
-<p>至此，对 Ruby 语言的介绍结束了。<a href="chapter5.html#filling-in-the-layout">第 5 章</a>会好好利用这些知识来开发演示应用。</p>
-<p>我们不会使用 <a href="#a-user-class">4.4.5 节</a>创建的 <code>example_user.rb</code> 文件，所以我建议把它删除：</p>
+<p>至此，对 Ruby 语言的介绍结束了。<a class="xref-link" href="chapter5.html#filling-in-the-layout">第 5 章</a>会好好利用这些知识来开发演示应用。</p>
+<p>我们不会使用 <a class="xref-link" href="#a-user-class">4.4.5 节</a>创建的 <code>example_user.rb</code> 文件，所以我建议把它删除：</p>
 <div data-type="listing">
 
 
@@ -1762,8 +1762,8 @@ NoMethodError: undefined method `palindrome?' for "level":String
           <div class="footnotes">
 <ol>
 <li id="fn-1">如果辅助方法是针对某个特定控制器的，应该把它放进该控制器对应的辅助文件中。例如，为 <code>StaticPages</code> 控制器创建的辅助方法一般放在 <code>app/helper/static_pages_helper.rb</code> 中。在这个例子中，我们想在所有页面中都使用 <code>full_title</code> 方法，所以要放在一个特殊的辅助文件中，即 <code>app/helper/application_helper.rb</code>。 <a href="#fn-ref-1" class="symbol">&#8617;</a></li>
-<li id="fn-2">nano 编辑器对新手来说更简单，不过我都使用 Vim 做这种简单的编辑。如果想简单学习 Vim，请阅读《<a href="http://learnenough.com/text-editor-tutorial">Learn Enough Text Editor to Be Dangerous</a>》。 <a href="#fn-ref-2" class="symbol">&#8617;</a></li>
-<li id="fn-3">关于“foo”和“bar”，以及不太相关的“foobar”和“FUBAR”的起源，请查看 <a href="http://www.catb.org/jargon/html/F/foo.html">Jargon File 中介绍“foo”的文章</a>。 <a href="#fn-ref-3" class="symbol">&#8617;</a></li>
+<li id="fn-2">nano 编辑器对新手来说更简单，不过我都使用 Vim 做这种简单的编辑。如果想简单学习 Vim，请阅读《<a href="http://learnenough.com/text-editor-tutorial" class="external-link">Learn Enough Text Editor to Be Dangerous</a>》。 <a href="#fn-ref-2" class="symbol">&#8617;</a></li>
+<li id="fn-3">关于“foo”和“bar”，以及不太相关的“foobar”和“FUBAR”的起源，请查看 <a href="http://www.catb.org/jargon/html/F/foo.html" class="external-link">Jargon File 中介绍“foo”的文章</a>。 <a href="#fn-ref-3" class="symbol">&#8617;</a></li>
 <li id="fn-4">熟悉 Perl 或 PHP 的编程人员，可以把这个功能与自动插值美元符号开头的变量相对应，例如 <code>"foo $bar"</code>。 <a href="#fn-ref-4" class="symbol">&#8617;</a></li>
 <li id="fn-5">抱歉，本章在“函数”和“方法”两个称呼之间随意变换。在 Ruby 中这二者是同一个概念：所有方法都是函数，所有函数也都是方法，因为一切皆对象。 <a href="#fn-ref-5" class="symbol">&#8617;</a></li>
 <li id="fn-6">其实还有一个地方我们不理解，那就是 Rails 是怎么把这些联系在一起的：把 URL 映射到动作上，让 <code>full_title</code> 辅助方法可以在视图中使用，等等。这是个很有意思的话题，我建议你以后好好了解一下。不过使用 Rails 并不需要完全了解 Rails 的运作机制。 <a href="#fn-ref-6" class="symbol">&#8617;</a></li>
@@ -1774,9 +1774,9 @@ NoMethodError: undefined method `palindrome?' for "level":String
 <li id="fn-11">没有约束的好处是，符号很容易进行比较，字符串要按照字母一个一个比较，而符号只需比较一次。这就使得符号成为散列键的最佳选择。 <a href="#fn-ref-11" class="symbol">&#8617;</a></li>
 <li id="fn-12">其实二者之间有些细微差别，<code>p</code> 返回打印的对象，而 <code>puts</code> 始终返回 <code>nil</code>。感谢读者 Katarzyna Siwek 指出这一点。 <a href="#fn-ref-12" class="symbol">&#8617;</a></li>
 <li id="fn-13">换行符在一行的结尾处，作用是开始新的一行。在代码中，换行符用 <code>\n</code> 表示。 <a href="#fn-ref-13" class="symbol">&#8617;</a></li>
-<li id="fn-14">数列数会让你发疯的，所以很多文本编辑器都提供了一个视觉标识。例如，如果再看一下<a href="chapter1.html#fig-cloud9-gemfile">图 1.6</a> 的话，你可能会发现右边有一条细线，它可以帮助你把一行代码控制在 80 个字符以内。云端 IDE 默认会显示这条竖线。如果使用 TextMate，可以在如下菜单中找到这个功能：View &gt; Wrap Column &gt; 78。在 Sublime Text 中则是：View &gt; Ruler &gt; 78，或：View &gt; Ruler &gt; 80。 <a href="#fn-ref-14" class="symbol">&#8617;</a></li>
+<li id="fn-14">数列数会让你发疯的，所以很多文本编辑器都提供了一个视觉标识。例如，如果再看一下<a class="xref-link" href="chapter1.html#fig-cloud9-gemfile">图 1.6</a> 的话，你可能会发现右边有一条细线，它可以帮助你把一行代码控制在 80 个字符以内。云端 IDE 默认会显示这条竖线。如果使用 TextMate，可以在如下菜单中找到这个功能：View &gt; Wrap Column &gt; 78。在 Sublime Text 中则是：View &gt; Ruler &gt; 78，或：View &gt; Ruler &gt; 80。 <a href="#fn-ref-14" class="symbol">&#8617;</a></li>
 <li id="fn-15">返回值可能由于 Ruby 版本的不同而有所不同。这个例子假设你使用的是 Ruby 1.9.3 或以上版本。 <a href="#fn-ref-15" class="symbol">&#8617;</a></li>
-<li id="fn-16">关于 Ruby 类和 <code>self</code> 关键字，请阅读 <a href="http://railstips.org/">RailsTips</a> 中的《<a href="http://railstips.org/blog/archives/2006/11/18/class-and-instance-variables-in-ruby/">Class and Instance Variables in Ruby</a>》一文。 <a href="#fn-ref-16" class="symbol">&#8617;</a></li>
+<li id="fn-16">关于 Ruby 类和 <code>self</code> 关键字，请阅读 <a href="http://railstips.org/" class="external-link">RailsTips</a> 中的《<a href="http://railstips.org/blog/archives/2006/11/18/class-and-instance-variables-in-ruby/" class="external-link">Class and Instance Variables in Ruby</a>》一文。 <a href="#fn-ref-16" class="symbol">&#8617;</a></li>
 <li id="fn-17">你没必要知道继承关系中每个类的作用。我也不知道它们都是干什么的，而我从 2005 年起就开始使用 Ruby on Rails 了。这可能意味着以下两个问题中的一个：第一，我是个废柴；第二，不需要知道所有内部知识也能成为熟练的 Rails 开发者。我们当然都希望是第二点。 <a href="#fn-ref-17" class="symbol">&#8617;</a></li>
 </ol>
 </div>
