@@ -986,7 +986,7 @@ NoMethodError: undefined method `to_a' for 9:Fixnum
 </code></pre></div>
 </div>
 <p>现在不需要理解细节（其实我也不懂），从 <code>do</code> 关键字可以看出，测试的主体其实就是个块。<code>test</code> 方法的参数是一个字符串（测试的描述）和一个块，运行测试组件时会执行块中的内容。</p>
-<p>现在我们来分析一下我在 <a class="xref-link" href="chapter1.html#heroku-commands">1.5.4 节</a>生成随机二级域名时使用的那行 Ruby 代码：</p>
+<p>现在我们来分析一下我在 <a class="xref-link" href="chapter1.html#heroku-commands">1.5.4 节</a>生成随机二级域名时使用的那行 Ruby 代码：<sup>[<a id="fn-ref-10" href="#fn-10">10</a>]</sup></p>
 <div data-type="listing">
 
 
@@ -1054,7 +1054,7 @@ NoMethodError: undefined method `to_a' for 9:Fixnum
 =&gt; {"last_name"=&gt;"Hartl", "first_name"=&gt;"Michael"}
 </code></pre></div>
 </div>
-<p>散列通过一对花括号中包含一些键值对的形式表示，如果只有一对花括号而没有键值对（<code>{}</code>）就是一个空散列。注意，散列中的花括号和块中的花括号不是一个概念。（是的，这可能会让你困惑。）散列虽然与数组类似，但二者却有一个很重要的区别：散列中的元素没有特定的顺序。<sup>[<a id="fn-ref-10" href="#fn-10">10</a>]</sup>如果看重顺序，就要使用数组。</p>
+<p>散列通过一对花括号中包含一些键值对的形式表示，如果只有一对花括号而没有键值对（<code>{}</code>）就是一个空散列。注意，散列中的花括号和块中的花括号不是一个概念。（是的，这可能会让你困惑。）散列虽然与数组类似，但二者却有一个很重要的区别：散列中的元素没有特定的顺序。<sup>[<a id="fn-ref-11" href="#fn-11">11</a>]</sup>如果看重顺序，就要使用数组。</p>
 <p>通过方括号的形式每次定义一个元素的方式不太敏捷，使用 <code>=&gt;</code> 分隔的键值对这种字面量形式定义散列要简洁得多：</p>
 <div data-type="listing">
 
@@ -1064,7 +1064,7 @@ NoMethodError: undefined method `to_a' for 9:Fixnum
 </code></pre></div>
 </div>
 <p>在上面的代码中我用到了一个 Ruby 句法约定，在左花括号后面和右花括号前面加入了一个空格，不过控制台会忽略这些空格。（不要问我为什么这些空格是约定俗成的，或许是某个 Ruby 编程大牛喜欢这种形式，然后约定就产生了。）</p>
-<p>目前为止散列的键都使用字符串，在 Rails 中用符号（Symbol）做键很常见。符号看起来有点儿像字符串，只不过没有包含在一对引号中，而是在前面加一个冒号。例如，<code>:name</code> 就是一个符号。你可以把符号看成没有约束的字符串：<sup>[<a id="fn-ref-11" href="#fn-11">11</a>]</sup></p>
+<p>目前为止散列的键都使用字符串，在 Rails 中用符号（Symbol）做键很常见。符号看起来有点儿像字符串，只不过没有包含在一对引号中，而是在前面加一个冒号。例如，<code>:name</code> 就是一个符号。你可以把符号看成没有约束的字符串：<sup>[<a id="fn-ref-12" href="#fn-12">12</a>]</sup></p>
 <div data-type="listing">
 
 
@@ -1172,7 +1172,7 @@ It worked!
 "It worked!"
 </code></pre></div>
 </div>
-<p>顺便说一下，因为使用 <code>inspect</code> 打印对象的方式经常使用，为此还有一个专门的快捷方式，<code>p</code> 方法：<sup>[<a id="fn-ref-12" href="#fn-12">12</a>]</sup></p>
+<p>顺便说一下，因为使用 <code>inspect</code> 打印对象的方式经常使用，为此还有一个专门的快捷方式，<code>p</code> 方法：<sup>[<a id="fn-ref-13" href="#fn-13">13</a>]</sup></p>
 <div data-type="listing">
 
 
@@ -1250,7 +1250,7 @@ It worked!
                                    <span class="s1">'data-turbolinks-track'</span><span class="p">:</span> <span class="s1">'reload'</span>
 </code></pre></div>
 </div>
-<p>因为在这种情况下，Ruby 不关心有没有换行。<sup>[<a id="fn-ref-13" href="#fn-13">13</a>]</sup>我之所以把代码写成两行，是要保证每行代码不超过 80 个字符。<sup>[<a id="fn-ref-14" href="#fn-14">14</a>]</sup></p>
+<p>因为在这种情况下，Ruby 不关心有没有换行。<sup>[<a id="fn-ref-14" href="#fn-14">14</a>]</sup>我之所以把代码写成两行，是要保证每行代码不超过 80 个字符。<sup>[<a id="fn-ref-15" href="#fn-15">15</a>]</sup></p>
 <p>所以，下面这段代码</p>
 <div data-type="listing">
 
@@ -1286,7 +1286,7 @@ It worked!
 </code></pre></div>
 </div>
 <p>我们看到，字符串可以响应 <code>class</code> 方法，返回值是字符串所属的类。</p>
-<p>除了使用字面构造方法之外，我们还可以使用等价的具名构造方法（named constructor），即在类名上调用 <code>new</code> 方法：<sup>[<a id="fn-ref-15" href="#fn-15">15</a>]</sup></p>
+<p>除了使用字面构造方法之外，我们还可以使用等价的具名构造方法（named constructor），即在类名上调用 <code>new</code> 方法：<sup>[<a id="fn-ref-16" href="#fn-16">16</a>]</sup></p>
 <div data-type="listing">
 
 
@@ -1419,7 +1419,7 @@ It worked!
 </div>
 <p>这个继承关系如<a class="xref-link" href="#fig-word-inheritance-ruby-1-9">图 4.2</a> 所示。</p>
 <div id="fig-word-inheritance-ruby-1-9" class="figure"><img src="images/chapter4/word_inheritance_ruby_1_9.png" alt="word inheritance ruby 1 9" /><div class="figcaption"><span class="title-label">图 4.2</span>：<a class="xref-link" href="#listing-word-class">代码清单 4.15</a> 中定义的 <code>Word</code> 类（非内置类）的继承关系</div></div>
-<p>注意，在<a class="xref-link" href="#listing-word-class">代码清单 4.15</a> 中检查单词和单词的反转是否相同时，要在 <code>Word</code> 类中访问单词。这在 Ruby 中使用 <code>self</code> 关键字<sup>[<a id="fn-ref-16" href="#fn-16">16</a>]</sup>引用：在 <code>Word</code> 类中，<code>self</code> 代表的是对象本身。所以我们可以使用</p>
+<p>注意，在<a class="xref-link" href="#listing-word-class">代码清单 4.15</a> 中检查单词和单词的反转是否相同时，要在 <code>Word</code> 类中访问单词。这在 Ruby 中使用 <code>self</code> 关键字<sup>[<a id="fn-ref-17" href="#fn-17">17</a>]</sup>引用：在 <code>Word</code> 类中，<code>self</code> 代表的是对象本身。所以我们可以使用</p>
 <div data-type="listing">
 
 
@@ -1529,7 +1529,7 @@ NoMethodError: undefined method `palindrome?' for "level":String
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>你现在应该可以理解，至少有点能理解这些代码的意思了：<code>StaticPagesController</code> 是一个类，继承自 <code>ApplicationController</code>，其中有三个方法，分别是 <code>home</code>、<code>help</code> 和 <code>about</code>。因为 Rails 控制台会加载本地的 Rails 环境，所以我们可以在控制台中创建控制器，查看它的继承关系：<sup>[<a id="fn-ref-17" href="#fn-17">17</a>]</sup></p>
+<p>你现在应该可以理解，至少有点能理解这些代码的意思了：<code>StaticPagesController</code> 是一个类，继承自 <code>ApplicationController</code>，其中有三个方法，分别是 <code>home</code>、<code>help</code> 和 <code>about</code>。因为 Rails 控制台会加载本地的 Rails 环境，所以我们可以在控制台中创建控制器，查看它的继承关系：<sup>[<a id="fn-ref-18" href="#fn-18">18</a>]</sup></p>
 <div data-type="listing">
 
 
@@ -1770,14 +1770,15 @@ NoMethodError: undefined method `palindrome?' for "level":String
 <li id="fn-7">这里你可能想使用字符串插值，其实本书前几版使用的都是插值，但 <code>provide</code> 方法会把字符串转换成 <code>SafeBuffer</code> 对象，而不是普通的字符串。插入视图模板的 HTML 会过度转义，把“Help’s on the way”转换成“Help&amp;#39;s on the way”。（感谢读者 Jeremy Fleischman 指出这个小问题。） <a href="#fn-ref-7" class="symbol">&#8617;</a></li>
 <li id="fn-8">这段代码中使用的 <code>second</code> 方法不是 Ruby 定义的，而是 Rails 添加的。在这里可以使用这个方法是因为，Rails 控制台会自动加载 Rails 对 Ruby 的扩展。 <a href="#fn-ref-8" class="symbol">&#8617;</a></li>
 <li id="fn-9">块是闭包（closure），知道这一点对资深编程人员可能会有些帮助。闭包是一种匿名函数，其中附带了一些数据。 <a href="#fn-ref-9" class="symbol">&#8617;</a></li>
-<li id="fn-10">在 Ruby 1.9 及以后的版本中，其实会按照元素输入时的顺序保存散列，不过依赖特定的顺序显然是不明智的。 <a href="#fn-ref-10" class="symbol">&#8617;</a></li>
-<li id="fn-11">没有约束的好处是，符号很容易进行比较，字符串要按照字母一个一个比较，而符号只需比较一次。这就使得符号成为散列键的最佳选择。 <a href="#fn-ref-11" class="symbol">&#8617;</a></li>
-<li id="fn-12">其实二者之间有些细微差别，<code>p</code> 返回打印的对象，而 <code>puts</code> 始终返回 <code>nil</code>。感谢读者 Katarzyna Siwek 指出这一点。 <a href="#fn-ref-12" class="symbol">&#8617;</a></li>
-<li id="fn-13">换行符在一行的结尾处，作用是开始新的一行。在代码中，换行符用 <code>\n</code> 表示。 <a href="#fn-ref-13" class="symbol">&#8617;</a></li>
-<li id="fn-14">数列数会让你发疯的，所以很多文本编辑器都提供了一个视觉标识。例如，如果再看一下<a class="xref-link" href="chapter1.html#fig-cloud9-gemfile">图 1.6</a> 的话，你可能会发现右边有一条细线，它可以帮助你把一行代码控制在 80 个字符以内。云端 IDE 默认会显示这条竖线。如果使用 TextMate，可以在如下菜单中找到这个功能：View &gt; Wrap Column &gt; 78。在 Sublime Text 中则是：View &gt; Ruler &gt; 78，或：View &gt; Ruler &gt; 80。 <a href="#fn-ref-14" class="symbol">&#8617;</a></li>
-<li id="fn-15">返回值可能由于 Ruby 版本的不同而有所不同。这个例子假设你使用的是 Ruby 1.9.3 或以上版本。 <a href="#fn-ref-15" class="symbol">&#8617;</a></li>
-<li id="fn-16">关于 Ruby 类和 <code>self</code> 关键字，请阅读 <a href="http://railstips.org/" class="external-link">RailsTips</a> 中的《<a href="http://railstips.org/blog/archives/2006/11/18/class-and-instance-variables-in-ruby/" class="external-link">Class and Instance Variables in Ruby</a>》一文。 <a href="#fn-ref-16" class="symbol">&#8617;</a></li>
-<li id="fn-17">你没必要知道继承关系中每个类的作用。我也不知道它们都是干什么的，而我从 2005 年起就开始使用 Ruby on Rails 了。这可能意味着以下两个问题中的一个：第一，我是个废柴；第二，不需要知道所有内部知识也能成为熟练的 Rails 开发者。我们当然都希望是第二点。 <a href="#fn-ref-17" class="symbol">&#8617;</a></li>
+<li id="fn-10"><a class="xref-link" href="chapter1.html#beginning">第 1 章</a>说过，使用 <code>('a'..'z').to_a.sample(8).join</code> 也能得到相同的结果，而且更简洁。 <a href="#fn-ref-10" class="symbol">&#8617;</a></li>
+<li id="fn-11">在 Ruby 1.9 及以后的版本中，其实会按照元素输入时的顺序保存散列，不过依赖特定的顺序显然是不明智的。 <a href="#fn-ref-11" class="symbol">&#8617;</a></li>
+<li id="fn-12">没有约束的好处是，符号很容易进行比较，字符串要按照字母一个一个比较，而符号只需比较一次。这就使得符号成为散列键的最佳选择。 <a href="#fn-ref-12" class="symbol">&#8617;</a></li>
+<li id="fn-13">其实二者之间有些细微差别，<code>p</code> 返回打印的对象，而 <code>puts</code> 始终返回 <code>nil</code>。感谢读者 Katarzyna Siwek 指出这一点。 <a href="#fn-ref-13" class="symbol">&#8617;</a></li>
+<li id="fn-14">换行符在一行的结尾处，作用是开始新的一行。在代码中，换行符用 <code>\n</code> 表示。 <a href="#fn-ref-14" class="symbol">&#8617;</a></li>
+<li id="fn-15">数列数会让你发疯的，所以很多文本编辑器都提供了一个视觉标识。例如，如果再看一下<a class="xref-link" href="chapter1.html#fig-cloud9-gemfile">图 1.8</a> 的话，你可能会发现右边有一条细线，它可以帮助你把一行代码控制在 80 个字符以内。云端 IDE 默认会显示这条竖线。如果使用 TextMate，可以在如下菜单中找到这个功能：View &gt; Wrap Column &gt; 78。在 Sublime Text 中则是：View &gt; Ruler &gt; 78，或：View &gt; Ruler &gt; 80。 <a href="#fn-ref-15" class="symbol">&#8617;</a></li>
+<li id="fn-16">返回值可能由于 Ruby 版本的不同而有所不同。这个例子假设你使用的是 Ruby 1.9.3 或以上版本。 <a href="#fn-ref-16" class="symbol">&#8617;</a></li>
+<li id="fn-17">关于 Ruby 类和 <code>self</code> 关键字，请阅读 <a href="http://railstips.org/" class="external-link">RailsTips</a> 中的《<a href="http://railstips.org/blog/archives/2006/11/18/class-and-instance-variables-in-ruby/" class="external-link">Class and Instance Variables in Ruby</a>》一文。 <a href="#fn-ref-17" class="symbol">&#8617;</a></li>
+<li id="fn-18">你没必要知道继承关系中每个类的作用。我也不知道它们都是干什么的，而我从 2005 年起就开始使用 Ruby on Rails 了。这可能意味着以下两个问题中的一个：第一，我是个废柴；第二，不需要知道所有内部知识也能成为熟练的 Rails 开发者。我们当然都希望是第二点。 <a href="#fn-ref-18" class="symbol">&#8617;</a></li>
 </ol>
 </div>
         </div>

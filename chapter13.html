@@ -745,7 +745,6 @@ foo
 </code></pre></div>
 </div>
 <p>现在，我们可以查看一下修改后的用户资料页面，如<a class="xref-link" href="#fig-user-profile-no-microposts">图 13.5</a> 所示。可能会出乎你的意料，不过也是理所当然的，因为现在还没有微博。下面我们就来改变这种状况。</p>
-<div id="fig-user-profile-no-microposts" class="figure"><img src="images/chapter13/user_profile_no_microposts_3rd_edition.png" alt="user profile no microposts 3rd edition" /><div class="figcaption"><span class="title-label">图 13.5</span>：添加显示微博的代码后用户的资料页面，但没有微博</div></div>
 <section data-type="sect3" id="exercises-rendering-microposts">
 <h3>练习</h3>
 <ol class="arabic">
@@ -759,6 +758,7 @@ foo
 <p>一页微博属于哪个 Ruby 类？提示：参照<a class="xref-link" href="#listing-user-show-microposts-instance">代码清单 13.23</a>，把 <code>paginate</code> 方法的参数设为 <code>page: nil</code>，然后调用 <code>class</code> 方法。</p>
 </li>
 </ol>
+<div id="fig-user-profile-no-microposts" class="figure"><img src="images/chapter13/user_profile_no_microposts_3rd_edition.png" alt="user profile no microposts 3rd edition" /><div class="figcaption"><span class="title-label">图 13.5</span>：添加显示微博的代码后用户的资料页面，但没有微博</div></div>
 </section>
 </section>
 <section data-type="sect2" id="sample-microposts">
@@ -952,7 +952,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <span class="s">&lt;% end %&gt;</span>
 </code></pre></div>
 </div>
-<p>测试数据准备好了，测试本身也很简单：访问资料页面，检查页面的标题、用户的名字、Gravatar 头像、微博数量和分页显示的微博，如<a class="xref-link" href="#listing-user-profile-test">代码清单 13.28</a> 所示。注意，为了使用<a class="xref-link" href="chapter4.html#listing-title-helper">代码清单 4.2</a> 中的 <code>full_title</code> 辅助方法测试页面的标题，我们要把 <code>ApplicationHelper</code> 模块引入测试。<sup>[<a id="fn-ref-6" href="#fn-6">6</a>]</sup></p>
+<p class="pagebreak-before">测试数据准备好了，测试本身也很简单：访问资料页面，检查页面的标题、用户的名字、Gravatar 头像、微博数量和分页显示的微博，如<a class="xref-link" href="#listing-user-profile-test">代码清单 13.28</a> 所示。注意，为了使用<a class="xref-link" href="chapter4.html#listing-title-helper">代码清单 4.2</a> 中的 <code>full_title</code> 辅助方法测试页面的标题，我们要把 <code>ApplicationHelper</code> 模块引入测试。<sup>[<a id="fn-ref-6" href="#fn-6">6</a>]</sup></p>
 <div id="listing-user-profile-test" data-type="listing">
 <h5><span class="title-label">代码清单 13.28</span>：用户资料页面的测试 <span class="green">GREEN</span></h5>
 
@@ -1361,7 +1361,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 </code></pre></div>
 </div>
 <p>这提醒我们要修改其他使用错误消息局部视图的视图，包括用户注册视图（<a class="xref-link" href="chapter7.html#listing-f-error-messages">代码清单 7.20</a>）、重设密码视图（<a class="xref-link" href="chapter12.html#listing-password-reset-form">代码清单 12.14</a>）和用户编辑视图（<a class="xref-link" href="chapter10.html#listing-user-edit-view">代码清单 10.2</a>）。这三个视图修改后的版本分别如<a class="xref-link" href="#listing-signup-errors-updated">代码清单 13.43</a>、<a class="xref-link" href="#listing-password-reset-updated">代码清单 13.45</a> 和<a class="xref-link" href="#listing-edit-errors-updated">代码清单 13.44</a> 所示。</p>
-<div id="listing-signup-errors-updated" data-type="listing">
+<div id="listing-signup-errors-updated" data-type="listing" class="pagebreak-before">
 <h5><span class="title-label">代码清单 13.43</span>：修改用户注册表单，改变渲染错误消息局部视图的方式</h5>
 
 <div class="source-file">app/views/users/new.html.erb</div>
@@ -1462,14 +1462,14 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 </code></pre></div>
 </div>
 <p>此外，本节添加的所有 HTML 代码也都能正确渲染了。<a class="xref-link" href="#fig-home-with-form">图 13.11</a> 是创建微博的表单，<a class="xref-link" href="#fig-home-form-errors">图 13.12</a> 显示提交表单后有一个错误。</p>
-<div id="fig-home-with-form" class="figure"><img src="images/chapter13/home_with_form_3rd_edition.png" alt="home with form 3rd edition" /><div class="figcaption"><span class="title-label">图 13.11</span>：包含创建微博表单的首页</div></div>
-<div id="fig-home-form-errors" class="figure"><img src="images/chapter13/home_form_errors_3rd_edition.png" alt="home form errors 3rd edition" /><div class="figcaption"><span class="title-label">图 13.12</span>：显示一个错误消息的首页</div></div>
 <h5 id="exercises-creating-microposts" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
 <p>重构首页视图，把 <code>if-else</code> 语句的两个分支分别放到单独的局部视图中。</p>
 </li>
 </ol>
+<div id="fig-home-with-form" class="figure"><img src="images/chapter13/home_with_form_3rd_edition.png" alt="home with form 3rd edition" /><div class="figcaption"><span class="title-label">图 13.11</span>：包含创建微博表单的首页</div></div>
+<div id="fig-home-form-errors" class="figure"><img src="images/chapter13/home_form_errors_3rd_edition.png" alt="home form errors 3rd edition" /><div class="figcaption"><span class="title-label">图 13.12</span>：显示一个错误消息的首页</div></div>
 </section>
 <section data-type="sect2" id="a-proto-feed">
 <h2><span class="title-label">13.3.3</span> 动态流原型</h2>
@@ -1608,8 +1608,6 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 </code></pre></div>
 </div>
 <p>现在，发布新微博的功能可以按预期使用了，如<a class="xref-link" href="#fig-micropost-created">图 13.15</a> 所示。不过还有个小小的不足：如果发布微博失败，首页还是需要一个名为 <code>@feed_items</code> 的实例变量，所以提交失败时网站无法正常运行。最简单的解决方法是，如果提交失败就把 <code>@feed_items</code> 设为空数组，如<a class="xref-link" href="#listing-microposts-create-action-with-feed">代码清单 13.50</a> 所示。（但是这么做分页链接就失效了，你可以点击分页链接，看一下是什么原因。）</p>
-<div id="fig-home-with-proto-feed" class="figure"><img src="images/chapter13/home_with_proto_feed_3rd_edition.png" alt="home with proto feed 3rd edition" /><div class="figcaption"><span class="title-label">图 13.14</span>：显示有动态流原型的首页</div></div>
-<div id="fig-micropost-created" class="figure"><img src="images/chapter13/micropost_created_3rd_edition.png" alt="micropost created 3rd edition" /><div class="figcaption"><span class="title-label">图 13.15</span>：发布新微博后的首页</div></div>
 <div id="listing-microposts-create-action-with-feed" data-type="listing">
 <h5><span class="title-label">代码清单 13.50</span>：在 <code>create</code> 动作中定义 <code>@feed_items</code> 实例变量，值为空数组</h5>
 
@@ -1640,6 +1638,8 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <span class="k">end</span>
 </code></pre></div>
 </div>
+<div id="fig-home-with-proto-feed" class="figure"><img src="images/chapter13/home_with_proto_feed_3rd_edition.png" alt="home with proto feed 3rd edition" /><div class="figcaption"><span class="title-label">图 13.14</span>：显示有动态流原型的首页</div></div>
+<div id="fig-micropost-created" class="figure"><img src="images/chapter13/micropost_created_3rd_edition.png" alt="micropost created 3rd edition" /><div class="figcaption"><span class="title-label">图 13.15</span>：发布新微博后的首页</div></div>
 <h5 id="exercises-a-proto-feed" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
@@ -1673,7 +1673,6 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <span class="nt">&lt;/li&gt;</span>
 </code></pre></div>
 </div>
-<div id="fig-micropost-delete-links-mockup" class="figure"><img src="images/chapter13/micropost_delete_links_mockup_3rd_edition.png" alt="micropost delete links mockup 3rd edition" /><div class="figcaption"><span class="title-label">图 13.16</span>：显示有删除链接的动态流原型构思图</div></div>
 <p>然后，参照 <code>Users</code> 控制器的 <code>destroy</code> 动作（<a class="xref-link" href="chapter10.html#listing-admin-destroy-before-filter">代码清单 10.59</a>），编写 <code>Microposts</code> 控制器的 <code>destroy</code> 动作。在 <code>Users</code> 控制器中，我们在 <code>admin_user</code> 前置过滤器中定义了 <code>@user</code> 变量，用于查找用户；但现在要通过关联查找微博，这样，如果某个用户试图删除其他用户的微博，会自动失败。我们把查找微博的操作放在 <code>correct_user</code> 前置过滤器中，确保当前用户确实拥有指定 ID 的微博，如<a class="xref-link" href="#listing-microposts-destroy-action">代码清单 13.52</a> 所示。</p>
 <div id="listing-microposts-destroy-action" data-type="listing">
 <h5><span class="title-label">代码清单 13.52</span>：<code>Microposts</code> 控制器的 <code>destroy</code> 动作</h5>
@@ -1705,6 +1704,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <span class="k">end</span>
 </code></pre></div>
 </div>
+<div id="fig-micropost-delete-links-mockup" class="figure"><img src="images/chapter13/micropost_delete_links_mockup_3rd_edition.png" alt="micropost delete links mockup 3rd edition" /><div class="figcaption"><span class="title-label">图 13.16</span>：显示有删除链接的动态流原型构思图</div></div>
 <p>注意，在 <code>destroy</code> 动作中重定向的地址是：</p>
 <div data-type="listing">
 
@@ -1907,20 +1907,21 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <div id="fig-micropost-image-mockup" class="figure"><img src="images/chapter13/micropost_image_mockup.png" alt="micropost image mockup" /><div class="figcaption"><span class="title-label">图 13.18</span>：图像上传界面的构思图（上传了一张图像）</div></div>
 <section data-type="sect2" id="basic-image-upload">
 <h2><span class="title-label">13.4.1</span> 基本的图像上传功能</h2>
-<p>我们要使用 <a href="https://github.com/carrierwaveuploader/carrierwave" class="external-link">CarrierWave</a> 处理图像上传，并把图像与 <code>Micropost</code> 模型关联起来。为此，我们要在 <code>Gemfile</code> 文件中添加 <code>carrierwave</code> gem，如<a class="xref-link" href="#listing-gemfile-carrierwave">代码清单 13.58</a> 所示。为了一次安装完所有 gem，<a class="xref-link" href="#listing-gemfile-carrierwave">代码清单 13.58</a> 还包含用于调整图像尺寸的 <code>mini_magick</code>（<a class="xref-link" href="#image-resizing">13.4.3 节</a>）和在生产环境中上传图像的 <code>fog</code>（<a class="xref-link" href="#image-upload-in-production">13.4.4 节</a>）。</p>
+<p>我们要使用 <a href="https://github.com/carrierwaveuploader/carrierwave" class="external-link">CarrierWave</a> 处理图像上传，并把图像与 <code>Micropost</code> 模型关联起来。为此，我们要在 <code>Gemfile</code> 文件中添加 <code>carrierwave</code> gem，如<a class="xref-link" href="#listing-gemfile-carrierwave">代码清单 13.58</a> 所示。为了一次安装完所有 gem，<a class="xref-link" href="#listing-gemfile-carrierwave">代码清单 13.58</a> 还包含用于调整图像尺寸的 <code>mini_magick</code>（<a class="xref-link" href="#image-resizing">13.4.3 节</a>），在生产环境中上传图像的 <code>fog-aws</code>（<a class="xref-link" href="#image-upload-in-production">13.4.4 节</a>），以及明确指定版本号的 <code>nokogiri</code>。<code>nokogiri</code> 是 <code>fog-aws</code> 的依赖，一般无需明确指定版本号，但是 <code>fog-aws</code> 声明的依赖允许使用不安全的旧版 <code>nokogiri</code>，所以我们要自己动手，指定使用较新的版本。</p>
 <div id="listing-gemfile-carrierwave" data-type="listing">
 <h5><span class="title-label">代码清单 13.58</span>：在 <code>Gemfile</code> 文件中添加 CarrierWave</h5>
 
 
 <div class="highlight language-ruby"><pre><code><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
 
-<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>                   <span class="s1">'5.1.2'</span>
+<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>                   <span class="s1">'5.1.4'</span>
 <span class="n">gem</span> <span class="s1">'bcrypt'</span><span class="p">,</span>                  <span class="s1">'3.1.11'</span>
 <span class="n">gem</span> <span class="s1">'faker'</span><span class="p">,</span>                   <span class="s1">'1.7.3'</span>
 <span class="hll"><span class="n">gem</span> <span class="s1">'carrierwave'</span><span class="p">,</span>             <span class="s1">'1.1.0'</span></span>
 <span class="hll"><span class="n">gem</span> <span class="s1">'mini_magick'</span><span class="p">,</span>             <span class="s1">'4.7.0'</span></span>
-<span class="hll"><span class="n">gem</span> <span class="s1">'fog'</span><span class="p">,</span>                     <span class="s1">'1.40.0'</span></span>
-<span class="n">gem</span> <span class="s1">'will_paginate'</span><span class="p">,</span>           <span class="s1">'3.1.5'</span>
+<span class="hll"><span class="n">gem</span> <span class="s1">'fog-aws'</span><span class="p">,</span>                 <span class="s1">'2.0.0'</span></span>
+<span class="hll"><span class="n">gem</span> <span class="s1">'nokogiri'</span><span class="p">,</span>                <span class="s1">'1.8.1'</span></span>
+<span class="n">gem</span> <span class="s1">'will_paginate'</span><span class="p">,</span>           <span class="s1">'3.1.6'</span>
 <span class="n">gem</span> <span class="s1">'bootstrap-will_paginate'</span><span class="p">,</span> <span class="s1">'1.0.0'</span>
 <span class="p">.</span>
 <span class="nf">.</span>
@@ -2018,7 +2019,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 </code></pre></div>
 </div>
 <p>上传图像后，在单篇微博局部视图中可以使用 <code>image_tag</code> 辅助方法渲染图像，如<a class="xref-link" href="#listing-micropost-partial-image-display">代码清单 13.62</a> 所示。注意，我们使用 <code>picture?</code> 布尔值方法，如果没有图像就不显示 <code>img</code> 标签。这个方法由 CarrierWave 自动创建，方法名根据保存图像文件名的属性而定。自己动手上传图像后显示的页面如<a class="xref-link" href="#fig-micropost-with-image">图 13.20</a> 所示。针对图像上传功能的测试留作<a class="xref-link" href="#exercises-basic-image-upload">练习</a>。</p>
-<div id="listing-micropost-partial-image-display" data-type="listing">
+<div id="listing-micropost-partial-image-display" data-type="listing" class="pagebreak-before">
 <h5><span class="title-label">代码清单 13.62</span>：在微博中显示图像</h5>
 
 <div class="source-file">app/views/microposts/_micropost.html.erb</div>
@@ -2211,7 +2212,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <h2><span class="title-label">13.4.3</span> 调整图像尺寸</h2>
 <p><a class="xref-link" href="#image-validation">13.4.2 节</a>对图像大小的限制是个好的开始，不过用户还是可以上传尺寸很大的图像，撑破网站的布局，有时会把网站搞得一团糟，如<a class="xref-link" href="#fig-large-uploaded-image">图 13.21</a> 所示。因此，如果允许用户从本地磁盘中上传尺寸很大的图像，最好在显示图像之前调整图像的尺寸。<sup>[<a id="fn-ref-17" href="#fn-17">17</a>]</sup></p>
 <div id="fig-large-uploaded-image" class="figure"><img src="images/chapter13/large_uploaded_image_4th_ed.png" alt="large uploaded image 4th ed" /><div class="figcaption"><span class="title-label">图 13.21</span>：上传了一张超级大的图像</div></div>
-<p>我们要使用 <a href="http://www.imagemagick.org/" class="external-link">ImageMagick</a> 调整图像的尺寸，所以在开发环境中要安装这个程序。（如 <a class="xref-link" href="#image-upload-in-production">13.4.4 节</a>所示，Heroku 在生产环节已经预装了 ImageMagick。）在云端 IDE 中可以使用下面的命令安装：<sup>[<a id="fn-ref-18" href="#fn-18">18</a>]</sup></p>
+<p class="pagebreak-before">我们要使用 <a href="http://www.imagemagick.org/" class="external-link">ImageMagick</a> 调整图像的尺寸，所以在开发环境中要安装这个程序。（如 <a class="xref-link" href="#image-upload-in-production">13.4.4 节</a>所示，Heroku 在生产环节已经预装了 ImageMagick。）在云端 IDE 中可以使用下面的命令安装：<sup>[<a id="fn-ref-18" href="#fn-18">18</a>]</sup></p>
 <div data-type="listing">
 
 
@@ -2220,6 +2221,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 </code></pre></div>
 </div>
 <p>然后，我们要在 CarrierWave 中引入 <a href="https://github.com/minimagick/minimagick" class="external-link">MiniMagick</a> 为 ImageMagick 提供的接口，还要调用一个调整尺寸的方法。<a href="http://www.rdoc.info/github/jnicklas/carrierwave/CarrierWave/MiniMagick" class="external-link">MiniMagick 的文档</a>中列出了多个调整尺寸的方法，我们要使用的是 <code>resize_to_limit: [400, 400]</code>，如果图像很大，把它调整为宽和高都不超过 400 像素，而小于这个尺寸的图像则不做调整。（<a href="https://github.com/carrierwaveuploader/carrierwave#using-minimagick" class="external-link">CarrierWave 文档</a>中列出的方法会把小图片放大，这不是我们需要的效果。）添加<a class="xref-link" href="#listing-image-uploader-resizing">代码清单 13.67</a> 中的代码后，就能完美调整大尺寸图像了，如<a class="xref-link" href="#fig-resized-image">图 13.22</a> 所示。</p>
+<div id="fig-resized-image" class="figure"><img src="images/chapter13/resized_image_4th_ed.png" alt="resized image 4th ed" /><div class="figcaption"><span class="title-label">图 13.22</span>：调整尺寸后的图像</div></div>
 <div id="listing-image-uploader-resizing" data-type="listing">
 <h5><span class="title-label">代码清单 13.67</span>：配置图像上传程序，调整图像的尺寸</h5>
 
@@ -2244,7 +2246,6 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<div id="fig-resized-image" class="figure"><img src="images/chapter13/resized_image_4th_ed.png" alt="resized image 4th ed" /><div class="figcaption"><span class="title-label">图 13.22</span>：调整尺寸后的图像</div></div>
 <h5 id="exercises-image-resizing" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
@@ -2313,7 +2314,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <p>云存储服务很多，我们要使用其中一个最受欢迎并且支持比较好的——Amazon 的 <a href="http://aws.amazon.com/s3/" class="external-link">Simple Storage Service</a>（简称 S3）。<sup>[<a id="fn-ref-21" href="#fn-21">21</a>]</sup>基本步骤如下：</p>
 <ol class="arabic">
 <li>
-<p>注册一个 <a href="http://aws.amazon.com/" class="external-link">Amazon Web Services</a> 账户；</p>
+<p>如果没有 <a href="http://aws.amazon.com/" class="external-link">Amazon Web Services</a> 账户，注册一个；如果在 <a class="xref-link" href="chapter1.html#development-environment">1.2.1 节</a>已经注册了 Cloud9 IDE，那就已经有 AWS 账户了，请跳过这一步；</p>
 </li>
 <li>
 <p>通过 <a href="http://aws.amazon.com/iam/" class="external-link">AWS Identity and Access Management</a>（简称 IAM） 创建一个用户，记下访问公钥和密钥；</p>
@@ -2387,13 +2388,13 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 </code></pre></div>
 </div>
 <p>Heroku 已经安装了 ImageMagick，所以在生产环境中调整图像尺寸和上传功能都能正常使用，如<a class="xref-link" href="#fig-image-upload-production">图 13.23</a> 所示。</p>
-<div id="fig-image-upload-production" class="figure"><img src="images/chapter13/image_upload_production_4th_ed.png" alt="image upload production 4th ed" /><div class="figcaption"><span class="title-label">图 13.23</span>：在生产环境中上传的图像</div></div>
 <h5 id="exercises-image-upload-in-production" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
 <p>在生产环境中上传一张大图，确认能调整图像的尺寸。如果图像不是方形的，还能调整图像的尺寸吗？</p>
 </li>
 </ol>
+<div id="fig-image-upload-production" class="figure"><img src="images/chapter13/image_upload_production_4th_ed.png" alt="image upload production 4th ed" /><div class="figcaption"><span class="title-label">图 13.23</span>：在生产环境中上传的图像</div></div>
 </section>
 </section>
 <section data-type="sect1" id="user-microposts-conclusion">
@@ -2428,13 +2429,14 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 
 <div class="highlight language-ruby"><pre><code><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
 
-<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>                   <span class="s1">'5.1.2'</span>
+<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>                   <span class="s1">'5.1.4'</span>
 <span class="n">gem</span> <span class="s1">'bcrypt'</span><span class="p">,</span>                  <span class="s1">'3.1.11'</span>
 <span class="n">gem</span> <span class="s1">'faker'</span><span class="p">,</span>                   <span class="s1">'1.7.3'</span>
 <span class="n">gem</span> <span class="s1">'carrierwave'</span><span class="p">,</span>             <span class="s1">'1.1.0'</span>
 <span class="n">gem</span> <span class="s1">'mini_magick'</span><span class="p">,</span>             <span class="s1">'4.7.0'</span>
-<span class="n">gem</span> <span class="s1">'fog'</span><span class="p">,</span>                     <span class="s1">'1.40.0'</span>
-<span class="n">gem</span> <span class="s1">'will_paginate'</span><span class="p">,</span>           <span class="s1">'3.1.5'</span>
+<span class="n">gem</span> <span class="s1">'fog-aws'</span><span class="p">,</span>                 <span class="s1">'2.0.0'</span>
+<span class="n">gem</span> <span class="s1">'nokogiri'</span><span class="p">,</span>                <span class="s1">'1.8.1'</span>
+<span class="n">gem</span> <span class="s1">'will_paginate'</span><span class="p">,</span>           <span class="s1">'3.1.6'</span>
 <span class="n">gem</span> <span class="s1">'bootstrap-will_paginate'</span><span class="p">,</span> <span class="s1">'1.0.0'</span>
 <span class="n">gem</span> <span class="s1">'bootstrap-sass'</span><span class="p">,</span>          <span class="s1">'3.3.7'</span>
 <span class="n">gem</span> <span class="s1">'puma'</span><span class="p">,</span>                    <span class="s1">'3.9.1'</span>

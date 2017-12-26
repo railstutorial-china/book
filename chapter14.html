@@ -401,7 +401,7 @@
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>把 <code>` 关联视作对象，可以像<a class="xref-link" href="#listing-follow-unfollow-following">代码清单 14.10</a> 那样定义 `follow</code>、<code>unfollow</code> 和 <code>following?</code> 三个方法。（注意，只要可能，我们就省略 <code>self</code>。）</p>
+<p>把 <code>following</code> 关联视作对象，可以像<a class="xref-link" href="#listing-follow-unfollow-following">代码清单 14.10</a> 那样定义 <code>follow</code>、<code>unfollow</code> 和 <code>following?</code> 三个方法。（注意，只要可能，我们就省略 <code>self</code>。）</p>
 <div id="listing-follow-unfollow-following" data-type="listing">
 <h5><span class="title-label">代码清单 14.10</span>：定义关注用户相关的几个辅助方法 <span class="green">GREEN</span></h5>
 
@@ -546,7 +546,7 @@
 <h2><span class="title-label">14.2.1</span> 示例数据</h2>
 <p>和之前的几章一样，我们要使用 <code>rails db:seed</code> 命令把“关系”相关的种子数据加载到数据库中。有了示例数据，我们就可以先实现网页界面，本节末尾再实现后端功能。</p>
 <p>“关系”相关的种子数据如<a class="xref-link" href="#listing-sample-relationships">代码清单 14.14</a> 所示。我们让第一个用户关注第 3-51 个用户，让第 4-41 个用户关注第一个用户。这样的数据足够用来开发应用的界面了。</p>
-<div id="listing-sample-relationships" data-type="listing">
+<div id="listing-sample-relationships" data-type="listing" class="pagebreak-before">
 <h5><span class="title-label">代码清单 14.14</span>：在种子数据中添加“关系”相关的数据</h5>
 
 <div class="source-file">db/seeds.rb</div>
@@ -1815,7 +1815,6 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
 </div>
 <p>当然，子查询也不是万能的。对于更大型的网站而言，可能要使用后台作业（background job）异步生成动态流。性能优化这个话题已经超出了本书范畴。</p>
 <p>现在，动态流完全实现了。<a class="xref-link" href="chapter13.html#a-proto-feed">13.3.3 节</a>已经在首页加入了动态流，不过<a class="xref-link" href="chapter13.html#user-microposts">第 13 章</a>实现的只是动态流原型（<a class="xref-link" href="chapter13.html#fig-home-with-proto-feed">图 13.14</a>），添加<a class="xref-link" href="#listing-feed-final">代码清单 14.47</a> 中的代码后，首页显示的动态流完整了，如<a class="xref-link" href="#fig-home-page-with-feed">图 14.23</a> 所示。</p>
-<div id="fig-home-page-with-feed" class="figure"><img src="images/chapter14/home_page_with_feed_3rd_edition.png" alt="home page with feed 3rd edition" /><div class="figcaption"><span class="title-label">图 14.23</span>：首页，显示有动态流</div></div>
 <p>现在可以把改动合并到 <code>master</code> 分支了：</p>
 <div data-type="listing">
 
@@ -1839,6 +1838,7 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
 </code></pre></div>
 </div>
 <p>在生产环境的线上网站中也会显示动态流，如<a class="xref-link" href="#fig-live-status-feed">图 14.24</a> 所示。</p>
+<div id="fig-home-page-with-feed" class="figure"><img src="images/chapter14/home_page_with_feed_3rd_edition.png" alt="home page with feed 3rd edition" /><div class="figcaption"><span class="title-label">图 14.23</span>：首页，显示有动态流</div></div>
 <div id="fig-live-status-feed" class="figure"><img src="images/chapter14/live_status_feed.png" alt="live status feed" /><div class="figcaption"><span class="title-label">图 14.24</span>：线上网站中显示的动态流</div></div>
 <h5 id="exercises-subselects" class="discrete">练习</h5>
 <ol class="arabic">

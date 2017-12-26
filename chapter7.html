@@ -65,7 +65,7 @@
 <section data-type="sect1" id="showing-users">
 <h1><span class="title-label">7.1</span> 显示用户的信息</h1>
 <div id="fig-profile-mockup-profile-name" class="figure"><img src="images/chapter7/profile_mockup_profile_name_bootstrap.png" alt="profile mockup profile name bootstrap" /><div class="figcaption"><span class="title-label">图 7.1</span>：本节实现的用户资料页面构思图</div></div>
-<p>本节要实现的用户资料页面是完整页面的一小部分，只显示用户的名字和头像，构思图如<a class="xref-link" href="#fig-profile-mockup-profile-name">图 7.1</a> 所示。<sup>[<a id="fn-ref-1" href="#fn-1">1</a>]</sup>最终完成的用户资料页面会显示用户的头像、基本信息和微博列表，构思图如<a class="xref-link" href="#fig-profile-mockup">图 7.2</a> 所示。<sup>[<a id="fn-ref-2" href="#fn-2">2</a>]</sup>（在<a class="xref-link" href="#fig-profile-mockup">图 7.2</a> 中，我们第一次用到了“lorem ipsum”占位文字，<a href="http://www.straightdope.com/columns/read/2290/what-does-the-filler-text-lorem-ipsum-mean" class="external-link">这些文字背后的故事</a>很有意思，有空的话你可以了解一下。）这个资料页面将和整个演示应用一起在<a class="xref-link" href="chapter14.html#following-users">第 14 章</a>完成。</p>
+<p class="pagebreak-before">本节要实现的用户资料页面是完整页面的一小部分，只显示用户的名字和头像，构思图如<a class="xref-link" href="#fig-profile-mockup-profile-name">图 7.1</a> 所示。<sup>[<a id="fn-ref-1" href="#fn-1">1</a>]</sup>最终完成的用户资料页面会显示用户的头像、基本信息和微博列表，构思图如<a class="xref-link" href="#fig-profile-mockup">图 7.2</a> 所示。<sup>[<a id="fn-ref-2" href="#fn-2">2</a>]</sup>（在<a class="xref-link" href="#fig-profile-mockup">图 7.2</a> 中，我们第一次用到了“lorem ipsum”占位文字，<a href="http://www.straightdope.com/columns/read/2290/what-does-the-filler-text-lorem-ipsum-mean" class="external-link">这些文字背后的故事</a>很有意思，有空的话你可以了解一下。）这个资料页面将和整个演示应用一起在<a class="xref-link" href="chapter14.html#following-users">第 14 章</a>完成。</p>
 <p>如果你一直坚持使用版本控制，现在像之前一样，新建一个主题分支：</p>
 <div data-type="listing">
 
@@ -517,8 +517,6 @@ password_digest: "$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3..."&gt;
 </div>
 <p><code>gravatar_for</code> 方法的返回值是一个 <code>img</code> 标签，用于显示 Gravatar 头像。<code>img</code> 标签的 CSS 类为 <code>gravatar</code>，<code>alt</code> 属性的值是用户的名字（对视觉障碍人士使用的屏幕阅读器特别有用）。</p>
 <p>用户资料页面如<a class="xref-link" href="#fig-profile-with-gravatar">图 7.7</a> 所示，页面中显示的头像是 Gravatar 的默认图像，因为 <code>user@example.com</code> 不是真的电子邮件地址（访问这个网站你便会发现，example.com 这个域名是专门用来举例的）。</p>
-<div id="fig-profile-with-gravatar" class="figure"><img src="images/chapter7/profile_with_gravatar_3rd_edition.png" alt="profile with gravatar 3rd edition" /><div class="figcaption"><span class="title-label">图 7.7</span>：显示 Gravatar 默认头像的用户资料页面</div></div>
-<div id="fig-profile-custom-gravatar" class="figure"><img src="images/chapter7/profile_custom_gravatar_3rd_edition.png" alt="profile custom gravatar 3rd edition" /><div class="figcaption"><span class="title-label">图 7.8</span>：显示真实头像的用户资料页面</div></div>
 <p>我们调用 <code>update_attributes</code> 方法（<a class="xref-link" href="chapter6.html#updating-user-objects">6.1.5 节</a>）更新一下数据库中的用户记录，然后就可以显示用户真正的头像了：</p>
 <div data-type="listing">
 
@@ -552,6 +550,8 @@ password_digest: "$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3..."&gt;
 <span class="nt">&lt;/div&gt;</span>
 </code></pre></div>
 </div>
+<div id="fig-profile-with-gravatar" class="figure"><img src="images/chapter7/profile_with_gravatar_3rd_edition.png" alt="profile with gravatar 3rd edition" /><div class="figcaption"><span class="title-label">图 7.7</span>：显示 Gravatar 默认头像的用户资料页面</div></div>
+<div id="fig-profile-custom-gravatar" class="figure"><img src="images/chapter7/profile_custom_gravatar_3rd_edition.png" alt="profile custom gravatar 3rd edition" /><div class="figcaption"><span class="title-label">图 7.8</span>：显示真实头像的用户资料页面</div></div>
 <p>添加 HTML 结构和 CSS 类之后，我们再用 SCSS 为资料页面（包括侧边栏和 Gravatar 头像）定义一些样式，如<a class="xref-link" href="#listing-sidebar-css">代码清单 7.11</a> 所示。<sup>[<a id="fn-ref-9" href="#fn-9">9</a>]</sup>（注意：因为 Asset Pipeline 使用 Sass 预处理器，所以样式中才可以使用嵌套。）实现的效果如<a class="xref-link" href="#fig-user-show-sidebar-css">图 7.9</a> 所示。</p>
 <div id="listing-sidebar-css" data-type="listing">
 <h5><span class="title-label">代码清单 7.11</span>：用户资料页面的样式，包括侧边栏的样式</h5>
@@ -629,7 +629,7 @@ password_digest: "$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3..."&gt;
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<div id="listing-gravatar-keyword" data-type="listing">
+<div id="listing-gravatar-keyword" data-type="listing" class="pagebreak-before">
 <h5><span class="title-label">代码清单 7.13</span>：在 <code>gravatar_for</code> 辅助方法中使用关键字参数</h5>
 
 <div class="source-file">app/helpers/users_helper.rb</div>

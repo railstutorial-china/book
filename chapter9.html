@@ -123,7 +123,7 @@
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails db:migrate
 </code></pre></div>
 </div>
-<p>现在我们要决定使用什么做记忆令牌。不同的方式基本上都差不多，其实只要是一定长度的随机字符串都行。Ruby 标准库中 <code>SecureRandom</code> 模块的 <code>urlsafe_base64</code> 方法刚好能满足我们的需求。<sup>[<a id="fn-ref-3" href="#fn-3">3</a>]</sup>这个方法返回长度为 22 的随机字符串，包含字符 A-Z、a-z、0-9、“-”和“_”（每一位都有 64 种可能，因此方法名中有“<a href="http://en.wikipedia.org/wiki/Base64" class="external-link">base64</a>”）。典型的 base64 字符串如下所示：</p>
+<p class="pagebreak-before">现在我们要决定使用什么做记忆令牌。不同的方式基本上都差不多，其实只要是一定长度的随机字符串都行。Ruby 标准库中 <code>SecureRandom</code> 模块的 <code>urlsafe_base64</code> 方法刚好能满足我们的需求。<sup>[<a id="fn-ref-3" href="#fn-3">3</a>]</sup>这个方法返回长度为 22 的随机字符串，包含字符 A-Z、a-z、0-9、“-”和“_”（每一位都有 64 种可能，因此方法名中有“<a href="http://en.wikipedia.org/wiki/Base64" class="external-link">base64</a>”）。典型的 base64 字符串如下所示：</p>
 <div data-type="listing">
 
 
@@ -942,7 +942,7 @@
 <div class="highlight language-ruby"><pre><code><span class="n">params</span><span class="p">[</span><span class="ss">:session</span><span class="p">][</span><span class="ss">:remember_me</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'1'</span> <span class="p">?</span> <span class="n">remember</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="p">:</span> <span class="n">forget</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
 </code></pre></div>
 </div>
-<p>在 <code>Sessions</code> 控制器的 <code>create</code> 动作中加入这行代码后，得到的代码非常简洁，如<a class="xref-link" href="#listing-remember-me-ternary">代码清单 9.23</a> 所示。（现在你应该可以理解<a class="xref-link" href="chapter8.html#listing-digest-method">代码清单 8.21</a> 中使用三元运算符定义 <code>cost</code> 变量的代码了。）</p>
+<p>把 <code>Sessions</code> 控制器 <code>create</code> 动作（<a class="xref-link" href="#listing-log-in-with-remember">代码清单 9.7</a>）中的 <code>remember user</code> 替换成这行代码之后，得到的代码非常简洁，如<a class="xref-link" href="#listing-remember-me-ternary">代码清单 9.23</a> 所示。（现在你应该可以理解<a class="xref-link" href="chapter8.html#listing-digest-method">代码清单 8.21</a> 中使用三元运算符定义 <code>cost</code> 变量的代码了。）</p>
 <div id="listing-remember-me-ternary" data-type="listing">
 <h5><span class="title-label">代码清单 9.23</span>：处理提交的“记住我”复选框</h5>
 

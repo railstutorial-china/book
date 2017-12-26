@@ -1000,7 +1000,7 @@ Welcome to the Sample App! Click on the link below to activate your account:
 <div class="highlight language-ruby"><pre><code><span class="nb">self</span><span class="p">.</span><span class="nf">remember_digest</span>
 </code></pre></div>
 </div>
-<p>我们希望以某种方式把这个值变成“变量”，这样才能调用 <code>self.activation_token</code>，而不用把适当的参数传给 <code>authenticated?</code> 方法。</p>
+<p>我们希望以某种方式把这个值变成“变量”，这样才能调用 <code>self.activation_digest</code>，而不用把适当的参数传给 <code>authenticated?</code> 方法。</p>
 <p>我们要使用的解决方法涉及到元编程（metaprogramming），即用程序编写程序。（元编程是 Ruby 最强大的功能之一，Rails 中很多“神奇”的功能都是通过元编程实现的。）这里的关键是强大的 <code>send</code> 方法。这个方法的作用是在指定的对象上调用指定的方法。例如，在下面的控制台会话中，我们在一个 Ruby 原生对象上调用 <code>send</code> 方法，获取数组的长度：</p>
 <div data-type="listing">
 

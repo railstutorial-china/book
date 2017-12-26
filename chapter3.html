@@ -68,8 +68,8 @@
 <h5><span class="title-label">代码清单 3.1</span>：创建一个新演示应用</h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span><span class="nb">cd</span> ~/workspace
-<span class="gp">$ </span>rails _5.1.2_ new sample_app
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span><span class="nb">cd</span> ~/environment
+<span class="gp">$ </span>rails _5.1.4_ new sample_app
 <span class="gp">$ </span><span class="nb">cd </span>sample_app/
 </code></pre></div>
 </div>
@@ -82,7 +82,7 @@
 
 <div class="highlight language-sh"><pre><code><span class="nb">source</span> <span class="s1">'https://rubygems.org'</span>
 
-gem <span class="s1">'rails'</span>,        <span class="s1">'5.1.2'</span>
+gem <span class="s1">'rails'</span>,        <span class="s1">'5.1.4'</span>
 gem <span class="s1">'puma'</span>,         <span class="s1">'3.9.1'</span>
 gem <span class="s1">'sass-rails'</span>,   <span class="s1">'5.0.6'</span>
 gem <span class="s1">'uglifier'</span>,     <span class="s1">'3.2.0'</span>
@@ -239,7 +239,7 @@ For more information, see the
 <span class="gp">$ </span>git push heroku master
 </code></pre></div>
 </div>
-<p>与 <a class="xref-link" href="chapter1.html#deploying">1.5 节</a>一样，你可能会看到一些警告消息，现在暂且不管，<a class="xref-link" href="chapter7.html#professional-grade-deployment">7.5 节</a>会解决。除了 Heroku 为应用分配的地址之外，看到的页面应该和<a class="xref-link" href="chapter1.html#fig-heroku-app">图 1.20</a> 一样。</p>
+<p>与 <a class="xref-link" href="chapter1.html#deploying">1.5 节</a>一样，你可能会看到一些警告消息，现在暂且不管，<a class="xref-link" href="chapter7.html#professional-grade-deployment">7.5 节</a>会解决。除了 Heroku 为应用分配的地址之外，看到的页面应该和<a class="xref-link" href="chapter1.html#fig-heroku-app">图 1.23</a> 一样。</p>
 <p>在阅读本书的过程中，我建议你定期推送和部署，这样不仅能在远程仓库中备份，还能尽早发现在生产环境中可能出现的问题。如果遇到与 Heroku 有关的问题，可以查看生产环境中的日志，试着找出问题所在：</p>
 <div data-type="listing">
 
@@ -260,7 +260,7 @@ For more information, see the
 </section>
 <section data-type="sect1" id="static-pages">
 <h1><span class="title-label">3.2</span> 静态页面</h1>
-<p>前一节的准备工作做好之后，我们可以开始开发这个演示应用了。本节，我们要向开发动态页面迈出第一步：创建一些 Rails 动作和视图，但只包含静态 HTML。<sup>[<a id="fn-ref-4" href="#fn-4">4</a>]</sup>Rails 动作放在控制器中（MVC 中的 C，参见 <a class="xref-link" href="chapter1.html#mvc">1.3.3 节</a>），用于组织相关的功能。<a class="xref-link" href="chapter2.html#a-toy-app">第 2 章</a>已经简要介绍了控制器，全面熟悉 <a href="http://en.wikipedia.org/wiki/Representational_State_Transfer" class="external-link">REST 架构</a>之后（从<a class="xref-link" href="chapter6.html#modeling-users">第 6 章</a>开始），你会更深入地理解控制器。回想一下 <a class="xref-link" href="chapter1.html#the-hello-application">1.3 节</a>介绍的 Rails 项目目录结构（<a class="xref-link" href="chapter1.html#fig-directory-structure-rails">图 1.5</a>），会对我们有所帮助。这一节主要在 <code>app/controllers</code> 和 <code>app/views</code> 两个目录中工作。</p>
+<p>前一节的准备工作做好之后，我们可以开始开发这个演示应用了。本节，我们要向开发动态页面迈出第一步：创建一些 Rails 动作和视图，但只包含静态 HTML。<sup>[<a id="fn-ref-4" href="#fn-4">4</a>]</sup>Rails 动作放在控制器中（MVC 中的 C，参见 <a class="xref-link" href="chapter1.html#mvc">1.3.3 节</a>），用于组织相关的功能。<a class="xref-link" href="chapter2.html#a-toy-app">第 2 章</a>已经简要介绍了控制器，全面熟悉 <a href="http://en.wikipedia.org/wiki/Representational_State_Transfer" class="external-link">REST 架构</a>之后（从<a class="xref-link" href="chapter6.html#modeling-users">第 6 章</a>开始），你会更深入地理解控制器。回想一下 <a class="xref-link" href="chapter1.html#the-hello-application">1.3 节</a>介绍的 Rails 项目目录结构（<a class="xref-link" href="chapter1.html#fig-directory-structure-rails">图 1.7</a>），会对我们有所帮助。这一节主要在 <code>app/controllers</code> 和 <code>app/views</code> 两个目录中工作。</p>
 <p><a class="xref-link" href="chapter1.html#git-commands">1.4.4 节</a>说过，使用 Git 时最好在单独的主题分支中完成工作，不要直接使用主分支。如果你使用 Git 做版本控制，现在应该执行下述命令，切换到一个主题分支，然后再创建静态页面：</p>
 <div data-type="listing">
 
@@ -431,7 +431,7 @@ end
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails server -b <span class="nv">$IP</span> -p <span class="nv">$PORT</span>    <span class="c"># 在本地只需执行 `rails server`</span>
+<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails server
 </code></pre></div>
 </div>
 <p>然后访问 /static_pages/home，如<a class="xref-link" href="#fig-raw-home-view">图 3.2</a> 所示。</p>
@@ -927,7 +927,7 @@ a template <span class="k">for </span>this request format and variant.</code></p
 <span class="nt">&lt;/html&gt;</span>
 </code></pre></div>
 </div>
-<p>修改之后的首页如<a class="xref-link" href="#fig-home-view-full-html">图 3.6</a> 所示。<sup>[<a id="fn-ref-11" href="#fn-11">11</a>]</sup></p>
+<p class="pagebreak-before">修改之后的首页如<a class="xref-link" href="#fig-home-view-full-html">图 3.6</a> 所示。<sup>[<a id="fn-ref-11" href="#fn-11">11</a>]</sup></p>
 <div id="fig-home-view-full-html" class="figure"><img src="images/chapter3/home_view_full_html_4th_ed.png" alt="home view full html 4th ed" /><div class="figcaption"><span class="title-label">图 3.6</span>：添加标题后的首页</div></div>
 <p>使用类似的方式修改“帮助”页面和“关于”页面，得到的代码如<a class="xref-link" href="#listing-help-view-full-html">代码清单 3.27</a> 和<a class="xref-link" href="#listing-about-view-full-html">代码清单 3.28</a> 所示。</p>
 <div id="listing-help-view-full-html" data-type="listing">
@@ -1486,12 +1486,12 @@ a template <span class="k">for </span>this request format and variant.</code></p
 
 
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>bundle <span class="nb">exec </span>guard init
-Writing new Guardfile to /home/ubuntu/workspace/sample_app/Guardfile
+Writing new Guardfile to /home/ec2-user/environment/sample_app/Guardfile
 00:51:32 - INFO - minitest guard added to Guardfile, feel free to edit it
 </code></pre></div>
 </div>
-<p>然后，编辑生成的 <code>Guardfile</code> 文件，让 Guard 在集成测试和视图发生变化后运行正确的测试，如<a class="xref-link" href="#listing-guardfile">代码清单 3.45</a> 所示。（这个文件的内容很长，而且需要高级知识，所以我建议直接复制粘贴。）</p>
-<p>注意：目前，Guard 和 Spring 之间的交互有问题，每次都会运行全部测试。我会关注这个问题，等解决后再更新这一节。</p>
+<p>然后，编辑生成的 <code>Guardfile</code> 文件，让 Guard 在集成测试和视图发生变化后运行正确的测试，如<a class="xref-link" href="#listing-guardfile">代码清单 3.45</a> 所示。为了尽量提高灵活性，我建议使用这里的 <code>Guardfile</code>：railstutorial.org/guardfile。</p>
+<p>注意，默认的 <code>Guardfile</code> 在 Cloud9 IDE 中可能不起作用，请参照前一段给出的网址里的第一行注释。</p>
 <div id="listing-guardfile" data-type="listing">
 <h5><span class="title-label">代码清单 3.45</span>：修改后的 <code>Guardfile</code> 文件</h5>
 
@@ -1560,6 +1560,9 @@ Writing new Guardfile to /home/ubuntu/workspace/sample_app/Guardfile
 <div class="highlight language-ruby"><pre><code><span class="n">guard</span> <span class="ss">:minitest</span><span class="p">,</span> <span class="ss">spring: </span><span class="s2">"bin/rails test"</span><span class="p">,</span> <span class="ss">all_on_start: </span><span class="kp">false</span> <span class="k">do</span>
 </code></pre></div>
 </div>
+<div id="fig-file-navigator-gear-icon" class="figure"><img src="images/chapter3/file_navigator_gear_icon.png" alt="file navigator gear icon" /><div class="figcaption"><span class="title-label">图 3.9</span>：文件浏览器中的齿轮图标（不太好找）</div></div>
+<div id="fig-show-hidden-files" class="figure"><img src="images/chapter3/show_hidden_files.png" alt="show hidden files" /><div class="figcaption"><span class="title-label">图 3.10</span>：在文件浏览器中显示隐藏文件</div></div>
+<div id="fig-gitignore" class="figure"><img src="images/chapter3/gitignore.png" alt="gitignore" /><div class="figcaption"><span class="title-label">图 3.11</span>：通常隐藏的 <code>.gitignore</code> 文件出现了</div></div>
 <p>使用 Guard 时，为了避免 Spring 和 Git 发生冲突，应该把 <code>spring/</code> 目录添加到 <code>.gitignore</code> 文件中，让 Git 忽略它。在云端 IDE 中要这么做：</p>
 <ol class="arabic">
 <li>
@@ -1572,9 +1575,6 @@ Writing new Guardfile to /home/ubuntu/workspace/sample_app/Guardfile
 <p>双击打开 <code>.gitignore</code> 文件（<a class="xref-link" href="#fig-gitignore">图 3.11</a>），写入<a class="xref-link" href="#listing-gitignore-spring">代码清单 3.46</a> 中的内容。</p>
 </li>
 </ol>
-<div id="fig-file-navigator-gear-icon" class="figure"><img src="images/chapter3/file_navigator_gear_icon.png" alt="file navigator gear icon" /><div class="figcaption"><span class="title-label">图 3.9</span>：文件浏览器中的齿轮图标（不太好找）</div></div>
-<div id="fig-show-hidden-files" class="figure"><img src="images/chapter3/show_hidden_files.png" alt="show hidden files" /><div class="figcaption"><span class="title-label">图 3.10</span>：在文件浏览器中显示隐藏文件</div></div>
-<div id="fig-gitignore" class="figure"><img src="images/chapter3/gitignore.png" alt="gitignore" /><div class="figcaption"><span class="title-label">图 3.11</span>：通常隐藏的 <code>.gitignore</code> 文件出现了</div></div>
 <div id="listing-gitignore-spring" data-type="listing">
 <h5><span class="title-label">代码清单 3.46</span>：把 Spring 添加到 <code>.gitignore</code> 文件中</h5>
 
@@ -1621,7 +1621,7 @@ Writing new Guardfile to /home/ubuntu/workspace/sample_app/Guardfile
 
 
 <div class="highlight language-sh"><pre><code><span class="gp">$ </span>ps aux | grep spring
-ubuntu 12241 0.3 0.5 589960 178416 ? Ssl Sep20 1:46
+ec2-user 12241 0.3 0.5 589960 178416 ? Ssl Sep20 1:46
 spring app | sample_app | started 7 hours ago
 </code></pre></div>
 </div>
@@ -1684,9 +1684,9 @@ spring app | sample_app | started 7 hours ago
 
           <div class="footnotes">
 <ol>
-<li id="fn-1">如果使用云端 IDE，可以使用“Goto Anything”命令，输入部分文件名就能方便地在文件系统中找到所需的文件。现在三个应用都放在同一个工作空间中，只输入文件名效果可能不很理想。例如，如果查找名为“Gemfile”的文件，会出现六个结果，因为每个应用中都有能匹配查找条件的两个文件：<code>Gemfile</code> 和 <code>Gemfile.lock</code>。因此，你可以把前两个应用删除，方法是：进入 <code>workspace</code> 文件夹，执行 <code>rm -rf hello_app/ toy_app/</code> 命令（参见<a class="xref-link" href="chapter1.html#table-unix-commands">表 1.1</a>）。只要你之前把这两个应用推送到 Bitbucket 中了，以后再恢复都很容易。 <a href="#fn-ref-1" class="symbol">&#8617;</a></li>
+<li id="fn-1">如果使用云端 IDE，可以使用“Goto Anything”命令，输入部分文件名就能方便地在文件系统中找到所需的文件。现在三个应用都放在同一个工作空间中，只输入文件名效果可能不很理想。例如，如果查找名为“Gemfile”的文件，会出现六个结果，因为每个应用中都有能匹配查找条件的两个文件：<code>Gemfile</code> 和 <code>Gemfile.lock</code>。因此，你可以把前两个应用删除，方法是：进入 <code>environment</code> 文件夹，执行 <code>rm -rf hello_app/ toy_app/</code> 命令（参见<a class="xref-link" href="chapter1.html#table-unix-commands">表 1.1</a>）。只要你之前把这两个应用推送到 Bitbucket 中了，以后再恢复都很容易。 <a href="#fn-ref-1" class="symbol">&#8617;</a></li>
 <li id="fn-2">注意，这个选项会被 Bundler 记住，下次只需运行 <code>bundle install</code> 即可。 <a href="#fn-ref-2" class="symbol">&#8617;</a></li>
-<li id="fn-3">现在时机还不成熟，但我建议你以后一定要学会如何在开发环境中安装、配置 PostgreSQL。届时，可以在谷歌中搜索“install configure postgresql &lt;your system&gt;”，以及“rails postgresql setup”。在云端 IDE 中，“&lt;your system&gt;”是 Ubuntu。 <a href="#fn-ref-3" class="symbol">&#8617;</a></li>
+<li id="fn-3">现在时机还不成熟，但我建议你以后一定要学会如何在开发环境中安装、配置 PostgreSQL。届时，可以在谷歌中搜索“install configure postgresql &lt;your system&gt;”，以及“rails postgresql setup”。在云端 IDE 中，“&lt;your system&gt;”是 Linux。 <a href="#fn-ref-3" class="symbol">&#8617;</a></li>
 <li id="fn-4">这里讲的静态页面创建方法可能是最简单的，但不是唯一的，你应该根据需求使用合适的方法。如果要创建大量静态页面，使用静态页面控制器太麻烦，不过这个演示应用只需要几个静态页面。如果需要创建大量静态页面，可以使用 <a href="https://github.com/thoughtbot/high_voltage" class="external-link"><code>high_voltage</code></a> gem。 <a href="#fn-ref-4" class="symbol">&#8617;</a></li>
 <li id="fn-5">其实，很多 Rails 开发者还会为 <code>rails</code> 命令创建别名（参阅《<a href="http://learnenough.com/text-editor-tutorial" class="external-link">Learn Enough Text Editor to Be Dangerous</a>》），简化成 <code>r</code>。这样，使用简洁的 <code>r s</code> 命令就能启动 Rails 服务器。 <a href="#fn-ref-5" class="symbol">&#8617;</a></li>
 <li id="fn-6">详情参见 Rails 创始人 David Heinemeier Hansson 写的一篇文章：<a href="http://david.heinemeierhansson.com/2014/tdd-is-dead-long-live-testing.html" class="external-link">TDD is dead. Long live testing</a>。 <a href="#fn-ref-6" class="symbol">&#8617;</a></li>

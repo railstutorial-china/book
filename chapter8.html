@@ -959,21 +959,21 @@ x    =   x   /   2      -&gt;     x     /=   2
 <span class="nt">&lt;/header&gt;</span>
 </code></pre></div>
 </div>
-<p>除了在布局中添加新链接之外，<a class="xref-link" href="#listing-layout-login-logout-links">代码清单 8.19</a> 还借助 Bootstrap 实现了下拉菜单。<sup>[<a id="fn-ref-8" href="#fn-8">8</a>]</sup>注意这段代码中使用的几个 Bootstrap CSS 类：<code>dropdown</code>，<code>dropdown-menu</code> 等。为了让下拉菜单生效，我们要在 <code>application.js</code>（Asset Pipeline 的一部分）中引入 Bootstrap 提供的 JavaScript 库，如<a class="xref-link" href="#listing-bootstrap-js">代码清单 8.20</a> 所示。</p>
+<p>除了在布局中添加新链接之外，<a class="xref-link" href="#listing-layout-login-logout-links">代码清单 8.19</a> 还借助 Bootstrap 实现了下拉菜单。<sup>[<a id="fn-ref-8" href="#fn-8">8</a>]</sup>注意这段代码中使用的几个 Bootstrap CSS 类：<code>dropdown</code>，<code>dropdown-menu</code> 等。为了让下拉菜单生效，我们要在 <code>application.js</code>（Asset Pipeline 的一部分）中引入 Bootstrap 提供的 JavaScript 库和 jQuery 库，<sup>[<a id="fn-ref-9" href="#fn-9">9</a>]</sup>如<a class="xref-link" href="#listing-bootstrap-js">代码清单 8.20</a> 所示。</p>
 <div id="listing-bootstrap-js" data-type="listing">
 <h5><span class="title-label">代码清单 8.20</span>：在 <code>application.js</code> 中引入 Bootstrap JavaScript 库</h5>
 
 <div class="source-file">app/assets/javascripts/application.js</div>
 
-<div class="highlight language-javascript"><pre><code><span class="c1">//= require jquery</span>
-<span class="c1">//= require jquery_ujs</span>
+<div class="highlight language-javascript"><pre><code><span class="hll"><span class="c1">//= require jquery</span></span>
 <span class="hll"><span class="c1">//= require bootstrap</span></span>
+<span class="c1">//= require rails-ujs</span>
 <span class="c1">//= require turbolinks</span>
 <span class="c1">//= require_tree .</span>
 </code></pre></div>
 </div>
-<p>现在，你应该访问登录页面，然后使用有效账户登录（用户名：<code>example@railstutorial.org</code>，密码：<code>foobar</code>），这样足以测试前三节编写的代码是否正确。<sup>[<a id="fn-ref-9" href="#fn-9">9</a>]</sup>添加<a class="xref-link" href="#listing-layout-login-logout-links">代码清单 8.19</a> 和<a class="xref-link" href="#listing-bootstrap-js">代码清单 8.20</a> 中的代码后，应该能看到下拉菜单和只有已登录用户才能看到的链接，如<a class="xref-link" href="#fig-profile-with-logout-link">图 8.8</a> 所示。</p>
-<p>如果关闭浏览器，还能确认应用确实清除了登录状态，必须再次登录才能看到上述改动。<sup>[<a id="fn-ref-10" href="#fn-10">10</a>]</sup></p>
+<p>现在，你应该访问登录页面，然后使用有效账户登录（用户名：<code>example@railstutorial.org</code>，密码：<code>foobar</code>），这样足以测试前三节编写的代码是否正确。<sup>[<a id="fn-ref-10" href="#fn-10">10</a>]</sup>添加<a class="xref-link" href="#listing-layout-login-logout-links">代码清单 8.19</a> 和<a class="xref-link" href="#listing-bootstrap-js">代码清单 8.20</a> 中的代码后，应该能看到下拉菜单和只有已登录用户才能看到的链接，如<a class="xref-link" href="#fig-profile-with-logout-link">图 8.8</a> 所示。</p>
+<p>如果关闭浏览器，还能确认应用确实清除了登录状态，必须再次登录才能看到上述改动。<sup>[<a id="fn-ref-11" href="#fn-11">11</a>]</sup></p>
 <div id="fig-profile-with-logout-link" class="figure"><img src="images/chapter8/profile_with_logout_link_3rd_edition.png" alt="profile with logout link 3rd edition" /><div class="figcaption"><span class="title-label">图 8.8</span>：用户登录后看到了新添加的链接和下拉菜单</div></div>
 <h5 id="exercises-changing-the-layout-links" class="discrete">练习</h5>
 <ol class="arabic">
@@ -1048,7 +1048,7 @@ x    =   x   /   2      -&gt;     x     /=   2
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>定义好 <code>digest</code> 方法后，我们可以创建一个有效的用户固件了，如<a class="xref-link" href="#listing-real-user-fixture">代码清单 8.22</a> 所示。<sup>[<a id="fn-ref-11" href="#fn-11">11</a>]</sup></p>
+<p>定义好 <code>digest</code> 方法后，我们可以创建一个有效的用户固件了，如<a class="xref-link" href="#listing-real-user-fixture">代码清单 8.22</a> 所示。<sup>[<a id="fn-ref-12" href="#fn-12">12</a>]</sup></p>
 <div id="listing-real-user-fixture" data-type="listing">
 <h5><span class="title-label">代码清单 8.22</span>：测试用户登录所需的固件</h5>
 
@@ -1135,7 +1135,7 @@ x    =   x   /   2      -&gt;     x     /=   2
 </section>
 <section data-type="sect2" id="login-upon-signup">
 <h2><span class="title-label">8.2.5</span> 注册后直接登录</h2>
-<p>虽然现在基本完成了身份验证功能，但是新注册的用户可能还是会困惑，为什么注册后没有登录呢？注册后立即要求用户登录是很奇怪的，所以我们要在注册的过程中自动登入用户。为了实现这一功能，我们只需在 <code>User</code> 控制器的 <code>create</code> 动作中调用 <code>log_in</code> 方法，如<a class="xref-link" href="#listing-login-upon-signup">代码清单 8.25</a> 所示。<sup>[<a id="fn-ref-12" href="#fn-12">12</a>]</sup></p>
+<p>虽然现在基本完成了身份验证功能，但是新注册的用户可能还是会困惑，为什么注册后没有登录呢？注册后立即要求用户登录是很奇怪的，所以我们要在注册的过程中自动登入用户。为了实现这一功能，我们只需在 <code>User</code> 控制器的 <code>create</code> 动作中调用 <code>log_in</code> 方法，如<a class="xref-link" href="#listing-login-upon-signup">代码清单 8.25</a> 所示。<sup>[<a id="fn-ref-13" href="#fn-13">13</a>]</sup></p>
 <div id="listing-login-upon-signup" data-type="listing">
 <h5><span class="title-label">代码清单 8.25</span>：注册后登入用户</h5>
 
@@ -1171,7 +1171,7 @@ x    =   x   /   2      -&gt;     x     /=   2
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>为了测试这个功能，我们可以在<a class="xref-link" href="chapter7.html#listing-a-test-for-valid-submission">代码清单 7.33</a> 中添加一行代码，检查用户是否已经登录。我们可以定义一个 <code>is_logged_in?</code> 辅助方法，功能和<a class="xref-link" href="#listing-logged-in-p">代码清单 8.18</a> 中的 <code>logged_in?</code> 方法一样，如果（测试环境的）会话中有用户的 ID 就返回 <code>true</code>，否则返回 <code>false</code>，如<a class="xref-link" href="#listing-test-helper-sessions">代码清单 8.26</a> 所示。（我们不能像<a class="xref-link" href="#listing-logged-in-p">代码清单 8.18</a> 那样使用 <code>current_user</code>，因为在测试中不能使用 <code>current_user</code> 方法，但是可以使用 <code>session</code> 方法。）我们定义的方法不是 <code>logged_in?</code>，而是 <code>is_logged_in?</code>，以免混淆。<sup>[<a id="fn-ref-13" href="#fn-13">13</a>]</sup></p>
+<p>为了测试这个功能，我们可以在<a class="xref-link" href="chapter7.html#listing-a-test-for-valid-submission">代码清单 7.33</a> 中添加一行代码，检查用户是否已经登录。我们可以定义一个 <code>is_logged_in?</code> 辅助方法，功能和<a class="xref-link" href="#listing-logged-in-p">代码清单 8.18</a> 中的 <code>logged_in?</code> 方法一样，如果（测试环境的）会话中有用户的 ID 就返回 <code>true</code>，否则返回 <code>false</code>，如<a class="xref-link" href="#listing-test-helper-sessions">代码清单 8.26</a> 所示。（我们不能像<a class="xref-link" href="#listing-logged-in-p">代码清单 8.18</a> 那样使用 <code>current_user</code>，因为在测试中不能使用 <code>current_user</code> 方法，但是可以使用 <code>session</code> 方法。）我们定义的方法不是 <code>logged_in?</code>，而是 <code>is_logged_in?</code>，以免混淆。<sup>[<a id="fn-ref-14" href="#fn-14">14</a>]</sup></p>
 <div id="listing-test-helper-sessions" data-type="listing">
 <h5><span class="title-label">代码清单 8.26</span>：在测试中定义检查登录状态的方法，返回布尔值</h5>
 
@@ -1245,7 +1245,7 @@ x    =   x   /   2      -&gt;     x     /=   2
 <div class="highlight language-ruby"><pre><code><span class="n">session</span><span class="p">.</span><span class="nf">delete</span><span class="p">(</span><span class="ss">:user_id</span><span class="p">)</span>
 </code></pre></div>
 </div>
-<p>我们还要把当前用户设为 <code>nil</code>。不过现在这种情况下做不做这一步都没关系，因为退出后会立即转向根地址。<sup>[<a id="fn-ref-14" href="#fn-14">14</a>]</sup>与 <code>log_in</code> 及相关的方法一样，我们要把 <code>log_out</code> 方法放在 <code>Sessions</code> 辅助模块中，如<a class="xref-link" href="#listing-log-out-method">代码清单 8.29</a> 所示。</p>
+<p>我们还要把当前用户设为 <code>nil</code>。不过现在这种情况下做不做这一步都没关系，因为退出后会立即转向根地址。<sup>[<a id="fn-ref-15" href="#fn-15">15</a>]</sup>与 <code>log_in</code> 及相关的方法一样，我们要把 <code>log_out</code> 方法放在 <code>Sessions</code> 辅助模块中，如<a class="xref-link" href="#listing-log-out-method">代码清单 8.29</a> 所示。</p>
 <div id="listing-log-out-method" data-type="listing">
 <h5><span class="title-label">代码清单 8.29</span>：<code>log_out</code> 方法</h5>
 
@@ -1431,12 +1431,13 @@ x    =   x   /   2      -&gt;     x     /=   2
 <li id="fn-6">头像出处：https://www.flickr.com/photos/elevy/14730820387。Copyright © 2014 by Elias Levy。未经改动，基于“<a href="https://creativecommons.org/licenses/by/2.0/deed.zh" class="external-link">知识共享 署名 2.0 通用</a>”许可证使用。 <a href="#fn-ref-6" class="symbol">&#8617;</a></li>
 <li id="fn-7">Web 浏览器其实不能发送 <code>DELETE</code> 请求，Rails 使用 JavaScript 模拟实现。 <a href="#fn-ref-7" class="symbol">&#8617;</a></li>
 <li id="fn-8">详情参见 <a href="http://getbootstrap.com/components/" class="external-link">Bootstrap 组件文档</a>。 <a href="#fn-ref-8" class="symbol">&#8617;</a></li>
-<li id="fn-9">可能要重启 Web 服务器。 <a href="#fn-ref-9" class="symbol">&#8617;</a></li>
-<li id="fn-10">如果使用云端 IDE，建议你使用另一个浏览器测试登录，这样就不用关闭运行云端 IDE 的浏览器了。 <a href="#fn-ref-10" class="symbol">&#8617;</a></li>
-<li id="fn-11">注意，固件文件中的缩进必须使用空格，不能使用制表符。复制代码（如<a class="xref-link" href="#listing-real-user-fixture">代码清单 8.22</a>）时要留意这一点。 <a href="#fn-ref-11" class="symbol">&#8617;</a></li>
-<li id="fn-12">因为在<a class="xref-link" href="#listing-sessions-helper-include">代码清单 8.13</a> 中引入了辅助模块，所以 <code>User</code> 控制器和 <code>Sessions</code> 控制器一样，也可以调用 <code>log_in</code> 方法。 <a href="#fn-ref-12" class="symbol">&#8617;</a></li>
-<li id="fn-13">有一次我不小心把 <code>Sessions</code> 辅助模块中的 <code>log_in</code> 方法删掉了，但是测试组件仍能通过，因为测试使用了同名辅助方法，就算应用完全不能运行，测试还是可以通过。与 <code>is_logged_in?</code> 一样，为了避免这种问题，<a class="xref-link" href="chapter9.html#listing-test-helper-log-in">代码清单 9.24</a> 中还会定义一个名为 <code>log_in_as</code> 的测试辅助方法。 <a href="#fn-ref-13" class="symbol">&#8617;</a></li>
-<li id="fn-14">如果在执行 <code>destroy</code> 动作之前创建了 <code>@current_user</code>（这里没有创建），并且没有立即重定向，就要把 <code>@current_user</code> 设为 <code>nil</code>（这里立即重定向了）。这两种情况不可能同时发生，而且根据这个应用目前的架构，也没必要这么做。不过这涉及到安全问题，所以以防万一，我在这里把当前用户设为了 <code>nil</code>。 <a href="#fn-ref-14" class="symbol">&#8617;</a></li>
+<li id="fn-9">Rails 的早期版本自动引入 jQuery，但是从 Rails 5.1 起不再是 Rails 的依赖了。 <a href="#fn-ref-9" class="symbol">&#8617;</a></li>
+<li id="fn-10">可能要重启 Web 服务器。 <a href="#fn-ref-10" class="symbol">&#8617;</a></li>
+<li id="fn-11">如果使用云端 IDE，建议你使用另一个浏览器测试登录，这样就不用关闭运行云端 IDE 的浏览器了。 <a href="#fn-ref-11" class="symbol">&#8617;</a></li>
+<li id="fn-12">注意，固件文件中的缩进必须使用空格，不能使用制表符。复制代码（如<a class="xref-link" href="#listing-real-user-fixture">代码清单 8.22</a>）时要留意这一点。 <a href="#fn-ref-12" class="symbol">&#8617;</a></li>
+<li id="fn-13">因为在<a class="xref-link" href="#listing-sessions-helper-include">代码清单 8.13</a> 中引入了辅助模块，所以 <code>User</code> 控制器和 <code>Sessions</code> 控制器一样，也可以调用 <code>log_in</code> 方法。 <a href="#fn-ref-13" class="symbol">&#8617;</a></li>
+<li id="fn-14">有一次我不小心把 <code>Sessions</code> 辅助模块中的 <code>log_in</code> 方法删掉了，但是测试组件仍能通过，因为测试使用了同名辅助方法，就算应用完全不能运行，测试还是可以通过。与 <code>is_logged_in?</code> 一样，为了避免这种问题，<a class="xref-link" href="chapter9.html#listing-test-helper-log-in">代码清单 9.24</a> 中还会定义一个名为 <code>log_in_as</code> 的测试辅助方法。 <a href="#fn-ref-14" class="symbol">&#8617;</a></li>
+<li id="fn-15">如果在执行 <code>destroy</code> 动作之前创建了 <code>@current_user</code>（这里没有创建），并且没有立即重定向，就要把 <code>@current_user</code> 设为 <code>nil</code>（这里立即重定向了）。这两种情况不可能同时发生，而且根据这个应用目前的架构，也没必要这么做。不过这涉及到安全问题，所以以防万一，我在这里把当前用户设为了 <code>nil</code>。 <a href="#fn-ref-15" class="symbol">&#8617;</a></li>
 </ol>
 </div>
         </div>
