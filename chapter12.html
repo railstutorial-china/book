@@ -9,7 +9,7 @@
   <meta name="keywords" content="ruby, rails, tutorial"/>
   <meta name="author" content="Michael Hartl"/>
   <meta name="translator" content="安道"/>
-  <meta name="generator" content="persie 0.0.3.beta.4"/>
+  <meta name="generator" content="persie 0.0.4.1"/>
   <link rel="stylesheet" type="text/css" href="//railstutorial-china.org/assets/css/main.css"/>
   <link rel="stylesheet" type="text/css" href="book.css"/>
   <script type="text/javascript" src="//railstutorial-china.org/assets/js/global.js"></script>
@@ -93,7 +93,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git checkout -b password-reset
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>git checkout <span class="nt">-b</span> password-reset
 </code></pre></div>
 </div>
 <section data-type="sect2" id="password-resets-controller">
@@ -102,7 +102,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate controller PasswordResets new edit --no-test-framework
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails generate controller PasswordResets new edit <span class="nt">--no-test-framework</span>
 </code></pre></div>
 </div>
 <p>注意，我们指定了一个旗标，不让 Rails 生成测试。这是因为我们不需要控制器测试，而将继续使用 <a class="xref-link" href="chapter11.html#activation-test-and-refactoring">11.3.3 节</a>编写的集成测试。</p>
@@ -230,8 +230,8 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate migration add_reset_to_users reset_digest:string <span class="se">\</span>
-<span class="gp">&gt; </span>reset_sent_at:datetime
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails generate migration add_reset_to_users reset_digest:string <span class="se">\</span>
+<span class="o">&gt;</span> reset_sent_at:datetime
 </code></pre></div>
 </div>
 <p>（前面说过，第二行开头的 <code>&gt;</code> 是“行接续”符号，是 shell 自动插入的，无需输入。）</p>
@@ -239,7 +239,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails db:migrate
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails db:migrate
 </code></pre></div>
 </div>
 <p>我们要参照前面为没有模型的资源编写表单的方式，即创建新会话的登录表单（<a class="xref-link" href="chapter8.html#listing-login-form">代码清单 8.4</a>），编写请求重设密码的表单。为了便于参考，我们再把那个表单列出来，如<a class="xref-link" href="#listing-login-form-redux">代码清单 12.3</a> 所示。</p>
@@ -341,7 +341,7 @@
 <div class="source-file">app/models/user.rb</div>
 
 <div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
-<span class="hll">  <span class="kp">attr_accessor</span> <span class="ss">:remember_token</span><span class="p">,</span> <span class="ss">:activation_token</span><span class="p">,</span> <span class="ss">:reset_token</span></span>
+<span class="hll">  <span class="nb">attr_accessor</span> <span class="ss">:remember_token</span><span class="p">,</span> <span class="ss">:activation_token</span><span class="p">,</span> <span class="ss">:reset_token</span></span>
   <span class="n">before_save</span>   <span class="ss">:downcase_email</span>
   <span class="n">before_create</span> <span class="ss">:create_activation_digest</span>
   <span class="p">.</span>
@@ -598,7 +598,7 @@ your password will stay as it is.
 <h5><span class="title-label">代码清单 12.13</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-reset-email-tests" class="discrete">练习</h5>
@@ -887,7 +887,7 @@ your password will stay as it is.
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate integration_test password_resets
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails generate integration_test password_resets
       invoke  test_unit
       create    <span class="nb">test</span>/integration/password_resets_test.rb
 </code></pre></div>
@@ -981,7 +981,7 @@ your password will stay as it is.
 <h5><span class="title-label">代码清单 12.19</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-password-reset-test" class="discrete">练习</h5>
@@ -1005,7 +1005,7 @@ your password will stay as it is.
 <div class="source-file">app/models/user.rb</div>
 
 <div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
-  <span class="kp">attr_accessor</span> <span class="ss">:remember_token</span><span class="p">,</span> <span class="ss">:activation_token</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:remember_token</span><span class="p">,</span> <span class="ss">:activation_token</span>
   <span class="n">before_save</span>   <span class="ss">:downcase_email</span>
   <span class="n">before_create</span> <span class="ss">:create_activation_digest</span>
   <span class="p">.</span>
@@ -1103,7 +1103,7 @@ your password will stay as it is.
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>heroku addons:create sendgrid:starter
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>heroku addons:create sendgrid:starter
 </code></pre></div>
 </div>
 <p>（如果你使用的是 Heroku 的旧版命令行接口，这个命令可能无法执行。这个问题有两种解决方法：其一，<a href="https://toolbelt.heroku.com/" class="external-link">升级到最新的 Heroku 工具包</a>；其二，使用旧句法 <code>heroku addons:add sendgrid:starter</code>。）</p>
@@ -1142,21 +1142,21 @@ your password will stay as it is.
 <h5><span class="title-label">代码清单 12.24</span>：把 <code>password-reset</code> 分支合并到 <code>master</code> 分支</h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
-<span class="gp">$ </span>git add -A
-<span class="gp">$ </span>git commit -m <span class="s2">"Add password reset"</span>
-<span class="gp">$ </span>git checkout master
-<span class="gp">$ </span>git merge password-reset
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
+<span class="nv">$ </span>git add <span class="nt">-A</span>
+<span class="nv">$ </span>git commit <span class="nt">-m</span> <span class="s2">"Add password reset"</span>
+<span class="nv">$ </span>git checkout master
+<span class="nv">$ </span>git merge password-reset
 </code></pre></div>
 </div>
 <p>然后，推送到远程仓库，再部署到 Heroku：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
-<span class="gp">$ </span>git push
-<span class="gp">$ </span>git push heroku
-<span class="gp">$ </span>heroku run rails db:migrate
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
+<span class="nv">$ </span>git push
+<span class="nv">$ </span>git push heroku
+<span class="nv">$ </span>heroku run rails db:migrate
 </code></pre></div>
 </div>
 <p>部署到 Heroku 中之后，可以点击“forgot password”链接（<a class="xref-link" href="#fig-forgot-password-link">图 12.4</a>）重设密码。你会收到一封重设邮件，如<a class="xref-link" href="#fig-reset-email-production">图 12.14</a> 所示。点击邮件中的链接，输入有效密码或无效密码，效果应该同生产环境中一样（<a class="xref-link" href="#fig-password-reset-failure">图 12.12</a> 和<a class="xref-link" href="#fig-password-reset-success">图 12.13</a>）。</p>

@@ -9,7 +9,7 @@
   <meta name="keywords" content="ruby, rails, tutorial"/>
   <meta name="author" content="Michael Hartl"/>
   <meta name="translator" content="安道"/>
-  <meta name="generator" content="persie 0.0.3.beta.4"/>
+  <meta name="generator" content="persie 0.0.4.1"/>
   <link rel="stylesheet" type="text/css" href="//railstutorial-china.org/assets/css/main.css"/>
   <link rel="stylesheet" type="text/css" href="book.css"/>
   <script type="text/javascript" src="//railstutorial-china.org/assets/js/global.js"></script>
@@ -74,7 +74,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git checkout -b following-users
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>git checkout <span class="nt">-b</span> following-users
 </code></pre></div>
 </div>
 <section data-type="sect2" id="a-problem-with-the-data-model-and-a-solution">
@@ -93,7 +93,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate model Relationship follower_id:integer followed_id:integer
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails generate model Relationship follower_id:integer followed_id:integer
 </code></pre></div>
 </div>
 <p>因为我们将通过 <code>follower_id</code> 和 <code>followed_id</code> 查找关系，所以还要为这两个列建立索引，提高查询的效率，如<a class="xref-link" href="#listing-relationships-migration">代码清单 14.1</a> 所示。</p>
@@ -102,7 +102,7 @@
 
 <div class="source-file">db/migrate/[timestamp]_create_relationships.rb</div>
 
-<div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">CreateRelationships</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mi">5</span><span class="o">.</span><span class="mi">0</span><span class="p">]</span>
+<div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">CreateRelationships</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mf">5.0</span><span class="p">]</span>
   <span class="k">def</span> <span class="nf">change</span>
     <span class="n">create_table</span> <span class="ss">:relationships</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
       <span class="n">t</span><span class="p">.</span><span class="nf">integer</span> <span class="ss">:follower_id</span>
@@ -122,7 +122,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails db:migrate
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails db:migrate
 </code></pre></div>
 </div>
 <h5 id="exercises-a-problem-with-the-data-model-and-a-solution" class="discrete">练习</h5>
@@ -142,7 +142,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-ruby"><pre><code><span class="n">user</span><span class="p">.</span><span class="nf">active_relationships</span><span class="p">.</span><span class="nf">build</span><span class="p">(</span><span class="ss">followed_id: </span><span class="p">.</span><span class="nf">.</span><span class="o">.</span><span class="p">)</span>
+<div class="highlight language-ruby"><pre><code><span class="n">user</span><span class="p">.</span><span class="nf">active_relationships</span><span class="p">.</span><span class="nf">build</span><span class="p">(</span><span class="ss">followed_id: </span><span class="o">...</span><span class="p">)</span>
 </code></pre></div>
 </div>
 <p>此时，你可能想在应用中加入类似于 <a class="xref-link" href="chapter13.html#user-micropost-associations">13.1.3 节</a>使用的代码。我们要添加的代码确实很像，但有两处不同。</p>
@@ -314,7 +314,7 @@
 <h5><span class="title-label">代码清单 14.7</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-relationship-validations" class="discrete">练习</h5>
@@ -444,7 +444,7 @@
 <h5><span class="title-label">代码清单 14.11</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-following" class="discrete">练习</h5>
@@ -521,7 +521,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-followers" class="discrete">练习</h5>
@@ -546,7 +546,7 @@
 <h2><span class="title-label">14.2.1</span> 示例数据</h2>
 <p>和之前的几章一样，我们要使用 <code>rails db:seed</code> 命令把“关系”相关的种子数据加载到数据库中。有了示例数据，我们就可以先实现网页界面，本节末尾再实现后端功能。</p>
 <p>“关系”相关的种子数据如<a class="xref-link" href="#listing-sample-relationships">代码清单 14.14</a> 所示。我们让第一个用户关注第 3-51 个用户，让第 4-41 个用户关注第一个用户。这样的数据足够用来开发应用的界面了。</p>
-<div id="listing-sample-relationships" data-type="listing" class="pagebreak-before">
+<div id="listing-sample-relationships" data-type="listing">
 <h5><span class="title-label">代码清单 14.14</span>：在种子数据中添加“关系”相关的数据</h5>
 
 <div class="source-file">db/seeds.rb</div>
@@ -556,8 +556,8 @@
              <span class="na">email</span><span class="pi">:</span> <span class="s2">"</span><span class="s">example@railstutorial.org"</span><span class="err">,</span>
              <span class="na">password</span><span class="pi">:</span>              <span class="s2">"</span><span class="s">foobar"</span><span class="err">,</span>
              <span class="na">password_confirmation</span><span class="pi">:</span> <span class="s2">"</span><span class="s">foobar"</span><span class="err">,</span>
-             <span class="na">admin</span><span class="pi">:</span>     <span class="s">true,</span>
-             <span class="na">activated</span><span class="pi">:</span> <span class="s">true,</span>
+             <span class="na">admin</span><span class="pi">:</span>     <span class="no">true</span><span class="s">,</span>
+             <span class="na">activated</span><span class="pi">:</span> <span class="no">true</span><span class="s">,</span>
              <span class="na">activated_at</span><span class="pi">:</span> <span class="s">Time.zone.now)</span>
 
 <span class="s">99.times do |n|</span>
@@ -568,7 +568,7 @@
               <span class="s">email</span><span class="pi">:</span> <span class="s">email,</span>
               <span class="s">password</span><span class="pi">:</span>              <span class="s">password,</span>
               <span class="s">password_confirmation</span><span class="pi">:</span> <span class="s">password,</span>
-              <span class="s">activated</span><span class="pi">:</span> <span class="s">true,</span>
+              <span class="s">activated</span><span class="pi">:</span> <span class="no">true</span><span class="s">,</span>
               <span class="s">activated_at</span><span class="pi">:</span> <span class="s">Time.zone.now)</span>
 <span class="s">end</span>
 
@@ -592,8 +592,8 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails db:migrate:reset
-<span class="gp">$ </span>rails db:seed
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails db:migrate:reset
+<span class="nv">$ </span>rails db:seed
 </code></pre></div>
 </div>
 <h5 id="exercises-sample-following-data" class="discrete">练习</h5>
@@ -928,8 +928,6 @@
 <span class="nt">&lt;/div&gt;</span>
 </code></pre></div>
 </div>
-<div id="fig-profile-follow-button" class="figure"><img src="images/chapter14/profile_follow_button_3rd_edition.png" alt="profile follow button 3rd edition" /><div class="figcaption"><span class="title-label">图 14.12</span>：某个用户的资料页面（/users/2），显示有关注按钮</div></div>
-<div id="fig-profile-unfollow-button" class="figure"><img src="images/chapter14/profile_unfollow_button_3rd_edition.png" alt="profile unfollow button 3rd edition" /><div class="figcaption"><span class="title-label">图 14.13</span>：某个用户的资料页面（/users/5），显示有取消关注按钮</div></div>
 <p>稍后我们会让这些按钮起作用，而且将使用两种方式实现，一种是常规方式（<a class="xref-link" href="#a-working-follow-button-the-standard-way">14.2.4 节</a>），另一种使用 Ajax（<a class="xref-link" href="#a-working-follow-button-with-ajax">14.2.5 节</a>）。不过在此之前，我们要创建剩下的页面——我关注的用户列表页面和关注我的用户列表页面。</p>
 <h5 id="exercises-stats-and-a-follow-form" class="discrete">练习</h5>
 <ol class="arabic">
@@ -943,6 +941,8 @@
 <p>为首页中的数量统计编写测试。提示：把测试添加到<a class="xref-link" href="chapter13.html#listing-user-profile-test">代码清单 13.28</a> 中。为什么不用再测试资料页面的数量统计了？</p>
 </li>
 </ol>
+<div id="fig-profile-follow-button" class="figure"><img src="images/chapter14/profile_follow_button_3rd_edition.png" alt="profile follow button 3rd edition" /><div class="figcaption"><span class="title-label">图 14.12</span>：某个用户的资料页面（/users/2），显示有关注按钮</div></div>
+<div id="fig-profile-unfollow-button" class="figure"><img src="images/chapter14/profile_unfollow_button_3rd_edition.png" alt="profile unfollow button 3rd edition" /><div class="figcaption"><span class="title-label">图 14.13</span>：某个用户的资料页面（/users/5），显示有取消关注按钮</div></div>
 </section>
 <section data-type="sect2" id="following-and-followers-pages">
 <h2><span class="title-label">14.2.3</span> 我关注的用户列表页面和关注我的用户列表页面</h2>
@@ -1055,7 +1055,7 @@
 <h5><span class="title-label">代码清单 14.27</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <div id="fig-user-following" class="figure"><img src="images/chapter14/user_following_3rd_edition.png" alt="user following 3rd edition" /><div class="figcaption"><span class="title-label">图 14.16</span>：显示某个用户关注的人</div></div>
@@ -1066,7 +1066,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate integration_test following
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails generate integration_test following
       invoke  test_unit
       create    <span class="nb">test</span>/integration/following_test.rb
 </code></pre></div>
@@ -1162,7 +1162,7 @@
 <h5><span class="title-label">代码清单 14.30</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-following-and-followers-pages" class="discrete">练习</h5>
@@ -1181,7 +1181,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate controller Relationships
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails generate controller Relationships
 </code></pre></div>
 </div>
 <p>在<a class="xref-link" href="#listing-relationships-controller">代码清单 14.32</a> 中会看到，限制访问这个控制器中的动作没有太大的意义，但我们还是要加入安全机制。我们要在测试中确认，访问这个控制器中的动作之前要先登录（没登录就重定向到登录页面），而且数据库中的“关系”数量没有变化，如<a class="xref-link" href="#listing-relationships-access-control">代码清单 14.31</a> 所示。</p>
@@ -1505,7 +1505,7 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
 <h5><span class="title-label">代码清单 14.41</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-following-tests" class="discrete">练习</h5>
@@ -1566,7 +1566,7 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
 <h5><span class="title-label">代码清单 14.43</span>：<strong class="red">RED</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-motivation-and-strategy" class="discrete">练习</h5>
@@ -1605,55 +1605,55 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>$ rails console
-&gt;&gt; [1, 2, 3, 4].map { |i| i.to_s }
-=&gt; ["1", "2", "3", "4"]
+<div class="highlight language-irb"><pre><code><span class="go">$ rails console</span>
+<span class="go">&gt;&gt; [1, 2, 3, 4].map { |i| i.to_s }</span>
+<span class="p">=&gt;</span> <span class="p">[</span><span class="s2">"1"</span><span class="p">,</span> <span class="s2">"2"</span><span class="p">,</span> <span class="s2">"3"</span><span class="p">,</span> <span class="s2">"4"</span><span class="p">]</span>
 </code></pre></div>
 </div>
 <p>像上面这种在每个元素上调用同一个方法的情况很常见，所以 Ruby 为此定义了一种简写形式（<a class="xref-link" href="chapter4.html#blocks">4.3.2 节</a>简介过）——在 <code>&amp;</code> 符号后面跟上被调用方法的符号形式：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; [1, 2, 3, 4].map(&amp;:to_s)
-=&gt; ["1", "2", "3", "4"]
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; [1, 2, 3, 4].map(&amp;:to_s)</span>
+<span class="p">=&gt;</span> <span class="p">[</span><span class="s2">"1"</span><span class="p">,</span> <span class="s2">"2"</span><span class="p">,</span> <span class="s2">"3"</span><span class="p">,</span> <span class="s2">"4"</span><span class="p">]</span>
 </code></pre></div>
 </div>
 <p>使用 <code>join</code> 方法（<a class="xref-link" href="chapter4.html#arrays-and-ranges">4.3.1 节</a>）可以把数组中的元素合并起来组成字符串，各元素之间用逗号加一个空格分开：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; [1, 2, 3, 4].map(&amp;:to_s).join(', ')
-=&gt; "1, 2, 3, 4"
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; [1, 2, 3, 4].map(&amp;:to_s).join(', ')</span>
+<span class="p">=&gt;</span> <span class="s2">"1, 2, 3, 4"</span>
 </code></pre></div>
 </div>
 <p>参照上面介绍的方法，我们可以在 <code>user.following</code> 中的每个元素上调用 <code>id</code> 方法，得到一个由关注的用户 ID 组成的数组。例如，对数据库中的第一个用户而言，可以使用下面的方法得到这个数组：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; User.first.following.map(&amp;:id)
-=&gt; [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
-23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41,
-42, 43, 44, 45, 46, 47, 48, 49, 50, 51]
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; User.first.following.map(&amp;:id)</span>
+<span class="p">=&gt;</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span>
+<span class="mi">23</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">29</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="mi">37</span><span class="p">,</span> <span class="mi">38</span><span class="p">,</span> <span class="mi">39</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">41</span><span class="p">,</span>
+<span class="mi">42</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">46</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">49</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">51</span><span class="p">]</span>
 </code></pre></div>
 </div>
 <p>其实，因为这种用法太普遍了，所以 Active Record 默认已经提供了：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; User.first.following_ids
-=&gt; [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
-23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41,
-42, 43, 44, 45, 46, 47, 48, 49, 50, 51]
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; User.first.following_ids</span>
+<span class="p">=&gt;</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span>
+<span class="mi">23</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">29</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="mi">37</span><span class="p">,</span> <span class="mi">38</span><span class="p">,</span> <span class="mi">39</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">41</span><span class="p">,</span>
+<span class="mi">42</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">46</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">49</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">51</span><span class="p">]</span>
 </code></pre></div>
 </div>
 <p>上述代码中的 <code>following_ids</code> 方法是 Active Record 根据 <code>has_many :following</code> 关联（<a class="xref-link" href="#listing-has-many-following-through-active-relationships">代码清单 14.8</a>）合成的。因此，我们只需在关联名后面加上 <code>_ids</code> 就可以获取 <code>user.following</code> 集合中所有用户的 ID。用户 ID 组成的字符串如下：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; User.first.following_ids.join(', ')
-=&gt; "3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
-23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41,
-42, 43, 44, 45, 46, 47, 48, 49, 50, 51"
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; User.first.following_ids.join(', ')</span>
+<span class="p">=&gt;</span> <span class="s2">"3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,</span>
+<span class="s2">23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41,</span>
+<span class="s2">42, 43, 44, 45, 46, 47, 48, 49, 50, 51"</span>
 </code></pre></div>
 </div>
 <p>不过，插入 SQL 语句时，无须手动生成字符串，<code>?</code> 插值操作会为你代劳（同时也避免了一些数据库之间的兼容问题）。因此，实际上只需要使用 <code>following_ids</code> 而已。所以，之前猜测的写法确实可用：</p>
@@ -1685,7 +1685,7 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
 
   <span class="c1"># 关注另一个用户</span>
   <span class="k">def</span> <span class="nf">follow</span><span class="p">(</span><span class="n">other_user</span><span class="p">)</span>
-    <span class="n">active_relationships</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">followed_id: </span><span class="n">other_user</span><span class="p">.</span><span class="nf">id</span><span class="p">)</span>
+    <span class="n">following</span> <span class="o">&lt;&lt;</span> <span class="n">other_user</span>
   <span class="k">end</span>
   <span class="p">.</span>
   <span class="nf">.</span>
@@ -1698,7 +1698,7 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
 <h5><span class="title-label">代码清单 14.45</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <p>在某些应用中，这样的初步实现已经能满足大部分需求了，但这不是我们最终要使用的实现方式。在阅读下一节之前，你可以想一下为什么。（提示：如果用户关注了 5000 个人呢？）</p>
@@ -1810,7 +1810,7 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
 <h5><span class="title-label">代码清单 14.48</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <p>当然，子查询也不是万能的。对于更大型的网站而言，可能要使用后台作业（background job）异步生成动态流。性能优化这个话题已经超出了本书范畴。</p>
@@ -1819,22 +1819,22 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
-<span class="gp">$ </span>git add -A
-<span class="gp">$ </span>git commit -m <span class="s2">"Add user following"</span>
-<span class="gp">$ </span>git checkout master
-<span class="gp">$ </span>git merge following-users
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
+<span class="nv">$ </span>git add <span class="nt">-A</span>
+<span class="nv">$ </span>git commit <span class="nt">-m</span> <span class="s2">"Add user following"</span>
+<span class="nv">$ </span>git checkout master
+<span class="nv">$ </span>git merge following-users
 </code></pre></div>
 </div>
 <p>然后再推送到远程仓库，并部署到生产环境：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git push
-<span class="gp">$ </span>git push heroku
-<span class="gp">$ </span>heroku pg:reset DATABASE
-<span class="gp">$ </span>heroku run rails db:migrate
-<span class="gp">$ </span>heroku run rails db:seed
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>git push
+<span class="nv">$ </span>git push heroku
+<span class="nv">$ </span>heroku pg:reset DATABASE
+<span class="nv">$ </span>heroku run rails db:migrate
+<span class="nv">$ </span>heroku run rails db:seed
 </code></pre></div>
 </div>
 <p>在生产环境的线上网站中也会显示动态流，如<a class="xref-link" href="#fig-live-status-feed">图 14.24</a> 所示。</p>
@@ -1958,8 +1958,8 @@ $("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</spa
 <li id="fn-4">严格来说，Rails 使用 <code>classify</code> 方法把 <code>has_many</code> 的参数转换成类名，例如 <code>"foo_bars"</code> 会转换成 <code>"FooBar"</code>。 <a href="#fn-ref-4" class="symbol">&#8617;</a></li>
 <li id="fn-5">严格来说，Rails 使用 <code>underscore</code> 方法把类名转换为 id 列的名字。例如，<code>"FooBar".underscore</code> 的返回值是 <code>"foo_bar"</code>，所以 <code>FooBar</code> 模型的外键是 <code>foo_bar_id</code>。 <a href="#fn-ref-5" class="symbol">&#8617;</a></li>
 <li id="fn-6">当你拥有某个领域大量建模的经验后，总能提前猜到这样的辅助方法。如果没有猜到的话，也经常能发现自己动手写这样的方法可以使测试代码更加整洁。此时，如果你没有猜到的话也很正常。软件开发往往是一个循序渐进的过程，你先埋头编写代码，发现代码很乱时，再重构。为了行文简洁，本书采取的是直捣黄龙的方法。 <a href="#fn-ref-6" class="symbol">&#8617;</a></li>
-<li id="fn-7">路由设定中可以使用的参数详情，参阅 Rails 指南中《<a href="http://guides.rubyonrails.org/routing.html" class="external-link">Rails Routing from the Outside In</a>》一文。 <a href="#fn-ref-7" class="symbol">&#8617;</a></li>
-<li id="fn-8">因为 Ajax 是 Asynchronous JavaScript and XML 的缩写，所以经常被错误的拼写为“AJAX”，不过在<a href="http://www.adaptivepath.com/ideas/essays/archives/000385.php" class="external-link">最初介绍 Ajax 的文章</a>中，通篇都拼写为“Ajax”。 <a href="#fn-ref-8" class="symbol">&#8617;</a></li>
+<li id="fn-7">路由设定中可以使用的参数详情，参阅 Rails 指南中《<a href="https://rails.guide/book/routing.html" class="external-link">Rails 路由全解</a>》一文。 <a href="#fn-ref-7" class="symbol">&#8617;</a></li>
+<li id="fn-8">因为 Ajax 是 Asynchronous JavaScript and XML 的缩写，所以经常被错误的拼写为“AJAX”，不过在<a href="http://www.adaptivepath.org/ideas/ajax-new-approach-web-applications/" class="external-link">最初介绍 Ajax 的文章</a>中，通篇都拼写为“Ajax”。 <a href="#fn-ref-8" class="symbol">&#8617;</a></li>
 <li id="fn-9">可枚举的对象主要的要求是实现了遍历集合的 <code>each</code> 方法。 <a href="#fn-ref-9" class="symbol">&#8617;</a></li>
 </ol>
 </div>

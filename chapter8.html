@@ -9,7 +9,7 @@
   <meta name="keywords" content="ruby, rails, tutorial"/>
   <meta name="author" content="Michael Hartl"/>
   <meta name="translator" content="安道"/>
-  <meta name="generator" content="persie 0.0.3.beta.4"/>
+  <meta name="generator" content="persie 0.0.4.1"/>
   <link rel="stylesheet" type="text/css" href="//railstutorial-china.org/assets/css/main.css"/>
   <link rel="stylesheet" type="text/css" href="book.css"/>
   <script type="text/javascript" src="//railstutorial-china.org/assets/js/global.js"></script>
@@ -71,7 +71,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git checkout -b basic-login
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>git checkout <span class="nt">-b</span> basic-login
 </code></pre></div>
 </div>
 <section data-type="sect2" id="sessions-controller">
@@ -82,7 +82,7 @@
 <h5><span class="title-label">代码清单 8.1</span>：生成 <code>Sessions</code> 控制器</h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate controller Sessions new
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails generate controller Sessions new
 </code></pre></div>
 </div>
 <p>（参数中指定 <code>new</code> 的话，还会生成对应的视图，不过我们没指定 <code>create</code> 和 <code>destroy</code>，因为这两个动作没有视图。）参照 <a class="xref-link" href="chapter7.html#signup-form">7.2 节</a>创建注册页面的方式，我们要创建一个登录表单，用于创建会话，构思如<a class="xref-link" href="#fig-login-mockup">图 8.1</a> 所示。</p>
@@ -170,24 +170,24 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails routes
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails routes
    Prefix Verb   URI Pattern               Controller#Action
      root GET    /                         static_pages#home
      <span class="nb">help </span>GET    /help<span class="o">(</span>.:format<span class="o">)</span>           static_pages#help
     about GET    /about<span class="o">(</span>.:format<span class="o">)</span>          static_pages#about
   contact GET    /contact<span class="o">(</span>.:format<span class="o">)</span>        static_pages#contact
-   signup GET    /signup<span class="o">(</span>.:format<span class="o">)</span>         users#new
+   signup GET    /signup<span class="o">(</span>.:format<span class="o">)</span>         <span class="nb">users</span><span class="c">#new</span>
     login GET    /login<span class="o">(</span>.:format<span class="o">)</span>          sessions#new
           POST   /login<span class="o">(</span>.:format<span class="o">)</span>          sessions#create
    <span class="nb">logout </span>DELETE /logout<span class="o">(</span>.:format<span class="o">)</span>         sessions#destroy
-    users GET    /users<span class="o">(</span>.:format<span class="o">)</span>          users#index
-          POST   /users<span class="o">(</span>.:format<span class="o">)</span>          users#create
- new_user GET    /users/new<span class="o">(</span>.:format<span class="o">)</span>      users#new
-edit_user GET    /users/:id/edit<span class="o">(</span>.:format<span class="o">)</span> users#edit
-     user GET    /users/:id<span class="o">(</span>.:format<span class="o">)</span>      users#show
-          PATCH  /users/:id<span class="o">(</span>.:format<span class="o">)</span>      users#update
-          PUT    /users/:id<span class="o">(</span>.:format<span class="o">)</span>      users#update
-          DELETE /users/:id<span class="o">(</span>.:format<span class="o">)</span>      users#destroy
+    <span class="nb">users </span>GET    /users<span class="o">(</span>.:format<span class="o">)</span>          <span class="nb">users</span><span class="c">#index</span>
+          POST   /users<span class="o">(</span>.:format<span class="o">)</span>          <span class="nb">users</span><span class="c">#create</span>
+ new_user GET    /users/new<span class="o">(</span>.:format<span class="o">)</span>      <span class="nb">users</span><span class="c">#new</span>
+edit_user GET    /users/:id/edit<span class="o">(</span>.:format<span class="o">)</span> <span class="nb">users</span><span class="c">#edit</span>
+     user GET    /users/:id<span class="o">(</span>.:format<span class="o">)</span>      <span class="nb">users</span><span class="c">#show</span>
+          PATCH  /users/:id<span class="o">(</span>.:format<span class="o">)</span>      <span class="nb">users</span><span class="c">#update</span>
+          PUT    /users/:id<span class="o">(</span>.:format<span class="o">)</span>      <span class="nb">users</span><span class="c">#update</span>
+          DELETE /users/:id<span class="o">(</span>.:format<span class="o">)</span>      <span class="nb">users</span><span class="c">#destroy</span>
 </code></pre></div>
 </div>
 <p>你没必要完全理解输出的这些路由。像这样查看路由能对应用支持的动作有个整体认识。</p>
@@ -456,10 +456,10 @@ edit_user GET    /users/:id/edit<span class="o">(</span>.:format<span class="o">
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>布局中已经加入了显示闪现消息的局部视图（<a class="xref-link" href="chapter7.html#listing-layout-flash">代码清单 7.31</a>），所以无需其他修改，<code>flash[:danger]</code> 消息就能显示出来；而且因为使用了 Bootstrap 提供的 CSS，消息的样式也很美观，如<a class="xref-link" href="#fig-failed-login-flash">图 8.5</a> 所示。</p>
-<p>不过，就像<a class="xref-link" href="#listing-failed-login-attempt">代码清单 8.8</a> 中的注释所说，代码不完全正确。显示的页面看起来很正常啊，有什么问题呢？问题在于，闪现消息在一个请求的生命周期内是持续存在的，而重新渲染页面（使用 <code>render</code> 方法）与<a class="xref-link" href="chapter7.html#listing-signup-flash">代码清单 7.29</a> 中的重定向不同，不算是一次新请求，所以你会发现这个闪现消息存在的时间比预期的要长很多。例如，提交无效的登录信息，然后访问首页，还会显示这个闪现消息，如<a class="xref-link" href="#fig-flash-persistence">图 8.6</a> 所示。<a class="xref-link" href="#a-flash-test">8.1.5 节</a>会修正这个问题。</p>
 <div id="fig-failed-login-flash" class="figure"><img src="images/chapter8/failed_login_flash_3rd_edition.png" alt="failed login flash 3rd edition" /><div class="figcaption"><span class="title-label">图 8.5</span>：登录失败后显示的闪现消息</div></div>
 <div id="fig-flash-persistence" class="figure"><img src="images/chapter8/flash_persistence_3rd_edition.png" alt="flash persistence 3rd edition" /><div class="figcaption"><span class="title-label">图 8.6</span>：闪现消息一直存在</div></div>
+<p>布局中已经加入了显示闪现消息的局部视图（<a class="xref-link" href="chapter7.html#listing-layout-flash">代码清单 7.31</a>），所以无需其他修改，<code>flash[:danger]</code> 消息就能显示出来；而且因为使用了 Bootstrap 提供的 CSS，消息的样式也很美观，如<a class="xref-link" href="#fig-failed-login-flash">图 8.5</a> 所示。</p>
+<p>不过，就像<a class="xref-link" href="#listing-failed-login-attempt">代码清单 8.8</a> 中的注释所说，代码不完全正确。显示的页面看起来很正常啊，有什么问题呢？问题在于，闪现消息在一个请求的生命周期内是持续存在的，而重新渲染页面（使用 <code>render</code> 方法）与<a class="xref-link" href="chapter7.html#listing-signup-flash">代码清单 7.29</a> 中的重定向不同，不算是一次新请求，所以你会发现这个闪现消息存在的时间比预期的要长很多。例如，提交无效的登录信息，然后访问首页，还会显示这个闪现消息，如<a class="xref-link" href="#fig-flash-persistence">图 8.6</a> 所示。<a class="xref-link" href="#a-flash-test">8.1.5 节</a>会修正这个问题。</p>
 </section>
 <section data-type="sect2" id="a-flash-test">
 <h2><span class="title-label">8.1.5</span> 测试闪现消息</h2>
@@ -468,7 +468,7 @@ edit_user GET    /users/:id/edit<span class="o">(</span>.:format<span class="o">
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="hll"><span class="gp">$ </span>rails generate integration_test users_login</span>
+<div class="highlight language-sh"><pre><code><span class="hll"><span class="nv">$ </span>rails generate integration_test users_login</span>
       invoke  test_unit
       create    <span class="nb">test</span>/integration/users_login_test.rb
 </code></pre></div>
@@ -521,7 +521,7 @@ edit_user GET    /users/:id/edit<span class="o">(</span>.:format<span class="o">
 <h5><span class="title-label">代码清单 8.10</span>：<strong class="red">RED</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test test</span>/integration/users_login_test.rb
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test test</span>/integration/users_login_test.rb
 </code></pre></div>
 </div>
 <p>为了只运行一个测试文件，执行 <code>rails test</code> 命令时我们指定了文件的完整路径。</p>
@@ -556,8 +556,8 @@ edit_user GET    /users/:id/edit<span class="o">(</span>.:format<span class="o">
 <h5><span class="title-label">代码清单 8.12</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test test</span>/integration/users_login_test.rb
-<span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test test</span>/integration/users_login_test.rb
+<span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-a-flash-test" class="discrete">练习</h5>
@@ -698,11 +698,13 @@ edit_user GET    /users/:id/edit<span class="o">(</span>.:format<span class="o">
 
 
 <div class="highlight language-ruby"><pre><code><span class="k">def</span> <span class="nf">current_user</span>
-  <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">id: </span><span class="n">session</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">])</span>
+  <span class="k">if</span> <span class="n">session</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">]</span>
+    <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">id: </span><span class="n">session</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">])</span>
+  <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>这样定义应该可以，不过如果在一个页面中多次调用 <code>current_user</code> 方法，会多次查询数据库。所以，我们要使用一种 Ruby 习惯写法，把 <code>User.find_by</code> 的结果存储在实例变量中，只在第一次调用时查询数据库，后续再调用直接返回实例变量中存储的值：<sup>[<a id="fn-ref-5" href="#fn-5">5</a>]</sup></p>
+<p>（如果会话中没有用户 ID，这个方法直接结束，返回 <code>nil</code>，而这正是我们需要的行为。）这样定义应该可以，不过如果在一个页面中多次调用 <code>current_user</code> 方法，会多次查询数据库。所以，我们要使用一种 Ruby 习惯写法，把 <code>User.find_by</code> 的结果存储在实例变量中，只在第一次调用时查询数据库，后续再调用直接返回实例变量中存储的值：<sup>[<a id="fn-ref-5" href="#fn-5">5</a>]</sup></p>
 <div data-type="listing">
 
 
@@ -750,17 +752,17 @@ edit_user GET    /users/:id/edit<span class="o">(</span>.:format<span class="o">
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>$ rails console
-&gt;&gt; x = 1
-=&gt; 1
-&gt;&gt; x += 1
-=&gt; 2
-&gt;&gt; x *= 3
-=&gt; 6
-&gt;&gt; x -= 8
-=&gt; -2
-&gt;&gt; x /= 2
-=&gt; -1
+<div class="highlight language-irb"><pre><code><span class="go">$ rails console</span>
+<span class="go">&gt;&gt; x = 1</span>
+<span class="p">=&gt;</span> <span class="mi">1</span>
+<span class="o">&gt;&gt;</span> <span class="n">x</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="o">=&gt;</span> <span class="mi">2</span>
+<span class="o">&gt;&gt;</span> <span class="n">x</span> <span class="o">*=</span> <span class="mi">3</span>
+<span class="o">=&gt;</span> <span class="mi">6</span>
+<span class="o">&gt;&gt;</span> <span class="n">x</span> <span class="o">-=</span> <span class="mi">8</span>
+<span class="o">=&gt;</span> <span class="o">-</span><span class="mi">2</span>
+<span class="o">&gt;&gt;</span> <span class="n">x</span> <span class="o">/=</span> <span class="mi">2</span>
+<span class="o">=&gt;</span> <span class="o">-</span><span class="mi">1</span>
 </code></pre></div>
 </div>
 <p>通过上面的例子可以得知，<code>x = x O y</code> 和 <code>x O=y</code> 是等效的，其中 <code>O</code> 表示运算符。</p>
@@ -768,12 +770,12 @@ edit_user GET    /users/:id/edit<span class="o">(</span>.:format<span class="o">
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; @foo
-=&gt; nil
-&gt;&gt; @foo = @foo || "bar"
-=&gt; "bar"
-&gt;&gt; @foo = @foo || "baz"
-=&gt; "bar"
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; @foo</span>
+<span class="p">=&gt;</span> <span class="kp">nil</span>
+<span class="o">&gt;&gt;</span> <span class="vi">@foo</span> <span class="o">=</span> <span class="vi">@foo</span> <span class="o">||</span> <span class="s2">"bar"</span>
+<span class="o">=&gt;</span> <span class="s2">"bar"</span>
+<span class="o">&gt;&gt;</span> <span class="vi">@foo</span> <span class="o">=</span> <span class="vi">@foo</span> <span class="o">||</span> <span class="s2">"baz"</span>
+<span class="o">=&gt;</span> <span class="s2">"bar"</span>
 </code></pre></div>
 </div>
 <p>因为 <code>nil</code> 是假值，所以第一个赋值语句等同于 <code>nil || "bar"</code>，得到的结果是 <code>"bar"</code>。同样，第二个赋值操作等同于 <code>"bar" || "baz"</code>，得到的结果还是 <code>"bar"</code>。这是因为除了 <code>nil</code> 和 <code>false</code> 之外，其他值都是真值；而如果第一个表达式的值是真值，<code>||</code> 会终止执行。（或运算符的执行顺序从左至右，只要出现真值就终止语句的执行，这种方式叫短路计算（short-circuit evaluation）。）</p>
@@ -813,7 +815,9 @@ x    =   x   /   2      -&gt;     x     /=   2
 
   <span class="c1"># 返回当前登录的用户（如果有的话）</span>
   <span class="k">def</span> <span class="nf">current_user</span>
-<span class="hll">    <span class="vi">@current_user</span> <span class="o">||=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">id: </span><span class="n">session</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">])</span></span>
+<span class="hll">    <span class="k">if</span> <span class="n">session</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">]</span></span>
+<span class="hll">      <span class="vi">@current_user</span> <span class="o">||=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">id: </span><span class="n">session</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">])</span></span>
+<span class="hll">    <span class="k">end</span></span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div>
@@ -832,15 +836,15 @@ x    =   x   /   2      -&gt;     x     /=   2
 <h5><span class="title-label">代码清单 8.17</span>：在控制台中模拟 <code>session</code></h5>
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; session = {}
-&gt;&gt; session[:user_id] = nil
-&gt;&gt; @current_user ||= User.find_by(id: session[:user_id])
-<span class="hll">&lt;What happens here?&gt;</span>
-&gt;&gt; session[:user_id]= User.first.id
-&gt;&gt; @current_user ||= User.find_by(id: session[:user_id])
-<span class="hll">&lt;What happens here?&gt;</span>
-&gt;&gt; @current_user ||= User.find_by(id: session[:user_id])
-<span class="hll">&lt;What happens here?&gt;</span>
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; session = {}</span>
+<span class="go">&gt;&gt; session[:user_id] = nil</span>
+<span class="go">&gt;&gt; @current_user ||= User.find_by(id: session[:user_id])</span>
+<span class="hll"><span class="go">&lt;What happens here?&gt;</span></span>
+<span class="go">&gt;&gt; session[:user_id]= User.first.id</span>
+<span class="go">&gt;&gt; @current_user ||= User.find_by(id: session[:user_id])</span>
+<span class="hll"><span class="go">&lt;What happens here?&gt;</span></span>
+<span class="go">&gt;&gt; @current_user ||= User.find_by(id: session[:user_id])</span>
+<span class="hll"><span class="go">&lt;What happens here?&gt;</span></span>
 </code></pre></div>
 </div>
 </section>
@@ -876,7 +880,9 @@ x    =   x   /   2      -&gt;     x     /=   2
 
   <span class="c1"># 返回当前登录的用户（如果有的话）</span>
   <span class="k">def</span> <span class="nf">current_user</span>
-    <span class="vi">@current_user</span> <span class="o">||=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">id: </span><span class="n">session</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">session</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">]</span>
+      <span class="vi">@current_user</span> <span class="o">||=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">id: </span><span class="n">session</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">])</span>
+    <span class="k">end</span>
   <span class="k">end</span>
 
   <span class="c1"># 如果用户已登录，返回 true，否则返回 false</span>
@@ -1120,7 +1126,7 @@ x    =   x   /   2      -&gt;     x     /=   2
 <h5><span class="title-label">代码清单 8.24</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test test</span>/integration/users_login_test.rb
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test test</span>/integration/users_login_test.rb
 </code></pre></div>
 </div>
 <h5 id="exercises-layout-link-tests" class="discrete">练习</h5>
@@ -1223,7 +1229,7 @@ x    =   x   /   2      -&gt;     x     /=   2
 <h5><span class="title-label">代码清单 8.28</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-login-upon-signup" class="discrete">练习</h5>
@@ -1337,7 +1343,7 @@ x    =   x   /   2      -&gt;     x     /=   2
 <h5><span class="title-label">代码清单 8.32</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h4 id="exercises-logging-out" class="discrete">练习</h4>
@@ -1357,19 +1363,19 @@ x    =   x   /   2      -&gt;     x     /=   2
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
-<span class="gp">$ </span>git add -A
-<span class="gp">$ </span>git commit -m <span class="s2">"Implement basic login"</span>
-<span class="gp">$ </span>git checkout master
-<span class="gp">$ </span>git merge basic-login
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
+<span class="nv">$ </span>git add <span class="nt">-A</span>
+<span class="nv">$ </span>git commit <span class="nt">-m</span> <span class="s2">"Implement basic login"</span>
+<span class="nv">$ </span>git checkout master
+<span class="nv">$ </span>git merge basic-login
 </code></pre></div>
 </div>
 <p>然后推送到远程仓库：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
-<span class="gp">$ </span>git push
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
+<span class="nv">$ </span>git push
 </code></pre></div>
 </div>
 <p>最后，像往常一样部署到 Heroku 中：</p>

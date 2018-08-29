@@ -9,7 +9,7 @@
   <meta name="keywords" content="ruby, rails, tutorial"/>
   <meta name="author" content="Michael Hartl"/>
   <meta name="translator" content="安道"/>
-  <meta name="generator" content="persie 0.0.3.beta.4"/>
+  <meta name="generator" content="persie 0.0.4.1"/>
   <link rel="stylesheet" type="text/css" href="//railstutorial-china.org/assets/css/main.css"/>
   <link rel="stylesheet" type="text/css" href="book.css"/>
   <script type="text/javascript" src="//railstutorial-china.org/assets/js/global.js"></script>
@@ -131,7 +131,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git checkout -b account-activation
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>git checkout <span class="nt">-b</span> account-activation
 </code></pre></div>
 </div>
 <section data-type="sect2" id="account-activations-controller">
@@ -140,14 +140,14 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate controller AccountActivations
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails generate controller AccountActivations
 </code></pre></div>
 </div>
 <p>在 <a class="xref-link" href="#mailer-templates">11.2.1 节</a>将看到，我们会使用下面的方法生成一个 URL，放在激活邮件中：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-ruby"><pre><code><span class="n">edit_account_activation_url</span><span class="p">(</span><span class="n">activation_token</span><span class="p">,</span> <span class="p">.</span><span class="nf">.</span><span class="o">.</span><span class="p">)</span>
+<div class="highlight language-ruby"><pre><code><span class="n">edit_account_activation_url</span><span class="p">(</span><span class="n">activation_token</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
 </code></pre></div>
 </div>
 <p>因此，我们要为 <code>edit</code> 动作设定一个具名路由——通过<a class="xref-link" href="#listing-account-activations-route">代码清单 11.1</a> 中高亮显示的那行 <code>resources</code> 规则实现。那条规则得到的 REST 式路由见<a class="xref-link" href="#table-restful-account-activations">表 11.2</a>。</p>
@@ -228,7 +228,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-ruby"><pre><code><span class="k">if</span> <span class="n">user</span><span class="p">.</span><span class="nf">activated?</span> <span class="p">.</span><span class="nf">.</span><span class="o">.</span>
+<div class="highlight language-ruby"><pre><code><span class="k">if</span> <span class="n">user</span><span class="p">.</span><span class="nf">activated?</span> <span class="o">...</span>
 </code></pre></div>
 </div>
 <p>最后，还要记录激活的日期和时间，虽然本书用不到，但说不定你以后需要使用。完整的数据模型如<a class="xref-link" href="#fig-user-model-account-activation">图 11.1</a> 所示。</p>
@@ -237,8 +237,8 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate migration add_activation_to_users <span class="se">\</span>
-<span class="gp">&gt; </span>activation_digest:string activated:boolean activated_at:datetime
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails generate migration add_activation_to_users <span class="se">\</span>
+<span class="o">&gt;</span> activation_digest:string activated:boolean activated_at:datetime
 </code></pre></div>
 </div>
 <p>（<a class="xref-link" href="chapter8.html#testing-layout-changes">8.2.4 节</a>说过，第二行开头的 <code>&gt;</code> 是“行接续”符号，是 shell 自动插入的，无需输入。）与 <code>admin</code> 属性一样（<a class="xref-link" href="chapter10.html#listing-admin-migration">代码清单 10.54</a>），我们要把 <code>activated</code> 属性的默认值设为 <code>false</code>，如<a class="xref-link" href="#listing-add-activation-to-users-migration">代码清单 11.2</a> 所示。</p>
@@ -247,7 +247,7 @@
 
 <div class="source-file">db/migrate/[timestamp]_add_activation_to_users.rb</div>
 
-<div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">AddActivationToUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mi">5</span><span class="o">.</span><span class="mi">0</span><span class="p">]</span>
+<div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">AddActivationToUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mf">5.0</span><span class="p">]</span>
   <span class="k">def</span> <span class="nf">change</span>
     <span class="n">add_column</span> <span class="ss">:users</span><span class="p">,</span> <span class="ss">:activation_digest</span><span class="p">,</span> <span class="ss">:string</span>
 <span class="hll">    <span class="n">add_column</span> <span class="ss">:users</span><span class="p">,</span> <span class="ss">:activated</span><span class="p">,</span> <span class="ss">:boolean</span><span class="p">,</span> <span class="ss">default: </span><span class="kp">false</span></span>
@@ -260,7 +260,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails db:migrate
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails db:migrate
 </code></pre></div>
 </div>
 <section data-type="sect3" id="activation-token-callback">
@@ -287,9 +287,9 @@
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>$ rails console
-&gt;&gt; User.first.create_activation_digest
-NoMethodError: private method `create_activation_digest' called for #&lt;User&gt;
+<div class="highlight language-irb"><pre><code><span class="go">$ rails console</span>
+<span class="go">&gt;&gt; User.first.create_activation_digest</span>
+<span class="gr">NoMethodError: private method `create_activation_digest' called for #&lt;User&gt;</span>
 </code></pre></div>
 </div>
 <p>这个 <code>before_create</code> 回调的作用是为用户分配令牌和对应的摘要，实现方式如下：</p>
@@ -319,7 +319,7 @@ NoMethodError: private method `create_activation_digest' called for #&lt;User&gt
 <div class="source-file">app/models/user.rb</div>
 
 <div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
-<span class="hll">  <span class="kp">attr_accessor</span> <span class="ss">:remember_token</span><span class="p">,</span> <span class="ss">:activation_token</span></span>
+<span class="hll">  <span class="nb">attr_accessor</span> <span class="ss">:remember_token</span><span class="p">,</span> <span class="ss">:activation_token</span></span>
 <span class="hll">  <span class="n">before_save</span>   <span class="ss">:downcase_email</span></span>
 <span class="hll">  <span class="n">before_create</span> <span class="ss">:create_activation_digest</span></span>
   <span class="n">validates</span> <span class="ss">:name</span><span class="p">,</span>  <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">length: </span><span class="p">{</span> <span class="ss">maximum: </span><span class="mi">50</span> <span class="p">}</span>
@@ -354,8 +354,8 @@ NoMethodError: private method `create_activation_digest' called for #&lt;User&gt
              <span class="na">email</span><span class="pi">:</span> <span class="s2">"</span><span class="s">example@railstutorial.org"</span><span class="err">,</span>
              <span class="na">password</span><span class="pi">:</span>              <span class="s2">"</span><span class="s">foobar"</span><span class="err">,</span>
              <span class="na">password_confirmation</span><span class="pi">:</span> <span class="s2">"</span><span class="s">foobar"</span><span class="err">,</span>
-             <span class="na">admin</span><span class="pi">:</span>     <span class="s">true,</span>
-<span class="hll">             <span class="na">activated</span><span class="pi">:</span> <span class="s">true,</span></span>
+             <span class="na">admin</span><span class="pi">:</span>     <span class="no">true</span><span class="s">,</span>
+<span class="hll">             <span class="na">activated</span><span class="pi">:</span> <span class="no">true</span><span class="s">,</span></span>
 <span class="hll">             <span class="na">activated_at</span><span class="pi">:</span> <span class="s">Time.zone.now)</span></span>
 
 <span class="s">99.times do |n|</span>
@@ -366,7 +366,7 @@ NoMethodError: private method `create_activation_digest' called for #&lt;User&gt
               <span class="s">email</span><span class="pi">:</span> <span class="s">email,</span>
               <span class="s">password</span><span class="pi">:</span>              <span class="s">password,</span>
               <span class="s">password_confirmation</span><span class="pi">:</span> <span class="s">password,</span>
-<span class="hll">              <span class="s">activated</span><span class="pi">:</span> <span class="s">true,</span></span>
+<span class="hll">              <span class="s">activated</span><span class="pi">:</span> <span class="no">true</span><span class="s">,</span></span>
 <span class="hll">              <span class="s">activated_at</span><span class="pi">:</span> <span class="s">Time.zone.now)</span></span>
 <span class="s">end</span>
 </code></pre></div>
@@ -380,29 +380,29 @@ NoMethodError: private method `create_activation_digest' called for #&lt;User&gt
   <span class="na">name</span><span class="pi">:</span> <span class="s">Michael Example</span>
   <span class="na">email</span><span class="pi">:</span> <span class="s">michael@example.com</span>
   <span class="na">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
-  <span class="na">admin</span><span class="pi">:</span> <span class="s">true</span>
-<span class="hll">  <span class="na">activated</span><span class="pi">:</span> <span class="s">true</span></span>
+  <span class="na">admin</span><span class="pi">:</span> <span class="no">true</span>
+<span class="hll">  <span class="na">activated</span><span class="pi">:</span> <span class="no">true</span></span>
 <span class="hll">  <span class="na">activated_at</span><span class="pi">:</span> <span class="s">&lt;%= Time.zone.now %&gt;</span></span>
 
 <span class="na">archer</span><span class="pi">:</span>
   <span class="na">name</span><span class="pi">:</span> <span class="s">Sterling Archer</span>
   <span class="na">email</span><span class="pi">:</span> <span class="s">duchess@example.gov</span>
   <span class="na">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
-<span class="hll">  <span class="na">activated</span><span class="pi">:</span> <span class="s">true</span></span>
+<span class="hll">  <span class="na">activated</span><span class="pi">:</span> <span class="no">true</span></span>
 <span class="hll">  <span class="na">activated_at</span><span class="pi">:</span> <span class="s">&lt;%= Time.zone.now %&gt;</span></span>
 
 <span class="na">lana</span><span class="pi">:</span>
   <span class="na">name</span><span class="pi">:</span> <span class="s">Lana Kane</span>
   <span class="na">email</span><span class="pi">:</span> <span class="s">hands@example.gov</span>
   <span class="na">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
-<span class="hll">  <span class="na">activated</span><span class="pi">:</span> <span class="s">true</span></span>
+<span class="hll">  <span class="na">activated</span><span class="pi">:</span> <span class="no">true</span></span>
 <span class="hll">  <span class="na">activated_at</span><span class="pi">:</span> <span class="s">&lt;%= Time.zone.now %&gt;</span></span>
 
 <span class="na">malory</span><span class="pi">:</span>
   <span class="na">name</span><span class="pi">:</span> <span class="s">Malory Archer</span>
   <span class="na">email</span><span class="pi">:</span> <span class="s">boss@example.gov</span>
   <span class="na">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
-<span class="hll">  <span class="na">activated</span><span class="pi">:</span> <span class="s">true</span></span>
+<span class="hll">  <span class="na">activated</span><span class="pi">:</span> <span class="no">true</span></span>
 <span class="hll">  <span class="na">activated_at</span><span class="pi">:</span> <span class="s">&lt;%= Time.zone.now %&gt;</span></span>
 
 <span class="s">&lt;% 30.times do |n| %&gt;</span>
@@ -410,7 +410,7 @@ NoMethodError: private method `create_activation_digest' called for #&lt;User&gt
   <span class="na">name</span><span class="pi">:</span>  <span class="s">&lt;%= "User</span> <span class="c1">#{n}" %&gt;</span>
   <span class="na">email</span><span class="pi">:</span> <span class="s">&lt;%= "user-#{n}@example.com" %&gt;</span>
   <span class="na">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
-<span class="hll">  <span class="na">activated</span><span class="pi">:</span> <span class="s">true</span></span>
+<span class="hll">  <span class="na">activated</span><span class="pi">:</span> <span class="no">true</span></span>
 <span class="hll">  <span class="na">activated_at</span><span class="pi">:</span> <span class="s">&lt;%= Time.zone.now %&gt;</span></span>
 <span class="s">&lt;% end %&gt;</span>
 </code></pre></div>
@@ -419,8 +419,8 @@ NoMethodError: private method `create_activation_digest' called for #&lt;User&gt
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails db:migrate:reset
-<span class="gp">$ </span>rails db:seed
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails db:migrate:reset
+<span class="nv">$ </span>rails db:seed
 </code></pre></div>
 </div>
 <h5 id="exercises-account-activation-data-model" class="discrete">练习</h5>
@@ -448,7 +448,7 @@ NoMethodError: private method `create_activation_digest' called for #&lt;User&gt
 <h5><span class="title-label">代码清单 11.6</span>：生成 <code>User</code> 邮件程序</h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate mailer UserMailer account_activation password_reset
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails generate mailer UserMailer account_activation password_reset
 </code></pre></div>
 </div>
 <p>除了这里所需的 <code>account_activation</code> 方法之外，<a class="xref-link" href="#listing-generate-user-mailer">代码清单 11.6</a> 还会生成<a class="xref-link" href="chapter12.html#password-reset">第 12 章</a>使用的 <code>password_reset</code> 方法。</p>
@@ -554,7 +554,7 @@ NoMethodError: private method `create_activation_digest' called for #&lt;User&gt
 <div data-type="listing">
 
 
-<div class="highlight language-ruby"><pre><code><span class="n">edit_account_activation_url</span><span class="p">(</span><span class="vi">@user</span><span class="p">.</span><span class="nf">activation_token</span><span class="p">,</span> <span class="p">.</span><span class="nf">.</span><span class="o">.</span><span class="p">)</span>
+<div class="highlight language-ruby"><pre><code><span class="n">edit_account_activation_url</span><span class="p">(</span><span class="vi">@user</span><span class="p">.</span><span class="nf">activation_token</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
 </code></pre></div>
 </div>
 <p>我们知道，<code>edit_user_url(user)</code> 生成的地址是下面这种形式：</p>
@@ -627,8 +627,8 @@ Welcome to the Sample App! Click on the link below to activate your account:
 <h5><span class="title-label">代码清单 11.15</span>：使用 <code>CGI.escape</code> 方法转义电子邮件地址</h5>
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; CGI.escape('foo@example.com')
-=&gt; "foo%40example.com"
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; CGI.escape('foo@example.com')</span>
+<span class="p">=&gt;</span> <span class="s2">"foo%40example.com"</span>
 </code></pre></div>
 </div>
 </section>
@@ -815,7 +815,7 @@ Welcome to the Sample App! Click on the link below to activate your account:
 <h5><span class="title-label">代码清单 11.22</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>:mailers
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>:mailers
 </code></pre></div>
 </div>
 <h5 id="exercises-email-tests" class="discrete">练习</h5>
@@ -1005,30 +1005,30 @@ Welcome to the Sample App! Click on the link below to activate your account:
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>$ rails console
-&gt;&gt; a = [1, 2, 3]
-&gt;&gt; a.length
-=&gt; 3
-&gt;&gt; a.send(:length)
-=&gt; 3
-&gt;&gt; a.send("length")
-=&gt; 3
+<div class="highlight language-irb"><pre><code><span class="go">$ rails console</span>
+<span class="go">&gt;&gt; a = [1, 2, 3]</span>
+<span class="go">&gt;&gt; a.length</span>
+<span class="p">=&gt;</span> <span class="mi">3</span>
+<span class="o">&gt;&gt;</span> <span class="n">a</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="ss">:length</span><span class="p">)</span>
+<span class="o">=&gt;</span> <span class="mi">3</span>
+<span class="o">&gt;&gt;</span> <span class="n">a</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="s2">"length"</span><span class="p">)</span>
+<span class="o">=&gt;</span> <span class="mi">3</span>
 </code></pre></div>
 </div>
 <p>可以看出，把 <code>:length</code> 符号或者 <code>'length'</code> 字符串传给 <code>send</code> 方法的作用与在对象上直接调用 <code>length</code> 方法的作用一样。下面再看一个例子，获取数据库中第一个用户的 <code>activation_digest</code> 属性：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; user = User.first
-&gt;&gt; user.activation_digest
-=&gt; "$2a$10$4e6TFzEJAVNyjLv8Q5u22ensMt28qEkx0roaZvtRcp6UZKRM6N9Ae"
-&gt;&gt; user.send(:activation_digest)
-=&gt; "$2a$10$4e6TFzEJAVNyjLv8Q5u22ensMt28qEkx0roaZvtRcp6UZKRM6N9Ae"
-&gt;&gt; user.send("activation_digest")
-=&gt; "$2a$10$4e6TFzEJAVNyjLv8Q5u22ensMt28qEkx0roaZvtRcp6UZKRM6N9Ae"
-<span class="hll">&gt;&gt; attribute = :activation</span>
-<span class="hll">&gt;&gt; user.send("#{attribute}_digest")</span>
-<span class="hll">=&gt; "$2a$10$4e6TFzEJAVNyjLv8Q5u22ensMt28qEkx0roaZvtRcp6UZKRM6N9Ae"</span>
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; user = User.first</span>
+<span class="go">&gt;&gt; user.activation_digest</span>
+<span class="p">=&gt;</span> <span class="s2">"$2a$10$4e6TFzEJAVNyjLv8Q5u22ensMt28qEkx0roaZvtRcp6UZKRM6N9Ae"</span>
+<span class="o">&gt;&gt;</span> <span class="n">user</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="ss">:activation_digest</span><span class="p">)</span>
+<span class="o">=&gt;</span> <span class="s2">"$2a$10$4e6TFzEJAVNyjLv8Q5u22ensMt28qEkx0roaZvtRcp6UZKRM6N9Ae"</span>
+<span class="o">&gt;&gt;</span> <span class="n">user</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="s2">"activation_digest"</span><span class="p">)</span>
+<span class="o">=&gt;</span> <span class="s2">"$2a$10$4e6TFzEJAVNyjLv8Q5u22ensMt28qEkx0roaZvtRcp6UZKRM6N9Ae"</span>
+<span class="hll"><span class="o">&gt;&gt;</span> <span class="n">attribute</span> <span class="o">=</span> <span class="ss">:activation</span></span>
+<span class="hll"><span class="o">&gt;&gt;</span> <span class="n">user</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="s2">"</span><span class="si">#{</span><span class="n">attribute</span><span class="si">}</span><span class="s2">_digest"</span><span class="p">)</span></span>
+<span class="hll"><span class="o">=&gt;</span> <span class="s2">"$2a$10$4e6TFzEJAVNyjLv8Q5u22ensMt28qEkx0roaZvtRcp6UZKRM6N9Ae"</span></span>
 </code></pre></div>
 </div>
 <p>注意最后一种调用方式，我们定义了一个 <code>attribute</code> 变量，其值为符号 <code>:activation</code>，然后使用字符串插值构建传给 <code>send</code> 方法的参数。<code>attribute</code> 变量的值使用字符串 <code>'activation'</code> 也行，不过符号更便利。不管使用什么，插值后，<code>"#{attribute}_digest"</code> 的结果都是 <code>"activation_digest"</code>。（<a class="xref-link" href="chapter7.html#the-flash">7.4.2 节</a>说过，插值时会把符号转换成字符串。）</p>
@@ -1099,7 +1099,7 @@ Welcome to the Sample App! Click on the link below to activate your account:
 <h5><span class="title-label">代码清单 11.27</span>：<strong class="red">RED</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <p>失败的原因是，<code>current_user</code> 方法（<a class="xref-link" href="chapter9.html#listing-persistent-current-user">代码清单 9.9</a>）和摘要为 <code>nil</code> 的测试（<a class="xref-link" href="chapter9.html#listing-test-authenticated-invalid-token">代码清单 9.17</a>）使用的都是旧版 <code>authenticated?</code>，期望传入的是一个参数而不是两个。因此，我们只需修改这两个地方，换用修改后的 <code>authenticated?</code> 方法就能解决这个问题，如<a class="xref-link" href="#listing-generalized-current-user">代码清单 11.28</a> 和<a class="xref-link" href="#listing-test-authenticated-invalid-token-updated">代码清单 11.29</a> 所示。</p>
@@ -1157,7 +1157,7 @@ Welcome to the Sample App! Click on the link below to activate your account:
 <h5><span class="title-label">代码清单 11.30</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <p>没有坚实的测试组件做后盾，像这样的重构很容易出错，所以我们才要在 <a class="xref-link" href="chapter9.html#login-with-remembering">9.1.2 节</a>和 <a class="xref-link" href="chapter9.html#remember-tests">9.3 节</a>排除万难编写测试。</p>
@@ -1344,7 +1344,7 @@ fFb_F94mgQtmlSvRFGsITw/edit?email=michael%40michaelhartl.com
 <h5><span class="title-label">代码清单 11.34</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <p>有了<a class="xref-link" href="#listing-signup-with-account-activation-test">代码清单 11.33</a> 中的测试做后盾，接下来我们可以稍微重构一下：把处理用户的代码从控制器中移出，放入模型。我们会定义一个 <code>activate</code> 方法，用来更新用户激活相关的属性；还要定义一个 <code>send_activation_email</code> 方法，发送激活邮件。这两个方法的定义如<a class="xref-link" href="#listing-user-activation-methods">代码清单 11.35</a> 所示，重构后的应用代码如<a class="xref-link" href="#listing-user-signup-refactored">代码清单 11.36</a> 和<a class="xref-link" href="#listing-account-activation-refactored">代码清单 11.37</a> 所示。</p>
@@ -1445,7 +1445,7 @@ fFb_F94mgQtmlSvRFGsITw/edit?email=michael%40michaelhartl.com
 <h5><span class="title-label">代码清单 11.38</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-activation-test-and-refactoring" class="discrete">练习</h5>
@@ -1466,7 +1466,7 @@ fFb_F94mgQtmlSvRFGsITw/edit?email=michael%40michaelhartl.com
 <div class="source-file">app/models/user.rb</div>
 
 <div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
-  <span class="kp">attr_accessor</span> <span class="ss">:remember_token</span><span class="p">,</span> <span class="ss">:activation_token</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:remember_token</span><span class="p">,</span> <span class="ss">:activation_token</span>
   <span class="n">before_save</span>   <span class="ss">:downcase_email</span>
   <span class="n">before_create</span> <span class="ss">:create_activation_digest</span>
   <span class="p">.</span>
@@ -1521,7 +1521,7 @@ fFb_F94mgQtmlSvRFGsITw/edit?email=michael%40michaelhartl.com
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>heroku addons:create sendgrid:starter
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>heroku addons:create sendgrid:starter
 </code></pre></div>
 </div>
 <p>（如果你使用的是 Heroku 的旧版命令行接口，这个命令可能无法执行。这个问题有两种解决方法：其一，<a href="https://toolbelt.heroku.com/" class="external-link">升级到最新的 Heroku 工具包</a>；其二，使用旧句法 <code>heroku addons:add sendgrid:starter</code>。）</p>
@@ -1558,29 +1558,29 @@ fFb_F94mgQtmlSvRFGsITw/edit?email=michael%40michaelhartl.com
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>heroku config:get SENDGRID_USERNAME
-<span class="gp">$ </span>heroku config:get SENDGRID_PASSWORD
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>heroku config:get SENDGRID_USERNAME
+<span class="nv">$ </span>heroku config:get SENDGRID_PASSWORD
 </code></pre></div>
 </div>
 <p>现在，把主题分支合并到主分支中：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
-<span class="gp">$ </span>git add -A
-<span class="gp">$ </span>git commit -m <span class="s2">"Add account activation"</span>
-<span class="gp">$ </span>git checkout master
-<span class="gp">$ </span>git merge account-activation
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
+<span class="nv">$ </span>git add <span class="nt">-A</span>
+<span class="nv">$ </span>git commit <span class="nt">-m</span> <span class="s2">"Add account activation"</span>
+<span class="nv">$ </span>git checkout master
+<span class="nv">$ </span>git merge account-activation
 </code></pre></div>
 </div>
 <p>然后，推送到远程仓库，再部署到 Heroku：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
-<span class="gp">$ </span>git push
-<span class="gp">$ </span>git push heroku
-<span class="gp">$ </span>heroku run rails db:migrate
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
+<span class="nv">$ </span>git push
+<span class="nv">$ </span>git push heroku
+<span class="nv">$ </span>heroku run rails db:migrate
 </code></pre></div>
 </div>
 <p>部署到 Heroku 中之后，在生产环境的演示应用中使用你的电子邮件注册试试。你应该会收到一封激活邮件，如<a class="xref-link" href="#fig-activation-email-production">图 11.7</a> 所示。点击邮件中的链接后应该能激活账户，如<a class="xref-link" href="#fig-activated-in-production">图 11.8</a> 所示。</p>

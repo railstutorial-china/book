@@ -9,7 +9,7 @@
   <meta name="keywords" content="ruby, rails, tutorial"/>
   <meta name="author" content="Michael Hartl"/>
   <meta name="translator" content="安道"/>
-  <meta name="generator" content="persie 0.0.3.beta.4"/>
+  <meta name="generator" content="persie 0.0.4.1"/>
   <link rel="stylesheet" type="text/css" href="//railstutorial-china.org/assets/css/main.css"/>
   <link rel="stylesheet" type="text/css" href="book.css"/>
   <script type="text/javascript" src="//railstutorial-china.org/assets/js/global.js"></script>
@@ -68,7 +68,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git checkout -b advanced-login
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>git checkout <span class="nt">-b</span> advanced-login
 </code></pre></div>
 </div>
 <section data-type="sect2" id="remember-token-and-digest">
@@ -100,7 +100,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate migration add_remember_digest_to_users remember_digest:string
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails generate migration add_remember_digest_to_users remember_digest:string
 </code></pre></div>
 </div>
 <p>（可以和 <a class="xref-link" href="chapter6.html#a-hashed-password">6.3.1 节</a>添加密码摘要的迁移比较一下。）与之前的迁移一样，迁移的名称以 <code>_to_users</code> 结尾，这么做是为了告诉 Rails 这个迁移是用来修改 <code>users</code> 表的。因为我们还指定了属性（<code>remember_digest</code>）及其类型（<code>string</code>），所以 Rails 会自动为我们生成迁移代码，如<a class="xref-link" href="#listing-add-remember-digest-to-users-generated">代码清单 9.1</a> 所示。</p>
@@ -109,7 +109,7 @@
 
 <div class="source-file">db/migrate/[timestamp]_add_remember_digest_to_users.rb</div>
 
-<div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">AddRememberDigestToUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mi">5</span><span class="o">.</span><span class="mi">0</span><span class="p">]</span>
+<div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">AddRememberDigestToUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mf">5.0</span><span class="p">]</span>
   <span class="k">def</span> <span class="nf">change</span>
     <span class="n">add_column</span> <span class="ss">:users</span><span class="p">,</span> <span class="ss">:remember_digest</span><span class="p">,</span> <span class="ss">:string</span>
   <span class="k">end</span>
@@ -120,16 +120,16 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails db:migrate
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails db:migrate
 </code></pre></div>
 </div>
 <p class="pagebreak-before">现在我们要决定使用什么做记忆令牌。不同的方式基本上都差不多，其实只要是一定长度的随机字符串都行。Ruby 标准库中 <code>SecureRandom</code> 模块的 <code>urlsafe_base64</code> 方法刚好能满足我们的需求。<sup>[<a id="fn-ref-3" href="#fn-3">3</a>]</sup>这个方法返回长度为 22 的随机字符串，包含字符 A-Z、a-z、0-9、“-”和“_”（每一位都有 64 种可能，因此方法名中有“<a href="http://en.wikipedia.org/wiki/Base64" class="external-link">base64</a>”）。典型的 base64 字符串如下所示：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>$ rails console
-&gt;&gt; SecureRandom.urlsafe_base64
-=&gt; "q5lt38hQDc_959PVoo6b7A"
+<div class="highlight language-irb"><pre><code><span class="go">$ rails console</span>
+<span class="go">&gt;&gt; SecureRandom.urlsafe_base64</span>
+<span class="p">=&gt;</span> <span class="s2">"q5lt38hQDc_959PVoo6b7A"</span>
 </code></pre></div>
 </div>
 <p>就像两个用户可以使用相同的密码一样，<sup>[<a id="fn-ref-4" href="#fn-4">4</a>]</sup>记忆令牌也没必要是唯一的，不过如果唯一的话，安全性更高。<sup>[<a id="fn-ref-5" href="#fn-5">5</a>]</sup>对 base64 字符串来说，22 个字符中的每一个都有 64 种取值可能，所以两个记忆令牌“碰撞”的几率小到可以忽略，只有 1/64<sup>22</sup> = 2<sup>-132</sup> ≈ 10<sup>-40</sup>。<sup>[<a id="fn-ref-6" href="#fn-6">6</a>]</sup>而且，使用可在 URL 中安全使用的 base64 字符串（如 <code>urlsafe_base64</code> 方法的名称所示），我们还能在账户激活和密码重设链接中使用类似的令牌。</p>
@@ -168,13 +168,13 @@
 
 
 <div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
-<span class="hll">  <span class="kp">attr_accessor</span> <span class="ss">:remember_token</span></span>
+<span class="hll">  <span class="nb">attr_accessor</span> <span class="ss">:remember_token</span></span>
   <span class="p">.</span>
   <span class="nf">.</span>
   <span class="p">.</span>
   <span class="nf">def</span> <span class="n">remember</span>
-<span class="hll">    <span class="nb">self</span><span class="p">.</span><span class="nf">remember_token</span> <span class="o">=</span> <span class="p">.</span><span class="nf">.</span><span class="p">.</span></span>
-<span class="hll">    <span class="nf">update_attribute</span><span class="p">(</span><span class="ss">:remember_digest</span><span class="p">,</span> <span class="p">.</span><span class="nf">.</span><span class="o">.</span><span class="p">)</span></span>
+<span class="hll">    <span class="nb">self</span><span class="p">.</span><span class="nf">remember_token</span> <span class="o">=</span> <span class="o">...</span></span>
+<span class="hll">    <span class="n">update_attribute</span><span class="p">(</span><span class="ss">:remember_digest</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span></span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div>
@@ -187,7 +187,7 @@
 <div class="source-file">app/models/user.rb</div>
 
 <div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
-<span class="hll">  <span class="kp">attr_accessor</span> <span class="ss">:remember_token</span></span>
+<span class="hll">  <span class="nb">attr_accessor</span> <span class="ss">:remember_token</span></span>
   <span class="p">.</span>
   <span class="nf">.</span>
   <span class="o">.</span>
@@ -286,21 +286,21 @@
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>$ rails console
-&gt;&gt; 1.year.from_now
-=&gt; Wed, 21 Jun 2017 19:36:29 UTC +00:00
-&gt;&gt; 10.weeks.ago
-=&gt; Tue, 12 Apr 2016 19:36:44 UTC +00:00
+<div class="highlight language-irb"><pre><code><span class="go">$ rails console</span>
+<span class="go">&gt;&gt; 1.year.from_now</span>
+<span class="p">=&gt;</span> <span class="no">Wed</span><span class="p">,</span> <span class="mi">21</span> <span class="no">Jun</span> <span class="mi">2017</span> <span class="mi">19</span><span class="p">:</span><span class="mi">36</span><span class="p">:</span><span class="mi">29</span> <span class="no">UTC</span> <span class="o">+</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span>
+<span class="o">&gt;&gt;</span> <span class="mi">10</span><span class="p">.</span><span class="nf">weeks</span><span class="p">.</span><span class="nf">ago</span>
+<span class="o">=&gt;</span> <span class="no">Tue</span><span class="p">,</span> <span class="mi">12</span> <span class="no">Apr</span> <span class="mi">2016</span> <span class="mi">19</span><span class="p">:</span><span class="mi">36</span><span class="p">:</span><span class="mi">44</span> <span class="no">UTC</span> <span class="o">+</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span>
 </code></pre></div>
 </div>
 <p>Rails 还在 <code>Fixnum</code> 类中添加了其他辅助方法：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; 1.kilobyte
-=&gt; 1024
-&gt;&gt; 5.megabytes
-=&gt; 5242880
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; 1.kilobyte</span>
+<span class="p">=&gt;</span> <span class="mi">1024</span>
+<span class="o">&gt;&gt;</span> <span class="mi">5</span><span class="p">.</span><span class="nf">megabytes</span>
+<span class="o">=&gt;</span> <span class="mi">5242880</span>
 </code></pre></div>
 </div>
 <p>这几个辅助方法可用于验证文件上传，例如，限制上传的图像最大不超过 <code>5.megabytes</code>。</p>
@@ -364,7 +364,7 @@
 <div class="source-file">app/models/user.rb</div>
 
 <div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
-  <span class="kp">attr_accessor</span> <span class="ss">:remember_token</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:remember_token</span>
   <span class="p">.</span>
   <span class="nf">.</span>
   <span class="o">.</span>
@@ -428,7 +428,9 @@
 
   <span class="c1"># 返回当前登录的用户（如果有的话）</span>
   <span class="k">def</span> <span class="nf">current_user</span>
-    <span class="vi">@current_user</span> <span class="o">||=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">id: </span><span class="n">session</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">session</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">]</span>
+      <span class="vi">@current_user</span> <span class="o">||=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">id: </span><span class="n">session</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">])</span>
+    <span class="k">end</span>
   <span class="k">end</span>
 
   <span class="c1"># 如果用户已登录，返回 true，否则返回 false</span>
@@ -561,7 +563,7 @@
 <h5><span class="title-label">代码清单 9.10</span>：<strong class="red">RED</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-login-with-remembering" class="discrete">练习</h5>
@@ -634,7 +636,7 @@
 <h5><span class="title-label">代码清单 9.13</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-forgetting-users" class="discrete">练习</h5>
@@ -740,7 +742,7 @@
 <h5><span class="title-label">代码清单 9.15</span>：<strong class="red">RED</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <p>在应用代码中，我们只需在 <code>logged_in?</code> 返回 <code>true</code> 时调用 <code>log_out</code> 即可，如<a class="xref-link" href="#listing-destroy-forget">代码清单 9.16</a> 所示。</p>
@@ -788,7 +790,7 @@
 <h5><span class="title-label">代码清单 9.18</span>：<strong class="red">RED</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <p>为了修正这个问题，让测试通过，记忆摘要的值为 <code>nil</code> 时，<code>authenticated?</code> 要返回 <code>false</code>，如<a class="xref-link" href="#listing-authenticated-p-fixed">代码清单 9.19</a> 所示。</p>
@@ -831,7 +833,7 @@
 <h5><span class="title-label">代码清单 9.20</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-two-subtle-bugs" class="discrete">练习</h5>
@@ -1203,7 +1205,7 @@
 <h5><span class="title-label">代码清单 9.26</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-testing-the-remember-me-box" class="discrete">练习</h5>
@@ -1311,7 +1313,7 @@
 <h5><span class="title-label">代码清单 9.30</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <p>这显然是个问题，因为<a class="xref-link" href="#listing-branch-raise">代码清单 9.29</a> 会导致应用无法正常使用。而且，手动测试持久会话很麻烦，所以，如果以后想重构 <code>current_user</code> 方法的话（<a class="xref-link" href="chapter11.html#account-activation">第 11 章</a>将重构），现在就要测试。</p>
@@ -1319,7 +1321,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>touch <span class="nb">test</span>/helpers/sessions_helper_test.rb
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span><span class="nb">touch test</span>/helpers/sessions_helper_test.rb
 </code></pre></div>
 </div>
 <p>测试的步骤很简单：</p>
@@ -1394,7 +1396,7 @@
 <h5><span class="title-label">代码清单 9.32</span>：<strong class="red">RED</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test test</span>/helpers/sessions_helper_test.rb
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test test</span>/helpers/sessions_helper_test.rb
 </code></pre></div>
 </div>
 <p>我们要删除 <code>raise</code>，把 <code>current_user</code> 方法恢复原样，如<a class="xref-link" href="#listing-branch-no-raise">代码清单 9.33</a> 所示，这样测试就能通过了。</p>
@@ -1430,7 +1432,7 @@
 <h5><span class="title-label">代码清单 9.34</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <p>现在，<code>current_user</code> 方法中的“记住”分支有了测试，我们不用手动检查了，还且测试还能捕获回归。</p>
@@ -1450,21 +1452,21 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
-<span class="gp">$ </span>git add -A
-<span class="gp">$ </span>git commit -m <span class="s2">"Implement advanced login"</span>
-<span class="gp">$ </span>git checkout master
-<span class="gp">$ </span>git merge advanced-login
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
+<span class="nv">$ </span>git add <span class="nt">-A</span>
+<span class="nv">$ </span>git commit <span class="nt">-m</span> <span class="s2">"Implement advanced login"</span>
+<span class="nv">$ </span>git checkout master
+<span class="nv">$ </span>git merge advanced-login
 </code></pre></div>
 </div>
 <p>部署到 Heroku 之前要注意一个问题：推送之后，迁移完成之前，应用基本上处于不可用状态。在拥有巨大流量的线上网站中，更新前最好开启<a href="https://devcenter.heroku.com/articles/maintenance-mode" class="external-link">维护模式</a>：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>heroku maintenance:on
-<span class="gp">$ </span>git push heroku
-<span class="gp">$ </span>heroku run rails db:migrate
-<span class="gp">$ </span>heroku maintenance:off
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>heroku maintenance:on
+<span class="nv">$ </span>git push heroku
+<span class="nv">$ </span>heroku run rails db:migrate
+<span class="nv">$ </span>heroku maintenance:off
 </code></pre></div>
 </div>
 <p>这样，在部署和执行迁移期间会显示一个标准的错误页面。（以后不会再做这一步，不过至少亲见一次总是好的。）详情参见 Heroku 文档对<a href="https://devcenter.heroku.com/articles/error-pages" class="external-link">错误页面</a>的说明。</p>
@@ -1516,7 +1518,7 @@
 <li id="fn-5">如果记忆令牌是唯一的，攻击者必须同时拥有用户的 ID 和 cookie 中的记忆令牌才能劫持会话。 <a href="#fn-ref-5" class="symbol">&#8617;</a></li>
 <li id="fn-6">这还不足以让某些开发者信服，他们还是想确认没有碰撞，但是 10<sup>-40</sup> 概率太小了，这根本就是徒劳无益。如果整个宇宙一秒钟生成 10 亿个令牌，发生碰撞的几率仍是 10<sup>-23</sup> 数量级。 <a href="#fn-ref-6" class="symbol">&#8617;</a></li>
 <li id="fn-7">一般的规则是，如果方法不需要访问类的实例，就应该定义为类方法。到 <a class="xref-link" href="chapter11.html#account-activation-emails">11.2 节</a>你会发现，这个决定很重要。 <a href="#fn-ref-7" class="symbol">&#8617;</a></li>
-<li id="fn-8">一般来说，<a href="https://en.wikipedia.org/wiki/Digital_signature" class="external-link">签名</a>和<a href="https://en.wikipedia.org/wiki/Encryption" class="external-link">加密</a>是两个不同的操作，但是从 Rails 4 开始，`signed`方法默认<a href="http://api.rubyonrails.org/classes/ActionDispatch/Session/CookieStore.html" class="external-link">既签名也加密</a>。 <a href="#fn-ref-8" class="symbol">&#8617;</a></li>
+<li id="fn-8">一般来说，<a href="https://en.wikipedia.org/wiki/Digital_signature" class="external-link">签名</a>和<a href="https://en.wikipedia.org/wiki/Encryption" class="external-link">加密</a>是两个不同的操作，但是从 Rails 4 开始，<code>signed</code> 方法默认<a href="http://api.rubyonrails.org/classes/ActionDispatch/Session/CookieStore.html" class="external-link">既签名也加密</a>。 <a href="#fn-ref-8" class="symbol">&#8617;</a></li>
 <li id="fn-9"><a class="xref-link" href="chapter6.html#a-hashed-password">6.3.1 节</a>说过，“unencrypted password”（未加密的密码）用词不当，因为安全密码是哈希值，并不是加密后得到的值。 <a href="#fn-ref-9" class="symbol">&#8617;</a></li>
 <li id="fn-10">我一般会把这种赋值语句放在括号内，从视觉上提醒自己，这不是比较。 <a href="#fn-ref-10" class="symbol">&#8617;</a></li>
 <li id="fn-11">若想知道怎么在你的系统中查看 cookie，请在谷歌中搜索“&lt;你的浏览器名&gt; inspect cookies”。 <a href="#fn-ref-11" class="symbol">&#8617;</a></li>

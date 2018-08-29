@@ -9,7 +9,7 @@
   <meta name="keywords" content="ruby, rails, tutorial"/>
   <meta name="author" content="Michael Hartl"/>
   <meta name="translator" content="安道"/>
-  <meta name="generator" content="persie 0.0.3.beta.4"/>
+  <meta name="generator" content="persie 0.0.4.1"/>
   <link rel="stylesheet" type="text/css" href="//railstutorial-china.org/assets/css/main.css"/>
   <link rel="stylesheet" type="text/css" href="book.css"/>
   <script type="text/javascript" src="//railstutorial-china.org/assets/js/global.js"></script>
@@ -67,9 +67,9 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span><span class="nb">cd</span> ~/environment
-<span class="gp">$ </span>rails _5.1.4_ new toy_app
-<span class="gp">$ </span><span class="nb">cd </span>toy_app/
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span><span class="nb">cd</span> ~/environment
+<span class="nv">$ </span>rails _5.1.6_ new toy_app
+<span class="nv">$ </span><span class="nb">cd </span>toy_app/
 </code></pre></div>
 </div>
 <p>如果使用<a class="xref-link" href="chapter1.html#development-environment">1.2.1 节</a>推荐的云端 IDE，这个应用可以在第一个应用所在的工作空间中创建，没必要再新建一个工作空间。如果没看到文件，可以点击文件浏览器中的齿轮图标，然后选择“Refresh File Tree”（刷新文件树）。</p>
@@ -80,7 +80,7 @@
 
 <div class="highlight language-ruby"><pre><code><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
 
-<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>        <span class="s1">'5.1.4'</span>
+<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>        <span class="s1">'5.1.6'</span>
 <span class="n">gem</span> <span class="s1">'puma'</span><span class="p">,</span>         <span class="s1">'3.9.1'</span>
 <span class="n">gem</span> <span class="s1">'sass-rails'</span><span class="p">,</span>   <span class="s1">'5.0.6'</span>
 <span class="n">gem</span> <span class="s1">'uglifier'</span><span class="p">,</span>     <span class="s1">'3.2.0'</span>
@@ -96,7 +96,7 @@
 
 <span class="n">group</span> <span class="ss">:development</span> <span class="k">do</span>
   <span class="n">gem</span> <span class="s1">'web-console'</span><span class="p">,</span>           <span class="s1">'3.5.1'</span>
-  <span class="n">gem</span> <span class="s1">'listen'</span><span class="p">,</span>                <span class="s1">'3.0.8'</span>
+  <span class="n">gem</span> <span class="s1">'listen'</span><span class="p">,</span>                <span class="s1">'3.1.5'</span>
   <span class="n">gem</span> <span class="s1">'spring'</span><span class="p">,</span>                <span class="s1">'2.0.2'</span>
   <span class="n">gem</span> <span class="s1">'spring-watcher-listen'</span><span class="p">,</span> <span class="s1">'2.0.1'</span>
 <span class="k">end</span>
@@ -114,7 +114,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>bundle install --without production
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>bundle <span class="nb">install</span> <span class="nt">--without</span> production
 </code></pre></div>
 </div>
 <p>如 <a class="xref-link" href="chapter1.html#bundler">1.3.1 节</a>所述，可能还要运行 <code>bundle update</code>（<a class="xref-link" href="chapter1.html#aside-technical-sophistication">旁注 1.1</a>）。</p>
@@ -122,9 +122,9 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git init
-<span class="gp">$ </span>git add -A
-<span class="gp">$ </span>git commit -m <span class="s2">"Initialize repository"</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>git init
+<span class="nv">$ </span>git add <span class="nt">-A</span>
+<span class="nv">$ </span>git commit <span class="nt">-m</span> <span class="s2">"Initialize repository"</span>
 </code></pre></div>
 </div>
 <div id="fig-create-demo-repository" class="figure"><img src="images/chapter2/create_demo_repo_bitbucket.png" alt="create demo repo bitbucket" /><div class="figcaption"><span class="title-label">图 2.1</span>：在 Bitbucket 中为这个玩具应用创建一个仓库</div></div>
@@ -132,8 +132,8 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git remote add origin git@bitbucket.org:&lt;username&gt;/toy_app.git
-<span class="gp">$ </span>git push -u origin --all
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>git remote add origin git@bitbucket.org:&lt;username&gt;/toy_app.git
+<span class="nv">$ </span>git push <span class="nt">-u</span> origin <span class="nt">--all</span>
 </code></pre></div>
 </div>
 <p>越早部署应用越好。我建议你按照 <a class="xref-link" href="chapter1.html#hello-world">1.3.4 节</a>所述的步骤做，修改<a class="xref-link" href="#listing-hello-action-redux">代码清单 2.2</a> 和<a class="xref-link" href="#listing-hello-root-route-redux">代码清单 2.3</a>。</p>
@@ -165,9 +165,9 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git commit -am <span class="s2">"Add hello"</span>
-<span class="gp">$ </span>heroku create
-<span class="gp">$ </span>git push heroku master
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>git commit <span class="nt">-am</span> <span class="s2">"Add hello"</span>
+<span class="nv">$ </span>heroku create
+<span class="nv">$ </span>git push heroku master
 </code></pre></div>
 </div>
 <p>（与 <a class="xref-link" href="chapter1.html#deploying">1.5 节</a>一样，你可能会看到一些提醒消息，现在先不去管它。<a class="xref-link" href="chapter7.html#professional-grade-deployment">7.5 节</a>会解决。）除了 Heroku 为应用提供的地址之外，输出的内容应该与<a class="xref-link" href="chapter1.html#fig-heroku-app">图 1.23</a> 一样。</p>
@@ -192,7 +192,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="hll"><span class="gp">$ </span>rails generate scaffold User name:string email:string</span>
+<div class="highlight language-sh"><pre><code><span class="hll"><span class="nv">$ </span>rails generate scaffold User name:string email:string</span>
       invoke  active_record
       create    db/migrate/20160515001017_create_users.rb
       create    app/models/user.rb
@@ -233,9 +233,9 @@
 <h5><span class="title-label">代码清单 2.4</span>：迁移数据库</h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="hll"><span class="gp">$ </span>rails db:migrate</span>
+<div class="highlight language-sh"><pre><code><span class="hll"><span class="nv">$ </span>rails db:migrate</span>
 <span class="o">==</span>  CreateUsers: migrating <span class="o">====================================================</span>
--- create_table<span class="o">(</span>:users<span class="o">)</span>
+<span class="nt">--</span> create_table<span class="o">(</span>:users<span class="o">)</span>
    -&gt; 0.0017s
 <span class="o">==</span>  CreateUsers: migrated <span class="o">(</span>0.0018s<span class="o">)</span> <span class="o">===========================================</span>
 </code></pre></div>
@@ -249,7 +249,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>bundle <span class="nb">exec </span>rake db:migrate
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>bundle <span class="nb">exec </span>rake db:migrate
 </code></pre></div>
 </div>
 </div>
@@ -257,7 +257,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails server
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails server
 </code></pre></div>
 </div>
 <p>现在，这个玩具应用应该可以在本地服务器中访问了，结果与 <a class="xref-link" href="chapter1.html#rails-server">1.3.2 节</a>一样。（如果使用云端 IDE，要在一个新的浏览器选项卡中打开网页，别在 IDE 中打开。）</p>
@@ -622,7 +622,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="hll"><span class="gp">$ </span>rails generate scaffold Micropost content:text user_id:integer</span>
+<div class="highlight language-sh"><pre><code><span class="hll"><span class="nv">$ </span>rails generate scaffold Micropost content:text user_id:integer</span>
       invoke  active_record
       create    db/migrate/20160515211229_create_microposts.rb
       create    app/models/micropost.rb
@@ -661,9 +661,9 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="hll"><span class="gp">$ </span>rails db:migrate</span>
+<div class="highlight language-sh"><pre><code><span class="hll"><span class="nv">$ </span>rails db:migrate</span>
 <span class="o">==</span>  CreateMicroposts: migrating <span class="o">===============================================</span>
--- create_table<span class="o">(</span>:microposts<span class="o">)</span>
+<span class="nt">--</span> create_table<span class="o">(</span>:microposts<span class="o">)</span>
    -&gt; 0.0023s
 <span class="o">==</span>  CreateMicroposts: migrated <span class="o">(</span>0.0026s<span class="o">)</span> <span class="o">======================================</span>
 </code></pre></div>
@@ -871,22 +871,22 @@
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code><span class="hll">$ rails console</span>
-&gt;&gt; first_user = User.first
-=&gt; #&lt;User id: 1, name: "Michael Hartl", email: "michael@example.org",
-created_at: "2016-05-15 02:01:31", updated_at: "2016-05-15 02:01:31"&gt;
-&gt;&gt; first_user.microposts
-=&gt; [#&lt;Micropost id: 1, content: "First micropost!", user_id: 1, created_at:
-"2016-05-15 02:37:37", updated_at: "2016-05-15 02:37:37"&gt;, #&lt;Micropost id: 2,
-content: "Second micropost", user_id: 1, created_at: "2016-05-15 02:38:54",
-updated_at: "2016-05-15 02:38:54"&gt;]
-&gt;&gt; micropost = first_user.microposts.first    # 使用 Micropost.first 也可以
-=&gt; #&lt;Micropost id: 1, content: "First micropost!", user_id: 1, created_at:
-"2016-05-15 02:37:37", updated_at: "2016-05-15 02:37:37"&gt;
-&gt;&gt; micropost.user
-=&gt; #&lt;User id: 1, name: "Michael Hartl", email: "michael@example.org",
-created_at: "2016-05-15 02:01:31", updated_at: "2016-05-15 02:01:31"&gt;
-&gt;&gt; exit
+<div class="highlight language-irb"><pre><code><span class="hll"><span class="go">$ rails console</span></span>
+<span class="go">&gt;&gt; first_user = User.first</span>
+<span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">User</span> <span class="ss">id: </span><span class="mi">1</span><span class="p">,</span> <span class="ss">name: </span><span class="s2">"Michael Hartl"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"michael@example.org"</span><span class="p">,</span>
+<span class="ss">created_at: </span><span class="s2">"2016-05-15 02:01:31"</span><span class="p">,</span> <span class="ss">updated_at: </span><span class="s2">"2016-05-15 02:01:31"</span><span class="kt">&gt;</span>
+<span class="o">&gt;&gt;</span> <span class="n">first_user</span><span class="p">.</span><span class="nf">microposts</span>
+<span class="o">=&gt;</span> <span class="p">[</span><span class="kt">#&lt;</span><span class="no">Micropost</span> <span class="ss">id: </span><span class="mi">1</span><span class="p">,</span> <span class="ss">content: </span><span class="s2">"First micropost!"</span><span class="p">,</span> <span class="ss">user_id: </span><span class="mi">1</span><span class="p">,</span> <span class="ss">created_at:</span>
+<span class="s2">"2016-05-15 02:37:37"</span><span class="p">,</span> <span class="ss">updated_at: </span><span class="s2">"2016-05-15 02:37:37"</span><span class="kt">&gt;</span><span class="p">,</span> <span class="kt">#&lt;</span><span class="no">Micropost</span> <span class="ss">id: </span><span class="mi">2</span><span class="p">,</span>
+<span class="ss">content: </span><span class="s2">"Second micropost"</span><span class="p">,</span> <span class="ss">user_id: </span><span class="mi">1</span><span class="p">,</span> <span class="ss">created_at: </span><span class="s2">"2016-05-15 02:38:54"</span><span class="p">,</span>
+<span class="ss">updated_at: </span><span class="s2">"2016-05-15 02:38:54"</span><span class="kt">&gt;</span><span class="p">]</span>
+<span class="o">&gt;&gt;</span> <span class="n">micropost</span> <span class="o">=</span> <span class="n">first_user</span><span class="p">.</span><span class="nf">microposts</span><span class="p">.</span><span class="nf">first</span>    <span class="c1"># 使用 Micropost.first 也可以</span>
+<span class="o">=&gt;</span> <span class="kt">#&lt;</span><span class="no">Micropost</span> <span class="ss">id: </span><span class="mi">1</span><span class="p">,</span> <span class="ss">content: </span><span class="s2">"First micropost!"</span><span class="p">,</span> <span class="ss">user_id: </span><span class="mi">1</span><span class="p">,</span> <span class="ss">created_at:</span>
+<span class="s2">"2016-05-15 02:37:37"</span><span class="p">,</span> <span class="ss">updated_at: </span><span class="s2">"2016-05-15 02:37:37"</span><span class="kt">&gt;</span>
+<span class="o">&gt;&gt;</span> <span class="n">micropost</span><span class="p">.</span><span class="nf">user</span>
+<span class="o">=&gt;</span> <span class="kt">#&lt;</span><span class="no">User</span> <span class="ss">id: </span><span class="mi">1</span><span class="p">,</span> <span class="ss">name: </span><span class="s2">"Michael Hartl"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"michael@example.org"</span><span class="p">,</span>
+<span class="ss">created_at: </span><span class="s2">"2016-05-15 02:01:31"</span><span class="p">,</span> <span class="ss">updated_at: </span><span class="s2">"2016-05-15 02:01:31"</span><span class="kt">&gt;</span>
+<span class="o">&gt;&gt;</span> <span class="nb">exit</span>
 </code></pre></div>
 </div>
 <p>（我在这段代码的最后一行加上了 <code>exit</code>，告诉你如何退出控制台。在大多数系统中也可以按 Ctrl-D 键退出控制台。）<sup>[<a id="fn-ref-8" href="#fn-8">8</a>]</sup>我们使用 <code>first_user.microposts</code> 获取这个用户发布的微博。Active Record 会自动返回 <code>user_id</code> 的值与 <code>first_user</code> 的 ID（<code>1</code>）相同的所有微博。在<a class="xref-link" href="chapter13.html#user-microposts">第 13 章</a>和<a class="xref-link" href="chapter14.html#following-users">第 14 章</a>中，我们会更深入地学习关联。</p>
@@ -1014,10 +1014,10 @@ created_at: "2016-05-15 02:01:31", updated_at: "2016-05-15 02:01:31"&gt;
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git status
-<span class="gp">$ </span>git add -A
-<span class="gp">$ </span>git commit -m <span class="s2">"Finish toy app"</span>
-<span class="gp">$ </span>git push
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>git status
+<span class="nv">$ </span>git add <span class="nt">-A</span>
+<span class="nv">$ </span>git commit <span class="nt">-m</span> <span class="s2">"Finish toy app"</span>
+<span class="nv">$ </span>git push
 </code></pre></div>
 </div>
 <p>通常情况下，你应该经常做一些很小的提交，不过对于本章来说，最后做一次大提交也无妨。</p>
@@ -1025,7 +1025,7 @@ created_at: "2016-05-15 02:01:31", updated_at: "2016-05-15 02:01:31"&gt;
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git push heroku
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>git push heroku
 </code></pre></div>
 </div>
 <p>（执行这个命令之前要按照 <a class="xref-link" href="#planning-the-application">2.1 节</a>中的说明创建 Heroku 应用：先执行 <code>heroku create</code> 命令，然后再执行 <code>git push heroku master</code> 命令。）</p>
@@ -1033,7 +1033,7 @@ created_at: "2016-05-15 02:01:31", updated_at: "2016-05-15 02:01:31"&gt;
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>heroku run rails db:migrate
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>heroku run rails db:migrate
 </code></pre></div>
 </div>
 <p>这个命令会按照 <code>User</code> 和  <code>Micropost</code> 数据模型更新 Heroku 中的数据库。迁移数据库之后，就可以在生产环境中使用这个应用了，如<a class="xref-link" href="#fig-toy-app-production">图 2.20</a> 所示，而且这个应用使用 PostgreSQL 数据库。</p>

@@ -9,7 +9,7 @@
   <meta name="keywords" content="ruby, rails, tutorial"/>
   <meta name="author" content="Michael Hartl"/>
   <meta name="translator" content="安道"/>
-  <meta name="generator" content="persie 0.0.3.beta.4"/>
+  <meta name="generator" content="persie 0.0.4.1"/>
   <link rel="stylesheet" type="text/css" href="//railstutorial-china.org/assets/css/main.css"/>
   <link rel="stylesheet" type="text/css" href="book.css"/>
   <script type="text/javascript" src="//railstutorial-china.org/assets/js/global.js"></script>
@@ -67,7 +67,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git checkout -b updating-users
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>git checkout <span class="nt">-b</span> updating-users
 </code></pre></div>
 </div>
 <section data-type="sect2" id="edit-form">
@@ -179,11 +179,11 @@
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>$ rails console
-&gt;&gt; User.new.new_record?
-=&gt; true
-&gt;&gt; User.first.new_record?
-=&gt; false
+<div class="highlight language-irb"><pre><code><span class="go">$ rails console</span>
+<span class="go">&gt;&gt; User.new.new_record?</span>
+<span class="p">=&gt;</span> <span class="kp">true</span>
+<span class="o">&gt;&gt;</span> <span class="no">User</span><span class="p">.</span><span class="nf">first</span><span class="p">.</span><span class="nf">new_record?</span>
+<span class="o">=&gt;</span> <span class="kp">false</span>
 </code></pre></div>
 </div>
 <p>所以使用 <code>form_for(@user)</code> 构建表单时，如果 <code>@user.new_record?</code> 返回 <code>true</code>，Rails 发送 <code>POST</code> 请求，否则发送 <code>PATCH</code> 请求。</p>
@@ -366,7 +366,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate integration_test users_edit
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails generate integration_test users_edit
       invoke  test_unit
       create    <span class="nb">test</span>/integration/users_edit_test.rb
 </code></pre></div>
@@ -403,7 +403,7 @@
 <h5><span class="title-label">代码清单 10.10</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-testing-unsuccessful-edits" class="discrete">练习</h5>
@@ -484,7 +484,7 @@
 <div class="source-file">app/models/user.rb</div>
 
 <div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
-  <span class="kp">attr_accessor</span> <span class="ss">:remember_token</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:remember_token</span>
   <span class="n">before_save</span> <span class="p">{</span> <span class="nb">self</span><span class="p">.</span><span class="nf">email</span> <span class="o">=</span> <span class="n">email</span><span class="p">.</span><span class="nf">downcase</span> <span class="p">}</span>
   <span class="n">validates</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">length: </span><span class="p">{</span> <span class="ss">maximum: </span><span class="mi">50</span> <span class="p">}</span>
   <span class="no">VALID_EMAIL_REGEX</span> <span class="o">=</span> <span class="sr">/\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i</span>
@@ -505,7 +505,7 @@
 <h5><span class="title-label">代码清单 10.14</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <div id="fig-edit-form-working" class="figure"><img src="images/chapter10/edit_form_working_new.png" alt="edit form working new" /><div class="figcaption"><span class="title-label">图 10.5</span>：编辑成功后显示的页面</div></div>
@@ -565,7 +565,7 @@
 <h5><span class="title-label">代码清单 10.16</span>：<strong class="red">RED</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <p>这是因为现在 <code>edit</code> 和 <code>update</code> 动作都需要用户先登录，而在相应的测试中没有已登录的用户。</p>
@@ -608,7 +608,7 @@
 <h5><span class="title-label">代码清单 10.18</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <p>测试组件虽然通过了，但是对前置过滤器的测试还没完，因为即便把安全防护去掉，测试也能通过。你可以把前置过滤器注释掉确认一下，如<a class="xref-link" href="#listing-commented-out-before-filter">代码清单 10.19</a> 所示。这可不妙！在测试组件能捕获的所有回归中，重大安全漏洞或许是最重要的。按照<a class="xref-link" href="#listing-commented-out-before-filter">代码清单 10.19</a> 的方式修改后，绝对不能让测试通过。下面我们编写测试捕获这个问题。</p>
@@ -676,7 +676,7 @@
 <h5><span class="title-label">代码清单 10.22</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <p>如果不小心让未授权的用户能访问 <code>edit</code> 动作，现在测试组件能立即捕获。</p>
@@ -797,7 +797,7 @@
 <h5><span class="title-label">代码清单 10.26</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <p>最后，我们还要重构一下。我们要遵守一般的约定，定义 <code>current_user?</code> 方法，返回布尔值，然后在 <code>correct_user</code> 中调用。我们要在 <code>Sessions</code> 辅助模块中定义这个方法，如<a class="xref-link" href="#listing-current-user-p">代码清单 10.27</a> 所示。 然后我们就可以把</p>
@@ -1049,7 +1049,7 @@
 <h5><span class="title-label">代码清单 10.33</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-friendly-forwarding" class="discrete">练习</h5>
@@ -1238,7 +1238,7 @@
 <h5><span class="title-label">代码清单 10.41</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <p>不过，如<a class="xref-link" href="#fig-user-index-only-one">图 10.9</a> 所示，页面中只显示了一个用户，有点孤单。下面，我们来改变这种悲惨状况。</p>
@@ -1260,8 +1260,8 @@
 
 <div class="highlight language-ruby"><pre><code><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
 
-<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>                   <span class="s1">'5.1.4'</span>
-<span class="n">gem</span> <span class="s1">'bcrypt'</span><span class="p">,</span>                  <span class="s1">'3.1.11'</span>
+<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>                   <span class="s1">'5.1.6'</span>
+<span class="n">gem</span> <span class="s1">'bcrypt'</span><span class="p">,</span>                  <span class="s1">'3.1.12'</span>
 <span class="hll"><span class="n">gem</span> <span class="s1">'faker'</span><span class="p">,</span>                   <span class="s1">'1.7.3'</span></span>
 <span class="p">.</span>
 <span class="nf">.</span>
@@ -1272,7 +1272,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>bundle install
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>bundle <span class="nb">install</span>
 </code></pre></div>
 </div>
 <p>接下来，我们要添加一些 Ruby 代码，向数据库中添加示例用户。Rails 使用一个标准文件 <code>db/seeds.rb</code> 完成这种操作，如<a class="xref-link" href="#listing-db-seed">代码清单 10.43</a> 所示。（这段代码涉及一些高级知识，现在不必太关注细节。）</p>
@@ -1302,8 +1302,8 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails db:migrate:reset
-<span class="gp">$ </span>rails db:seed
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails db:migrate:reset
+<span class="nv">$ </span>rails db:seed
 </code></pre></div>
 </div>
 <p>向数据库中添加数据的操作可能很慢，在某些系统中可能要花上几分钟。此外，有些读者反馈说，Rails 服务器运行的过程中无法执行 <code>reset</code> 命令，因此，可能要先停止服务器，然后再执行上述命令。</p>
@@ -1326,11 +1326,11 @@
 
 <div class="highlight language-ruby"><pre><code><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
 
-<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>                   <span class="s1">'5.1.4'</span>
-<span class="n">gem</span> <span class="s1">'bcrypt'</span><span class="p">,</span>                  <span class="s1">'3.1.11'</span>
+<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>                   <span class="s1">'5.1.6'</span>
+<span class="n">gem</span> <span class="s1">'bcrypt'</span><span class="p">,</span>                  <span class="s1">'3.1.12'</span>
 <span class="n">gem</span> <span class="s1">'faker'</span><span class="p">,</span>                   <span class="s1">'1.7.3'</span>
-<span class="hll"><span class="n">gem</span> <span class="s1">'nokogiri'</span><span class="p">,</span>                <span class="s1">'1.8.1'</span></span>
-<span class="hll"><span class="n">gem</span> <span class="s1">'will_paginate'</span><span class="p">,</span>           <span class="s1">'3.1.6'</span></span>
+<span class="hll"><span class="n">gem</span> <span class="s1">'bootstrap-will_paginate'</span><span class="p">,</span> <span class="s1">'1.0.0'</span></span>
+<span class="hll"><span class="n">gem</span> <span class="s1">'bootstrap-sass'</span><span class="p">,</span>          <span class="s1">'3.3.7'</span></span>
 <span class="p">.</span>
 <span class="nf">.</span>
 <span class="o">.</span>
@@ -1340,7 +1340,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>bundle install
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>bundle <span class="nb">install</span>
 </code></pre></div>
 </div>
 <p>安装后还要重启 Web 服务器，确保正确加载这两个新 gem。</p>
@@ -1371,11 +1371,11 @@
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>$ rails console
-&gt;&gt; User.paginate(page: 1)
-  User Load (1.5ms)  SELECT "users".* FROM "users" LIMIT 30 OFFSET 0
-   (1.7ms)  SELECT COUNT(*) FROM "users"
-=&gt; #&lt;ActiveRecord::Relation [#&lt;User id: 1,...
+<div class="highlight language-irb"><pre><code><span class="go">$ rails console</span>
+<span class="go">&gt;&gt; User.paginate(page: 1)</span>
+<span class="go">  User Load (1.5ms)  SELECT "users".* FROM "users" LIMIT 30 OFFSET 0</span>
+<span class="go">   (1.7ms)  SELECT COUNT(*) FROM "users"</span>
+<span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Relation</span> <span class="p">[</span><span class="kt">#&lt;</span><span class="no">User</span> <span class="ss">id: </span><span class="mi">1</span><span class="p">,</span><span class="o">...</span>
 </code></pre></div>
 </div>
 <p>注意，<code>paginate</code> 方法可以接受一个散列参数，其中 <code>:page</code> 键的值指定显示第几页。<code>User.paginate</code> 方法根据 <code>:page</code> 的值，一次取回一组用户（默认为 30 个）。所以，第一页显示的是第 1-30 个用户，第二页显示的是第 31-60 个用户，以此类推。如果 <code>:page</code> 的值为 <code>nil</code>，<code>paginate</code> 会显示第一页。</p>
@@ -1454,7 +1454,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate integration_test users_index
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails generate integration_test users_index
       invoke  test_unit
       create    <span class="nb">test</span>/integration/users_index_test.rb
 </code></pre></div>
@@ -1490,7 +1490,7 @@
 <h5><span class="title-label">代码清单 10.49</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-user-index-test" class="discrete">练习</h5>
@@ -1562,7 +1562,7 @@
 <h5><span class="title-label">代码清单 10.53</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-partial-refactoring" class="discrete">练习</h5>
@@ -1585,7 +1585,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate migration add_admin_to_users admin:boolean
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails generate migration add_admin_to_users admin:boolean
 </code></pre></div>
 </div>
 <p>这个迁移会在 <code>users</code> 表中添加 <code>admin</code> 列，如<a class="xref-link" href="#listing-admin-migration">代码清单 10.54</a> 所示。注意，在<a class="xref-link" href="#listing-admin-migration">代码清单 10.54</a> 中，我们在 <code>add_column</code> 方法中指定了 <code>default: false</code> 参数，意思是默认情况下用户不是管理员。（如果不指定 <code>default: false</code> 参数，<code>admin</code> 的默认值是 <code>nil</code>，也是假值，所以这个参数并不是必须的。不过，指定这个参数，可以更明确地向 Rails 以及代码的阅读者表明这段代码的意图。）</p>
@@ -1594,7 +1594,7 @@
 
 <div class="source-file">db/migrate/[timestamp]_add_admin_to_users.rb</div>
 
-<div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">AddAdminToUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mi">5</span><span class="o">.</span><span class="mi">0</span><span class="p">]</span>
+<div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">AddAdminToUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mf">5.0</span><span class="p">]</span>
   <span class="k">def</span> <span class="nf">change</span>
 <span class="hll">    <span class="n">add_column</span> <span class="ss">:users</span><span class="p">,</span> <span class="ss">:admin</span><span class="p">,</span> <span class="ss">:boolean</span><span class="p">,</span> <span class="ss">default: </span><span class="kp">false</span></span>
   <span class="k">end</span>
@@ -1605,21 +1605,21 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails db:migrate
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails db:migrate
 </code></pre></div>
 </div>
 <p>和预想的一样，Rails 能自动识别 <code>admin</code> 属性的类型为布尔值，自动生成 <code>admin?</code> 方法：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>$ rails console --sandbox
-&gt;&gt; user = User.first
-&gt;&gt; user.admin?
-=&gt; false
-&gt;&gt; user.toggle!(:admin)
-=&gt; true
-&gt;&gt; user.admin?
-=&gt; true
+<div class="highlight language-irb"><pre><code><span class="go">$ rails console --sandbox</span>
+<span class="go">&gt;&gt; user = User.first</span>
+<span class="go">&gt;&gt; user.admin?</span>
+<span class="p">=&gt;</span> <span class="kp">false</span>
+<span class="o">&gt;&gt;</span> <span class="n">user</span><span class="p">.</span><span class="nf">toggle!</span><span class="p">(</span><span class="ss">:admin</span><span class="p">)</span>
+<span class="o">=&gt;</span> <span class="kp">true</span>
+<span class="o">&gt;&gt;</span> <span class="n">user</span><span class="p">.</span><span class="nf">admin?</span>
+<span class="o">=&gt;</span> <span class="kp">true</span>
 </code></pre></div>
 </div>
 <p>这里，我们使用 <code>toggle!</code> 方法把 <code>admin</code> 属性的值由 <code>false</code> 改为 <code>true</code>。</p>
@@ -1650,8 +1650,8 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails db:migrate:reset
-<span class="gp">$ </span>rails db:seed
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails db:migrate:reset
+<span class="nv">$ </span>rails db:seed
 </code></pre></div>
 </div>
 <section data-type="sect3" id="revisiting-strong-parameters">
@@ -1818,7 +1818,7 @@
   <span class="na">name</span><span class="pi">:</span> <span class="s">Michael Example</span>
   <span class="na">email</span><span class="pi">:</span> <span class="s">michael@example.com</span>
   <span class="na">password_digest</span><span class="pi">:</span> <span class="s">&lt;%= User.digest('password') %&gt;</span>
-<span class="hll">  <span class="na">admin</span><span class="pi">:</span> <span class="s">true</span></span>
+<span class="hll">  <span class="na">admin</span><span class="pi">:</span> <span class="no">true</span></span>
 <span class="s">.</span>
 <span class="s">.</span>
 <span class="s">.</span>
@@ -1915,7 +1915,7 @@
 <h5><span class="title-label">代码清单 10.63</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-user-destroy-tests" class="discrete">练习</h5>
@@ -1934,23 +1934,23 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git add -A
-<span class="gp">$ </span>git commit -m <span class="s2">"Finish user edit, update, index, and destroy actions"</span>
-<span class="gp">$ </span>git checkout master
-<span class="gp">$ </span>git merge updating-users
-<span class="gp">$ </span>git push
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>git add <span class="nt">-A</span>
+<span class="nv">$ </span>git commit <span class="nt">-m</span> <span class="s2">"Finish user edit, update, index, and destroy actions"</span>
+<span class="nv">$ </span>git checkout master
+<span class="nv">$ </span>git merge updating-users
+<span class="nv">$ </span>git push
 </code></pre></div>
 </div>
 <p>你还可以部署这个应用，甚至使用示例用户填充生产数据库（<code>pg:reset</code> 用于还原生产数据库）：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
-<span class="gp">$ </span>git push heroku
-<span class="gp">$ </span>heroku pg:reset DATABASE
-<span class="gp">$ </span>heroku run rails db:migrate
-<span class="gp">$ </span>heroku run rails db:seed
-<span class="gp">$ </span>heroku restart
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
+<span class="nv">$ </span>git push heroku
+<span class="nv">$ </span>heroku pg:reset DATABASE
+<span class="nv">$ </span>heroku run rails db:migrate
+<span class="nv">$ </span>heroku run rails db:seed
+<span class="nv">$ </span>heroku restart
 </code></pre></div>
 </div>
 <p>当然，在真实的网站中你或许并不想向数据库中添加示例数据，我加入这个操作只是为了查看生产环境中的效果（<a class="xref-link" href="#fig-heroku-sample-users">图 10.16</a>）。生产环境显示的示例用户顺序各异，我的网站显示的顺序就和本地不同（<a class="xref-link" href="#fig-user-index-pagination">图 10.11</a>）。这是因为，我们没有指定从数据库中取回用户的顺序，所以目前的顺序由数据库决定。这对用户而言没什么问题，但微博就不同了，我们会在 <a class="xref-link" href="chapter13.html#micropost-refinements">13.1.4 节</a>解决这个问题。</p>

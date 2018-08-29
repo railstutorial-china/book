@@ -9,7 +9,7 @@
   <meta name="keywords" content="ruby, rails, tutorial"/>
   <meta name="author" content="Michael Hartl"/>
   <meta name="translator" content="安道"/>
-  <meta name="generator" content="persie 0.0.3.beta.4"/>
+  <meta name="generator" content="persie 0.0.4.1"/>
   <link rel="stylesheet" type="text/css" href="//railstutorial-china.org/assets/css/main.css"/>
   <link rel="stylesheet" type="text/css" href="book.css"/>
   <script type="text/javascript" src="//railstutorial-china.org/assets/js/global.js"></script>
@@ -70,7 +70,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git checkout -b filling-in-layout
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>git checkout <span class="nt">-b</span> filling-in-layout
 </code></pre></div>
 </div>
 <section data-type="sect2" id="site-navigation">
@@ -247,7 +247,7 @@
 <h5><span class="title-label">代码清单 5.3</span>：下载一个图像</h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>curl -o app/assets/images/rails.png -OL railstutorial-china.org/assets/images/rails.png
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>curl <span class="nt">-o</span> app/assets/images/rails.png <span class="nt">-OL</span> railstutorial-china.org/assets/images/rails.png
 </code></pre></div>
 </div>
 <p>因为我们在<a class="xref-link" href="#listing-signup-button">代码清单 5.2</a> 中使用了 <code>image_tag</code> 辅助方法，Rails 会通过 Asset Pipeline（<a class="xref-link" href="#sass-and-the-asset-pipeline">5.2 节</a>）自动找到 <code>app/assets/images/</code> 目录中的任何图像。</p>
@@ -279,7 +279,7 @@
 <h5><span class="title-label">代码清单 5.4</span>：从网上下载一张小猫图像</h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>curl -OL cdn.learnenough.com/kitten.jpg
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>curl <span class="nt">-OL</span> cdn.learnenough.com/kitten.jpg
 </code></pre></div>
 </div>
 <div id="fig-kitten-on-home" class="figure"><img src="images/chapter5/kitten_on_home.png" alt="kitten on home" /><div class="figcaption"><span class="title-label">图 5.4</span>：添加小猫图像后的首页</div></div>
@@ -294,8 +294,8 @@
 
 <div class="highlight language-ruby"><pre><code><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
 
-<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>                   <span class="s1">'5.1.4'</span>
-<span class="n">gem</span> <span class="s1">'bootstrap-will_paginate'</span><span class="p">,</span> <span class="s1">'1.0.0'</span>
+<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>                   <span class="s1">'5.1.6'</span>
+<span class="n">gem</span> <span class="s1">'sass-rails'</span><span class="p">,</span>              <span class="s1">'5.0.6'</span>
 <span class="p">.</span>
 <span class="nf">.</span>
 <span class="o">.</span>
@@ -305,14 +305,14 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>bundle install
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>bundle <span class="nb">install</span>
 </code></pre></div>
 </div>
 <p><code>rails generate</code> 命令会自动为控制器生成一个单独的 CSS 文件，但很难使用正确的顺序引入这些样式，所以简单起见，本书会把所有 CSS 都放在一个文件中。为此，我们要先新建这个 CSS 文件：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>touch app/assets/stylesheets/custom.scss
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span><span class="nb">touch </span>app/assets/stylesheets/custom.scss
 </code></pre></div>
 </div>
 <p>（这里使用 <a class="xref-link" href="chapter3.html#green">3.3.3 节</a>用过的 <code>touch</code> 命令，此外也可以使用其他方式。）目录名和文件扩展名都很重要。<code>app/assets/stylesheets/</code> 目录是 Asset Pipeline 的一部分，其中所有的样式表都会引入 <code>application.css</code> 文件。文件名 <code>custom.scss</code> 中包含 <code>.scss</code> 扩展名，说明这是“Sassy CSS”文件，Asset Pipeline 会使用 Sass 处理其中的内容。（<a class="xref-link" href="#sass-and-the-asset-pipeline">5.2 节</a>才会使用 Sass，不过加入这个扩展名才能发挥 <code>bootstrap-sass</code> gem 的作用。）</p>
@@ -327,7 +327,6 @@
 </code></pre></div>
 </div>
 <p>这两行代码会引入整个 Bootstrap CSS 框架。然后，重启 Web 服务器（先按 Ctrl-C 键，然后执行 <code>rails server</code> 命令），让这些改动生效，效果如<a class="xref-link" href="#fig-sample-app-only-bootstrap">图 5.5</a> 所示。文本的位置还不合适，徽标也没有任何样式，不过颜色搭配和注册按钮看起来都不错。</p>
-<div id="fig-sample-app-only-bootstrap" class="figure"><img src="images/chapter5/sample_app_only_bootstrap_3rd_edition.png" alt="sample app only bootstrap 3rd edition" /><div class="figcaption"><span class="title-label">图 5.5</span>：使用 Bootstrap CSS 后的演示应用</div></div>
 <p>下面我们要加入一些整站都会用到的 CSS，美化网站布局和各个页面，如<a class="xref-link" href="#listing-universal-css">代码清单 5.7</a> 所示。效果如<a class="xref-link" href="#fig-sample-app-universal">图 5.6</a> 所示。这段代码定义了很多样式规则，为了说明 CSS 规则的作用，我通常会加入一些 CSS 注释，放在 <code>/* ... */</code> 中。</p>
 <div id="listing-universal-css" data-type="listing">
 <h5><span class="title-label">代码清单 5.7</span>：添加全站使用的 CSS</h5>
@@ -360,7 +359,6 @@
 <span class="p">}</span>
 </code></pre></div>
 </div>
-<div id="fig-sample-app-universal" class="figure"><img src="images/chapter5/sample_app_universal_3rd_edition.png" alt="sample app universal 3rd edition" /><div class="figcaption"><span class="title-label">图 5.6</span>：添加一些留白以及其他全局样式</div></div>
 <p>注意，<a class="xref-link" href="#listing-universal-css">代码清单 5.7</a> 中的 CSS 格式都是统一的。一般来说，CSS 规则通过类、ID、HTML 标签或者三者结合在一起来指代目标，然后在后面跟着一些样式声明。例如：</p>
 <div data-type="listing">
 
@@ -381,6 +379,8 @@
 </div>
 <p>把 <code>.center</code> 类的样式定义为 <code>text-align: center;</code>。<code>.center</code> 中的点号说明这个规则是样式化一个类。（在<a class="xref-link" href="#listing-logo-css">代码清单 5.9</a> 中会看到，<code>#</code> 样式化一个 ID。）这个规则的意思是，任何类为 <code>.center</code> 的标签（例如 <code>div</code>），其中包含的内容都会在页面中居中显示。（<a class="xref-link" href="#listing-signup-button">代码清单 5.2</a> 中有用到这个类。）</p>
 <p>虽然 Bootstrap 提供了很精美的文字排版样式，我们还是要为文字的外观添加一些自定义的规则，如<a class="xref-link" href="#listing-typography-css">代码清单 5.8</a> 所示。（并不是所有样式都用于“首页”，但所有规则都会在这个演示应用的某个地方用到。）效果如<a class="xref-link" href="#fig-sample-app-typography">图 5.7</a> 所示。</p>
+<div id="fig-sample-app-only-bootstrap" class="figure"><img src="images/chapter5/sample_app_only_bootstrap_3rd_edition.png" alt="sample app only bootstrap 3rd edition" /><div class="figcaption"><span class="title-label">图 5.5</span>：使用 Bootstrap CSS 后的演示应用</div></div>
+<div id="fig-sample-app-universal" class="figure"><img src="images/chapter5/sample_app_universal_3rd_edition.png" alt="sample app universal 3rd edition" /><div class="figcaption"><span class="title-label">图 5.6</span>：添加一些留白以及其他全局样式</div></div>
 <div id="listing-typography-css" data-type="listing">
 <h5><span class="title-label">代码清单 5.8</span>：添加一些精美的文字排版样式</h5>
 
@@ -695,7 +695,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>ls app/assets/
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span><span class="nb">ls </span>app/assets/
 images/ javascripts/ stylesheets/
 </code></pre></div>
 </div>
@@ -1181,7 +1181,7 @@ images/ javascripts/ stylesheets/
 <h5><span class="title-label">代码清单 5.22</span>：<strong class="red">RED</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <p>我们按照 <a class="xref-link" href="chapter3.html#getting-started-with-testing">3.3 节</a>的做法添加“联系”页面：首先更新路由（<a class="xref-link" href="#listing-contact-route">代码清单 5.23</a>），然后在 <code>StaticPages</code> 控制器中添加 <code>contact</code> 动作（<a class="xref-link" href="#listing-contact-action">代码清单 5.24</a>），最后创建“联系”页面的视图（<a class="xref-link" href="#listing-contact-view">代码清单 5.25</a>）。</p>
@@ -1231,7 +1231,7 @@ images/ javascripts/ stylesheets/
 <h5><span class="title-label">代码清单 5.26</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 </section>
@@ -1443,7 +1443,7 @@ help_url  -&gt; 'http://www.example.com/help'
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate integration_test site_layout
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails generate integration_test site_layout
       invoke  test_unit
       create    <span class="nb">test</span>/integration/site_layout_test.rb
 </code></pre></div>
@@ -1553,7 +1553,7 @@ help_url  -&gt; 'http://www.example.com/help'
 <h5><span class="title-label">代码清单 5.33</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>:integration
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>:integration
 </code></pre></div>
 </div>
 <p>如果一切顺利，应该再运行整个测试组件，确保所有测试都能通过：</p>
@@ -1561,7 +1561,7 @@ help_url  -&gt; 'http://www.example.com/help'
 <h5><span class="title-label">代码清单 5.34</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <p>有了针对布局中链接的集成测试，我们能使用测试组件快速捕捉回归。</p>
@@ -1641,7 +1641,7 @@ help_url  -&gt; 'http://www.example.com/help'
 <h5><span class="title-label">代码清单 5.38</span>：生成 <code>Users</code> 控制器（包含 <code>new</code> 动作）</h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="hll"><span class="gp">$ </span>rails generate controller Users new</span>
+<div class="highlight language-sh"><pre><code><span class="hll"><span class="nv">$ </span>rails generate controller Users new</span>
       create  app/controllers/users_controller.rb
        route  get <span class="s1">'users/new'</span>
       invoke  erb
@@ -1702,7 +1702,7 @@ help_url  -&gt; 'http://www.example.com/help'
 <h5><span class="title-label">代码清单 5.42</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-users-controller" class="discrete">练习</h5>
@@ -1805,25 +1805,25 @@ help_url  -&gt; 'http://www.example.com/help'
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git add -A
-<span class="gp">$ </span>git commit -m <span class="s2">"Finish layout and routes"</span>
-<span class="gp">$ </span>git checkout master
-<span class="gp">$ </span>git merge filling-in-layout
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>git add <span class="nt">-A</span>
+<span class="nv">$ </span>git commit <span class="nt">-m</span> <span class="s2">"Finish layout and routes"</span>
+<span class="nv">$ </span>git checkout master
+<span class="nv">$ </span>git merge filling-in-layout
 </code></pre></div>
 </div>
 <p>然后推送到 Bitbucket 中（安全起见，先运行测试组件）：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
-<span class="gp">$ </span>git push
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
+<span class="nv">$ </span>git push
 </code></pre></div>
 </div>
 <p>最后，部署到 Heroku 中：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git push heroku
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>git push heroku
 </code></pre></div>
 </div>
 <p>部署完成后应该在生产服务器中有一个可以正常运行的演示应用，如<a class="xref-link" href="#fig-layout-production">图 5.12</a> 所示。</p>

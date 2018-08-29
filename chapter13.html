@@ -9,7 +9,7 @@
   <meta name="keywords" content="ruby, rails, tutorial"/>
   <meta name="author" content="Michael Hartl"/>
   <meta name="translator" content="安道"/>
-  <meta name="generator" content="persie 0.0.3.beta.4"/>
+  <meta name="generator" content="persie 0.0.4.1"/>
   <link rel="stylesheet" type="text/css" href="//railstutorial-china.org/assets/css/main.css"/>
   <link rel="stylesheet" type="text/css" href="book.css"/>
   <script type="text/javascript" src="//railstutorial-china.org/assets/js/global.js"></script>
@@ -67,7 +67,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git checkout -b user-microposts
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>git checkout <span class="nt">-b</span> user-microposts
 </code></pre></div>
 </div>
 <section data-type="sect2" id="the-basic-model">
@@ -80,7 +80,7 @@
 <h5><span class="title-label">代码清单 13.1</span>：生成 <code>Micropost</code> 模型</h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate model Micropost content:text user:references
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails generate model Micropost content:text user:references
 </code></pre></div>
 </div>
 <p>上述命令生成的迁移用于创建 <code>Micropost</code> 模型，如<a class="xref-link" href="#listing-micropost-model">代码清单 13.2</a> 所示。这个模型与其他模型一样，继承自 <code>ApplicationRecord</code> 类，不过生成的模型中有一行用于指定一篇微博属于（<code>belongs_to</code>）一个用户，这是因为我们在 <code>generate model</code> 命令中指定了 <code>user:references</code> 参数。那一行代码的作用在 <a class="xref-link" href="#user-micropost-associations">13.1.3 节</a>说明。</p>
@@ -100,7 +100,7 @@
 
 <div class="source-file">db/migrate/[timestamp]_create_microposts.rb</div>
 
-<div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">CreateMicroposts</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mi">5</span><span class="o">.</span><span class="mi">0</span><span class="p">]</span>
+<div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">CreateMicroposts</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mf">5.0</span><span class="p">]</span>
   <span class="k">def</span> <span class="nf">change</span>
     <span class="n">create_table</span> <span class="ss">:microposts</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
       <span class="n">t</span><span class="p">.</span><span class="nf">text</span> <span class="ss">:content</span>
@@ -125,7 +125,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails db:migrate
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails db:migrate
 </code></pre></div>
 </div>
 <h5 id="exercises-the-basic-model" class="discrete">练习</h5>
@@ -190,7 +190,7 @@
 <h5><span class="title-label">代码清单 13.6</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>:models
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>:models
 </code></pre></div>
 </div>
 <p>接下来，我们要为 <code>content</code> 属性加上数据验证（参照 <a class="xref-link" href="chapter2.html#putting-the-micro-in-microposts">2.3.2 节</a>的做法）。和 <code>user_id</code> 一样，<code>content</code> 属性必须存在，而且还要限制内容的长度不能超过 140 个字符，这才是真正的“微”博。</p>
@@ -234,12 +234,12 @@
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>$ rails console
-&gt;&gt; "a" * 10
-=&gt; "aaaaaaaaaa"
-&gt;&gt; "a" * 141
-=&gt; "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+<div class="highlight language-irb"><pre><code><span class="go">$ rails console</span>
+<span class="go">&gt;&gt; "a" * 10</span>
+<span class="p">=&gt;</span> <span class="s2">"aaaaaaaaaa"</span>
+<span class="o">&gt;&gt;</span> <span class="s2">"a"</span> <span class="o">*</span> <span class="mi">141</span>
+<span class="o">=&gt;</span> <span class="s2">"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</span>
+<span class="s2">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"</span>
 </code></pre></div>
 </div>
 <p>在模型中添加的代码基本上和 <code>User</code> 模型中 <code>name</code> 属性的验证一样（<a class="xref-link" href="chapter6.html#listing-length-validation">代码清单 6.16</a>），如<a class="xref-link" href="#listing-micropost-validations">代码清单 13.8</a> 所示。</p>
@@ -260,7 +260,7 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 <h5><span class="title-label">代码清单 13.9</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-micropost-validations" class="discrete">练习</h5>
@@ -413,7 +413,7 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 <h5><span class="title-label">代码清单 13.13</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-user-micropost-associations" class="discrete">练习</h5>
@@ -482,7 +482,7 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 <h5><span class="title-label">代码清单 13.16</span>：<strong class="red">RED</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test test</span>/models/micropost_test.rb
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test test</span>/models/micropost_test.rb
 </code></pre></div>
 </div>
 <p>我们要使用 Rails 提供的 <code>default_scope</code> 方法让测试通过。这个方法的作用很多，这里我们要用它设定从数据库中检索数据的默认顺序。为了得到特定的顺序，我们要在 <code>default_scope</code> 方法中指定 <code>order</code> 参数，按 <code>created_at</code> 列的值排序，如下所示：</p>
@@ -524,11 +524,11 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; -&gt; { puts "foo" }
-=&gt; #&lt;Proc:0x007fab938d0108@(irb):1 (lambda)&gt;
-&gt;&gt; -&gt; { puts "foo" }.call
-foo
-=&gt; nil
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; -&gt; { puts "foo" }</span>
+<span class="gp">=&gt; #&lt;Proc:0x007fab938d0108@(irb):1 (lambda)&gt;</span>
+<span class="go">&gt;&gt; -&gt; { puts "foo" }.call</span>
+<span class="go">foo</span>
+<span class="p">=&gt;</span> <span class="kp">nil</span>
 </code></pre></div>
 </div>
 <p>（Proc 是相对高级的 Ruby 知识，如果现在不理解也不用担心。）</p>
@@ -537,7 +537,7 @@ foo
 <h5><span class="title-label">代码清单 13.18</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 </section>
@@ -591,7 +591,7 @@ foo
 <h5><span class="title-label">代码清单 13.21</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-dependent-destroy" class="discrete">练习</h5>
@@ -620,15 +620,15 @@ foo
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails db:migrate:reset
-<span class="gp">$ </span>rails db:seed
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails db:migrate:reset
+<span class="nv">$ </span>rails db:seed
 </code></pre></div>
 </div>
 <p>虽然 <a class="xref-link" href="#manipulating-microposts">13.3 节</a>才会用到 <code>Microposts</code> 控制器，但马上就需要使用视图，所以现在就要生成控制器：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate controller Microposts
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails generate controller Microposts
 </code></pre></div>
 </div>
 <p>这一节的主要目的是渲染用户发布的所有微博。<a class="xref-link" href="chapter10.html#partial-refactoring">10.3.5 节</a>用过这样的代码：</p>
@@ -792,8 +792,8 @@ foo
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails db:migrate:reset
-<span class="gp">$ </span>rails db:seed
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails db:migrate:reset
+<span class="nv">$ </span>rails db:seed
 </code></pre></div>
 </div>
 <p>完成后还要重启 Rails 开发服务器。</p>
@@ -879,7 +879,7 @@ foo
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate integration_test users_profile
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails generate integration_test users_profile
       invoke  test_unit
       create    <span class="nb">test</span>/integration/users_profile_test.rb
 </code></pre></div>
@@ -1003,7 +1003,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <h5><span class="title-label">代码清单 13.29</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-profile-micropost-tests" class="discrete">练习</h5>
@@ -1184,7 +1184,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <h5><span class="title-label">代码清单 13.35</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-access-control" class="discrete">练习</h5>
@@ -1357,7 +1357,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <h5><span class="title-label">代码清单 13.42</span>：<strong class="red">RED</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <p>这提醒我们要修改其他使用错误消息局部视图的视图，包括用户注册视图（<a class="xref-link" href="chapter7.html#listing-f-error-messages">代码清单 7.20</a>）、重设密码视图（<a class="xref-link" href="chapter12.html#listing-password-reset-form">代码清单 12.14</a>）和用户编辑视图（<a class="xref-link" href="chapter10.html#listing-user-edit-view">代码清单 10.2</a>）。这三个视图修改后的版本分别如<a class="xref-link" href="#listing-signup-errors-updated">代码清单 13.43</a>、<a class="xref-link" href="#listing-password-reset-updated">代码清单 13.45</a> 和<a class="xref-link" href="#listing-edit-errors-updated">代码清单 13.44</a> 所示。</p>
@@ -1458,7 +1458,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <p>此外，本节添加的所有 HTML 代码也都能正确渲染了。<a class="xref-link" href="#fig-home-with-form">图 13.11</a> 是创建微博的表单，<a class="xref-link" href="#fig-home-form-errors">图 13.12</a> 显示提交表单后有一个错误。</p>
@@ -1801,7 +1801,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate integration_test microposts_interface
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails generate integration_test microposts_interface
       invoke  test_unit
       create    <span class="nb">test</span>/integration/microposts_interface_test.rb
 </code></pre></div>
@@ -1855,7 +1855,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <h5><span class="title-label">代码清单 13.56</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-micropost-tests" class="discrete">练习</h5>
@@ -1907,39 +1907,41 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <div id="fig-micropost-image-mockup" class="figure"><img src="images/chapter13/micropost_image_mockup.png" alt="micropost image mockup" /><div class="figcaption"><span class="title-label">图 13.18</span>：图像上传界面的构思图（上传了一张图像）</div></div>
 <section data-type="sect2" id="basic-image-upload">
 <h2><span class="title-label">13.4.1</span> 基本的图像上传功能</h2>
-<p>我们要使用 <a href="https://github.com/carrierwaveuploader/carrierwave" class="external-link">CarrierWave</a> 处理图像上传，并把图像与 <code>Micropost</code> 模型关联起来。为此，我们要在 <code>Gemfile</code> 文件中添加 <code>carrierwave</code> gem，如<a class="xref-link" href="#listing-gemfile-carrierwave">代码清单 13.58</a> 所示。为了一次安装完所有 gem，<a class="xref-link" href="#listing-gemfile-carrierwave">代码清单 13.58</a> 还包含用于调整图像尺寸的 <code>mini_magick</code>（<a class="xref-link" href="#image-resizing">13.4.3 节</a>），在生产环境中上传图像的 <code>fog-aws</code>（<a class="xref-link" href="#image-upload-in-production">13.4.4 节</a>），以及明确指定版本号的 <code>nokogiri</code>。<code>nokogiri</code> 是 <code>fog-aws</code> 的依赖，一般无需明确指定版本号，但是 <code>fog-aws</code> 声明的依赖允许使用不安全的旧版 <code>nokogiri</code>，所以我们要自己动手，指定使用较新的版本。</p>
+<p>我们要使用 <a href="https://github.com/carrierwaveuploader/carrierwave" class="external-link">CarrierWave</a> 处理图像上传，并把图像与 <code>Micropost</code> 模型关联起来。为此，我们要在 <code>Gemfile</code> 文件中添加 <code>carrierwave</code> 和 <code>mini_magick</code> 两个 gem，如<a class="xref-link" href="#listing-gemfile-carrierwave">代码清单 13.58</a> 所示。为了一次安装完所有 gem，<a class="xref-link" href="#listing-gemfile-carrierwave">代码清单 13.58</a> 还包含在生产环境中上传图像所需的 <code>fog</code> gem（<a class="xref-link" href="#image-upload-in-production">13.4.4 节</a>）。</p>
 <div id="listing-gemfile-carrierwave" data-type="listing">
 <h5><span class="title-label">代码清单 13.58</span>：在 <code>Gemfile</code> 文件中添加 CarrierWave</h5>
 
 
 <div class="highlight language-ruby"><pre><code><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
 
-<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>                   <span class="s1">'5.1.4'</span>
-<span class="n">gem</span> <span class="s1">'bcrypt'</span><span class="p">,</span>                  <span class="s1">'3.1.11'</span>
+<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>                   <span class="s1">'5.1.6'</span>
+<span class="n">gem</span> <span class="s1">'bcrypt'</span><span class="p">,</span>                  <span class="s1">'3.1.12'</span>
 <span class="n">gem</span> <span class="s1">'faker'</span><span class="p">,</span>                   <span class="s1">'1.7.3'</span>
-<span class="hll"><span class="n">gem</span> <span class="s1">'carrierwave'</span><span class="p">,</span>             <span class="s1">'1.1.0'</span></span>
+<span class="hll"><span class="n">gem</span> <span class="s1">'carrierwave'</span><span class="p">,</span>             <span class="s1">'1.2.2'</span></span>
 <span class="hll"><span class="n">gem</span> <span class="s1">'mini_magick'</span><span class="p">,</span>             <span class="s1">'4.7.0'</span></span>
-<span class="hll"><span class="n">gem</span> <span class="s1">'fog-aws'</span><span class="p">,</span>                 <span class="s1">'2.0.0'</span></span>
-<span class="hll"><span class="n">gem</span> <span class="s1">'nokogiri'</span><span class="p">,</span>                <span class="s1">'1.8.1'</span></span>
 <span class="n">gem</span> <span class="s1">'will_paginate'</span><span class="p">,</span>           <span class="s1">'3.1.6'</span>
 <span class="n">gem</span> <span class="s1">'bootstrap-will_paginate'</span><span class="p">,</span> <span class="s1">'1.0.0'</span>
 <span class="p">.</span>
 <span class="nf">.</span>
-<span class="o">.</span>
+<span class="p">.</span>
+<span class="nf">group</span> <span class="ss">:production</span> <span class="k">do</span>
+  <span class="n">gem</span> <span class="s1">'pg'</span><span class="p">,</span>  <span class="s1">'0.20.0'</span>
+<span class="hll">  <span class="n">gem</span> <span class="s1">'fog'</span><span class="p">,</span> <span class="s1">'1.42'</span></span>
+<span class="k">end</span>
 </code></pre></div>
 </div>
 <p>然后像之前一样，执行下面的命令安装：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>bundle install
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>bundle <span class="nb">install</span>
 </code></pre></div>
 </div>
 <p>CarrierWave 自带了一个 Rails 生成器，用于生成图像上传程序。我们要创建一个名为 <code>picture</code> 的上传程序：<sup>[<a id="fn-ref-12" href="#fn-12">12</a>]</sup></p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate uploader Picture
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails generate uploader Picture
 </code></pre></div>
 </div>
 <p>CarrierWave 上传的图像应该对应于 Active Record 模型中的一个属性，这个属性只需存储图像的文件名字符串即可。添加这个属性后的 <code>Micropost</code> 模型如<a class="xref-link" href="#fig-micropost-model-picture">图 13.19</a> 所示。</p>
@@ -1948,8 +1950,8 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate migration add_picture_to_microposts picture:string
-<span class="gp">$ </span>rails db:migrate
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails generate migration add_picture_to_microposts picture:string
+<span class="nv">$ </span>rails db:migrate
 </code></pre></div>
 </div>
 <p>告诉 CarrierWave 把图像和模型关联起来的方式是使用 <code>mount_uploader</code> 方法。这个方法的第一个参数是属性的符号形式，第二个参数是上传程序的类名：</p>
@@ -2070,15 +2072,17 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
     <span class="n">assert_select</span> <span class="s1">'div.pagination'</span>
 <span class="hll">    <span class="n">assert_select</span> <span class="s1">'input[type=FILL_IN]'</span></span>
     <span class="c1"># 无效提交</span>
-    <span class="n">post</span> <span class="n">microposts_path</span><span class="p">,</span> <span class="ss">micropost: </span><span class="p">{</span> <span class="ss">content: </span><span class="s2">""</span> <span class="p">}</span>
+    <span class="n">post</span> <span class="n">microposts_path</span><span class="p">,</span> <span class="ss">params: </span><span class="p">{</span> <span class="ss">micropost: </span><span class="p">{</span> <span class="ss">content: </span><span class="s2">""</span> <span class="p">}</span> <span class="p">}</span>
     <span class="n">assert_select</span> <span class="s1">'div#error_explanation'</span>
     <span class="c1"># 有效提交</span>
     <span class="n">content</span> <span class="o">=</span> <span class="s2">"This micropost really ties the room together"</span>
 <span class="hll">    <span class="n">picture</span> <span class="o">=</span> <span class="n">fixture_file_upload</span><span class="p">(</span><span class="s1">'test/fixtures/rails.png'</span><span class="p">,</span> <span class="s1">'image/png'</span><span class="p">)</span></span>
     <span class="n">assert_difference</span> <span class="s1">'Micropost.count'</span><span class="p">,</span> <span class="mi">1</span> <span class="k">do</span>
-<span class="hll">      <span class="n">post</span> <span class="n">microposts_path</span><span class="p">,</span> <span class="ss">micropost: </span><span class="p">{</span> <span class="ss">content: </span><span class="n">content</span><span class="p">,</span> <span class="ss">picture: </span><span class="no">FILL_IN</span> <span class="p">}</span></span>
+<span class="hll">      <span class="n">post</span> <span class="n">microposts_path</span><span class="p">,</span> <span class="ss">params: </span><span class="p">{</span> <span class="ss">micropost:</span></span>
+<span class="ss">                                      </span><span class="p">{</span> <span class="ss">content: </span><span class="n">content</span><span class="p">,</span>
+<span class="hll">                                        <span class="ss">picture: </span><span class="no">FILL_IN</span> <span class="p">}</span> <span class="p">}</span></span>
     <span class="k">end</span>
-<span class="hll">    <span class="n">assert</span> <span class="no">FILL_IN</span><span class="p">.</span><span class="nf">picture?</span></span>
+    <span class="n">assert</span> <span class="no">FILL_IN</span><span class="p">.</span><span class="nf">picture?</span>
     <span class="n">follow_redirect!</span>
     <span class="n">assert_match</span> <span class="n">content</span><span class="p">,</span> <span class="n">response</span><span class="p">.</span><span class="nf">body</span>
     <span class="c1"># 删除一篇微博</span>
@@ -2117,7 +2121,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
   <span class="k">end</span>
 
   <span class="c1"># 添加一个白名单，指定允许上传的图像类型</span>
-  <span class="k">def</span> <span class="nf">extension_white_list</span>
+  <span class="k">def</span> <span class="nf">extension_whitelist</span>
 <span class="hll">    <span class="sx">%w(jpg jpeg gif png)</span></span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -2212,12 +2216,11 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <h2><span class="title-label">13.4.3</span> 调整图像尺寸</h2>
 <p><a class="xref-link" href="#image-validation">13.4.2 节</a>对图像大小的限制是个好的开始，不过用户还是可以上传尺寸很大的图像，撑破网站的布局，有时会把网站搞得一团糟，如<a class="xref-link" href="#fig-large-uploaded-image">图 13.21</a> 所示。因此，如果允许用户从本地磁盘中上传尺寸很大的图像，最好在显示图像之前调整图像的尺寸。<sup>[<a id="fn-ref-17" href="#fn-17">17</a>]</sup></p>
 <div id="fig-large-uploaded-image" class="figure"><img src="images/chapter13/large_uploaded_image_4th_ed.png" alt="large uploaded image 4th ed" /><div class="figcaption"><span class="title-label">图 13.21</span>：上传了一张超级大的图像</div></div>
-<p class="pagebreak-before">我们要使用 <a href="http://www.imagemagick.org/" class="external-link">ImageMagick</a> 调整图像的尺寸，所以在开发环境中要安装这个程序。（如 <a class="xref-link" href="#image-upload-in-production">13.4.4 节</a>所示，Heroku 在生产环节已经预装了 ImageMagick。）在云端 IDE 中可以使用下面的命令安装：<sup>[<a id="fn-ref-18" href="#fn-18">18</a>]</sup></p>
+<p class="pagebreak-before">我们要使用 <a href="http://www.imagemagick.org/" class="external-link">ImageMagick</a> 调整图像的尺寸，所以在开发环境中要安装这个程序。（如 <a class="xref-link" href="#image-upload-in-production">13.4.4 节</a>所示，Heroku 在生产环境已经预装了 ImageMagick。）在云端 IDE 中可以使用下面的命令安装：<sup>[<a id="fn-ref-18" href="#fn-18">18</a>]</sup></p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>sudo apt-get update
-<span class="gp">$ </span>sudo apt-get install imagemagick --fix-missing
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span><span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> ImageMagick
 </code></pre></div>
 </div>
 <p>然后，我们要在 CarrierWave 中引入 <a href="https://github.com/minimagick/minimagick" class="external-link">MiniMagick</a> 为 ImageMagick 提供的接口，还要调用一个调整尺寸的方法。<a href="http://www.rdoc.info/github/jnicklas/carrierwave/CarrierWave/MiniMagick" class="external-link">MiniMagick 的文档</a>中列出了多个调整尺寸的方法，我们要使用的是 <code>resize_to_limit: [400, 400]</code>，如果图像很大，把它调整为宽和高都不超过 400 像素，而小于这个尺寸的图像则不做调整。（<a href="https://github.com/carrierwaveuploader/carrierwave#using-minimagick" class="external-link">CarrierWave 文档</a>中列出的方法会把小图片放大，这不是我们需要的效果。）添加<a class="xref-link" href="#listing-image-uploader-resizing">代码清单 13.67</a> 中的代码后，就能完美调整大尺寸图像了，如<a class="xref-link" href="#fig-resized-image">图 13.22</a> 所示。</p>
@@ -2240,7 +2243,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
   <span class="k">end</span>
 
   <span class="c1"># 添加一个白名单，指定允许上传的图片类型</span>
-  <span class="k">def</span> <span class="nf">extension_white_list</span>
+  <span class="k">def</span> <span class="nf">extension_whitelist</span>
     <span class="sx">%w(jpg jpeg gif png)</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -2294,7 +2297,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
   <span class="k">end</span>
 
   <span class="c1"># 添加一个白名单，指定允许上传的图片类型</span>
-  <span class="k">def</span> <span class="nf">extension_white_list</span>
+  <span class="k">def</span> <span class="nf">extension_whitelist</span>
     <span class="sx">%w(jpg jpeg gif png)</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -2348,9 +2351,9 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>heroku config:set <span class="nv">S3_ACCESS_KEY</span><span class="o">=</span>&lt;access key&gt;
-<span class="gp">$ </span>heroku config:set <span class="nv">S3_SECRET_KEY</span><span class="o">=</span>&lt;secret key&gt;
-<span class="gp">$ </span>heroku config:set <span class="nv">S3_BUCKET</span><span class="o">=</span>&lt;bucket name&gt;
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>heroku config:set <span class="nv">S3_ACCESS_KEY</span><span class="o">=</span>&lt;access key&gt;
+<span class="nv">$ </span>heroku config:set <span class="nv">S3_SECRET_KEY</span><span class="o">=</span>&lt;secret key&gt;
+<span class="nv">$ </span>heroku config:set <span class="nv">S3_BUCKET</span><span class="o">=</span>&lt;bucket name&gt;
 </code></pre></div>
 </div>
 <p>配置好之后，我们可以提交并部署了。我建议你像<a class="xref-link" href="#listing-gitignore-uploads">代码清单 13.71</a> 那样更新 <code>.gitignore</code> 文件，忽略保存上传图像的目录。</p>
@@ -2369,22 +2372,22 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
-<span class="gp">$ </span>git add -A
-<span class="gp">$ </span>git commit -m <span class="s2">"Add user microposts"</span>
-<span class="gp">$ </span>git checkout master
-<span class="gp">$ </span>git merge user-microposts
-<span class="gp">$ </span>git push
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
+<span class="nv">$ </span>git add <span class="nt">-A</span>
+<span class="nv">$ </span>git commit <span class="nt">-m</span> <span class="s2">"Add user microposts"</span>
+<span class="nv">$ </span>git checkout master
+<span class="nv">$ </span>git merge user-microposts
+<span class="nv">$ </span>git push
 </code></pre></div>
 </div>
 <p>然后部署，还原数据库，再把种子数据载入数据库：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git push heroku
-<span class="gp">$ </span>heroku pg:reset DATABASE
-<span class="gp">$ </span>heroku run rails db:migrate
-<span class="gp">$ </span>heroku run rails db:seed
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>git push heroku
+<span class="nv">$ </span>heroku pg:reset DATABASE
+<span class="nv">$ </span>heroku run rails db:migrate
+<span class="nv">$ </span>heroku run rails db:seed
 </code></pre></div>
 </div>
 <p>Heroku 已经安装了 ImageMagick，所以在生产环境中调整图像尺寸和上传功能都能正常使用，如<a class="xref-link" href="#fig-image-upload-production">图 13.23</a> 所示。</p>
@@ -2404,22 +2407,22 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
-<span class="gp">$ </span>git add -A
-<span class="gp">$ </span>git commit -m <span class="s2">"Add user microposts"</span>
-<span class="gp">$ </span>git checkout master
-<span class="gp">$ </span>git merge user-microposts
-<span class="gp">$ </span>git push
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
+<span class="nv">$ </span>git add <span class="nt">-A</span>
+<span class="nv">$ </span>git commit <span class="nt">-m</span> <span class="s2">"Add user microposts"</span>
+<span class="nv">$ </span>git checkout master
+<span class="nv">$ </span>git merge user-microposts
+<span class="nv">$ </span>git push
 </code></pre></div>
 </div>
 <p>然后部署到生产环境：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git push heroku
-<span class="gp">$ </span>heroku pg:reset DATABASE
-<span class="gp">$ </span>heroku run rails db:migrate
-<span class="gp">$ </span>heroku run rails db:seed
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>git push heroku
+<span class="nv">$ </span>heroku pg:reset DATABASE
+<span class="nv">$ </span>heroku run rails db:migrate
+<span class="nv">$ </span>heroku run rails db:seed
 </code></pre></div>
 </div>
 <p>值得注意的是，这一章安装了需要的最后几个 gem。为了便于参考，下面列出完整的 <code>Gemfile</code> 文件，如<a class="xref-link" href="#listing-final-gemfile">代码清单 13.72</a> 所示。</p>
@@ -2429,13 +2432,11 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 
 <div class="highlight language-ruby"><pre><code><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
 
-<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>                   <span class="s1">'5.1.4'</span>
-<span class="n">gem</span> <span class="s1">'bcrypt'</span><span class="p">,</span>                  <span class="s1">'3.1.11'</span>
+<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>                   <span class="s1">'5.1.6'</span>
+<span class="n">gem</span> <span class="s1">'bcrypt'</span><span class="p">,</span>                  <span class="s1">'3.1.12'</span>
 <span class="n">gem</span> <span class="s1">'faker'</span><span class="p">,</span>                   <span class="s1">'1.7.3'</span>
-<span class="n">gem</span> <span class="s1">'carrierwave'</span><span class="p">,</span>             <span class="s1">'1.1.0'</span>
+<span class="n">gem</span> <span class="s1">'carrierwave'</span><span class="p">,</span>             <span class="s1">'1.2.2'</span>
 <span class="n">gem</span> <span class="s1">'mini_magick'</span><span class="p">,</span>             <span class="s1">'4.7.0'</span>
-<span class="n">gem</span> <span class="s1">'fog-aws'</span><span class="p">,</span>                 <span class="s1">'2.0.0'</span>
-<span class="n">gem</span> <span class="s1">'nokogiri'</span><span class="p">,</span>                <span class="s1">'1.8.1'</span>
 <span class="n">gem</span> <span class="s1">'will_paginate'</span><span class="p">,</span>           <span class="s1">'3.1.6'</span>
 <span class="n">gem</span> <span class="s1">'bootstrap-will_paginate'</span><span class="p">,</span> <span class="s1">'1.0.0'</span>
 <span class="n">gem</span> <span class="s1">'bootstrap-sass'</span><span class="p">,</span>          <span class="s1">'3.3.7'</span>
@@ -2454,20 +2455,22 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 
 <span class="n">group</span> <span class="ss">:development</span> <span class="k">do</span>
   <span class="n">gem</span> <span class="s1">'web-console'</span><span class="p">,</span>           <span class="s1">'3.5.1'</span>
-  <span class="n">gem</span> <span class="s1">'listen'</span><span class="p">,</span>                <span class="s1">'3.0.8'</span>
+  <span class="n">gem</span> <span class="s1">'listen'</span><span class="p">,</span>                <span class="s1">'3.1.5'</span>
   <span class="n">gem</span> <span class="s1">'spring'</span><span class="p">,</span>                <span class="s1">'2.0.2'</span>
   <span class="n">gem</span> <span class="s1">'spring-watcher-listen'</span><span class="p">,</span> <span class="s1">'2.0.1'</span>
 <span class="k">end</span>
 
 <span class="n">group</span> <span class="ss">:test</span> <span class="k">do</span>
   <span class="n">gem</span> <span class="s1">'rails-controller-testing'</span><span class="p">,</span> <span class="s1">'1.0.2'</span>
+  <span class="n">gem</span> <span class="s1">'minitest'</span><span class="p">,</span>                 <span class="s1">'5.10.3'</span>
   <span class="n">gem</span> <span class="s1">'minitest-reporters'</span><span class="p">,</span>       <span class="s1">'1.1.14'</span>
   <span class="n">gem</span> <span class="s1">'guard'</span><span class="p">,</span>                    <span class="s1">'2.14.1'</span>
   <span class="n">gem</span> <span class="s1">'guard-minitest'</span><span class="p">,</span>           <span class="s1">'2.4.6'</span>
 <span class="k">end</span>
 
 <span class="n">group</span> <span class="ss">:production</span> <span class="k">do</span>
-  <span class="n">gem</span> <span class="s1">'pg'</span><span class="p">,</span> <span class="s1">'0.20.0'</span>
+  <span class="n">gem</span> <span class="s1">'pg'</span><span class="p">,</span>  <span class="s1">'0.20.0'</span>
+  <span class="n">gem</span> <span class="s1">'fog'</span><span class="p">,</span> <span class="s1">'1.42'</span>
 <span class="k">end</span>
 
 <span class="c1"># Windows does not include zoneinfo files, so bundle the tzinfo-data gem</span>
@@ -2556,7 +2559,7 @@ micropost_<span class="cp">&lt;%=</span> <span class="n">n</span> <span class="c
 <li id="fn-15">如果想知道怎么实现这样的效果，可以在 Google 中搜索“javascript maximum file size”，你会在 Stack Overflow 中找到答案的。 <a href="#fn-ref-15" class="symbol">&#8617;</a></li>
 <li id="fn-16">jQuery 高级用户可能会把大小检查放在单独的 JavaScript 函数中，但这不是 JavaScript 教程，像<a class="xref-link" href="#listing-format-jquery-file-test">代码清单 13.66</a> 那样做就行了。 <a href="#fn-ref-16" class="symbol">&#8617;</a></li>
 <li id="fn-17">使用 CSS 能限制图像显示的尺寸，但无法改变图像本身的尺寸。一般来说，尺寸大的图像加载时间要久一些。（你可能访问过一些网站，图像看着虽小，但是加载时间很长。原因就是如此。） <a href="#fn-ref-17" class="symbol">&#8617;</a></li>
-<li id="fn-18"><a href="https://help.ubuntu.com/community/ImageMagick" class="external-link">Ubuntu 文档</a>中有说明。如果你没使用云端 IDE，或其他类似的 Linux 系统，可以在 Google 中搜索“imagemagick &lt;your platform&gt;”。在 macOS 中，如果安装了 <a href="http://brew.sh/" class="external-link">Homebrew</a>，可以执行 <code>brew install imagemagick</code> 命令安装。 <a href="#fn-ref-18" class="symbol">&#8617;</a></li>
+<li id="fn-18">如果你没使用云端 IDE，或其他类似的 Linux 系统，可以在 Google 中搜索“imagemagick &lt;your platform&gt;”。在 macOS 中，如果安装了 <a href="http://brew.sh/" class="external-link">Homebrew</a>，可以执行 <code>brew install imagemagick</code> 命令安装。 <a href="#fn-ref-18" class="symbol">&#8617;</a></li>
 <li id="fn-19">坏处有很多，其中一个是：Heroku 中存储的文件是临时的，重新部署后会把以前上传的图像删除。 <a href="#fn-ref-19" class="symbol">&#8617;</a></li>
 <li id="fn-20">这一节有一定难度，可以跳过，对后面的内容没有影响。 <a href="#fn-ref-20" class="symbol">&#8617;</a></li>
 <li id="fn-21">S3 是收费服务，不过测试这个演示应用，每月的花费不会超过一美分。 <a href="#fn-ref-21" class="symbol">&#8617;</a></li>

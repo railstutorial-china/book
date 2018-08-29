@@ -9,7 +9,7 @@
   <meta name="keywords" content="ruby, rails, tutorial"/>
   <meta name="author" content="Michael Hartl"/>
   <meta name="translator" content="安道"/>
-  <meta name="generator" content="persie 0.0.3.beta.4"/>
+  <meta name="generator" content="persie 0.0.4.1"/>
   <link rel="stylesheet" type="text/css" href="//railstutorial-china.org/assets/css/main.css"/>
   <link rel="stylesheet" type="text/css" href="book.css"/>
   <script type="text/javascript" src="//railstutorial-china.org/assets/js/global.js"></script>
@@ -74,7 +74,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git checkout -b modeling-users
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>git checkout <span class="nt">-b</span> modeling-users
 </code></pre></div>
 </div>
 <section data-type="sect2" id="database-migrations">
@@ -85,7 +85,7 @@
 
 
 <div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">User</span>
-  <span class="kp">attr_accessor</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span>
   <span class="p">.</span>
   <span class="nf">.</span>
   <span class="p">.</span>
@@ -99,7 +99,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate controller Users new
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails generate controller Users new
 </code></pre></div>
 </div>
 <p>创建模型有个类似的命令——<code>generate model</code>。我们可以使用这个命令生成 <code>User</code> 模型，以及 <code>name</code> 和 <code>email</code> 属性，如<a class="xref-link" href="#listing-generate-user-model">代码清单 6.1</a> 所示。</p>
@@ -107,7 +107,7 @@
 <h5><span class="title-label">代码清单 6.1</span>：生成 <code>User</code> 模型</h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate model User name:string email:string
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails generate model User name:string email:string
       invoke  active_record
       create    db/migrate/20160523010738_create_users.rb
       create    app/models/user.rb
@@ -123,7 +123,7 @@
 
 <div class="source-file">db/migrate/[timestamp]_create_users.rb</div>
 
-<div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">CreateUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mi">5</span><span class="o">.</span><span class="mi">0</span><span class="p">]</span>
+<div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">CreateUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mf">5.0</span><span class="p">]</span>
   <span class="k">def</span> <span class="nf">change</span>
     <span class="n">create_table</span> <span class="ss">:users</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
       <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:name</span>
@@ -142,7 +142,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails db:migrate
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails db:migrate
 </code></pre></div>
 </div>
 <p>（你可能还记得，我们在 <a class="xref-link" href="chapter2.html#demo-users-resource">2.2 节</a>用过这个命令。）第一次运行 <code>db:migrate</code> 命令时会创建 <code>db/development.sqlite3</code> 文件，这是 SQLite <sup>[<a id="fn-ref-5" href="#fn-5">5</a>]</sup>数据库文件。若想查看数据库结构，可以使用 <a href="http://sqlitebrowser.org/" class="external-link">SQLite 数据库浏览器</a>打开 <code>db/development.sqlite3</code> 文件，如<a class="xref-link" href="#fig-sqlite-database-browser">图 6.5</a> 所示。（如果使用云端 IDE，要先把数据库文件下载到本地磁盘中，如<a class="xref-link" href="#fig-sqlite-download">图 6.6</a> 所示。）与<a class="xref-link" href="#fig-user-model-initial">图 6.4</a> 中的模型对比之后，你可能会发现有一个列在迁移中没有出现——<code>id</code> 列。<a class="xref-link" href="chapter2.html#demo-users-resource">2.2 节</a>提到过，这个列是自动生成的，Rails 用这个列作为行的唯一标识符。</p>
@@ -158,7 +158,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails db:rollback
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails db:rollback
 </code></pre></div>
 </div>
 <p>执行上述命令后，查看 <code>db/schema.rb</code> 文件，确认成功回滚了。</p>
@@ -199,10 +199,10 @@
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>$ rails console --sandbox
-Loading development environment in sandbox
-Any modifications you make will be rolled back on exit
-&gt;&gt;
+<div class="highlight language-irb"><pre><code><span class="go">$ rails console --sandbox</span>
+<span class="go">Loading development environment in sandbox</span>
+<span class="go">Any modifications you make will be rolled back on exit</span>
+<span class="go">&gt;&gt;</span>
 </code></pre></div>
 </div>
 <p>如提示消息所说，“Any modifications you make will be rolled back on exit”，在沙盒模式下使用控制台，退出当前会话后，对数据库做的所有改动都会回归到原来的状态（即撤销）。</p>
@@ -210,8 +210,8 @@ Any modifications you make will be rolled back on exit
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; User.new
-=&gt; #&lt;User id: nil, name: nil, email: nil, created_at: nil, updated_at: nil&gt;
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; User.new</span>
+<span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">User</span> <span class="ss">id: </span><span class="kp">nil</span><span class="p">,</span> <span class="ss">name: </span><span class="kp">nil</span><span class="p">,</span> <span class="ss">email: </span><span class="kp">nil</span><span class="p">,</span> <span class="ss">created_at: </span><span class="kp">nil</span><span class="p">,</span> <span class="ss">updated_at: </span><span class="kp">nil</span><span class="kt">&gt;</span>
 </code></pre></div>
 </div>
 <p>上述代码显示了用户对象在控制台中的默认表述。</p>
@@ -219,9 +219,9 @@ Any modifications you make will be rolled back on exit
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; user = User.new(name: "Michael Hartl", email: "mhartl@example.com")
-=&gt; #&lt;User id: nil, name: "Michael Hartl", email: "mhartl@example.com",
-created_at: nil, updated_at: nil&gt;
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; user = User.new(name: "Michael Hartl", email: "mhartl@example.com")</span>
+<span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">User</span> <span class="ss">id: </span><span class="kp">nil</span><span class="p">,</span> <span class="ss">name: </span><span class="s2">"Michael Hartl"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"mhartl@example.com"</span><span class="p">,</span>
+<span class="ss">created_at: </span><span class="kp">nil</span><span class="p">,</span> <span class="ss">updated_at: </span><span class="kp">nil</span><span class="kt">&gt;</span>
 </code></pre></div>
 </div>
 <p>我们看到 <code>name</code> 和 <code>email</code> 属性的值都已经按预期设定了。</p>
@@ -229,22 +229,22 @@ created_at: nil, updated_at: nil&gt;
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; user.valid?
-true
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; user.valid?</span>
+<span class="go">true</span>
 </code></pre></div>
 </div>
 <p>目前为止，我们都没有修改数据库：<code>User.new</code> 只在内存中创建一个对象，<code>user.valid?</code> 只是检查对象是否有效。如果想把用户对象保存到数据库中，要在 <code>user</code> 变量上调用 <code>save</code> 方法：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; user.save
-   (0.1ms)  SAVEPOINT active_record_1
-  SQL (0.8ms)  INSERT INTO "users" ("name", "email", "created_at",
-  "updated_at") VALUES (?, ?, ?, ?)  [["name", "Michael Hartl"],
-  ["email", "mhartl@example.com"], ["created_at", 2016-05-23 19:05:58 UTC],
-  ["updated_at", 2016-05-23 19:05:58 UTC]]
-   (0.1ms)  RELEASE SAVEPOINT active_record_1
-=&gt; true
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; user.save</span>
+<span class="go">   (0.1ms)  SAVEPOINT active_record_1</span>
+<span class="go">  SQL (0.8ms)  INSERT INTO "users" ("name", "email", "created_at",</span>
+<span class="go">  "updated_at") VALUES (?, ?, ?, ?)  [["name", "Michael Hartl"],</span>
+<span class="go">  ["email", "mhartl@example.com"], ["created_at", 2016-05-23 19:05:58 UTC],</span>
+<span class="go">  ["updated_at", 2016-05-23 19:05:58 UTC]]</span>
+<span class="go">   (0.1ms)  RELEASE SAVEPOINT active_record_1</span>
+<span class="p">=&gt;</span> <span class="kp">true</span>
 </code></pre></div>
 </div>
 <p>如果保存成功，<code>save</code> 方法返回 <code>true</code>，否则返回 <code>false</code>。（现在所有保存操作都会成功，因为还没有数据验证；<a class="xref-link" href="#user-validations">6.2 节</a>会看到一些失败的例子。）Rails 还会在控制台中显示 <code>user.save</code> 对应的 SQL 语句（<code>INSERT INTO "users"…</code>），以供参考。本书几乎不会使用原始的 SQL，<sup>[<a id="fn-ref-6" href="#fn-6">6</a>]</sup>所以此后我会省略 SQL。不过，从 Active Record 各种操作生成的 SQL 中可以学到很多知识。</p>
@@ -252,9 +252,9 @@ true
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; user.save
-=&gt; #&lt;User id: 1, name: "Michael Hartl", email: "mhartl@example.com",
-created_at: "2016-05-23 19:05:58", updated_at: "2016-05-23 19:05:58"&gt;
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; user.save</span>
+<span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">User</span> <span class="ss">id: </span><span class="mi">1</span><span class="p">,</span> <span class="ss">name: </span><span class="s2">"Michael Hartl"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"mhartl@example.com"</span><span class="p">,</span>
+<span class="ss">created_at: </span><span class="s2">"2016-05-23 19:05:58"</span><span class="p">,</span> <span class="ss">updated_at: </span><span class="s2">"2016-05-23 19:05:58"</span><span class="kt">&gt;</span>
 </code></pre></div>
 </div>
 <p>我们看到，<code>id</code> 的值变成了 <code>1</code>，那两个自动创建的时间戳属性也变成了当前时间和日期。<sup>[<a id="fn-ref-7" href="#fn-7">7</a>]</sup>现在这两个时间戳是一样的，<a class="xref-link" href="#updating-user-objects">6.1.5 节</a>会看到二者不同的情况。</p>
@@ -262,24 +262,24 @@ created_at: "2016-05-23 19:05:58", updated_at: "2016-05-23 19:05:58"&gt;
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; user.name
-=&gt; "Michael Hartl"
-&gt;&gt; user.email
-=&gt; "mhartl@example.com"
-&gt;&gt; user.updated_at
-=&gt; Mon, 23 May 2016 19:05:58 UTC +00:00
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; user.name</span>
+<span class="p">=&gt;</span> <span class="s2">"Michael Hartl"</span>
+<span class="o">&gt;&gt;</span> <span class="n">user</span><span class="p">.</span><span class="nf">email</span>
+<span class="o">=&gt;</span> <span class="s2">"mhartl@example.com"</span>
+<span class="o">&gt;&gt;</span> <span class="n">user</span><span class="p">.</span><span class="nf">updated_at</span>
+<span class="o">=&gt;</span> <span class="no">Mon</span><span class="p">,</span> <span class="mi">23</span> <span class="no">May</span> <span class="mi">2016</span> <span class="mi">19</span><span class="p">:</span><span class="mo">05</span><span class="p">:</span><span class="mi">58</span> <span class="no">UTC</span> <span class="o">+</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span>
 </code></pre></div>
 </div>
 <p><a class="xref-link" href="chapter7.html#sign-up">第 7 章</a>会介绍，虽然一般习惯把创建和保存分成如上所示的两步完成，不过 Active Record 也允许我们使用 <code>User.create</code> 方法把这两步合成一步：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; User.create(name: "A Nother", email: "another@example.org")
-#&lt;User id: 2, name: "A Nother", email: "another@example.org", created_at:
-"2016-05-23 19:18:46", updated_at: "2016-05-23 19:18:46"&gt;
-&gt;&gt; foo = User.create(name: "Foo", email: "foo@bar.com")
-#&lt;User id: 3, name: "Foo", email: "foo@bar.com", created_at: "2016-05-23
-19:19:06", updated_at: "2016-05-23 19:19:06"&gt;
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; User.create(name: "A Nother", email: "another@example.org")</span>
+<span class="c">#&lt;User id: 2, name: "A Nother", email: "another@example.org", created_at:</span>
+<span class="go">"2016-05-23 19:18:46", updated_at: "2016-05-23 19:18:46"&gt;</span>
+<span class="go">&gt;&gt; foo = User.create(name: "Foo", email: "foo@bar.com")</span>
+<span class="c">#&lt;User id: 3, name: "Foo", email: "foo@bar.com", created_at: "2016-05-23</span>
+<span class="go">19:19:06", updated_at: "2016-05-23 19:19:06"&gt;</span>
 </code></pre></div>
 </div>
 <p>注意，<code>User.create</code> 的返回值不是 <code>true</code> 或 <code>false</code>，而是创建的用户对象，可以直接赋值给变量（例如上面第二个命令中的 <code>foo</code> 变量）.</p>
@@ -287,21 +287,21 @@ created_at: "2016-05-23 19:05:58", updated_at: "2016-05-23 19:05:58"&gt;
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; foo.destroy
-   (0.1ms)  SAVEPOINT active_record_1
-  SQL (0.2ms)  DELETE FROM "users" WHERE "users"."id" = ?  [["id", 3]]
-   (0.1ms)  RELEASE SAVEPOINT active_record_1
-=&gt; #&lt;User id: 3, name: "Foo", email: "foo@bar.com", created_at: "2016-05-23
-19:19:06", updated_at: "2016-05-23 19:19:06"&gt;
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; foo.destroy</span>
+<span class="go">   (0.1ms)  SAVEPOINT active_record_1</span>
+<span class="go">  SQL (0.2ms)  DELETE FROM "users" WHERE "users"."id" = ?  [["id", 3]]</span>
+<span class="go">   (0.1ms)  RELEASE SAVEPOINT active_record_1</span>
+<span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">User</span> <span class="ss">id: </span><span class="mi">3</span><span class="p">,</span> <span class="ss">name: </span><span class="s2">"Foo"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"foo@bar.com"</span><span class="p">,</span> <span class="ss">created_at: </span><span class="s2">"2016-05-23</span>
+<span class="s2">19:19:06"</span><span class="p">,</span> <span class="ss">updated_at: </span><span class="s2">"2016-05-23 19:19:06"</span><span class="kt">&gt;</span>
 </code></pre></div>
 </div>
 <p>奇怪的是，<code>destroy</code> 和 <code>create</code> 一样，返回值是对象。我不觉得什么地方会用到 <code>destroy</code> 的返回值。更奇怪的是，销毁的对象还在内存中：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; foo
-=&gt; #&lt;User id: 3, name: "Foo", email: "foo@bar.com", created_at: "2016-05-23
-19:19:06", updated_at: "2016-05-23 19:19:06"&gt;
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; foo</span>
+<span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">User</span> <span class="ss">id: </span><span class="mi">3</span><span class="p">,</span> <span class="ss">name: </span><span class="s2">"Foo"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"foo@bar.com"</span><span class="p">,</span> <span class="ss">created_at: </span><span class="s2">"2016-05-23</span>
+<span class="s2">19:19:06"</span><span class="p">,</span> <span class="ss">updated_at: </span><span class="s2">"2016-05-23 19:19:06"</span><span class="kt">&gt;</span>
 </code></pre></div>
 </div>
 <p>那么我们怎么知道对象是否真被销毁了呢？对于已经保存而没有销毁的对象，怎样从数据库中读取呢？要回答这些问题，我们要先学习如何使用 Active Record 查找用户对象。</p>
@@ -321,9 +321,9 @@ created_at: "2016-05-23 19:05:58", updated_at: "2016-05-23 19:05:58"&gt;
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; User.find(1)
-=&gt; #&lt;User id: 1, name: "Michael Hartl", email: "mhartl@example.com",
-created_at: "2016-05-23 19:05:58", updated_at: "2016-05-23 19:05:58"&gt;
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; User.find(1)</span>
+<span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">User</span> <span class="ss">id: </span><span class="mi">1</span><span class="p">,</span> <span class="ss">name: </span><span class="s2">"Michael Hartl"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"mhartl@example.com"</span><span class="p">,</span>
+<span class="ss">created_at: </span><span class="s2">"2016-05-23 19:05:58"</span><span class="p">,</span> <span class="ss">updated_at: </span><span class="s2">"2016-05-23 19:05:58"</span><span class="kt">&gt;</span>
 </code></pre></div>
 </div>
 <p>我们把用户的 ID 传给 <code>User.find</code> 方法，Active Record 会返回 ID 为 1 的用户对象。</p>
@@ -331,8 +331,8 @@ created_at: "2016-05-23 19:05:58", updated_at: "2016-05-23 19:05:58"&gt;
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; User.find(3)
-ActiveRecord::RecordNotFound: Couldn't find User with ID=3
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; User.find(3)</span>
+<span class="go">ActiveRecord::RecordNotFound: Couldn't find User with ID=3</span>
 </code></pre></div>
 </div>
 <p>因为我们在 <a class="xref-link" href="#creating-user-objects">6.1.3 节</a>销毁了第三个用户，所以 Active Record 无法在数据库中找到这个用户，从而抛出一个异常（exception），这说明在查找过程中出现了问题。因为 ID 不存在，所以 <code>find</code> 方法抛出 <code>ActiveRecord::RecordNotFound</code> 异常。<sup>[<a id="fn-ref-8" href="#fn-8">8</a>]</sup></p>
@@ -340,9 +340,9 @@ ActiveRecord::RecordNotFound: Couldn't find User with ID=3
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; User.find_by(email: "mhartl@example.com")
-=&gt; #&lt;User id: 1, name: "Michael Hartl", email: "mhartl@example.com",
-created_at: "2016-05-23 19:05:58", updated_at: "2016-05-23 19:05:58"&gt;
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; User.find_by(email: "mhartl@example.com")</span>
+<span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">User</span> <span class="ss">id: </span><span class="mi">1</span><span class="p">,</span> <span class="ss">name: </span><span class="s2">"Michael Hartl"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"mhartl@example.com"</span><span class="p">,</span>
+<span class="ss">created_at: </span><span class="s2">"2016-05-23 19:05:58"</span><span class="p">,</span> <span class="ss">updated_at: </span><span class="s2">"2016-05-23 19:05:58"</span><span class="kt">&gt;</span>
 </code></pre></div>
 </div>
 <p>我们将使用电子邮件地址做用户名，在学习如何让用户登录网站时会用到这种 <code>find</code> 方法（<a class="xref-link" href="chapter7.html#sign-up">第 7 章</a>）。你可能会担心如果用户数量过多，使用 <code>find_by</code> 的效率不高。事实的确如此，我们会在 <a class="xref-link" href="#uniqueness-validation">6.2.5 节</a>说明这个问题，以及如何使用数据库索引解决。</p>
@@ -350,21 +350,21 @@ created_at: "2016-05-23 19:05:58", updated_at: "2016-05-23 19:05:58"&gt;
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; User.first
-=&gt; #&lt;User id: 1, name: "Michael Hartl", email: "mhartl@example.com",
-created_at: "2016-05-23 19:05:58", updated_at: "2016-05-23 19:05:58"&gt;
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; User.first</span>
+<span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">User</span> <span class="ss">id: </span><span class="mi">1</span><span class="p">,</span> <span class="ss">name: </span><span class="s2">"Michael Hartl"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"mhartl@example.com"</span><span class="p">,</span>
+<span class="ss">created_at: </span><span class="s2">"2016-05-23 19:05:58"</span><span class="p">,</span> <span class="ss">updated_at: </span><span class="s2">"2016-05-23 19:05:58"</span><span class="kt">&gt;</span>
 </code></pre></div>
 </div>
 <p>很明显，<code>first</code> 会返回数据库中的第一个用户。还有 <code>all</code> 方法：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; User.all
-=&gt; #&lt;ActiveRecord::Relation [#&lt;User id: 1, name: "Michael Hartl",
-email: "mhartl@example.com", created_at: "2016-05-23 19:05:58",
-updated_at: "2016-05-23 19:05:58"&gt;, #&lt;User id: 2, name: "A Nother",
-email: "another@example.org", created_at: "2016-05-23 19:18:46",
-updated_at: "2016-05-23 19:18:46"&gt;]&gt;
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; User.all</span>
+<span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Relation</span> <span class="p">[</span><span class="kt">#&lt;</span><span class="no">User</span> <span class="ss">id: </span><span class="mi">1</span><span class="p">,</span> <span class="ss">name: </span><span class="s2">"Michael Hartl"</span><span class="p">,</span>
+<span class="ss">email: </span><span class="s2">"mhartl@example.com"</span><span class="p">,</span> <span class="ss">created_at: </span><span class="s2">"2016-05-23 19:05:58"</span><span class="p">,</span>
+<span class="ss">updated_at: </span><span class="s2">"2016-05-23 19:05:58"</span><span class="kt">&gt;</span><span class="p">,</span> <span class="kt">#&lt;</span><span class="no">User</span> <span class="ss">id: </span><span class="mi">2</span><span class="p">,</span> <span class="ss">name: </span><span class="s2">"A Nother"</span><span class="p">,</span>
+<span class="ss">email: </span><span class="s2">"another@example.org"</span><span class="p">,</span> <span class="ss">created_at: </span><span class="s2">"2016-05-23 19:18:46"</span><span class="p">,</span>
+<span class="ss">updated_at: </span><span class="s2">"2016-05-23 19:18:46"</span><span class="kt">&gt;</span><span class="p">]</span><span class="kt">&gt;</span>
 </code></pre></div>
 </div>
 <p>从控制台的输出可以看出，<code>User.all</code> 方法返回一个 <code>ActiveRecord::Relation</code> 实例，其实这是一个数组（<a class="xref-link" href="chapter4.html#arrays-and-ranges">4.3.1 节</a>），
@@ -388,57 +388,57 @@ updated_at: "2016-05-23 19:18:46"&gt;]&gt;
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; user           # 只是为了查看 user 对象的属性是什么
-=&gt; #&lt;User id: 1, name: "Michael Hartl", email: "mhartl@example.com",
-created_at: "2016-05-23 19:05:58", updated_at: "2016-05-23 19:05:58"&gt;
-&gt;&gt; user.email = "mhartl@example.net"
-=&gt; "mhartl@example.net"
-&gt;&gt; user.save
-=&gt; true
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; user           # 只是为了查看 user 对象的属性是什么</span>
+<span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">User</span> <span class="ss">id: </span><span class="mi">1</span><span class="p">,</span> <span class="ss">name: </span><span class="s2">"Michael Hartl"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"mhartl@example.com"</span><span class="p">,</span>
+<span class="ss">created_at: </span><span class="s2">"2016-05-23 19:05:58"</span><span class="p">,</span> <span class="ss">updated_at: </span><span class="s2">"2016-05-23 19:05:58"</span><span class="kt">&gt;</span>
+<span class="o">&gt;&gt;</span> <span class="n">user</span><span class="p">.</span><span class="nf">email</span> <span class="o">=</span> <span class="s2">"mhartl@example.net"</span>
+<span class="o">=&gt;</span> <span class="s2">"mhartl@example.net"</span>
+<span class="o">&gt;&gt;</span> <span class="n">user</span><span class="p">.</span><span class="nf">save</span>
+<span class="o">=&gt;</span> <span class="kp">true</span>
 </code></pre></div>
 </div>
 <p>注意，如果想把改动写入数据库，必须执行最后一个方法。我们可以执行 <code>reload</code> 命令来看一下没保存的话是什么情况。<code>reload</code> 方法会使用数据库中的数据重新加载对象：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; user.email
-=&gt; "mhartl@example.net"
-&gt;&gt; user.email = "foo@bar.com"
-=&gt; "foo@bar.com"
-&gt;&gt; user.reload.email
-=&gt; "mhartl@example.net"
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; user.email</span>
+<span class="p">=&gt;</span> <span class="s2">"mhartl@example.net"</span>
+<span class="o">&gt;&gt;</span> <span class="n">user</span><span class="p">.</span><span class="nf">email</span> <span class="o">=</span> <span class="s2">"foo@bar.com"</span>
+<span class="o">=&gt;</span> <span class="s2">"foo@bar.com"</span>
+<span class="o">&gt;&gt;</span> <span class="n">user</span><span class="p">.</span><span class="nf">reload</span><span class="p">.</span><span class="nf">email</span>
+<span class="o">=&gt;</span> <span class="s2">"mhartl@example.net"</span>
 </code></pre></div>
 </div>
 <p>现在我们已经更新了用户数据，如 <a class="xref-link" href="#creating-user-objects">6.1.3 节</a>所说，现在自动创建的那两个时间戳属性不一样了：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; user.created_at
-=&gt; "2016-05-23 19:05:58"
-&gt;&gt; user.updated_at
-=&gt; "2016-05-23 19:08:23"
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; user.created_at</span>
+<span class="p">=&gt;</span> <span class="s2">"2016-05-23 19:05:58"</span>
+<span class="o">&gt;&gt;</span> <span class="n">user</span><span class="p">.</span><span class="nf">updated_at</span>
+<span class="o">=&gt;</span> <span class="s2">"2016-05-23 19:08:23"</span>
 </code></pre></div>
 </div>
 <p>更新数据的第二种常用方式是使用 <code>update_attributes</code> 方法：<sup>[<a id="fn-ref-9" href="#fn-9">9</a>]</sup></p>
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; user.update_attributes(name: "The Dude", email: "dude@abides.org")
-=&gt; true
-&gt;&gt; user.name
-=&gt; "The Dude"
-&gt;&gt; user.email
-=&gt; "dude@abides.org"
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; user.update_attributes(name: "The Dude", email: "dude@abides.org")</span>
+<span class="p">=&gt;</span> <span class="kp">true</span>
+<span class="o">&gt;&gt;</span> <span class="n">user</span><span class="p">.</span><span class="nf">name</span>
+<span class="o">=&gt;</span> <span class="s2">"The Dude"</span>
+<span class="o">&gt;&gt;</span> <span class="n">user</span><span class="p">.</span><span class="nf">email</span>
+<span class="o">=&gt;</span> <span class="s2">"dude@abides.org"</span>
 </code></pre></div>
 </div>
 <p><code>update_attributes</code> 方法接受一个指定对象属性的散列作为参数，如果操作成功，会执行更新和保存两个操作（保存成功时返回 <code>true</code>）。注意，如果任何一个数据验证失败了，例如存储记录时需要密码（<a class="xref-link" href="#adding-a-secure-password">6.3 节</a>实现），<code>update_attributes</code> 操作就会失败。如果只需要更新单个属性，可以使用 <code>update_attribute</code> 方法，跳过验证：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; user.update_attribute(:name, "El Duderino")
-=&gt; true
-&gt;&gt; user.name
-=&gt; "El Duderino"
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; user.update_attribute(:name, "El Duderino")</span>
+<span class="p">=&gt;</span> <span class="kp">true</span>
+<span class="o">&gt;&gt;</span> <span class="n">user</span><span class="p">.</span><span class="nf">name</span>
+<span class="o">=&gt;</span> <span class="s2">"El Duderino"</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-updating-user-objects" class="discrete">练习</h5>
@@ -504,7 +504,7 @@ created_at: "2016-05-23 19:05:58", updated_at: "2016-05-23 19:05:58"&gt;
 <h5><span class="title-label">代码清单 6.6</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>:models
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>:models
 </code></pre></div>
 </div>
 <p>这里，我们使用 <code>rails test:models</code> 命令，只运行模型测试（与 <a class="xref-link" href="chapter5.html#layout-link-tests">5.3.4 节</a>的 <code>rails test:integration</code> 对比一下）。</p>
@@ -551,7 +551,7 @@ created_at: "2016-05-23 19:05:58", updated_at: "2016-05-23 19:05:58"&gt;
 <h5><span class="title-label">代码清单 6.8</span>：<strong class="red">RED</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>:models
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>:models
 </code></pre></div>
 </div>
 <p>我们在<a class="xref-link" href="chapter2.html#a-toy-app">第 2 章</a>的练习中见过，<code>name</code> 属性的存在性验证使用 <code>validates</code> 方法，而且其参数为 <code>presence: true</code>，如<a class="xref-link" href="#listing-validates-presence-of-name">代码清单 6.9</a> 所示。<code>presence: true</code> 是只有一个元素的可选散列参数；<a class="xref-link" href="chapter4.html#css-revisited">4.3.4 节</a>说过，如果方法的最后一个参数是散列，可以省略花括号。（<a class="xref-link" href="chapter5.html#site-navigation">5.1.1 节</a>说过，Rails 经常使用散列做参数。）</p>
@@ -578,18 +578,18 @@ created_at: "2016-05-23 19:05:58", updated_at: "2016-05-23 19:05:58"&gt;
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>$ rails console --sandbox
-&gt;&gt; user = User.new(name: "", email: "mhartl@example.com")
-&gt;&gt; user.valid?
-=&gt; false
+<div class="highlight language-irb"><pre><code><span class="go">$ rails console --sandbox</span>
+<span class="go">&gt;&gt; user = User.new(name: "", email: "mhartl@example.com")</span>
+<span class="go">&gt;&gt; user.valid?</span>
+<span class="p">=&gt;</span> <span class="kp">false</span>
 </code></pre></div>
 </div>
 <p>这里我们使用 <code>valid?</code> 方法检查 <code>user</code> 变量的有效性，如果有一个或多个验证失败，返回值为 <code>false</code>；如果所有验证都能通过，返回 <code>true</code>。现在只有一个验证，所以我们知道是哪一个失败，不过看一下失败时生成的 <code>errors</code> 对象还是很有用的：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; user.errors.full_messages
-=&gt; ["Name can't be blank"]
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; user.errors.full_messages</span>
+<span class="p">=&gt;</span> <span class="p">[</span><span class="s2">"Name can't be blank"</span><span class="p">]</span>
 </code></pre></div>
 </div>
 <p>（错误消息暗示，Rails 使用 <a class="xref-link" href="chapter4.html#modifying-built-in-classes">4.4.3 节</a>介绍的 <code>blank?</code> 方法验证存在性。）</p>
@@ -597,8 +597,8 @@ created_at: "2016-05-23 19:05:58", updated_at: "2016-05-23 19:05:58"&gt;
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; user.save
-=&gt; false
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; user.save</span>
+<span class="p">=&gt;</span> <span class="kp">false</span>
 </code></pre></div>
 </div>
 <p>加入验证后，<a class="xref-link" href="#listing-name-presence-test">代码清单 6.7</a> 中的测试应该可以通过了：</p>
@@ -606,7 +606,7 @@ created_at: "2016-05-23 19:05:58", updated_at: "2016-05-23 19:05:58"&gt;
 <h5><span class="title-label">代码清单 6.10</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>:models
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>:models
 </code></pre></div>
 </div>
 <p>按照<a class="xref-link" href="#listing-name-presence-test">代码清单 6.7</a> 的方式，再编写一个检查 <code>email</code> 属性存在性的测试就简单了，如<a class="xref-link" href="#listing-email-presence-test">代码清单 6.11</a> 所示。让这个测试通过的应用代码如<a class="xref-link" href="#listing-validates-presence-of-email">代码清单 6.12</a> 所示。</p>
@@ -655,7 +655,7 @@ created_at: "2016-05-23 19:05:58", updated_at: "2016-05-23 19:05:58"&gt;
 <h5><span class="title-label">代码清单 6.13</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-validating-presence" class="discrete">练习</h5>
@@ -703,23 +703,23 @@ created_at: "2016-05-23 19:05:58", updated_at: "2016-05-23 19:05:58"&gt;
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; "a" * 51
-=&gt; "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-&gt;&gt; ("a" * 51).length
-=&gt; 51
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; "a" * 51</span>
+<span class="p">=&gt;</span> <span class="s2">"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"</span>
+<span class="o">&gt;&gt;</span> <span class="p">(</span><span class="s2">"a"</span> <span class="o">*</span> <span class="mi">51</span><span class="p">).</span><span class="nf">length</span>
+<span class="o">=&gt;</span> <span class="mi">51</span>
 </code></pre></div>
 </div>
 <p>在电子邮件地址长度的测试中，我们创建了一个比要求多一个字符的地址：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; "a" * 244 + "@example.com"
-=&gt; "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaa@example.com"
-&gt;&gt; ("a" * 244 + "@example.com").length
-=&gt; 256
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; "a" * 244 + "@example.com"</span>
+<span class="p">=&gt;</span> <span class="s2">"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</span>
+<span class="s2">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</span>
+<span class="s2">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</span>
+<span class="s2">aaaaaaaaaaa@example.com"</span>
+<span class="o">&gt;&gt;</span> <span class="p">(</span><span class="s2">"a"</span> <span class="o">*</span> <span class="mi">244</span> <span class="o">+</span> <span class="s2">"@example.com"</span><span class="p">).</span><span class="nf">length</span>
+<span class="o">=&gt;</span> <span class="mi">256</span>
 </code></pre></div>
 </div>
 <p>现在，<a class="xref-link" href="#listing-length-validation-test">代码清单 6.14</a> 中的测试应该失败：</p>
@@ -727,7 +727,7 @@ aaaaaaaaaaa@example.com"
 <h5><span class="title-label">代码清单 6.15</span>：<strong class="red">RED</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <p>为了让测试通过，我们要使用验证参数限制长度，即 <code>length</code>，以及限制上线的 <code>maximum</code> 参数，如<a class="xref-link" href="#listing-length-validation">代码清单 6.16</a> 所示。</p>
@@ -747,7 +747,7 @@ aaaaaaaaaaa@example.com"
 <h5><span class="title-label">代码清单 6.17</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <p>测试组件再次通过，接下来我们要实现一个更有挑战的验证——电子邮件地址的格式。</p>
@@ -768,16 +768,16 @@ aaaaaaaaaaa@example.com"
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; %w[foo bar baz]
-=&gt; ["foo", "bar", "baz"]
-&gt;&gt; addresses = %w[USER@foo.COM THE_US-ER@foo.bar.org first.last@foo.jp]
-=&gt; ["USER@foo.COM", "THE_US-ER@foo.bar.org", "first.last@foo.jp"]
-&gt;&gt; addresses.each do |address|
-?&gt;   puts address
-&gt;&gt; end
-USER@foo.COM
-THE_US-ER@foo.bar.org
-first.last@foo.jp
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; %w[foo bar baz]</span>
+<span class="p">=&gt;</span> <span class="p">[</span><span class="s2">"foo"</span><span class="p">,</span> <span class="s2">"bar"</span><span class="p">,</span> <span class="s2">"baz"</span><span class="p">]</span>
+<span class="o">&gt;&gt;</span> <span class="n">addresses</span> <span class="o">=</span> <span class="sx">%w[USER@foo.COM THE_US-ER@foo.bar.org first.last@foo.jp]</span>
+<span class="o">=&gt;</span> <span class="p">[</span><span class="s2">"USER@foo.COM"</span><span class="p">,</span> <span class="s2">"THE_US-ER@foo.bar.org"</span><span class="p">,</span> <span class="s2">"first.last@foo.jp"</span><span class="p">]</span>
+<span class="o">&gt;&gt;</span> <span class="n">addresses</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">address</span><span class="o">|</span>
+<span class="sc">?&gt;</span>   <span class="nb">puts</span> <span class="n">address</span>
+<span class="o">&gt;&gt;</span> <span class="k">end</span>
+<span class="no">USER</span><span class="vi">@foo</span><span class="o">.</span><span class="no">COM</span>
+<span class="no">THE_US</span><span class="o">-</span><span class="no">ER</span><span class="vi">@foo</span><span class="p">.</span><span class="nf">bar</span><span class="p">.</span><span class="nf">org</span>
+<span class="n">first</span><span class="p">.</span><span class="nf">last</span><span class="vi">@foo</span><span class="p">.</span><span class="nf">jp</span>
 </code></pre></div>
 </div>
 <p>在上面的控制台会话中，我们使用 <code>each</code> 方法（<a class="xref-link" href="chapter4.html#blocks">4.3.2 节</a>）遍历 <code>addresses</code> 数组中的元素。掌握这种用法之后，我们就可以编写一些基本的电子邮件地址格式验证测试了。</p>
@@ -848,7 +848,7 @@ first.last@foo.jp
 <h5><span class="title-label">代码清单 6.20</span>：<strong class="red">RED</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <p>电子邮件地址格式验证使用 <code>format</code> 参数，用法如下：</p>
@@ -957,7 +957,7 @@ first.last@foo.jp
 <h5><span class="title-label">代码清单 6.22</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>:models
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>:models
 </code></pre></div>
 </div>
 <p>那么，现在就只剩一个限制要实现了：确保电子邮件地址的唯一性。</p>
@@ -1059,14 +1059,14 @@ first.last@foo.jp
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>$ rails console --sandbox
-&gt;&gt; user = User.create(name: "Example User", email: "user@example.com")
-&gt;&gt; user.email.upcase
-=&gt; "USER@EXAMPLE.COM"
-&gt;&gt; duplicate_user = user.dup
-&gt;&gt; duplicate_user.email = user.email.upcase
-&gt;&gt; duplicate_user.valid?
-=&gt; true
+<div class="highlight language-irb"><pre><code><span class="go">$ rails console --sandbox</span>
+<span class="go">&gt;&gt; user = User.create(name: "Example User", email: "user@example.com")</span>
+<span class="go">&gt;&gt; user.email.upcase</span>
+<span class="p">=&gt;</span> <span class="s2">"USER@EXAMPLE.COM"</span>
+<span class="o">&gt;&gt;</span> <span class="n">duplicate_user</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="nf">dup</span>
+<span class="o">&gt;&gt;</span> <span class="n">duplicate_user</span><span class="p">.</span><span class="nf">email</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="nf">email</span><span class="p">.</span><span class="nf">upcase</span>
+<span class="o">&gt;&gt;</span> <span class="n">duplicate_user</span><span class="p">.</span><span class="nf">valid?</span>
+<span class="o">=&gt;</span> <span class="kp">true</span>
 </code></pre></div>
 </div>
 <p>当然，现在 <code>duplicate_user.valid?</code> 的返回值是 <code>true</code>，因为唯一性验证还区分大小写。我们希望得到的结果是 <code>false</code>。幸好 <code>:uniqueness</code> 可以指定 <code>:case_sensitive</code> 选项，正好可以解决这个问题，如<a class="xref-link" href="#listing-validates-uniqueness-of-email-case-insensitive">代码清单 6.27</a> 所示。</p>
@@ -1090,7 +1090,7 @@ first.last@foo.jp
 <h5><span class="title-label">代码清单 6.28</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <p>现在还有一个小问题——Active Record 中的唯一性验证无法保证数据库层也能实现唯一性。我来解释一下：</p>
@@ -1118,7 +1118,7 @@ first.last@foo.jp
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate migration add_index_to_users_email
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails generate migration add_index_to_users_email
 </code></pre></div>
 </div>
 <p>与 <code>User</code> 模型的迁移不同，实现电子邮件地址唯一性的操作没有事先定义好的模板可用，所以我们要自己动手编写，如<a class="xref-link" href="#listing-email-uniqueness-index">代码清单 6.29</a> 所示。<sup>[<a id="fn-ref-16" href="#fn-16">16</a>]</sup></p>
@@ -1127,7 +1127,7 @@ first.last@foo.jp
 
 <div class="source-file">db/migrate/[timestamp]_add_index_to_users_email.rb</div>
 
-<div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">AddIndexToUsersEmail</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mi">5</span><span class="o">.</span><span class="mi">0</span><span class="p">]</span>
+<div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">AddIndexToUsersEmail</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mf">5.0</span><span class="p">]</span>
   <span class="k">def</span> <span class="nf">change</span>
 <span class="hll">    <span class="n">add_index</span> <span class="ss">:users</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">unique: </span><span class="kp">true</span></span>
   <span class="k">end</span>
@@ -1139,7 +1139,7 @@ first.last@foo.jp
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails db:migrate
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails db:migrate
 </code></pre></div>
 </div>
 <p>（如果迁移失败的话，退出所有打开的沙盒模式控制台会话试试。这些会话可能会锁定数据库，拒绝迁移操作。）</p>
@@ -1303,7 +1303,7 @@ first.last@foo.jp
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate migration add_password_digest_to_users password_digest:string
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails generate migration add_password_digest_to_users password_digest:string
 </code></pre></div>
 </div>
 <p>在这个命令中，我们还加入了参数 <code>password_digest:string</code>，指定想添加的列名和类型。（与<a class="xref-link" href="#listing-generate-user-model">代码清单 6.1</a> 中的命令对比一下，那个命令生成创建 <code>users</code> 表的迁移，指定了 <code>name:string</code> 和 <code>email:string</code> 两个参数。）加入 <code>password_digest:string</code> 后，我们为 Rails 提供了足够的信息，它会为我们生成一个完整的迁移，如<a class="xref-link" href="#listing-password-migration">代码清单 6.35</a> 所示。</p>
@@ -1312,7 +1312,7 @@ first.last@foo.jp
 
 <div class="source-file">db/migrate/[timestamp]_add_password_digest_to_users.rb</div>
 
-<div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">AddPasswordDigestToUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mi">5</span><span class="o">.</span><span class="mi">0</span><span class="p">]</span>
+<div class="highlight language-ruby"><pre><code><span class="k">class</span> <span class="nc">AddPasswordDigestToUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mf">5.0</span><span class="p">]</span>
   <span class="k">def</span> <span class="nf">change</span>
     <span class="n">add_column</span> <span class="ss">:users</span><span class="p">,</span> <span class="ss">:password_digest</span><span class="p">,</span> <span class="ss">:string</span>
   <span class="k">end</span>
@@ -1323,7 +1323,7 @@ first.last@foo.jp
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails db:migrate
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails db:migrate
 </code></pre></div>
 </div>
 <p><code>has_secure_password</code> 方法使用先进的 <a href="http://en.wikipedia.org/wiki/Bcrypt" class="external-link">bcrypt</a> 哈希算法计算密码摘要。使用 bcrypt 计算密码哈希值，就算攻击者设法获得了数据库副本也无法登录网站。为了在演示应用中使用 bcrypt，我们要把 <code>bcrypt</code> gem 添加到 <code>Gemfile</code> 文件中，如<a class="xref-link" href="#listing-bcrypt-ruby">代码清单 6.36</a> 所示。</p>
@@ -1333,8 +1333,8 @@ first.last@foo.jp
 
 <div class="highlight language-ruby"><pre><code><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
 
-<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>                   <span class="s1">'5.1.4'</span>
-<span class="n">gem</span> <span class="s1">'bcrypt'</span><span class="p">,</span>                  <span class="s1">'3.1.11'</span>
+<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span>                   <span class="s1">'5.1.6'</span>
+<span class="n">gem</span> <span class="s1">'bcrypt'</span><span class="p">,</span>                  <span class="s1">'3.1.12'</span>
 <span class="p">.</span>
 <span class="nf">.</span>
 <span class="o">.</span>
@@ -1344,7 +1344,7 @@ first.last@foo.jp
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>bundle install
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>bundle <span class="nb">install</span>
 </code></pre></div>
 </div>
 </section>
@@ -1372,7 +1372,7 @@ first.last@foo.jp
 <h5><span class="title-label">代码清单 6.38</span>：<strong class="red">RED</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <p>我们在 <a class="xref-link" href="#a-hashed-password">6.3.1 节</a>说过，<code>has_secure_password</code> 会在 <code>password</code> 和 <code>password_confirmation</code> 两个虚拟属性上执行验证，但是现在<a class="xref-link" href="#listing-validates-uniqueness-of-email-case-insensitive-test">代码清单 6.26</a> 创建 <code>@user</code> 变量时没有设定这两个属性：</p>
@@ -1410,7 +1410,7 @@ first.last@foo.jp
 <h5><span class="title-label">代码清单 6.40</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <p>在 <a class="xref-link" href="#creating-and-authenticating-a-user">6.3.4 节</a>会看到在 <code>User</code> 模型中添加 <code>has_secure_password</code> 方法的作用。在此之前，为了密码的安全，先添加一个小限制。</p>
@@ -1493,7 +1493,7 @@ first.last@foo.jp
 <h5><span class="title-label">代码清单 6.43</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>:models
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>:models
 </code></pre></div>
 </div>
 <h5 id="exercises-minimum-password-length" class="discrete">练习</h5>
@@ -1513,12 +1513,12 @@ first.last@foo.jp
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>$ rails console
-&gt;&gt; User.create(name: "Michael Hartl", email: "mhartl@example.com",
-?&gt;             password: "foobar", password_confirmation: "foobar")
-=&gt; #&lt;User id: 1, name: "Michael Hartl", email: "mhartl@example.com",
-created_at: "2016-05-23 20:36:46", updated_at: "2016-05-23 20:36:46",
-password_digest: "$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3..."&gt;
+<div class="highlight language-irb"><pre><code><span class="go">$ rails console</span>
+<span class="go">&gt;&gt; User.create(name: "Michael Hartl", email: "mhartl@example.com",</span>
+<span class="go">?&gt;             password: "foobar", password_confirmation: "foobar")</span>
+<span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">User</span> <span class="ss">id: </span><span class="mi">1</span><span class="p">,</span> <span class="ss">name: </span><span class="s2">"Michael Hartl"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"mhartl@example.com"</span><span class="p">,</span>
+<span class="ss">created_at: </span><span class="s2">"2016-05-23 20:36:46"</span><span class="p">,</span> <span class="ss">updated_at: </span><span class="s2">"2016-05-23 20:36:46"</span><span class="p">,</span>
+<span class="ss">password_digest: </span><span class="s2">"$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3..."</span><span class="kt">&gt;</span>
 </code></pre></div>
 </div>
 <p>为了确认结果，我们使用 SQLite 数据库浏览器查看开发数据库（<code>db/development.sqlite3</code>）中的 <code>users</code> 表，如<a class="xref-link" href="#fig-sqlite-user-row">图 6.9</a> 所示。<sup>[<a id="fn-ref-20" href="#fn-20">20</a>]</sup>（如果使用云端 IDE，要按照<a class="xref-link" href="#fig-sqlite-download">图 6.6</a> 中的方法下载数据库文件。）留意<a class="xref-link" href="#fig-user-model-password-digest">图 6.8</a> 中数据模型的各个属性。</p>
@@ -1527,9 +1527,9 @@ password_digest: "$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3..."&gt;
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; user = User.find_by(email: "mhartl@example.com")
-&gt;&gt; user.password_digest
-=&gt; "$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3yOcVFzb6oK"
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; user = User.find_by(email: "mhartl@example.com")</span>
+<span class="go">&gt;&gt; user.password_digest</span>
+<span class="p">=&gt;</span> <span class="s2">"$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3yOcVFzb6oK"</span>
 </code></pre></div>
 </div>
 <p>这是创建用户对象时指定的密码（<code>"foobar"</code>）的哈希值。这个值由 bcrypt 计算得出，很难反推出原始密码。<sup>[<a id="fn-ref-21" href="#fn-21">21</a>]</sup></p>
@@ -1537,28 +1537,28 @@ password_digest: "$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3..."&gt;
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; user.authenticate("not_the_right_password")
-false
-&gt;&gt; user.authenticate("foobaz")
-false
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; user.authenticate("not_the_right_password")</span>
+<span class="go">false</span>
+<span class="go">&gt;&gt; user.authenticate("foobaz")</span>
+<span class="go">false</span>
 </code></pre></div>
 </div>
 <p>我们提供的密码都是错误的，所以 <code>user.authenticate</code> 返回 <code>false</code>。如果提供正确的密码，<code>authenticate</code> 方法会返回数据库中对应的用户：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; user.authenticate("foobar")
-=&gt; #&lt;User id: 1, name: "Michael Hartl", email: "mhartl@example.com",
-created_at: "2016-05-23 20:36:46", updated_at: "2016-05-23 20:36:46",
-password_digest: "$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3..."&gt;
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; user.authenticate("foobar")</span>
+<span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">User</span> <span class="ss">id: </span><span class="mi">1</span><span class="p">,</span> <span class="ss">name: </span><span class="s2">"Michael Hartl"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"mhartl@example.com"</span><span class="p">,</span>
+<span class="ss">created_at: </span><span class="s2">"2016-05-23 20:36:46"</span><span class="p">,</span> <span class="ss">updated_at: </span><span class="s2">"2016-05-23 20:36:46"</span><span class="p">,</span>
+<span class="ss">password_digest: </span><span class="s2">"$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3..."</span><span class="kt">&gt;</span>
 </code></pre></div>
 </div>
 <p><a class="xref-link" href="chapter8.html#basic-login">第 8 章</a>会使用 <code>authenticate</code> 方法把注册的用户登入网站。其实，<code>authenticate</code> 方法返回的用户对象并不重要，关键是这个值是“真值”。<a class="xref-link" href="chapter4.html#objects-and-message-passing">4.2.3 节</a> 说过，<code>!!</code> 会把对象转换成相应的布尔值。我们可以使用这种方式确认 <code>user.authenticate</code> 方法很好地完成了任务：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; !!user.authenticate("foobar")
-=&gt; true
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; !!user.authenticate("foobar")</span>
+<span class="p">=&gt;</span> <span class="kp">true</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-creating-and-authenticating-a-user" class="discrete">练习</h5>
@@ -1583,39 +1583,39 @@ password_digest: "$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3..."&gt;
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
-<span class="gp">$ </span>git add -A
-<span class="gp">$ </span>git commit -m <span class="s2">"Make a basic User model (including secure passwords)"</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
+<span class="nv">$ </span>git add <span class="nt">-A</span>
+<span class="nv">$ </span>git commit <span class="nt">-m</span> <span class="s2">"Make a basic User model (including secure passwords)"</span>
 </code></pre></div>
 </div>
 <p>然后合并到主分支，再推送到远程仓库中：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git checkout master
-<span class="gp">$ </span>git merge modeling-users
-<span class="gp">$ </span>git push
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>git checkout master
+<span class="nv">$ </span>git merge modeling-users
+<span class="nv">$ </span>git push
 </code></pre></div>
 </div>
 <p>为了让 <code>User</code> 模型在生产环境中能正常使用，我们要在 Heroku 中执行迁移。这个操作可以通过 <code>heroku run</code> 命令完成：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
-<span class="gp">$ </span>git push heroku
-<span class="gp">$ </span>heroku run rails db:migrate
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
+<span class="nv">$ </span>git push heroku
+<span class="nv">$ </span>heroku run rails db:migrate
 </code></pre></div>
 </div>
 <p>我们可以在生产环境的控制台中执行下述代码确认一下：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>$ heroku run rails console --sandbox
-&gt;&gt; User.create(name: "Michael Hartl", email: "michael@example.com",
-?&gt;             password: "foobar", password_confirmation: "foobar")
-=&gt; #&lt;User id: 1, name: "Michael Hartl", email: "michael@example.com",
-created_at: "2016-05-23 20:54:41", updated_at: "2016-05-23 20:54:41",
-password_digest: "$2a$10$74xFguZRoTZBXTUqs1FjpOf3OoLhrvgxC2wlohtTEcH..."&gt;
+<div class="highlight language-irb"><pre><code><span class="go">$ heroku run rails console --sandbox</span>
+<span class="go">&gt;&gt; User.create(name: "Michael Hartl", email: "michael@example.com",</span>
+<span class="go">?&gt;             password: "foobar", password_confirmation: "foobar")</span>
+<span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">User</span> <span class="ss">id: </span><span class="mi">1</span><span class="p">,</span> <span class="ss">name: </span><span class="s2">"Michael Hartl"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"michael@example.com"</span><span class="p">,</span>
+<span class="ss">created_at: </span><span class="s2">"2016-05-23 20:54:41"</span><span class="p">,</span> <span class="ss">updated_at: </span><span class="s2">"2016-05-23 20:54:41"</span><span class="p">,</span>
+<span class="ss">password_digest: </span><span class="s2">"$2a$10$74xFguZRoTZBXTUqs1FjpOf3OoLhrvgxC2wlohtTEcH..."</span><span class="kt">&gt;</span>
 </code></pre></div>
 </div>
 <section data-type="sect2" id="modeling-users-learned">

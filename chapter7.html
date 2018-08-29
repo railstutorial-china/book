@@ -9,7 +9,7 @@
   <meta name="keywords" content="ruby, rails, tutorial"/>
   <meta name="author" content="Michael Hartl"/>
   <meta name="translator" content="安道"/>
-  <meta name="generator" content="persie 0.0.3.beta.4"/>
+  <meta name="generator" content="persie 0.0.4.1"/>
   <link rel="stylesheet" type="text/css" href="//railstutorial-china.org/assets/css/main.css"/>
   <link rel="stylesheet" type="text/css" href="book.css"/>
   <script type="text/javascript" src="//railstutorial-china.org/assets/js/global.js"></script>
@@ -70,7 +70,7 @@
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git checkout -b sign-up
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>git checkout <span class="nt">-b</span> sign-up
 </code></pre></div>
 </div>
 <div id="fig-profile-mockup" class="figure"><img src="images/chapter7/profile_mockup_bootstrap.png" alt="profile mockup bootstrap" /><div class="figcaption"><span class="title-label">图 7.2</span>：最终实现的用户资料页面构思图</div></div>
@@ -112,14 +112,14 @@
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>$ rails console
-Loading development environment
-&gt;&gt; Rails.env
-=&gt; "development"
-&gt;&gt; Rails.env.development?
-=&gt; true
-&gt;&gt; Rails.env.test?
-=&gt; false
+<div class="highlight language-irb"><pre><code><span class="go">$ rails console</span>
+<span class="go">Loading development environment</span>
+<span class="go">&gt;&gt; Rails.env</span>
+<span class="p">=&gt;</span> <span class="s2">"development"</span>
+<span class="o">&gt;&gt;</span> <span class="no">Rails</span><span class="p">.</span><span class="nf">env</span><span class="p">.</span><span class="nf">development?</span>
+<span class="o">=&gt;</span> <span class="kp">true</span>
+<span class="o">&gt;&gt;</span> <span class="no">Rails</span><span class="p">.</span><span class="nf">env</span><span class="p">.</span><span class="nf">test?</span>
+<span class="o">=&gt;</span> <span class="kp">false</span>
 </code></pre></div>
 </div>
 <p>如前所示，<code>Rails</code> 对象有一个 <code>env</code> 属性，在这个属性上可以调用各个环境对应的布尔值方法，例如，<code>Rails.env.test?</code> 在测试环境中的返回值是 <code>true</code>，在其他两个环境中的返回值则是 <code>false</code>。</p>
@@ -127,26 +127,26 @@ Loading development environment
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>$ rails console test
-Loading test environment
-&gt;&gt; Rails.env
-=&gt; "test"
-&gt;&gt; Rails.env.test?
-=&gt; true
+<div class="highlight language-irb"><pre><code><span class="go">$ rails console test</span>
+<span class="go">Loading test environment</span>
+<span class="go">&gt;&gt; Rails.env</span>
+<span class="p">=&gt;</span> <span class="s2">"test"</span>
+<span class="o">&gt;&gt;</span> <span class="no">Rails</span><span class="p">.</span><span class="nf">env</span><span class="p">.</span><span class="nf">test?</span>
+<span class="o">=&gt;</span> <span class="kp">true</span>
 </code></pre></div>
 </div>
 <p>Rails 本地服务器和控制台一样，默认使用开发环境，不过也可以在其他环境中运行：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails server --environment production
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails server <span class="nt">--environment</span> production
 </code></pre></div>
 </div>
 <p>如果想在生产环境中运行应用，要先有一个生产数据库。在生产环境中执行 <code>rails db:migrate</code> 命令可以生成这个数据库：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails db:migrate <span class="nv">RAILS_ENV</span><span class="o">=</span>production
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails db:migrate <span class="nv">RAILS_ENV</span><span class="o">=</span>production
 </code></pre></div>
 </div>
 <p>（我发现在控制台、服务器和迁移命令中指定环境的习惯方法不一样，你可能会混淆，所以特意演示了这三个命令的用法。不过注意，在这几个命令中都可以使用 <code>RAILS_ENV=&lt;env&gt;</code>，例如 <code>RAILS_ENV=production rails server</code>。）</p>
@@ -154,11 +154,11 @@ Loading test environment
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>$ heroku run rails console
-&gt;&gt; Rails.env
-=&gt; "production"
-&gt;&gt; Rails.env.production?
-=&gt; true
+<div class="highlight language-irb"><pre><code><span class="go">$ heroku run rails console</span>
+<span class="go">&gt;&gt; Rails.env</span>
+<span class="p">=&gt;</span> <span class="s2">"production"</span>
+<span class="o">&gt;&gt;</span> <span class="no">Rails</span><span class="p">.</span><span class="nf">env</span><span class="p">.</span><span class="nf">production?</span>
+<span class="o">=&gt;</span> <span class="kp">true</span>
 </code></pre></div>
 </div>
 <p>Heroku 是用来部署网站的平台，自然会在生产环境中运行应用。</p>
@@ -249,13 +249,13 @@ Loading test environment
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>$ rails console
-&gt;&gt; User.count
-=&gt; 1
-&gt;&gt; User.first
-=&gt; #&lt;User id: 1, name: "Michael Hartl", email: "mhartl@example.com",
-created_at: "2016-05-23 20:36:46", updated_at: "2016-05-23 20:36:46",
-password_digest: "$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3..."&gt;
+<div class="highlight language-irb"><pre><code><span class="go">$ rails console</span>
+<span class="go">&gt;&gt; User.count</span>
+<span class="p">=&gt;</span> <span class="mi">1</span>
+<span class="o">&gt;&gt;</span> <span class="no">User</span><span class="p">.</span><span class="nf">first</span>
+<span class="o">=&gt;</span> <span class="kt">#&lt;</span><span class="no">User</span> <span class="ss">id: </span><span class="mi">1</span><span class="p">,</span> <span class="ss">name: </span><span class="s2">"Michael Hartl"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"mhartl@example.com"</span><span class="p">,</span>
+<span class="ss">created_at: </span><span class="s2">"2016-05-23 20:36:46"</span><span class="p">,</span> <span class="ss">updated_at: </span><span class="s2">"2016-05-23 20:36:46"</span><span class="p">,</span>
+<span class="ss">password_digest: </span><span class="s2">"$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3..."</span><span class="kt">&gt;</span>
 </code></pre></div>
 </div>
 <p>（如果你的数据库中现在没有用户记录，回到 <a class="xref-link" href="chapter6.html#creating-and-authenticating-a-user">6.3.4 节</a>，在继续阅读之前先完成那里的操作。）从控制台的输出可以看出，这个用户的 ID 是 <code>1</code>，我们现在的目标就是创建一个页面，显示这个用户的信息。我们会遵从 Rails 使用的 REST 架构（<a class="xref-link" href="chapter2.html#aside-rest">旁注 2.2</a>），把数据视为资源，可以创建、显示、更新和删除。这四个操作分别对应 <a href="http://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol" class="external-link">HTTP 标准</a>中的 <code>POST</code>、<code>GET</code>、<code>PATCH</code> 和 <code>DELETE</code> 请求方法（<a class="xref-link" href="chapter3.html#aside-get-etc">旁注 3.2</a>）。</p>
@@ -482,20 +482,20 @@ password_digest: "$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3..."&gt;
 
 <div class="source-file">app/views/users/show.html.erb</div>
 
-<div class="highlight language-ruby"><pre><code><span class="o">&lt;</span><span class="sx">% provide(:title, </span><span class="vi">@user</span><span class="p">.</span><span class="nf">name</span><span class="p">)</span> <span class="o">%&gt;</span>
-<span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span>
-  <span class="o">&lt;</span><span class="sx">%= gravatar_for @user %&gt;</span>
-<span class="sx">  &lt;%=</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">name</span> <span class="sx">%&gt;</span>
-<span class="sx">&lt;/h1&gt;</span>
+<div class="highlight language-erb"><pre><code><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">name</span><span class="p">)</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;h1&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">gravatar_for</span> <span class="vi">@user</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">name</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;/h1&gt;</span>
 </code></pre></div>
 </div>
 <p>默认情况下，所有辅助方法文件中定义的方法都自动在任意视图中可用，不过为了便于管理，我们会把 <code>gravatar_for</code> 方法放在 <code>Users</code> 控制器对应的辅助方法文件中。根据 <a href="http://en.gravatar.com/site/implement/hash/" class="external-link">Gravatar 的文档</a>，头像的 URL 地址中要使用用户电子邮件地址的 <a href="http://en.wikipedia.org/wiki/MD5" class="external-link">MD5 哈希值</a>。在 Ruby 中，MD5 哈希算法由 <code>Digest</code> 库中的 <code>hexdigest</code> 方法实现：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; email = "MHARTL@example.COM"
-<span class="hll">&gt;&gt; Digest::MD5::hexdigest(email.downcase)</span>
-=&gt; "1fda4469bcbec3badf5418269ffc5968"
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; email = "MHARTL@example.COM"</span>
+<span class="hll"><span class="go">&gt;&gt; Digest::MD5::hexdigest(email.downcase)</span></span>
+<span class="p">=&gt;</span> <span class="s2">"1fda4469bcbec3badf5418269ffc5968"</span>
 </code></pre></div>
 </div>
 <p>电子邮件地址不区分大小写，但是 MD5 哈希算法区分，所以我们要先调用 <code>downcase</code> 方法把电子邮件地址转换成小写形式，然后再传给 <code>hexdigest</code> 方法。（在<a class="xref-link" href="chapter6.html#listing-email-downcase">代码清单 6.32</a> 中的回调里我们已经把电子邮件地址转换成小写形式了，但这里最好也转换，以防电子邮件地址来自其他地方。）我们定义的 <code>gravatar_for</code> 辅助方法如<a class="xref-link" href="#listing-gravatar-for-helper">代码清单 7.9</a> 所示。</p>
@@ -521,13 +521,13 @@ password_digest: "$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3..."&gt;
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>$ rails console
-&gt;&gt; user = User.first
-&gt;&gt; user.update_attributes(name: "Example User",
-?&gt;                        email: "example@railstutorial.org",
-?&gt;                        password: "foobar",
-?&gt;                        password_confirmation: "foobar")
-=&gt; true
+<div class="highlight language-irb"><pre><code><span class="go">$ rails console</span>
+<span class="go">&gt;&gt; user = User.first</span>
+<span class="go">&gt;&gt; user.update_attributes(name: "Example User",</span>
+<span class="go">?&gt;                        email: "example@railstutorial.org",</span>
+<span class="go">?&gt;                        password: "foobar",</span>
+<span class="go">?&gt;                        password_confirmation: "foobar")</span>
+<span class="p">=&gt;</span> <span class="kp">true</span>
 </code></pre></div>
 </div>
 <p>我们把用户的电子邮件地址改成 <code>example@railstutorial.org</code>。我已经把这个地址的头像设为了本书网站的徽标，修改后的结果如<a class="xref-link" href="#fig-profile-custom-gravatar">图 7.8</a> 所示。</p>
@@ -1011,7 +1011,7 @@ password_digest: "$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3..."&gt;
 <h5 id="exercises-strong-parameters" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
-<p>访问 /users/new?admin=1，确认调试信息中显示的 <code>params</code> 中有 <code>admin</code> 属性。</p>
+<p>访问 /signup?admin=1，确认调试信息中显示的 <code>params</code> 中有 <code>admin</code> 属性。</p>
 </li>
 </ol>
 </section>
@@ -1021,13 +1021,13 @@ password_digest: "$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3..."&gt;
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>$ rails console
-&gt;&gt; user = User.new(name: "Foo Bar", email: "foo@invalid",
-?&gt;                 password: "dude", password_confirmation: "dude")
-&gt;&gt; user.save
-=&gt; false
-&gt;&gt; user.errors.full_messages
-=&gt; ["Email is invalid", "Password is too short (minimum is 6 characters)"]
+<div class="highlight language-irb"><pre><code><span class="go">$ rails console</span>
+<span class="go">&gt;&gt; user = User.new(name: "Foo Bar", email: "foo@invalid",</span>
+<span class="go">?&gt;                 password: "dude", password_confirmation: "dude")</span>
+<span class="go">&gt;&gt; user.save</span>
+<span class="p">=&gt;</span> <span class="kp">false</span>
+<span class="o">&gt;&gt;</span> <span class="n">user</span><span class="p">.</span><span class="nf">errors</span><span class="p">.</span><span class="nf">full_messages</span>
+<span class="o">=&gt;</span> <span class="p">[</span><span class="s2">"Email is invalid"</span><span class="p">,</span> <span class="s2">"Password is too short (minimum is 6 characters)"</span><span class="p">]</span>
 </code></pre></div>
 </div>
 <p>如上所示，<code>errors.full_message</code> 对象是一个由错误消息组成的数组（<a class="xref-link" href="chapter6.html#validating-presence">6.2.2 节</a>简介过）。</p>
@@ -1067,7 +1067,7 @@ password_digest: "$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3..."&gt;
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>mkdir app/views/shared
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span><span class="nb">mkdir </span>app/views/shared
 </code></pre></div>
 </div>
 <p>然后像之前一样，在文本编辑器中新建局部视图 <code>_error_messages.html.erb</code> 文件。这个局部视图的内容如<a class="xref-link" href="#listing-errors-partial">代码清单 7.21</a> 所示。</p>
@@ -1094,18 +1094,18 @@ password_digest: "$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3..."&gt;
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; user.errors.count
-=&gt; 2
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; user.errors.count</span>
+<span class="p">=&gt;</span> <span class="mi">2</span>
 </code></pre></div>
 </div>
 <p>第二个新方法是 <code>any?</code>，它和 <code>empty?</code> 的作用相反：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; user.errors.empty?
-=&gt; false
-&gt;&gt; user.errors.any?
-=&gt; true
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; user.errors.empty?</span>
+<span class="p">=&gt;</span> <span class="kp">false</span>
+<span class="o">&gt;&gt;</span> <span class="n">user</span><span class="p">.</span><span class="nf">errors</span><span class="p">.</span><span class="nf">any?</span>
+<span class="o">=&gt;</span> <span class="kp">true</span>
 </code></pre></div>
 </div>
 <p>第一次使用 <code>empty?</code> 方法是在 <a class="xref-link" href="chapter4.html#objects-and-message-passing">4.2.3 节</a>，用在字符串上；从上面的代码可以看出，<code>empty?</code> 也可用在 Rails 错误对象上，如果错误对象为空，返回 <code>true</code>，否则返回 <code>false</code>。<code>any?</code> 方法就是取反 <code>empty?</code> 的返回值，如果对象中有内容就返回 <code>true</code>，没内容则返回 <code>false</code>。（顺便说一下，<code>count</code>、<code>empty?</code> 和 <code>any?</code> 都可以用在 Ruby 数组上，<a class="xref-link" href="chapter13.html#showing-microposts">13.2 节</a>会好好利用这三个方法。）</p>
@@ -1113,20 +1113,20 @@ password_digest: "$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3..."&gt;
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; helper.pluralize(1, "error")
-=&gt; "1 error"
-&gt;&gt; helper.pluralize(5, "error")
-=&gt; "5 errors"
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; helper.pluralize(1, "error")</span>
+<span class="p">=&gt;</span> <span class="s2">"1 error"</span>
+<span class="o">&gt;&gt;</span> <span class="n">helper</span><span class="p">.</span><span class="nf">pluralize</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">"error"</span><span class="p">)</span>
+<span class="o">=&gt;</span> <span class="s2">"5 errors"</span>
 </code></pre></div>
 </div>
 <p>如上所示，<code>pluralize</code> 方法的第一个参数是整数，返回值是这个数字和第二个参数组合在一起后正确的单复数形式。<code>pluralize</code> 方法由功能强大的转置器（inflector）实现，转置器知道怎么处理大多数单词的单复数变换，包括很多不规则的变换方式：</p>
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>&gt;&gt; helper.pluralize(2, "woman")
-=&gt; "2 women"
-&gt;&gt; helper.pluralize(3, "erratum")
-=&gt; "3 errata"
+<div class="highlight language-irb"><pre><code><span class="go">&gt;&gt; helper.pluralize(2, "woman")</span>
+<span class="p">=&gt;</span> <span class="s2">"2 women"</span>
+<span class="o">&gt;&gt;</span> <span class="n">helper</span><span class="p">.</span><span class="nf">pluralize</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s2">"erratum"</span><span class="p">)</span>
+<span class="o">=&gt;</span> <span class="s2">"3 errata"</span>
 </code></pre></div>
 </div>
 <p>所以，使用 <code>pluralize</code> 方法后，如下的代码：</p>
@@ -1186,7 +1186,7 @@ password_digest: "$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3..."&gt;
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails generate integration_test users_signup
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails generate integration_test users_signup
       invoke  test_unit
       create    <span class="nb">test</span>/integration/users_signup_test.rb
 </code></pre></div>
@@ -1196,9 +1196,9 @@ password_digest: "$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3..."&gt;
 <div data-type="listing">
 
 
-<div class="highlight language-irb"><pre><code>$ rails console
-&gt;&gt; User.count
-=&gt; 1
+<div class="highlight language-irb"><pre><code><span class="go">$ rails console</span>
+<span class="go">&gt;&gt; User.count</span>
+<span class="p">=&gt;</span> <span class="mi">1</span>
 </code></pre></div>
 </div>
 <p>现在 <code>User.count</code> 的返回值是 <code>1</code>，因为我们在 <a class="xref-link" href="chapter6.html#creating-and-authenticating-a-user">6.3.4 节</a>创建了一个用户。不过，如果你在阅读的过程中添加或删除了用户，看到的数量可能有所不同。与 <a class="xref-link" href="chapter5.html#layout-link-tests">5.3.4 节</a>一样，我们要使用 <code>assert_select</code> 测试相应页面中的 HTML 元素。注意，只应该测试以后基本不会修改的元素。</p>
@@ -1227,8 +1227,8 @@ password_digest: "$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3..."&gt;
 
 
 <div class="highlight language-ruby"><pre><code><span class="n">before_count</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">count</span>
-<span class="n">post</span> <span class="n">users_path</span><span class="p">,</span> <span class="p">.</span><span class="nf">.</span><span class="p">.</span>
-<span class="nf">after_count</span>  <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">count</span>
+<span class="n">post</span> <span class="n">users_path</span><span class="p">,</span> <span class="o">...</span>
+<span class="n">after_count</span>  <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">count</span>
 <span class="n">assert_equal</span> <span class="n">before_count</span><span class="p">,</span> <span class="n">after_count</span>
 </code></pre></div>
 </div>
@@ -1262,7 +1262,7 @@ password_digest: "$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3..."&gt;
 <h5><span class="title-label">代码清单 7.24</span>：<strong class="green">GREEN</strong></h5>
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
 </code></pre></div>
 </div>
 <h5 id="exercises-a-test-for-invalid-submission" class="discrete">练习</h5>
@@ -1455,17 +1455,17 @@ password_digest: "$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3..."&gt;
 <h5><span class="title-label">代码清单 7.30</span>：在控制台中迭代 <code>flash</code> 散列</h5>
 
 
-<div class="highlight language-irb"><pre><code>$ rails console
-&gt;&gt; flash = { success: "It worked!", danger: "It failed." }
-=&gt; {:success=&gt;"It worked!", danger: "It failed."}
-&gt;&gt; flash.each do |key, value|
-?&gt;   puts "#{key}"
-?&gt;   puts "#{value}"
-&gt;&gt; end
-success
-It worked!
-danger
-It failed.
+<div class="highlight language-irb"><pre><code><span class="go">$ rails console</span>
+<span class="go">&gt;&gt; flash = { success: "It worked!", danger: "It failed." }</span>
+<span class="p">=&gt;</span> <span class="p">{</span><span class="ss">:success</span><span class="o">=&gt;</span><span class="s2">"It worked!"</span><span class="p">,</span> <span class="ss">danger: </span><span class="s2">"It failed."</span><span class="p">}</span>
+<span class="o">&gt;&gt;</span> <span class="n">flash</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="o">|</span>
+<span class="sc">?&gt;</span>   <span class="nb">puts</span> <span class="s2">"</span><span class="si">#{</span><span class="n">key</span><span class="si">}</span><span class="s2">"</span>
+<span class="sc">?&gt;</span>   <span class="nb">puts</span> <span class="s2">"</span><span class="si">#{</span><span class="n">value</span><span class="si">}</span><span class="s2">"</span>
+<span class="o">&gt;&gt;</span> <span class="k">end</span>
+<span class="n">success</span>
+<span class="no">It</span> <span class="n">worked!</span>
+<span class="n">danger</span>
+<span class="no">It</span> <span class="n">failed</span><span class="o">.</span>
 </code></pre></div>
 </div>
 <p>按照上述方式，我们可以使用如下的代码在网站的全部页面中显示闪现消息的内容：</p>
@@ -1545,7 +1545,7 @@ It failed.
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails db:migrate:reset
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails db:migrate:reset
 </code></pre></div>
 </div>
 <p>在某些系统中可能要重启 Web 服务器，这样改动才能生效。</p>
@@ -1563,11 +1563,11 @@ It failed.
 <h5><span class="title-label">代码清单 7.32</span>：在数据库中查找我们刚刚创建的用户</h5>
 
 
-<div class="highlight language-irb"><pre><code>$ rails console
-&gt;&gt; User.find_by(email: "example@railstutorial.org")
-=&gt; #&lt;User id: 1, name: "Rails Tutorial", email: "example@railstutorial.
-org", created_at: "2016-05-31 17:17:33", updated_at: "2016-05-31 17:17:33",
-password_digest: "$2a$10$8MaeHdnOhZvMk3GmFdmpPOeG6a7u7/k2Z9TMjOanC9G..."&gt;
+<div class="highlight language-irb"><pre><code><span class="go">$ rails console</span>
+<span class="go">&gt;&gt; User.find_by(email: "example@railstutorial.org")</span>
+<span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">User</span> <span class="ss">id: </span><span class="mi">1</span><span class="p">,</span> <span class="ss">name: </span><span class="s2">"Rails Tutorial"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"example@railstutorial.</span>
+<span class="s2">org"</span><span class="p">,</span> <span class="ss">created_at: </span><span class="s2">"2016-05-31 17:17:33"</span><span class="p">,</span> <span class="ss">updated_at: </span><span class="s2">"2016-05-31 17:17:33"</span><span class="p">,</span>
+<span class="ss">password_digest: </span><span class="s2">"$2a$10$8MaeHdnOhZvMk3GmFdmpPOeG6a7u7/k2Z9TMjOanC9G..."</span><span class="kt">&gt;</span>
 </code></pre></div>
 </div>
 <div id="fig-first-signup" class="figure"><img src="images/chapter7/first_signup.png" alt="first signup" /><div class="figcaption"><span class="title-label">图 7.22</span>：填写信息，注册首个用户</div></div>
@@ -1581,8 +1581,8 @@ password_digest: "$2a$10$8MaeHdnOhZvMk3GmFdmpPOeG6a7u7/k2Z9TMjOanC9G..."&gt;
 
 
 <div class="highlight language-ruby"><pre><code><span class="n">assert_no_difference</span> <span class="s1">'User.count'</span> <span class="k">do</span>
-  <span class="n">post</span> <span class="n">users_path</span><span class="p">,</span> <span class="p">.</span><span class="nf">.</span><span class="p">.</span>
-<span class="nf">end</span>
+  <span class="n">post</span> <span class="n">users_path</span><span class="p">,</span> <span class="o">...</span>
+<span class="k">end</span>
 </code></pre></div>
 </div>
 <p>这里我们要使用对应的 <code>assert_difference</code> 方法：</p>
@@ -1590,8 +1590,8 @@ password_digest: "$2a$10$8MaeHdnOhZvMk3GmFdmpPOeG6a7u7/k2Z9TMjOanC9G..."&gt;
 
 
 <div class="highlight language-ruby"><pre><code><span class="n">assert_difference</span> <span class="s1">'User.count'</span><span class="p">,</span> <span class="mi">1</span> <span class="k">do</span>
-  <span class="n">post</span> <span class="n">users_path</span><span class="p">,</span> <span class="p">.</span><span class="nf">.</span><span class="p">.</span>
-<span class="nf">end</span>
+  <span class="n">post</span> <span class="n">users_path</span><span class="p">,</span> <span class="o">...</span>
+<span class="k">end</span>
 </code></pre></div>
 </div>
 <p>与 <code>assert_no_difference</code> 一样，<code>assert_difference</code> 的第一个参数是字符串 <code>'User.count'</code>，目的是比较块中的代码执行前后 <code>User.count</code> 的变化。第二个参数可选，指定变化的数量（这里是 1）。</p>
@@ -1696,16 +1696,16 @@ password_digest: "$2a$10$8MaeHdnOhZvMk3GmFdmpPOeG6a7u7/k2Z9TMjOanC9G..."&gt;
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>git add -A
-<span class="gp">$ </span>git commit -m <span class="s2">"Finish user signup"</span>
-<span class="gp">$ </span>git checkout master
-<span class="gp">$ </span>git merge sign-up
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>git add <span class="nt">-A</span>
+<span class="nv">$ </span>git commit <span class="nt">-m</span> <span class="s2">"Finish user signup"</span>
+<span class="nv">$ </span>git checkout master
+<span class="nv">$ </span>git merge sign-up
 </code></pre></div>
 </div>
 <section data-type="sect2" id="ssl-in-production">
 <h2><span class="title-label">7.5.1</span> 在生产环境中使用 SSL</h2>
 <p>在本章开发的注册表单中提交数据注册用户时，用户的名字、电子邮件地址和密码会在网络中传输，因此可能在途中被恶意用户拦截。这是应用的重大潜在安全隐患，解决的方法是使用安全套接层（Secure Sockets Layer，简称 SSL），<sup>[<a id="fn-ref-13" href="#fn-13">13</a>]</sup>在数据离开浏览器之前加密相关信息。我们可以只在注册页面启用 SSL，不过整站启用也容易实现。整站都启用 SSL 后，<a class="xref-link" href="chapter8.html#basic-login">第 8 章</a>实现的用户登录功能也能从中受益，而且还能防范 <a class="xref-link" href="chapter9.html#remember-me">9.1 节</a>讨论的会话劫持（session hijacking）。</p>
-<p>启用 SSL 很简单，只要在生产环境的配置文件 <code>production.rb</code> 中去掉一行代码的注释即可。如<a class="xref-link" href="#listing-ssl-in-production">代码清单 7.36</a> 所示，我们只需设置 <code>config</code> 变量，强制在生产环境中使用 SSL。</p>
+<p>虽然 Heroku 默认使用 SSL，但是并不强制浏览器使用，因此仍能通过常规的 HTTP 协议访问应用，导致与应用的交互处在不安全的环境中。（如果不信，可以把地址栏中的 <code>https</code> 改成 <code>http</code> 试试。）幸好，强制浏览器使用 SSL 很简单，只要在生产环境的配置文件 <code>production.rb</code> 中去掉一行代码的注释即可。如<a class="xref-link" href="#listing-ssl-in-production">代码清单 7.36</a> 所示，只需把 <code>config.force_ssl</code> 设为 <code>true</code>。</p>
 <div id="listing-ssl-in-production" data-type="listing">
 <h5><span class="title-label">代码清单 7.36</span>：配置应用，在生产环境中使用 SSL</h5>
 
@@ -1769,12 +1769,12 @@ password_digest: "$2a$10$8MaeHdnOhZvMk3GmFdmpPOeG6a7u7/k2Z9TMjOanC9G..."&gt;
 <div data-type="listing">
 
 
-<div class="highlight language-sh"><pre><code><span class="gp">$ </span>rails <span class="nb">test</span>
-<span class="gp">$ </span>git add -A
-<span class="gp">$ </span>git commit -m <span class="s2">"Use SSL and the Puma webserver in production"</span>
-<span class="gp">$ </span>git push
-<span class="gp">$ </span>git push heroku
-<span class="gp">$ </span>heroku run rails db:migrate
+<div class="highlight language-sh"><pre><code><span class="nv">$ </span>rails <span class="nb">test</span>
+<span class="nv">$ </span>git add <span class="nt">-A</span>
+<span class="nv">$ </span>git commit <span class="nt">-m</span> <span class="s2">"Use SSL and the Puma webserver in production"</span>
+<span class="nv">$ </span>git push
+<span class="nv">$ </span>git push heroku
+<span class="nv">$ </span>heroku run rails db:migrate
 </code></pre></div>
 </div>
 <p>现在，注册页面可以在生产环境中使用了，注册成功后显示的页面如<a class="xref-link" href="#fig-signup-in-production">图 7.25</a>。注意图中的地址栏，使用的是 <code>https://</code>，而且还有一个锁状图标，这表明 SSL 启用了。</p>
