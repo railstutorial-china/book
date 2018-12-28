@@ -9,7 +9,7 @@
   <meta name="keywords" content="ruby, rails, tutorial"/>
   <meta name="author" content="Michael Hartl"/>
   <meta name="translator" content="安道"/>
-  <meta name="generator" content="persie 0.0.4.1"/>
+  <meta name="generator" content="persie 0.0.5.1"/>
   <link rel="stylesheet" type="text/css" href="//railstutorial-china.org/assets/css/main.css"/>
   <link rel="stylesheet" type="text/css" href="book.css"/>
   <script type="text/javascript" src="//railstutorial-china.org/assets/js/global.js"></script>
@@ -170,7 +170,7 @@
 <span class="nv">$ </span>git push heroku master
 </code></pre></div>
 </div>
-<p>（与 <a class="xref-link" href="chapter1.html#deploying">1.5 节</a>一样，你可能会看到一些提醒消息，现在先不去管它。<a class="xref-link" href="chapter7.html#professional-grade-deployment">7.5 节</a>会解决。）除了 Heroku 为应用提供的地址之外，输出的内容应该与<a class="xref-link" href="chapter1.html#fig-heroku-app">图 1.23</a> 一样。</p>
+<p>（与 <a class="xref-link" href="chapter1.html#deploying">1.5 节</a>一样，你可能会看到一些提醒消息，现在先不去管它。<a class="xref-link" href="chapter7.html#professional-grade-deployment">7.5 节</a>会解决。）除了 Heroku 为应用提供的地址之外，输出的内容应该与<a class="xref-link" href="chapter1.html#fig-heroku-app">图 1.24</a> 一样。</p>
 <p>下面要开发这个应用了。一般来说，开发 Web 应用的第一步是创建数据模型（data model）。模型表示应用所需的结构。这个玩具应用是个Twitter 类微博，只有用户和简短的文章（微博）。那么，我们先为这个应用添加 <code>User</code> 模型（<a class="xref-link" href="#modeling-demo-users">2.1.1 节</a>），然后再添加 <code>Micropost</code> 模型（<a class="xref-link" href="#modeling-demo-microposts">2.1.2 节</a>）。</p>
 <section data-type="sect2" id="modeling-demo-users">
 <h2><span class="title-label">2.1.1</span> <code>User</code> 模型</h2>
@@ -1036,8 +1036,8 @@
 <div class="highlight language-sh"><pre><code><span class="nv">$ </span>heroku run rails db:migrate
 </code></pre></div>
 </div>
-<p>这个命令会按照 <code>User</code> 和  <code>Micropost</code> 数据模型更新 Heroku 中的数据库。迁移数据库之后，就可以在生产环境中使用这个应用了，如<a class="xref-link" href="#fig-toy-app-production">图 2.20</a> 所示，而且这个应用使用 PostgreSQL 数据库。</p>
 <div id="fig-toy-app-production" class="figure"><img src="images/chapter2/toy_app_production.png" alt="toy app production" /><div class="figcaption"><span class="title-label">图 2.20</span>：运行在生产环境中的玩具应用</div></div>
+<p class="pagebreak-before">这个命令会按照 <code>User</code> 和  <code>Micropost</code> 数据模型更新 Heroku 中的数据库。迁移数据库之后，就可以在生产环境中使用这个应用了，如<a class="xref-link" href="#fig-toy-app-production">图 2.20</a> 所示，而且这个应用使用 PostgreSQL 数据库。<sup>[<a id="fn-ref-9" href="#fn-9">9</a>]</sup></p>
 <p>最后，如果你做了 <a class="xref-link" href="#a-user-has-many-microposts">2.3.3 节</a>的<a class="xref-link" href="#exercises-a-user-has-many-microposts">练习</a>，要把显示第一个用户微博的代码去掉，这样应用才能正确加载。你只需把那些代码删掉，做次提交，然后再推送到 Heroku。</p>
 <h5 id="exercises-deploying-the-toy-app" class="discrete">练习</h5>
 <ol class="arabic">
@@ -1163,6 +1163,7 @@
 <li id="fn-6">与<a class="xref-link" href="#listing-demo-microposts-resource">代码清单 2.11</a> 相比，脚手架生成的代码可能会有额外的空行。无须担心，因为 Ruby 会忽略额外的空行。 <a href="#fn-ref-6" class="symbol">&#8617;</a></li>
 <li id="fn-7">你的控制台可能会显示类似 <code>2.1.1 :001 &gt;</code> 的提示符，但示例中使用 <code>&gt;&gt;</code> 代替，因为不同的 Ruby 版本显示的提示符不同。 <a href="#fn-ref-7" class="symbol">&#8617;</a></li>
 <li id="fn-8">和“Ctrl-C”一样，这里大写的“D”指代键盘上的按键，不是大写字母“D”，因此按 Ctrl 键的同时不用按住 Shift 键。 <a href="#fn-ref-8" class="symbol">&#8617;</a></li>
+<li id="fn-9">生产数据库不做任何配置应该也能正常使用，不过根据 <a href="https://devcenter.heroku.com/articles/getting-started-with-rails5" class="external-link">Heroku 官方文档</a>的建议，最好配置一下。详情参见 <a class="xref-link" href="chapter7.html#professional-grade-deployment">7.5 节</a>。 <a href="#fn-ref-9" class="symbol">&#8617;</a></li>
 </ol>
 </div>
         </div>

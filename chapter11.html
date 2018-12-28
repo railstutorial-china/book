@@ -9,7 +9,7 @@
   <meta name="keywords" content="ruby, rails, tutorial"/>
   <meta name="author" content="Michael Hartl"/>
   <meta name="translator" content="安道"/>
-  <meta name="generator" content="persie 0.0.4.1"/>
+  <meta name="generator" content="persie 0.0.5.1"/>
   <link rel="stylesheet" type="text/css" href="//railstutorial-china.org/assets/css/main.css"/>
   <link rel="stylesheet" type="text/css" href="book.css"/>
   <script type="text/javascript" src="//railstutorial-china.org/assets/js/global.js"></script>
@@ -648,7 +648,10 @@ Welcome to the Sample App! Click on the link below to activate your account:
   <span class="n">config</span><span class="p">.</span><span class="nf">action_mailer</span><span class="p">.</span><span class="nf">delivery_method</span> <span class="o">=</span> <span class="ss">:test</span>
   <span class="n">host</span> <span class="o">=</span> <span class="s1">'example.com'</span> <span class="c1"># 不要原封不动使用这个域名，</span>
                        <span class="c1"># 应该使用你本地的开发主机地址</span>
+  <span class="c1"># 在云端 IDE 中使用这一行</span>
   <span class="n">config</span><span class="p">.</span><span class="nf">action_mailer</span><span class="p">.</span><span class="nf">default_url_options</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">host: </span><span class="n">host</span><span class="p">,</span> <span class="ss">protocol: </span><span class="s1">'https'</span> <span class="p">}</span>
+  <span class="c1"># 在本地设备中使用这一行</span>
+  <span class="c1"># config.action_mailer.default_url_options = { host: host, protocol: 'http' }</span>
   <span class="p">.</span>
   <span class="nf">.</span>
   <span class="p">.</span>
@@ -668,6 +671,7 @@ Welcome to the Sample App! Click on the link below to activate your account:
 <span class="n">config</span><span class="p">.</span><span class="nf">action_mailer</span><span class="p">.</span><span class="nf">default_url_options</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">host: </span><span class="n">host</span><span class="p">,</span> <span class="ss">protocol: </span><span class="s1">'http'</span> <span class="p">}</span>
 </code></pre></div>
 </div>
+<p>注意，针对本地服务器的设置把 <code>https</code> 改成了 <code>http</code>。</p>
 <p>然后重启开发服务器，让<a class="xref-link" href="#listing-development-email-settings">代码清单 11.16</a> 中的配置生效。接下来，我们要修改 <code>User</code> 邮件程序的预览文件。<a class="xref-link" href="#account-activation-emails">11.2 节</a> 生成邮件程序时已经自动生成了这个文件，如<a class="xref-link" href="#listing-generated-user-mailer-previews">代码清单 11.17</a> 所示。</p>
 <div id="listing-generated-user-mailer-previews" data-type="listing">
 <h5><span class="title-label">代码清单 11.17</span>：生成的 <code>User</code> 邮件预览程序</h5>
@@ -1338,7 +1342,9 @@ fFb_F94mgQtmlSvRFGsITw/edit?email=michael%40michaelhartl.com
 <div class="highlight language-ruby"><pre><code><span class="n">assert_equal</span> <span class="mi">1</span><span class="p">,</span> <span class="no">ActionMailer</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">deliveries</span><span class="p">.</span><span class="nf">size</span>
 </code></pre></div>
 </div>
-<p>这行代码确认只发送了一封邮件。<code>deliveries</code> 是一个数组，用于统计所有发出的邮件，所以我们要在 <code>setup</code> 方法中把它清空，以防其他测试发送了邮件（<a class="xref-link" href="chapter12.html#password-reset-test">12.3.3 节</a>就会这么做）。<a class="xref-link" href="#listing-signup-with-account-activation-test">代码清单 11.33</a> 还第一次在本书正文中使用了 <code>assigns</code> 方法。<a class="xref-link" href="chapter9.html#testing-the-remember-me-box">9.3.1 节</a>的<a class="xref-link" href="chapter9.html#exercises-testing-the-remember-me-box">练习</a>说过，<code>assigns</code> 的作用是获取相应动作中的实例变量。例如，<code>Users</code> 控制器的 <code>create</code> 动作中定义了一个 <code>@user</code> 变量，那么我们可以在测试中使用 <code>assigns(:user)</code> 获取这个变量的值。最后，注意，<a class="xref-link" href="#listing-signup-with-account-activation-test">代码清单 11.33</a> 把<a class="xref-link" href="#listing-comment-out-failing-tests">代码清单 11.24</a> 中的注释去掉了。</p>
+<p>这行代码确认只发送了一封邮件。<code>deliveries</code> 是一个数组，用于统计所有发出的邮件，所以我们要在 <code>setup</code> 方法中把它清空，以防其他测试发送了邮件（<a class="xref-link" href="chapter12.html#password-reset-test">12.3.3 节</a>就会这么做）。</p>
+<p><a class="xref-link" href="#listing-signup-with-account-activation-test">代码清单 11.33</a> 还第一次在本书正文中使用了 <code>assigns</code> 方法。<a class="xref-link" href="chapter9.html#testing-the-remember-me-box">9.3.1 节</a>的<a class="xref-link" href="chapter9.html#exercises-testing-the-remember-me-box">练习</a>说过，<code>assigns</code> 的作用是获取相应动作中的实例变量。例如，<code>Users</code> 控制器的 <code>create</code> 动作中定义了一个 <code>@user</code> 变量，那么我们可以在测试中使用 <code>assigns(:user)</code> 获取这个变量的值。从 Rails 5 起，默认的测试框架废弃了 <code>assigns</code> 方法，不过我觉得这个方法在许多场合很有用，所以我又通过 <code>rails-controller-testing</code> gem 把它安装回来了（<a class="xref-link" href="chapter3.html#listing-gemfile-sample-app">代码清单 3.2</a>）。</p>
+<p>最后，注意，<a class="xref-link" href="#listing-signup-with-account-activation-test">代码清单 11.33</a> 把<a class="xref-link" href="#listing-comment-out-failing-tests">代码清单 11.24</a> 中的注释去掉了。</p>
 <p>现在，测试组件应该可以通过：</p>
 <div data-type="listing">
 <h5><span class="title-label">代码清单 11.34</span>：<strong class="green">GREEN</strong></h5>
@@ -1584,8 +1590,6 @@ fFb_F94mgQtmlSvRFGsITw/edit?email=michael%40michaelhartl.com
 </code></pre></div>
 </div>
 <p>部署到 Heroku 中之后，在生产环境的演示应用中使用你的电子邮件注册试试。你应该会收到一封激活邮件，如<a class="xref-link" href="#fig-activation-email-production">图 11.7</a> 所示。点击邮件中的链接后应该能激活账户，如<a class="xref-link" href="#fig-activated-in-production">图 11.8</a> 所示。</p>
-<div id="fig-activation-email-production" class="figure has-border"><img src="images/chapter11/activation_email_production_4th_ed.png" alt="activation email production 4th ed" /><div class="figcaption"><span class="title-label">图 11.7</span>：生产环境中的应用发送的账户激活邮件</div></div>
-<div id="fig-activated-in-production" class="figure"><img src="images/chapter11/activated_in_production.png" alt="activated in production" /><div class="figcaption"><span class="title-label">图 11.8</span>：在生产环境中成功激活账户</div></div>
 <h4 id="exercises-email-in-production" class="discrete">练习</h4>
 <ol class="arabic">
 <li>
@@ -1595,6 +1599,8 @@ fFb_F94mgQtmlSvRFGsITw/edit?email=michael%40michaelhartl.com
 <p>点击激活邮件中的链接，确认能激活账户。在服务器的日志中能看到什么？提示：在命令行中执行 <code>heroku logs</code> 命令。</p>
 </li>
 </ol>
+<div id="fig-activation-email-production" class="figure has-border"><img src="images/chapter11/activation_email_production_4th_ed.png" alt="activation email production 4th ed" /><div class="figcaption"><span class="title-label">图 11.7</span>：生产环境中的应用发送的账户激活邮件</div></div>
+<div id="fig-activated-in-production" class="figure"><img src="images/chapter11/activated_in_production.png" alt="activated in production" /><div class="figcaption"><span class="title-label">图 11.8</span>：在生产环境中成功激活账户</div></div>
 </section>
 <section data-type="sect1" id="account-activation-conclusion">
 <h1><span class="title-label">11.5</span> 小结</h1>

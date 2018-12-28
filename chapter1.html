@@ -9,7 +9,7 @@
   <meta name="keywords" content="ruby, rails, tutorial"/>
   <meta name="author" content="Michael Hartl"/>
   <meta name="translator" content="安道"/>
-  <meta name="generator" content="persie 0.0.4.1"/>
+  <meta name="generator" content="persie 0.0.5.1"/>
   <link rel="stylesheet" type="text/css" href="//railstutorial-china.org/assets/css/main.css"/>
   <link rel="stylesheet" type="text/css" href="book.css"/>
   <script type="text/javascript" src="//railstutorial-china.org/assets/js/global.js"></script>
@@ -138,9 +138,6 @@
 <ul>
 <li>
 <p>Learn Enough Society：这是一项收费订阅服务，包含本书的特别增强版和 15 个多小时的流媒体视频课程。视频中介绍了众多技巧，还有真人演示，这是阅读纸质书不可获得的。这项服务还包括 Learn Enough 系列教程的文字版和视频。提供教育优惠。</p>
-</li>
-<li>
-<p><a href="http://www.codeschool.com/" class="external-link">Code School</a>：很好的交互式编程课程；</p>
 </li>
 <li>
 <p><a href="https://www.bloc.io" class="external-link">Bloc</a>：一个在线训练营，有结构化的课程、个人导师，通过具体的项目学习知识。使用 BLOCLOVESHARTL 优惠码可以节省 $500 报名费。</p>
@@ -632,7 +629,7 @@ Use <span class="sb">`</span>bundle show <span class="o">[</span>gemname]<span c
 <div class="highlight language-ruby"><pre><code><span class="n">gem</span> <span class="s1">'coffee-rails'</span><span class="p">,</span> <span class="s1">'~&gt; 4.0.0'</span>
 </code></pre></div>
 </div>
-<p>这行代码的意思是，安装版本号大于 <code>4.0.0</code>，但小于 <code>4.1</code> 的 <code>coffee-rails</code>。也就是说，<code>&gt;=</code> 表示法的意思是始终安装最新版；<code>~&gt; 4.0.0</code> 表示法的意思是只安装最后一个数字变化的版本（例如从 <code>4.0.0</code> 到 <code>4.0.1</code>），而不安装前面的数字有变的更新（例如从 <code>4.0</code> 到 <code>4.1</code>）。不过，经验告诉我们，即使是最小版本的升级也可能导致错误，所以在本教程中我们基本上会为所有的 gem 都指定精确的版本号。你可以使用任何 gem 的最新版本，还可以在 <code>Gemfile</code> 文件中使用 <code>~&gt;</code>（一般推荐有经验的用户使用），但事先提醒你，这可能会导致本教程开发的应用表现异常。</p>
+<p>这行代码的意思是，安装版本号大于或等于 <code>4.0.0</code>，但不大于 <code>4.1</code> 的 <code>coffee-rails</code>。也就是说，<code>&gt;=</code> 的意思是始终安装最新版；<code>~&gt; 4.0.0</code> 的意思是安装 <code>4.0.1</code> 版（如果有这一版的话），而不安装 <code>4.1.0</code> 版。不过，经验告诉我们，即使是最小版本的升级也可能导致错误，所以在本教程中我们基本上会为所有的 gem 都指定精确的版本号。你可以使用任何 gem 的最新版本，还可以在 <code>Gemfile</code> 文件中使用 <code>~&gt;</code>（一般推荐有经验的用户使用），但事先提醒你，这可能会导致本教程开发的应用表现异常。</p>
 <p>修改<a class="xref-link" href="#listing-default-gemfile">代码清单 1.4</a> 中的 <code>Gemfile</code> 文件，换用精确的版本号，得到的结果如<a class="xref-link" href="#listing-gemfile-sqlite-version">代码清单 1.5</a> 所示。注意，借此机会我们还变动了 <code>sqlite3</code> gem 的位置，只在开发环境和测试环境（<a class="xref-link" href="chapter7.html#rails-environments">7.1.1 节</a>）中安装，从而避免跟 Heroku 所用的数据库冲突（<a class="xref-link" href="#deploying">1.5 节</a>）。</p>
 <div id="listing-gemfile-sqlite-version" data-type="listing">
 <h5><span class="title-label">代码清单 1.5</span>：在 <code>Gemfile</code> 文件中为所有 gem 指定精确的版本号</h5>
@@ -953,15 +950,17 @@ application_controller.rb  concerns/
 <div class="highlight language-sh"><pre><code><span class="nv">$ </span><span class="nb">cat</span> ~/.ssh/id_rsa.pub
 </code></pre></div>
 </div>
-<p>添加公钥之后，点击“Create”（创建）按钮，<a href="https://bitbucket.org/repo/create" class="external-link">新建一个仓库</a>，如<a class="xref-link" href="#fig-create-first-repository">图 1.19</a> 所示。填写项目的信息时，记得要选中“This is a private repository”（这是私有仓库）。填完后点击“Create repository”（创建仓库）按钮，然后按照说明操作，把仓库推送到 Bitbucket 中，如<a class="xref-link" href="#listing-bitbucket-add-push">代码清单 1.11</a> 所示。（如果与<a class="xref-link" href="#listing-bitbucket-add-push">代码清单 1.11</a> 不同，可能是公钥没正确添加，我建议你再试一次。）推送仓库时，如果询问“Are you sure you want to continue connecting (yes/no)?”（确定继续连接吗？），输入“yes”。</p>
+<p>添加公钥之后，点击“Create”（创建）按钮，<a href="https://bitbucket.org/repo/create" class="external-link">新建一个仓库</a>，如<a class="xref-link" href="#fig-create-first-repository">图 1.19</a> 所示。填写项目的信息时，记得要选中“This is a private repository”（这是私有仓库）。（如果看到创建 <code>README</code> 文件的选项，选择“No”。）填完后点击“Create repository”（创建仓库）按钮，然后按照说明操作（<a class="xref-link" href="#fig-add-repository">图 1.20</a>），把仓库推送到 Bitbucket 中，如<a class="xref-link" href="#listing-bitbucket-add-push">代码清单 1.11</a> 所示。（如果与<a class="xref-link" href="#listing-bitbucket-add-push">代码清单 1.11</a> 不同，可能是公钥没正确添加，我建议你再试一次。）推送仓库时，如果询问“Are you sure you want to continue connecting (yes/no)?”（确定继续连接吗？），输入“yes”。</p>
 <div id="listing-bitbucket-add-push" data-type="listing">
 <h5><span class="title-label">代码清单 1.11</span>：添加 Bitbucket，然后推送仓库</h5>
 
 
 <div class="highlight language-sh"><pre><code><span class="nv">$ </span>git remote add origin git@bitbucket.org:&lt;username&gt;/hello_app.git
-<span class="nv">$ </span>git push <span class="nt">-u</span> origin <span class="nt">--all</span>
+<span class="nv">$ </span>git push <span class="nt">-u</span> origin master
 </code></pre></div>
 </div>
+<div id="fig-create-first-repository" class="figure"><img src="images/chapter1/create_first_repository_bitbucket_4th_ed.png" alt="create first repository bitbucket 4th ed" /><div class="figcaption"><span class="title-label">图 1.19</span>：在 Bitbucket 中创建存放这个应用的仓库</div></div>
+<div id="fig-add-repository" class="figure"><img src="images/chapter1/add_repository.png" alt="add repository" /><div class="figcaption"><span class="title-label">图 1.20</span>：添加现有仓库的方法</div></div>
 <p><a class="xref-link" href="#listing-bitbucket-add-push">代码清单 1.11</a> 的意思是，先告诉 Git，你想添加 Bitbucket 作为这个仓库的源（origin），然后再把仓库推送到这个远端的源。（别管 <code>-u</code> 旗标的意思，如果好奇，可以搜索“git set upstream”。）当然了，你要把 <code>&lt;username&gt;</code> 换成你自己的用户名。例如，我执行的命令是：</p>
 <div data-type="listing">
 
@@ -969,15 +968,14 @@ application_controller.rb  concerns/
 <div class="highlight language-sh"><pre><code><span class="nv">$ </span>git remote add origin git@bitbucket.org:railstutorial/hello_app.git
 </code></pre></div>
 </div>
-<p>推送完毕后，在 Bitbucket 中会显示 <code>hello_app</code> 仓库的页面。在这个页面中可以浏览文件、查看完整的提交历史，除此之外还有很多其他功能（<a class="xref-link" href="#fig-bitbucket-repository-page">图 1.20</a>）。<sup>[<a id="fn-ref-13" href="#fn-13">13</a>]</sup></p>
-<div id="fig-create-first-repository" class="figure"><img src="images/chapter1/create_first_repository_bitbucket_4th_ed.png" alt="create first repository bitbucket 4th ed" /><div class="figcaption"><span class="title-label">图 1.19</span>：在 Bitbucket 中创建存放这个应用的仓库</div></div>
+<p>推送完毕后，在 Bitbucket 中会显示 <code>hello_app</code> 仓库的页面。在这个页面中可以浏览文件、查看完整的提交历史，除此之外还有很多其他功能（<a class="xref-link" href="#fig-bitbucket-repository-page">图 1.21</a>）。<sup>[<a id="fn-ref-13" href="#fn-13">13</a>]</sup></p>
 </section>
 <section data-type="sect2" id="git-commands">
 <h2><span class="title-label">1.4.4</span> 分支、编辑、提交、合并</h2>
-<p>如果你跟着 <a class="xref-link" href="#bitbucket">1.4.3 节</a>中的步骤做，可能注意到了，Bitbucket 自动渲染了仓库中的 README 文件，如<a class="xref-link" href="#fig-bitbucket-repository-page">图 1.20</a> 所示。这个 <code>README.md</code> 文件由<a class="xref-link" href="#listing-rails-command">代码清单 1.3</a> 中的命令自动生成。从文件的扩展名可以看出，这个文件使用 Markdown 编写。Markdown 是一门人类可读的标记语言，易于转换成 HTML——Bitbucket 就这么做了。</p>
+<p>如果你跟着 <a class="xref-link" href="#bitbucket">1.4.3 节</a>中的步骤做，可能注意到了，Bitbucket 自动渲染了仓库中的 README 文件，如<a class="xref-link" href="#fig-bitbucket-repository-page">图 1.21</a> 所示。这个 <code>README.md</code> 文件由<a class="xref-link" href="#listing-rails-command">代码清单 1.3</a> 中的命令自动生成。从文件的扩展名可以看出，这个文件使用 Markdown 编写。Markdown 是一门人类可读的标记语言，易于转换成 HTML——Bitbucket 就这么做了。</p>
 <p>自动生成 README 文件很贴心，不过我们最好修改里面的内容，描述手上的项目。这一节，我们将修改 README 文件，添加一些针对本书的内容。在修改的过程中，我们将首次演示我推荐在 Git 中使用的工作流程，即“分支、编辑、提交、合并”。<sup>[<a id="fn-ref-14" href="#fn-14">14</a>]</sup></p>
-<div id="fig-bitbucket-repository-page" class="figure"><img src="images/chapter1/bitbucket_repository_page_4th_ed.png" alt="bitbucket repository page 4th ed" /><div class="figcaption"><span class="title-label">图 1.20</span>：一个 Bitbucket 仓库的页面</div></div>
-<div id="fig-bitbucket-default-readme" class="figure has-border"><img src="images/chapter1/bitbucket_default_readme.png" alt="bitbucket default readme" /><div class="figcaption"><span class="title-label">图 1.21</span>：Bitbucket 渲染的 Rails 默认生成的 README 文件</div></div>
+<div id="fig-bitbucket-repository-page" class="figure"><img src="images/chapter1/bitbucket_repository_page_4th_ed.png" alt="bitbucket repository page 4th ed" /><div class="figcaption"><span class="title-label">图 1.21</span>：一个 Bitbucket 仓库的页面</div></div>
+<div id="fig-bitbucket-default-readme" class="figure has-border"><img src="images/chapter1/bitbucket_default_readme.png" alt="bitbucket default readme" /><div class="figcaption"><span class="title-label">图 1.22</span>：Bitbucket 渲染的 Rails 默认生成的 README 文件</div></div>
 <section data-type="sect3" id="branch">
 <h3>分支</h3>
 <p>Git 分支（branch）的功能很强大。分支是对仓库的高效复制，在分支中所做的改动（或许是实验性质的）不会影响父级文件。大多数情况下，父级仓库是 <code>master</code> 分支。我们可以使用 <code>checkout</code> 命令，并指定 <code>-b</code> 旗标，创建一个新主题分支（topic branch）：</p>
@@ -1081,6 +1079,7 @@ Deleted branch modify-README <span class="o">(</span>was 9dc4f64<span class="o">
 </code></pre></div>
 </div>
 <p>与旗标 <code>-d</code> 不同，如果指定旗标 <code>-D</code>，即使没合并分支中的改动，也会删除分支。</p>
+<div id="fig-new-readme" class="figure"><img src="images/chapter1/new_readme_bitbucket_4th_ed.png" alt="new readme bitbucket 4th ed" /><div class="figcaption"><span class="title-label">图 1.23</span>：Bitbucket 中显示的更新后的 <code>README</code> 文件</div></div>
 </section>
 <section data-type="sect3" id="push">
 <h3>推送</h3>
@@ -1091,8 +1090,7 @@ Deleted branch modify-README <span class="o">(</span>was 9dc4f64<span class="o">
 <div class="highlight language-sh"><pre><code><span class="nv">$ </span>git push
 </code></pre></div>
 </div>
-<p>同样，Bitbucket 会把更新后的 Markdown 转换成 HTML（<a class="xref-link" href="#fig-new-readme">图 1.22</a>）。</p>
-<div id="fig-new-readme" class="figure"><img src="images/chapter1/new_readme_bitbucket_4th_ed.png" alt="new readme bitbucket 4th ed" /><div class="figcaption"><span class="title-label">图 1.22</span>：Bitbucket 中显示的更新后的 <code>README</code> 文件</div></div>
+<p>同样，Bitbucket 会把更新后的 Markdown 转换成 HTML（<a class="xref-link" href="#fig-new-readme">图 1.23</a>）。</p>
 </section>
 </section>
 </section>
@@ -1104,7 +1102,7 @@ Deleted branch modify-README <span class="o">(</span>was 9dc4f64<span class="o">
 <p>本节余下的内容专门介绍如何把我们的第一个应用部署到 Heroku 中。其中一些操作相对高级，如果没有完全理解也不要紧。本节的重点是把应用部署到线上环境中。</p>
 <section data-type="sect2" id="heroku-setup">
 <h2><span class="title-label">1.5.1</span> 搭建 Heroku 部署环境</h2>
-<p>Heroku 使用 <a href="http://www.postgresql.org" class="external-link">PostgreSQL</a><sup>[<a id="fn-ref-18" href="#fn-18">18</a>]</sup> 数据库，因此我们要在生产环境安装 <code>pg</code> gem，这样 Rails 才能与 PostgreSQL 通信：<sup>[<a id="fn-ref-19" href="#fn-19">19</a>]</sup></p>
+<p>Heroku 使用 <a href="http://www.postgresql.org" class="external-link">PostgreSQL</a>（读作 post-gres-cue-ell，通常简称 Postgres。） 数据库，因此我们要在生产环境安装 <code>pg</code> gem，这样 Rails 才能与 PostgreSQL 通信：</p>
 <div data-type="listing">
 
 
@@ -1113,7 +1111,7 @@ Deleted branch modify-README <span class="o">(</span>was 9dc4f64<span class="o">
 <span class="k">end</span>
 </code></pre></div>
 </div>
-<p>另外，要加入<a class="xref-link" href="#listing-gemfile-sqlite-version">代码清单 1.5</a> 所做的改动，避免在生产环境安装 <code>sqlite3</code> gem，这是因为 Heroku 不支持 SQLite。</p>
+<p>另外，要加入<a class="xref-link" href="#listing-gemfile-sqlite-version">代码清单 1.5</a> 所做的改动，避免在生产环境安装 <code>sqlite3</code> gem，这是因为 Heroku 不支持 <a href="https://en.wikipedia.org/wiki/SQLite" class="external-link">SQLite 数据库</a>。<sup>[<a id="fn-ref-18" href="#fn-18">18</a>]</sup></p>
 <div data-type="listing">
 
 
@@ -1231,8 +1229,7 @@ https://git.heroku.com/damp-fortress-5769.git
 </section>
 <section data-type="sect2" id="heroku-deployment-step-two">
 <h2><span class="title-label">1.5.3</span> Heroku 部署第二步</h2>
-<p>其实没有第二步了。我们已经完成部署了。现在可以通过 <code>heroku create</code> 命令给出的地址（参见<a class="xref-link" href="#listing-heroku-create">代码清单 1.16</a>，如果没用云端 IDE，在本地可以执行 <code>heroku open</code> 命令）查看刚刚部署的应用，如<a class="xref-link" href="#fig-heroku-app">图 1.23</a> 所示。看到的页面和<a class="xref-link" href="#fig-hello-world-hello-app">图 1.15</a> 一样，但是现在这个应用运行在生产环境中。</p>
-<div id="fig-heroku-app" class="figure"><img src="images/chapter1/heroku_app_hello_world.png" alt="heroku app hello world" /><div class="figcaption"><span class="title-label">图 1.23</span>：运行在 Heroku 中的第一个应用</div></div>
+<p>其实没有第二步了。我们已经完成部署了。现在可以通过 <code>heroku create</code> 命令给出的地址（参见<a class="xref-link" href="#listing-heroku-create">代码清单 1.16</a>，如果没用云端 IDE，在本地可以执行 <code>heroku open</code> 命令）查看刚刚部署的应用，如<a class="xref-link" href="#fig-heroku-app">图 1.24</a> 所示。看到的页面和<a class="xref-link" href="#fig-hello-world-hello-app">图 1.15</a> 一样，但是现在这个应用运行在生产环境中。</p>
 <h5 id="exercises-heroku-step-two" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
@@ -1242,6 +1239,7 @@ https://git.heroku.com/damp-fortress-5769.git
 <p>跟<a class="xref-link" href="#exercises-hello-world">前面的练习</a>一样，想办法修改根路由，显示 <code>goodbye</code> 动作渲染的结果。部署时，看看能不能省略 <code>git push</code> 命令中的 <code>master</code>，只使用 <code>git push heroku</code>。</p>
 </li>
 </ol>
+<div id="fig-heroku-app" class="figure"><img src="images/chapter1/heroku_app_hello_world.png" alt="heroku app hello world" /><div class="figcaption"><span class="title-label">图 1.24</span>：运行在 Heroku 中的第一个应用</div></div>
 </section>
 <section data-type="sect2" id="heroku-commands">
 <h2><span class="title-label">1.5.4</span> Heroku 命令</h2>
@@ -1261,14 +1259,14 @@ seyjhflo.herokuapp.com
 jhyicevg.herokuapp.com
 </code></pre></div>
 </div>
-<p>使用这样随机的二级域名，只有你将地址告诉别人他们才能访问你的网站。为了让你一窥 Ruby 的强大，下面是我用来生成随机二级域名的代码，很精妙吧。<sup>[<a id="fn-ref-20" href="#fn-20">20</a>]</sup></p>
+<p>使用这样随机的二级域名，只有你将地址告诉别人他们才能访问你的网站。为了让你一窥 Ruby 的强大，下面是我用来生成随机二级域名的代码，很精妙吧。<sup>[<a id="fn-ref-19" href="#fn-19">19</a>]</sup></p>
 <div data-type="listing">
 
 
 <div class="highlight language-ruby"><pre><code><span class="p">(</span><span class="s1">'a'</span><span class="o">..</span><span class="s1">'z'</span><span class="p">).</span><span class="nf">to_a</span><span class="p">.</span><span class="nf">shuffle</span><span class="p">[</span><span class="mi">0</span><span class="o">..</span><span class="mi">7</span><span class="p">].</span><span class="nf">join</span>
 </code></pre></div>
 </div>
-<p>除了支持二级域名，Heroku 还支持自定义域名。（其实，<a href="http://railstutorial.org" class="external-link">本书的网站</a><sup>[<a id="fn-ref-21" href="#fn-21">21</a>]</sup>就放在 Heroku 中。如果你阅读的是在线版，现在就在浏览一个托管于 Heroku 中的网站。）在 <a href="http://devcenter.heroku.com" class="external-link">Heroku 文档</a>中可以查看更多关于自定义域名的信息以及 Heroku 相关的其他话题。</p>
+<p>除了支持二级域名，Heroku 还支持自定义域名。（其实，<a href="http://railstutorial.org" class="external-link">本书的网站</a><sup>[<a id="fn-ref-20" href="#fn-20">20</a>]</sup>就放在 Heroku 中。如果你阅读的是在线版，现在就在浏览一个托管于 Heroku 中的网站。）在 <a href="http://devcenter.heroku.com" class="external-link">Heroku 文档</a>中可以查看更多关于自定义域名的信息以及 Heroku 相关的其他话题。</p>
 <h5 id="exercises-heroku-commands" class="discrete">练习</h5>
 <ol class="arabic">
 <li>
@@ -1344,10 +1342,9 @@ jhyicevg.herokuapp.com
 <li id="fn-15">详情参阅《<a href="http://learnenough.com/git-tutorial" class="external-link">Learn Enough Git to Be Dangerous</a>》书中“<a href="https://www.learnenough.com/git-tutorial#sec-collaborating" class="external-link">Collaborating</a>”（协作）一节。 <a href="#fn-ref-15" class="symbol">&#8617;</a></li>
 <li id="fn-16">如果你担心不小心公开了应用，可以参照 <a class="xref-link" href="#heroku-commands">1.5.4 节</a>的做法。不过对本书开发的示例应用来说，这份担心是多余的。 <a href="#fn-ref-16" class="symbol">&#8617;</a></li>
 <li id="fn-17">读作“Engine X”。 <a href="#fn-ref-17" class="symbol">&#8617;</a></li>
-<li id="fn-18">读作 post-gres-cue-ell，通常简称 Postgres。 <a href="#fn-ref-18" class="symbol">&#8617;</a></li>
-<li id="fn-19">一般来说，开发环境和生产环境要尽量一致，例如使用相同的数据库。但在本书中，本地一直使用 SQLite，生产环境则使用 PostgreSQL。详情参见 <a class="xref-link" href="chapter3.html#sample-app-setup">3.1 节</a>。 <a href="#fn-ref-19" class="symbol">&#8617;</a></li>
-<li id="fn-20">其实这行代码还可以使用 Ruby 的一个内置方法进一步精简。这个方法是 <code>sample</code>：<code>('a'..'z').to_a.sample(8).join</code>。感谢读者 Stefan Pochmann 指出这一点；在他告诉我之前，我甚至不知道有 <code>sample</code> 方法。 <a href="#fn-ref-20" class="symbol">&#8617;</a></li>
-<li id="fn-21">英文原版的网站托管在 Heroku 中，你现在阅读的<a href="http://railstutorial-china.org" class="external-link">中文版网站</a>托管在 GitHub Pages 中。——译者注 <a href="#fn-ref-21" class="symbol">&#8617;</a></li>
+<li id="fn-18">SQLite 通常作为嵌入式数据库使用，例如在手机中就十分普遍。Rails 在本地使用 SQLite 为默认数据库，因为 SQLite 易于设置，但是不适合作为 Web 应用的数据库，所以我们将在生产环境中使用 PostgreSQL。详情参见 <a class="xref-link" href="chapter3.html#sample-app-setup">3.1 节</a>。 <a href="#fn-ref-18" class="symbol">&#8617;</a></li>
+<li id="fn-19">其实这行代码还可以使用 Ruby 的一个内置方法进一步精简。这个方法是 <code>sample</code>：<code>('a'..'z').to_a.sample(8).join</code>。感谢读者 Stefan Pochmann 指出这一点；在他告诉我之前，我甚至不知道有 <code>sample</code> 方法。 <a href="#fn-ref-19" class="symbol">&#8617;</a></li>
+<li id="fn-20">英文原版的网站托管在 Heroku 中，你现在阅读的<a href="http://railstutorial-china.org" class="external-link">中文版网站</a>托管在 GitHub Pages 中。——译者注 <a href="#fn-ref-20" class="symbol">&#8617;</a></li>
 </ol>
 </div>
         </div>

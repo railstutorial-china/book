@@ -9,7 +9,7 @@
   <meta name="keywords" content="ruby, rails, tutorial"/>
   <meta name="author" content="Michael Hartl"/>
   <meta name="translator" content="安道"/>
-  <meta name="generator" content="persie 0.0.4.1"/>
+  <meta name="generator" content="persie 0.0.5.1"/>
   <link rel="stylesheet" type="text/css" href="//railstutorial-china.org/assets/css/main.css"/>
   <link rel="stylesheet" type="text/css" href="book.css"/>
   <script type="text/javascript" src="//railstutorial-china.org/assets/js/global.js"></script>
@@ -1691,7 +1691,7 @@
 </section>
 <section data-type="sect1" id="professional-grade-deployment">
 <h1><span class="title-label">7.5</span> 专业部署方案</h1>
-<p>现在注册页面可以使用了，该把应用部署到生产环境了。虽然我们从<a class="xref-link" href="chapter3.html#mostly-static-pages">第 3 章</a>就开始部署了，但现在应用才真正有点用，所以借此机会我们要把部署过程变得更专业一些。具体而言，我们要在生产环境的应用中添加一个重要功能，保障注册过程的安全性，还要把默认的 Web 服务器换成一个更适合在真实环境中使用的服务器。</p>
+<p>现在注册页面可以使用了，该把应用部署到生产环境了。虽然我们从<a class="xref-link" href="chapter3.html#mostly-static-pages">第 3 章</a>就开始部署了，但现在应用才真正有点用，所以借此机会我们要把部署过程变得更专业一些。具体而言，我们要在生产环境的应用中添加一个重要功能，保障注册过程的安全性，还要把默认的 Web 服务器换成一个更适合在真实环境中使用的服务器，再添加一些针对生产数据库的配置。</p>
 <p>为了部署，现在你应该把改动合并到 <code>master</code> 分支中：</p>
 <div data-type="listing">
 
@@ -1763,9 +1763,48 @@
 </code></pre></div>
 </div>
 </section>
+<section data-type="sect2" id="production-database-configuration">
+<h2><span class="title-label">7.5.3</span> 配置生产数据库</h2>
+<p>最后一步是正确配置生产数据库，即 <a class="xref-link" href="chapter2.html#deploying-the-toy-app">2.3.5 节</a>提到的 <a href="https://www.postgresql.org/" class="external-link">PostgreSQL</a>。我测试过，不做任何配置，PostgreSQL 也能在 Heroku 中正常运行，不过 <a href="https://devcenter.heroku.com/articles/getting-started-with-rails5" class="external-link">Heroku 官方文档</a>建议显式配置，以防万一，还是加上配置吧。</p>
+<p>配置方法其实很简单，只需修改数据库配置文件 <code>config/database.yml</code> 中的 <code>production</code> 部分。修改后的内容如<a class="xref-link" href="#listing-database-yml">代码清单 7.39</a> 所示（直接摘自 Heroku 文档）。</p>
+<div id="listing-database-yml" data-type="listing">
+<h5><span class="title-label">代码清单 7.39</span>：配置生产数据库</h5>
+
+<div class="source-file">config/database.yml</div>
+
+<div class="highlight language-yaml"><pre><code><span class="c1"># SQLite version 3.x</span>
+<span class="c1">#   gem install sqlite3</span>
+<span class="c1">#</span>
+<span class="c1">#   Ensure the SQLite 3 gem is defined in your Gemfile</span>
+<span class="c1">#   gem 'sqlite3'</span>
+<span class="c1">#</span>
+<span class="na">default</span><span class="pi">:</span> <span class="nl">&amp;default</span>
+  <span class="na">adapter</span><span class="pi">:</span> <span class="s">sqlite3</span>
+  <span class="na">pool</span><span class="pi">:</span> <span class="s">5</span>
+  <span class="na">timeout</span><span class="pi">:</span> <span class="s">5000</span>
+
+<span class="na">development</span><span class="pi">:</span>
+  <span class="s">&lt;&lt;</span><span class="pi">:</span> <span class="nv">*default</span>
+  <span class="na">database</span><span class="pi">:</span> <span class="s">db/development.sqlite3</span>
+
+<span class="c1"># Warning: The database defined as "test" will be erased and</span>
+<span class="c1"># re-generated from your development database when you run "rake".</span>
+<span class="c1"># Do not set this db to the same as development or production.</span>
+<span class="na">test</span><span class="pi">:</span>
+  <span class="s">&lt;&lt;</span><span class="pi">:</span> <span class="nv">*default</span>
+  <span class="na">database</span><span class="pi">:</span> <span class="s">db/test.sqlite3</span>
+
+<span class="hll"><span class="na">production</span><span class="pi">:</span></span>
+<span class="hll">  <span class="s">&lt;&lt;</span><span class="pi">:</span> <span class="nv">*default</span></span>
+<span class="hll">  <span class="na">database</span><span class="pi">:</span> <span class="s">sample_app_production</span></span>
+<span class="hll">  <span class="na">username</span><span class="pi">:</span> <span class="s">sample_app</span></span>
+<span class="hll">  <span class="na">password</span><span class="pi">:</span> <span class="s">&lt;%= ENV['SAMPLE_APP_DATABASE_PASSWORD'] %&gt;</span></span>
+</code></pre></div>
+</div>
+</section>
 <section data-type="sect2" id="production-deployment">
-<h2><span class="title-label">7.5.3</span> 部署到生产环境</h2>
-<p>生产环境的 Web 服务器配置好之后，我们可以提交并部署了：<sup>[<a id="fn-ref-15" href="#fn-15">15</a>]</sup></p>
+<h2><span class="title-label">7.5.4</span> 部署到生产环境</h2>
+<p>生产环境的 Web 服务器和数据库配置好之后，我们可以提交并部署了：<sup>[<a id="fn-ref-15" href="#fn-15">15</a>]</sup></p>
 <div data-type="listing">
 
 

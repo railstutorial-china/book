@@ -9,7 +9,7 @@
   <meta name="keywords" content="ruby, rails, tutorial"/>
   <meta name="author" content="Michael Hartl"/>
   <meta name="translator" content="安道"/>
-  <meta name="generator" content="persie 0.0.4.1"/>
+  <meta name="generator" content="persie 0.0.5.1"/>
   <link rel="stylesheet" type="text/css" href="//railstutorial-china.org/assets/css/main.css"/>
   <link rel="stylesheet" type="text/css" href="book.css"/>
   <script type="text/javascript" src="//railstutorial-china.org/assets/js/global.js"></script>
@@ -239,7 +239,7 @@ For more information, see the
 <span class="nv">$ </span>git push heroku master
 </code></pre></div>
 </div>
-<p>与 <a class="xref-link" href="chapter1.html#deploying">1.5 节</a>一样，你可能会看到一些警告消息，现在暂且不管，<a class="xref-link" href="chapter7.html#professional-grade-deployment">7.5 节</a>会解决。除了 Heroku 为应用分配的地址之外，看到的页面应该和<a class="xref-link" href="chapter1.html#fig-heroku-app">图 1.23</a> 一样。</p>
+<p>与 <a class="xref-link" href="chapter1.html#deploying">1.5 节</a>一样，你可能会看到一些警告消息，现在暂且不管，<a class="xref-link" href="chapter7.html#professional-grade-deployment">7.5 节</a>会解决。除了 Heroku 为应用分配的地址之外，看到的页面应该和<a class="xref-link" href="chapter1.html#fig-heroku-app">图 1.24</a> 一样。</p>
 <p>在阅读本书的过程中，我建议你定期推送和部署，这样不仅能在远程仓库中备份，还能尽早发现在生产环境中可能出现的问题。如果遇到与 Heroku 有关的问题，可以查看生产环境中的日志，试着找出问题所在：</p>
 <div data-type="listing">
 
@@ -1692,7 +1692,7 @@ spring app | sample_app | started 7 hours ago
 <ol>
 <li id="fn-1">如果使用云端 IDE，可以使用“Goto Anything”命令，输入部分文件名就能方便地在文件系统中找到所需的文件。现在三个应用都放在同一个工作空间中，只输入文件名效果可能不很理想。例如，如果查找名为“Gemfile”的文件，会出现六个结果，因为每个应用中都有能匹配查找条件的两个文件：<code>Gemfile</code> 和 <code>Gemfile.lock</code>。因此，你可以把前两个应用删除，方法是：进入 <code>environment</code> 文件夹，执行 <code>rm -rf hello_app/ toy_app/</code> 命令（参见<a class="xref-link" href="chapter1.html#table-unix-commands">表 1.1</a>）。只要你之前把这两个应用推送到 Bitbucket 中了，以后再恢复都很容易。 <a href="#fn-ref-1" class="symbol">&#8617;</a></li>
 <li id="fn-2">注意，这个选项会被 Bundler 记住，下次只需运行 <code>bundle install</code> 即可。 <a href="#fn-ref-2" class="symbol">&#8617;</a></li>
-<li id="fn-3">现在时机还不成熟，但我建议你以后一定要学会如何在开发环境中安装、配置 PostgreSQL。届时，可以在谷歌中搜索“install configure postgresql &lt;your system&gt;”，以及“rails postgresql setup”。在云端 IDE 中，“&lt;your system&gt;”是 Linux。 <a href="#fn-ref-3" class="symbol">&#8617;</a></li>
+<li id="fn-3">一般来说，开发环境和生产环境要尽量一致，例如使用相同的数据库。但在本书中，本地一直使用 SQLite，生产环境则使用 PostgreSQL。现在时机还不成熟，但我建议你以后一定要学会如何在开发环境中安装、配置 PostgreSQL。届时，可以在谷歌中搜索“install configure postgresql &lt;your system&gt;”，以及“rails postgresql setup”。在云端 IDE 中，“&lt;your system&gt;”是 Linux。 <a href="#fn-ref-3" class="symbol">&#8617;</a></li>
 <li id="fn-4">这里讲的静态页面创建方法可能是最简单的，但不是唯一的，你应该根据需求使用合适的方法。如果要创建大量静态页面，使用静态页面控制器太麻烦，不过这个演示应用只需要几个静态页面。如果需要创建大量静态页面，可以使用 <a href="https://github.com/thoughtbot/high_voltage" class="external-link"><code>high_voltage</code></a> gem。 <a href="#fn-ref-4" class="symbol">&#8617;</a></li>
 <li id="fn-5">其实，很多 Rails 开发者还会为 <code>rails</code> 命令创建别名（参阅《<a href="http://learnenough.com/text-editor-tutorial" class="external-link">Learn Enough Text Editor to Be Dangerous</a>》），简化成 <code>r</code>。这样，使用简洁的 <code>r s</code> 命令就能启动 Rails 服务器。 <a href="#fn-ref-5" class="symbol">&#8617;</a></li>
 <li id="fn-6">详情参见 Rails 创始人 David Heinemeier Hansson 写的一篇文章：<a href="http://david.heinemeierhansson.com/2014/tdd-is-dead-long-live-testing.html" class="external-link">TDD is dead. Long live testing</a>。 <a href="#fn-ref-6" class="symbol">&#8617;</a></li>
